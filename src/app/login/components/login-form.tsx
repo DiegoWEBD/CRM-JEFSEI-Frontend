@@ -5,7 +5,9 @@ import Form from '@/components/forms/form/form'
 import Input from '@/components/forms/input/input'
 import { useAuth } from '@/hooks/auth/use-auth'
 import { useFormik } from 'formik'
-import { FiShield } from 'react-icons/fi'
+import LoginFormHeader from './login-form-header'
+import FormError from '@/components/forms/form-error/form-error'
+import Loader from '@/components/loaders/loder'
 
 const LoginForm = () => {
 	const { cargando, error, login } = useAuth()
@@ -18,22 +20,12 @@ const LoginForm = () => {
 	})
 
 	if (cargando) {
-		return <p>Cargando...</p>
-	}
-
-	if (error) {
-		return <p>{error}</p>
+		return <Loader />
 	}
 
 	return (
 		<Form onSubmit={formik.handleSubmit} className='flex flex-col gap-4'>
-			<div className='mb-6 flex flex-col items-center'>
-				<div className='bg-blue-100 h-12 w-12 flex items-center justify-center rounded-full mb-5'>
-					<FiShield size='1.5rem' />
-				</div>
-				<h1 className='text-xl font-bold'>JEFSEI Operaciones</h1>
-				<p className='text-subtitle'>Inicia sesión para continuar</p>
-			</div>
+			<LoginFormHeader />
 			<Input
 				name='rut'
 				label='Rut'
@@ -47,7 +39,7 @@ const LoginForm = () => {
 				onChange={formik.handleChange}
 				value={formik.values.password}
 			/>
-
+			{error && <FormError>{error}</FormError>}
 			<Boton type='submit'>Iniciar Sesión</Boton>
 		</Form>
 	)

@@ -11,7 +11,7 @@ const LoginPage = () => {
 
 	useEffect(() => {
 		if (token) {
-			router.push('/home')
+			router.push('/')
 		}
 	}, [token, router])
 
