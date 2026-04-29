@@ -1,5 +1,5 @@
 type MainContentLayoutProps = {
-	children: React.ReactNode
+	children?: React.ReactNode
 	className?: string
 }
 
@@ -8,9 +8,7 @@ const MainContentLayout = ({
 	className = '',
 }: MainContentLayoutProps) => {
 	return (
-		<main
-			className={`min-h-screen w-screen flex items-center justify-center ${className}`}
-		>
+		<main className={`flex-1 bg-gray-200 p-4 overflow-auto ${className}`}>
 			{children}
 		</main>
 	)

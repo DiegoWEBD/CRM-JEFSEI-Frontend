@@ -1,10 +1,14 @@
-import { iniciarSesion } from '@/aplicacion/auth/use-cases/iniciar-sesion'
+import { IniciarSesionResponse } from '@/aplicacion/auth/dtos/iniciar-sesion-response'
 import { useAuthStore } from '@/global_states/auth_store'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export const useAuth = () => {
 	const [cargando, setCargando] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+
+	const router = useRouter()
 
 	const loginStore = useAuthStore(state => state.login)
 	const logoutStore = useAuthStore(state => state.logout)
@@ -14,9 +18,14 @@ export const useAuth = () => {
 			setCargando(true)
 			setError(null)
 
-			const response = await iniciarSesion(rut, password)
+			const response = await axios.post('/api/auth/login', { rut, password })
 
-			loginStore(response.access_token, response.usuario)
+			const data: IniciarSesionResponse = response.data
+			console.log(data)
+
+			loginStore(data.usuario, data.expire_minutes)
+
+			router.replace('/')
 		} catch {
 			setError('Credenciales inválidas')
 		} finally {
@@ -24,8 +33,16 @@ export const useAuth = () => {
 		}
 	}
 
-	const logout = () => {
-		logoutStore()
+	const logout = async () => {
+		try {
+			await axios.post('/api/auth/logout')
+
+			logoutStore()
+
+			router.replace('/login')
+		} catch {
+			console.error('Error al cerrar sesión')
+		}
 	}
 
 	return {
