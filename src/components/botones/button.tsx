@@ -1,4 +1,4 @@
-type BotonProps = {
+type ButtonProps = {
 	styleType?: 'primary' | 'success' | 'danger'
 	children: React.ReactNode
 	onClick?: () => void
@@ -11,7 +11,7 @@ const styles = {
 	danger: 'bg-danger hover:bg-danger-hover',
 }
 
-const Boton = ({ styleType = 'primary', children, ...props }: BotonProps) => {
+const Button = ({ styleType = 'primary', children, ...props }: ButtonProps) => {
 	return (
 		<button
 			className={`${styles[styleType]} text-white font-bold py-2 px-4 rounded-lg hover:bg-${styleType}-hover transition-all hover:cursor-pointer`}
@@ -22,4 +22,4 @@ const Boton = ({ styleType = 'primary', children, ...props }: BotonProps) => {
 	)
 }
 
-export default Boton
+export default Button

@@ -1,6 +1,6 @@
 'use client'
 
-import Boton from '@/components/botones/boton'
+import Boton from '@/components/botones/button'
 import Form from '@/components/forms/form/form'
 import Input from '@/components/forms/input/input'
 import { useAuth } from '@/hooks/auth/use-auth'

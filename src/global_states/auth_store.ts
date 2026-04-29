@@ -3,32 +3,54 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 type AuthStore = {
-	token: string | null
 	usuario: Usuario | null
-	login: (token: string, usuario: Usuario) => void
+	expiresAt: number | null
+	hydrated: boolean
+	login: (usuario: Usuario, expiresInMinutes: number) => void
 	logout: () => void
+	setHydrated: (value: boolean) => void
 }
 
 export const useAuthStore = create<AuthStore>()(
 	persist(
 		set => ({
-			token: null,
 			usuario: null,
+			expiresAt: null,
+			hydrated: false,
 
-			login: (token, usuario) =>
+			login: (usuario, expiresInMinutes) => {
+				const expiresAt = Date.now() + expiresInMinutes * 60 * 1000
+
 				set({
-					token,
 					usuario,
-				}),
+					expiresAt,
+				})
+			},
 
-			logout: () =>
+			logout: () => {
 				set({
-					token: null,
 					usuario: null,
-				}),
+					expiresAt: null,
+				})
+			},
+
+			setHydrated: value => set({ hydrated: value }),
 		}),
 		{
 			name: 'auth-storage',
+
+			onRehydrateStorage: () => state => {
+				if (!state) return
+
+				const now = Date.now()
+
+				if (!state.expiresAt || now > state.expiresAt) {
+					state.usuario = null
+					state.expiresAt = null
+				}
+
+				state.hydrated = true
+			},
 		},
 	),
 )
