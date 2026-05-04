@@ -12,7 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = hydrated && usuario && expiresAt
 
 	return (
-		<div className='h-screen flex'>
+		<body className='h-screen flex'>
 			<AuthGuard>
 				<SideBar />
 			</AuthGuard>
@@ -32,6 +32,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 					{children}
 				</MainContentLayout>
 			</div>
-		</div>
+		</body>
 	)
 }

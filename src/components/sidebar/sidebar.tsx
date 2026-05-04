@@ -1,28 +1,38 @@
-import { useState } from 'react'
-import { FaBars } from 'react-icons/fa6'
+'use client'
+
+import { useSidebarStore } from '@/global_states/sidebar-store'
 import Nav from './nav/nav'
 
 const SideBar = () => {
-	const [open, setOpen] = useState<boolean>(true)
+	const { open, setOpen } = useSidebarStore()
 
 	return (
-		<aside
-			className={`bg-secondary text-white transition-all duration-300
-				${open ? 'w-64' : 'w-16'}`}
-		>
-			<div className='p-5 flex justify-between items-center border-b border-border-secondary'>
-				{open ? <span>Menú</span> : null}
+		<>
+			{open && (
+				<div
+					className='fixed inset-0 bg-black/50 z-40 md:hidden'
+					onClick={() => setOpen(false)}
+				/>
+			)}
 
-				<button
-					onClick={() => setOpen(!open)}
-					className='px-2 py-1 rounded hover:cursor-pointer hover:bg-white/10 transition-all'
-				>
-					<FaBars />
-				</button>
-			</div>
+			<aside
+				className={`
+					bg-secondary text-white z-50
+					fixed top-0 left-0 h-full w-64
+					transform transition-transform duration-300
+					
+					${open ? 'translate-x-0' : '-translate-x-full'}
+					
+					md:translate-x-0 md:static md:h-auto
+				`}
+			>
+				<div className='p-5 border-b border-border-secondary'>
+					<span>Menú</span>
+				</div>
 
-			<Nav open={open} />
-		</aside>
+				<Nav open={true} />
+			</aside>
+		</>
 	)
 }
 

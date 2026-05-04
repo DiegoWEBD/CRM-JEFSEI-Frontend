@@ -8,9 +8,7 @@ const MainContentLayout = ({
 	className = '',
 }: MainContentLayoutProps) => {
 	return (
-		<main className={`flex-1 bg-gray-200 p-4 overflow-auto ${className}`}>
-			{children}
-		</main>
+		<main className={`flex-1 p-4 overflow-auto ${className}`}>{children}</main>
 	)
 }
 

@@ -18,7 +18,7 @@ const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 			className='h-11 flex items-center gap-3 p-2 rounded hover:bg-white/10 transition-all'
 		>
 			<span
-				className={`text-xl ${pathname === href ? 'text-primary-hover' : undefined}`}
+				className={`text-xl ${pathname === href ? 'text-primary-highlight' : undefined}`}
 			>
 				{icono}
 			</span>

@@ -6,7 +6,7 @@ type ButtonProps = {
 }
 
 const styles = {
-	primary: 'bg-primary hover:bg-primary-hover',
+	primary: 'bg-primary-highlight hover:bg-primary-highlight-hover',
 	success: 'bg-success hover:bg-success-hover',
 	danger: 'bg-danger hover:bg-danger-hover',
 }

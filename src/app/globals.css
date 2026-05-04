@@ -1,14 +1,20 @@
 @import 'tailwindcss';
 
 :root {
-	--background: oklch(92.9% 0.013 255.508);
+	--background: white;
 	--foreground: oklch(20.8% 0.042 265.755);
 
-	--primary: oklch(42.4% 0.199 265.638);
-	--primary-hover: oklch(48.8% 0.243 264.376);
+	--primary-highlight: oklch(44.3% 0.11 240.79);
+	--primary-highlight-hover: oklch(50% 0.134 242.749);
 	--secondary: oklch(20.8% 0.042 265.755);
 	--text-secondary: oklch(55.1% 0.027 264.364);
+	--text-normal: black;
+	--primary-text: white;
+
+	--border-primary: oklch(92.8% 0.006 264.531);
 	--border-secondary: oklch(37.2% 0.044 257.287);
+
+	--card: white;
 }
 
 @theme inline {
@@ -17,16 +23,21 @@
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
 
-	--color-primary: var(--primary);
-	--color-primary-hover: var(--primary-hover);
+	--color-primary-highlight: var(--primary-highlight);
+	--color-primary-highlight-hover: var(--primary-highlight-hover);
 	--color-secondary: var(--secondary);
 	--color-tertiary: var(--tertiary);
 	--color-subtitle: var(--text-secondary);
+	--color-border-primary: var(--border-primary);
 	--color-border-secondary: var(--border-secondary);
+	--color-card: var(--card);
+	--color-normal: var(--text-normal);
+	--color-primary-text: var(--primary-text);
 }
 
 body {
 	background: var(--background);
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
 }

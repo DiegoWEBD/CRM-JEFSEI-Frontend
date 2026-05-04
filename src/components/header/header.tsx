@@ -1,16 +1,24 @@
-import LogoutButton from '../botones/logout-button'
-import Input from '../forms/input/input'
+'use client'
 
-const Header = () => (
-	<header className='h-16 bg-white shadow flex items-center justify-between px-4'>
-		<div>
-			<Input
-				className='bg-gray-100'
-				placeholder='Buscar clientes, pólizas...'
-			/>
-		</div>
-		<LogoutButton />
-	</header>
-)
+import { FaBars } from 'react-icons/fa6'
+import { useSidebarStore } from '@/global_states/sidebar-store'
+import HeaderUsuario from './header-usuario/header-usuario'
+
+const Header = () => {
+	const { toggle } = useSidebarStore()
+
+	return (
+		<header className='h-16 bg-white flex items-center justify-between px-4 shadow z-10'>
+			<button
+				onClick={toggle}
+				className='md:hidden p-2 rounded hover:bg-gray-100'
+			>
+				<FaBars />
+			</button>
+
+			<HeaderUsuario />
+		</header>
+	)
+}
 
 export default Header
