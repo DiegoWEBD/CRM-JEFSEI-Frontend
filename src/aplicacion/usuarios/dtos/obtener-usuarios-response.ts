@@ -1,5 +1,5 @@
 import Usuario from '@/dominio/usuario/usuario'
 
-export type ObtenerUsuariosResponse = {
+export interface ObtenerUsuariosResponse {
 	data: Usuario[]
 }

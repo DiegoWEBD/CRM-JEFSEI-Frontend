@@ -6,6 +6,10 @@ import Titulo from '@/components/titulos/titulo'
 import PanelLayout from '../panel-layout/panel-layout'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelBody from '../panel-layout/panel-body/panel-body'
+import ProspectosAsignados from './cards/prospectos-asignados/prospectos-asignados'
+import PanelFooter from '../panel-layout/panel-footer/panel-footer'
+import PanelBodyMainContent from '../panel-layout/panel-body/panel-body-main-content/panel-body-main-content'
+import PanelBodySidebar from '../panel-layout/panel-body/panel-body-sidebar/panel-body-sidebar'
 
 const PanelEjecutivoComercial = () => {
 	return (
@@ -13,13 +17,15 @@ const PanelEjecutivoComercial = () => {
 			<Titulo>Panel central</Titulo>
 			<PanelLayout>
 				<PanelHeader>
-					<ProgresoMeta className='w-full lg:max-w-sm p-4' />
+					<ProgresoMeta className='w-full lg:max-w-sm' />
 				</PanelHeader>
 
 				<PanelBody>
-					<Calendario className='lg:col-span-3' />
+					<PanelBodyMainContent>
+						<Calendario />
+					</PanelBodyMainContent>
 
-					<div className='space-y-6'>
+					<PanelBodySidebar>
 						<Card className='space-y-4'>
 							<div>
 								<h2 className='font-semibold text-primary-highlight mb-2'>
@@ -44,8 +50,11 @@ const PanelEjecutivoComercial = () => {
 							</div>
 						</Card>
 						<PanelInformativo />
-					</div>
+					</PanelBodySidebar>
 				</PanelBody>
+				<PanelFooter>
+					<ProspectosAsignados />
+				</PanelFooter>
 			</PanelLayout>
 		</>
 	)

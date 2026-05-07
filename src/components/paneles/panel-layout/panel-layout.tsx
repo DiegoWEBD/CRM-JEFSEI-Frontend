@@ -5,7 +5,7 @@ type PanelLayoutProps = {
 }
 
 const PanelLayout = ({ children }: PanelLayoutProps) => {
-	return <div className='grid grid-cols-1 gap-6'>{children}</div>
+	return <div className='mx-auto grid max-w-7xl gap-4'>{children}</div>
 }
 
 export default PanelLayout
