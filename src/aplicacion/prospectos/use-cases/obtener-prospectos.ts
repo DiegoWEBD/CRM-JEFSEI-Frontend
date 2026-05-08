@@ -13,6 +13,5 @@ export const obtenerProspectos = async (
 
 	const response = await axiosClient.get(endpoint)
 	const data: ObtenerProspectosResponse = response.data
-
 	return data.data
 }

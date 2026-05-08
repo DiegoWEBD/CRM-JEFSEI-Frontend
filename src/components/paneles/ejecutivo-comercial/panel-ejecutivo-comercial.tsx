@@ -2,7 +2,7 @@ import Calendario from '@/components/calendario/calendario'
 import Card from '@/components/card/card'
 import PanelInformativo from '@/components/panel-central/panel-informativo/panel-informativo'
 import ProgresoMeta from '@/components/panel-central/progreso-meta'
-import Titulo from '@/components/titulos/titulo'
+import TituloPagina from '@/components/titulos/titulo-pagina'
 import PanelLayout from '../panel-layout/panel-layout'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelBody from '../panel-layout/panel-body/panel-body'
@@ -14,7 +14,7 @@ import PanelBodySidebar from '../panel-layout/panel-body/panel-body-sidebar/pane
 const PanelEjecutivoComercial = () => {
 	return (
 		<>
-			<Titulo>Panel central</Titulo>
+			<TituloPagina>Panel Comercial</TituloPagina>
 			<PanelLayout>
 				<PanelHeader>
 					<ProgresoMeta className='w-full lg:max-w-sm' />

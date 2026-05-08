@@ -1,28 +1,16 @@
-import Card from '@/components/card/card'
-import { useAuthStore } from '@/global_states/auth_store'
-import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
+import CardProspectos from '@/components/prospectos/card-prospectos/card-prospectos'
+import { useProspectos } from '@/hooks/prospectos/use-prospectos'
+import { useEffect } from 'react'
 
 const ProspectosAsignados = () => {
-	const { usuario } = useAuthStore()
-	const { prospectos } = useObtenerProspectos(usuario?.rut)
+	const { prospectos, cargarProspectos } = useProspectos()
+
+	useEffect(() => {
+		cargarProspectos()
+	}, [cargarProspectos])
 
 	return (
-		<Card>
-			{prospectos.map(prospecto => (
-				<div key={prospecto.nombre_riesgo}>
-					<div>
-						<p>{prospecto.nombre_riesgo}</p>
-						<p>{prospecto.nombre_contacto}</p>
-					</div>
-					<div>
-						<p>{prospecto.linea_negocio}</p>
-						<p>{prospecto.estado}</p>
-						<p>{prospecto.fecha_ultima_accion}</p>
-						<p>{prospecto.proxima_accion}</p>
-					</div>
-				</div>
-			))}
-		</Card>
+		<CardProspectos prospectos={prospectos} titulo='Prospectos asignados' />
 	)
 }
 

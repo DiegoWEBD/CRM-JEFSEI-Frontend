@@ -1,5 +1,6 @@
 import { MdGroups, MdOutlineDashboard } from 'react-icons/md'
 import NavElement from './nav-element'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 
 type NavProps = {
 	open?: boolean
@@ -15,12 +16,27 @@ const Nav = ({ open }: NavProps) => {
 					titulo='Inicio'
 					open={open}
 				/>
-				<NavElement
-					href='/personal'
-					icono={<MdGroups />}
-					titulo='Personal'
-					open={open}
-				/>
+				<AuthGuard
+					codigosRoles={[
+						'GERENTE_COMERCIAL, GERENTE_GENERAL, GERENTE_OPERACIONES',
+					]}
+				>
+					<NavElement
+						href='/personal'
+						icono={<MdGroups />}
+						titulo='Personal'
+						open={open}
+					/>
+				</AuthGuard>
+
+				<AuthGuard>
+					<NavElement
+						href='/prospectos'
+						icono={<MdGroups />}
+						titulo='Prospectos'
+						open={open}
+					/>
+				</AuthGuard>
 			</ul>
 		</nav>
 	)

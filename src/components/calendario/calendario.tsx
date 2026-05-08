@@ -1,13 +1,42 @@
+'use client'
+
 import Card from '../card/card'
 
-const Calendario = ({ className }: { className?: string }) => {
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+
+import esLocale from '@fullcalendar/core/locales/es'
+
+type CalendarioProps = {
+	className?: string
+}
+
+const Calendario = ({ className }: CalendarioProps) => {
 	return (
 		<div className={className}>
-			<Card className='w-full overflow-hidden p-1' padding={false}>
-				<iframe
-					src='https://calendar.google.com/calendar/embed?src=TU_CALENDAR_ID'
-					className='w-full h-100 md:h-125 lg:h-150'
-					loading='lazy'
+			<Card className='w-full overflow-hidden p-4'>
+				<FullCalendar
+					plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+					initialView='dayGridMonth'
+					locale={esLocale}
+					height='auto'
+					headerToolbar={{
+						left: 'prev,next today',
+						center: 'title',
+						right: 'dayGridMonth,timeGridWeek,timeGridDay',
+					}}
+					events={[
+						{
+							title: 'Reunión',
+							date: '2026-05-07',
+						},
+						{
+							title: 'Llamada',
+							date: '2026-05-08',
+						},
+					]}
 				/>
 			</Card>
 		</div>

@@ -9,7 +9,7 @@ type CardProps = {
 const Card = ({ children, className, padding = true }: CardProps) => {
 	return (
 		<div
-			className={`bg-card shadow-sm rounded-xl border border-border-primary ${padding ? 'px-3 py-4' : ''} ${className}`}
+			className={`${className} bg-card shadow-sm rounded-xl border border-border-primary ${padding ? 'px-3 py-4' : ''}`}
 		>
 			{children}
 		</div>

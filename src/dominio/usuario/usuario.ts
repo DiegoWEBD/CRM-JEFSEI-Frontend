@@ -1,3 +1,5 @@
+import Rol from '../rol/rol'
+
 export default class Usuario {
 	constructor(
 		public rut: string,
@@ -5,6 +7,6 @@ export default class Usuario {
 		public correo: string,
 		public telefono: string,
 		public sucursal: string,
-		public roles: string[],
+		public roles: Rol[],
 	) {}
 }

@@ -4,8 +4,6 @@
 	--background: white;
 	--foreground: oklch(20.8% 0.042 265.755);
 
-	--primary-highlight: oklch(44.3% 0.11 240.79);
-	--primary-highlight-hover: oklch(50% 0.134 242.749);
 	--secondary: oklch(20.8% 0.042 265.755);
 	--text-secondary: oklch(55.1% 0.027 264.364);
 	--text-normal: black;
@@ -23,14 +21,15 @@
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
 
-	--color-primary-highlight: var(--primary-highlight);
-	--color-primary-highlight-hover: var(--primary-highlight-hover);
+	--color-primary-highlight: var(--color-indigo-600);
+	--color-primary-highlight-hover: var(--color-indigo-500);
 	--color-secondary: var(--secondary);
 	--color-tertiary: var(--tertiary);
 	--color-subtitle: var(--text-secondary);
 	--color-border-primary: var(--border-primary);
 	--color-border-secondary: var(--border-secondary);
 	--color-card: var(--card);
+	--color-card-hover: var(--color-gray-100);
 	--color-normal: var(--text-normal);
 	--color-primary-text: var(--primary-text);
 }
@@ -40,4 +39,42 @@ body {
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
+}
+
+.fc .fc-button {
+	@apply bg-white text-normal border-0 shadow-none px-2 py-1 transition rounded-md;
+}
+
+.fc .fc-button:hover {
+	@apply bg-white text-primary-highlight-hover;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+	@apply bg-white text-primary-highlight;
+}
+
+.fc .fc-toolbar-title {
+	@apply text-xl;
+}
+
+.fc .fc-today-button {
+	@apply bg-primary-highlight text-white;
+}
+
+.fc .fc-prev-button,
+.fc .fc-next-button {
+	@apply rounded-lg;
+}
+
+.fc .fc-daygrid-event {
+	@apply border-0 rounded-md px-1 py-0.5 text-xs font-semibold bg-primary-highlight;
+}
+
+.fc .fc-button:focus,
+.fc .fc-button:active,
+.fc .fc-button-primary:focus,
+.fc .fc-button-primary:active {
+	outline: none !important;
+	box-shadow: none !important;
+	border: none !important;
 }

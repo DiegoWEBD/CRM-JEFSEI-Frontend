@@ -6,20 +6,21 @@ type RoleProtectedRoute = {
 	roles: string[]
 }
 
-const authRequiredRoutes: string[] = ['/', '/personal']
+/**
+ * Rutas públicas
+ * No requieren autenticación
+ */
+const publicRoutes: string[] = ['/login']
 
+/**
+ * Rutas protegidas por roles
+ */
 const roleProtectedRoutes: RoleProtectedRoute[] = [
 	{
 		path: '/personal',
-		roles: ['GERENTE_OPERACIONES', 'GERENTE_GENERAL'],
+		roles: ['GERENTE_OPERACIONES', 'GERENTE_GENERAL', 'GERENTE_COMERCIAL'],
 	},
 ]
-
-/**
- * Rutas públicas que no deberían ser accesibles
- * si el usuario ya está autenticado
- */
-const guestOnlyRoutes: string[] = ['/login']
 
 function getUserRoles(token: string): string[] {
 	try {
@@ -33,18 +34,8 @@ function getUserRoles(token: string): string[] {
 	}
 }
 
-function requiresAuthentication(pathname: string): boolean {
-	return authRequiredRoutes.some(route => {
-		if (route === '/') {
-			return pathname === '/'
-		}
-
-		return pathname.startsWith(route)
-	})
-}
-
-function isGuestOnlyRoute(pathname: string): boolean {
-	return guestOnlyRoutes.includes(pathname)
+function isPublicRoute(pathname: string): boolean {
+	return publicRoutes.includes(pathname)
 }
 
 function getRoleProtectedRoute(
@@ -65,30 +56,29 @@ export function proxy(req: NextRequest) {
 	const pathname = req.nextUrl.pathname
 
 	/**
-	 * Si el usuario ya está autenticado y entra a /login,
+	 * Si el usuario autenticado entra a /login,
 	 * redirigir al home
 	 */
-	if (isGuestOnlyRoute(pathname) && token) {
+	if (pathname === '/login' && token) {
 		return NextResponse.redirect(new URL('/', req.url))
 	}
 
 	/**
-	 * Si la ruta no requiere autenticación, dejar pasar
+	 * Permitir rutas públicas
 	 */
-	if (!requiresAuthentication(pathname)) {
+	if (isPublicRoute(pathname)) {
 		return NextResponse.next()
 	}
 
 	/**
-	 * Si requiere autenticación pero no hay token,
-	 * redirigir a login
+	 * Todo lo demás requiere autenticación
 	 */
 	if (!token) {
 		return NextResponse.redirect(new URL('/login', req.url))
 	}
 
 	/**
-	 * Validar autorización por roles si aplica
+	 * Validación de roles
 	 */
 	const protectedRoute = getRoleProtectedRoute(pathname)
 
@@ -96,7 +86,7 @@ export function proxy(req: NextRequest) {
 		const userRoles = getUserRoles(token)
 
 		if (!hasRequiredRole(userRoles, protectedRoute.roles)) {
-			return NextResponse.redirect(new URL('/unauthorized', req.url))
+			return NextResponse.redirect(new URL('/no-autorizado', req.url))
 		}
 	}
 
@@ -104,5 +94,14 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/', '/login', '/personal/:path*'],
+	matcher: [
+		/*
+		 * Excluir:
+		 * - api
+		 * - archivos estáticos
+		 * - imágenes
+		 * - favicon
+		 */
+		'/((?!api|_next/static|_next/image|favicon.ico).*)',
+	],
 }

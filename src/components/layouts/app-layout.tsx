@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuthStore } from '@/global_states/auth_store'
+import { useAuthStore } from '@/global_states/auth-store'
 import Header from '../header/header'
 import SideBar from '../sidebar/sidebar'
 import AuthGuard from './guards/auth-guard'
