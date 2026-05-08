@@ -1,26 +1,34 @@
 'use client'
 
-import { useAuthStore } from '@/global_states/auth_store'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useAuthStore } from '@/global_states/auth-store'
+import { ReactNode } from 'react'
 
-export default function AuthGuard({ children }: { children: React.ReactNode }) {
-	const { usuario, expiresAt, hydrated } = useAuthStore()
-	const router = useRouter()
+type AuthGuardProps = {
+	children: ReactNode
+	codigosRoles?: string[]
+}
 
-	useEffect(() => {
-		if (!hydrated) return
-
-		const now = Date.now()
-
-		if (!usuario || !expiresAt || now > expiresAt) {
-			router.replace('/login')
-		}
-	}, [usuario, expiresAt, hydrated, router])
+export default function AuthGuard({
+	children,
+	codigosRoles = [],
+}: AuthGuardProps) {
+	const { usuario, hydrated } = useAuthStore()
 
 	if (!hydrated) return null
 
-	if (!usuario || !expiresAt) return null
+	if (!usuario) {
+		return null
+	}
+
+	if (codigosRoles.length > 0) {
+		const tieneRol = usuario.roles.some(rol =>
+			codigosRoles.includes(rol.codigo),
+		)
+
+		if (!tieneRol) {
+			return null
+		}
+	}
 
 	return <>{children}</>
 }

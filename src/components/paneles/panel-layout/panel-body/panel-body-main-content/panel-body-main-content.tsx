@@ -5,7 +5,7 @@ type PanelBodyMainContentProps = {
 }
 
 const PanelBodyMainContent = ({ children }: PanelBodyMainContentProps) => {
-	return <div className='min-h-87.5'>{children}</div>
+	return <div className='min-h-87.5 min-w-0'>{children}</div>
 }
 
 export default PanelBodyMainContent

@@ -7,10 +7,10 @@ const PersonalPage = () => {
 	const { usuarios } = useObtenerUsuarios()
 
 	return (
-		<div>
+		<>
 			<h1>Gestión de Personal</h1>
 			<ContenedorUsuarios usuarios={usuarios} />
-		</div>
+		</>
 	)
 }
 

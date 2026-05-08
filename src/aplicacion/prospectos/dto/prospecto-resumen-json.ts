@@ -5,6 +5,6 @@ export default class ProspectoResumenJson {
 		public linea_negocio: string,
 		public estado: string,
 		public fecha_ultima_accion: string,
-		public proxima_accion: string,
+		public proxima_accion: string | null,
 	) {}
 }

@@ -6,10 +6,7 @@ type FormProps = {
 
 const Form = ({ children, className, ...props }: FormProps) => {
 	return (
-		<form
-			{...props}
-			className={`bg-white p-5 rounded-xl w-full sm:w-md shadow-lg ${className}`}
-		>
+		<form {...props} className={`flex flex-col gap-4 ${className}`}>
 			{children}
 		</form>
 	)

@@ -10,7 +10,7 @@ const SideBar = () => {
 		<>
 			{open && (
 				<div
-					className='fixed inset-0 bg-black/50 z-40 md:hidden'
+					className='fixed inset-0 bg-black/50 z-40 lg:hidden'
 					onClick={() => setOpen(false)}
 				/>
 			)}
@@ -23,7 +23,7 @@ const SideBar = () => {
 					
 					${open ? 'translate-x-0' : '-translate-x-full'}
 					
-					md:translate-x-0 md:static md:h-auto
+					lg:translate-x-0 lg:static lg:h-auto
 				`}
 			>
 				<div className='p-5 border-b border-border-secondary'>

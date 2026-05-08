@@ -1,15 +1,18 @@
 'use client'
 
 import PanelEjecutivoComercial from '@/components/paneles/ejecutivo-comercial/panel-ejecutivo-comercial'
-import { useAuthStore } from '@/global_states/auth_store'
+import { useAuthStore } from '@/global_states/auth-store'
+import { useCallback } from 'react'
 
 export default function Home() {
 	const { usuario } = useAuthStore()
-	return (
-		<>
-			{usuario?.roles.includes('Ejecutivo Comercial') && (
-				<PanelEjecutivoComercial />
-			)}
-		</>
+
+	const tieneRol = useCallback(
+		(codigoRol: string) => {
+			return usuario?.roles.find(rol => rol.codigo === codigoRol)
+		},
+		[usuario],
 	)
+
+	return <>{tieneRol('EJECUTIVO_COMERCIAL') && <PanelEjecutivoComercial />}</>
 }

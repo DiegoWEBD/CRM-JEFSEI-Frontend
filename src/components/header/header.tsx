@@ -8,10 +8,10 @@ const Header = () => {
 	const { toggle } = useSidebarStore()
 
 	return (
-		<header className='h-16 bg-white flex items-center justify-between px-4 shadow z-10'>
+		<header className='h-16 bg-white flex items-center justify-between lg:justify-end px-4 shadow z-10'>
 			<button
 				onClick={toggle}
-				className='md:hidden p-2 rounded hover:bg-gray-100'
+				className='lg:hidden p-2 rounded hover:bg-gray-100'
 			>
 				<FaBars />
 			</button>
