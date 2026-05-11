@@ -22,7 +22,7 @@ export const useProspectos = () => {
 	}, [])
 
 	const crearProspecto = useCallback(
-		(
+		async (
 			rut_riesgo: string | undefined,
 			nombre_riesgo: string,
 			nombre_contacto: string,
@@ -69,9 +69,14 @@ export const useProspectos = () => {
 				desea_ser_contactado,
 			}
 
-			registrarProspecto(request)
-				.catch((err: AxiosError) => setError(err.message))
-				.finally(() => setCargando(false))
+			try {
+				await registrarProspecto(request)
+			} catch (err) {
+				setError((err as AxiosError).message)
+				throw err
+			} finally {
+				setCargando(false)
+			}
 		},
 		[],
 	)

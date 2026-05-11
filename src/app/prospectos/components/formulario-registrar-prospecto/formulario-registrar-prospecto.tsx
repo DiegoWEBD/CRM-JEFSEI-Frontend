@@ -1,14 +1,19 @@
-import Card from '@/components/card/card'
-import CardHeader from '@/components/card/card-header/card-header'
 import { useProspectos } from '@/hooks/prospectos/use-prospectos'
 import { useFormik } from 'formik'
-import { FiUserPlus } from 'react-icons/fi'
 import { FormularioInitialValues } from '../dto/formulario-initial-values'
 import Form from '@/components/forms/form/form'
 import Input from '@/components/forms/input/input'
 import Button from '@/components/botones/button'
 
-const FormularioRegistrarProspecto = () => {
+type FormularioRegistrarProspectoProps = {
+	onProspectoRegistrado?: () => void
+	onClose?: () => void
+}
+
+const FormularioRegistrarProspecto = ({
+	onProspectoRegistrado,
+	onClose,
+}: FormularioRegistrarProspectoProps) => {
 	const { crearProspecto, cargando } = useProspectos()
 	const formik = useFormik<FormularioInitialValues>({
 		initialValues: {
@@ -33,9 +38,8 @@ const FormularioRegistrarProspecto = () => {
 			metros_cuadrados: undefined,
 			desea_ser_contactado: '',
 		},
-		onSubmit: values => {
-			console.log(values)
-			crearProspecto(
+		onSubmit: async values => {
+			await crearProspecto(
 				values.rut_riesgo,
 				values.nombre_riesgo,
 				values.nombre_contacto,
@@ -57,13 +61,21 @@ const FormularioRegistrarProspecto = () => {
 				values.metros_cuadrados,
 				values.desea_ser_contactado == 'Sí',
 			)
+
+			onProspectoRegistrado?.()
+			onClose?.()
 		},
 	})
 
 	return (
-		<div className='h-[80vh] overflow-auto border-0 p-3'>
-			<CardHeader title='Registrar prospecto' icon={<FiUserPlus />} primary />
-			<Form onSubmit={formik.handleSubmit}>
+		<div>
+			<p className='text-sm text-gray-500 mb-4'>
+				Completa los datos del prospecto para crear un nuevo registro.
+			</p>
+			<Form
+				onSubmit={formik.handleSubmit}
+				className='!grid !grid-cols-1 md:!grid-cols-2 !gap-4'
+			>
 				<Input
 					name='rut_riesgo'
 					label='Rut riesgo'
@@ -119,6 +131,7 @@ const FormularioRegistrarProspecto = () => {
 					label='Observaciones'
 					onChange={formik.handleChange}
 					value={formik.values.observaciones}
+					className='md:col-span-2'
 				/>
 
 				<Input
@@ -212,7 +225,11 @@ const FormularioRegistrarProspecto = () => {
 					value={formik.values.desea_ser_contactado}
 				/>
 
-				<Button type='submit'>Registrar</Button>
+				<div className='md:col-span-2 flex justify-end'>
+					<Button type='submit'>
+						{cargando ? 'Registrando...' : 'Registrar'}
+					</Button>
+				</div>
 			</Form>
 		</div>
 	)
