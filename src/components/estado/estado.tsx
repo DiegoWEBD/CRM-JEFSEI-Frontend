@@ -1,9 +1,12 @@
+import { twMerge } from 'tailwind-merge'
+
 type EstadoProps = {
 	children: string
 	fondoTailwind?: string
 	textoTailwind?: string
 	bordeTailwind?: string
 	conBorde?: boolean
+	className?: string
 }
 
 const Estado = ({
@@ -12,10 +15,21 @@ const Estado = ({
 	textoTailwind,
 	bordeTailwind,
 	conBorde,
+	className,
 }: EstadoProps) => {
+	const fondo = fondoTailwind || 'bg-background-estado-default'
+	const texto = textoTailwind || 'text-text-estado-default'
+	const borde = bordeTailwind || 'border-border-estado-default'
+
 	return (
 		<p
-			className={`${fondoTailwind} ${textoTailwind} ${bordeTailwind} ${conBorde && 'border'} text-xs rounded-full py-1 px-3 h-fit w-fit`}
+			className={twMerge(
+				'rounded-lg py-1 px-3 h-fit w-fit',
+				className,
+				fondo,
+				texto,
+				conBorde ? `border ${borde}` : '',
+			)}
 		>
 			{children}
 		</p>

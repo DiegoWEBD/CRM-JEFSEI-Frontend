@@ -1,5 +1,6 @@
-import ProspectoResumenJson from '@/aplicacion/prospectos/dto/prospecto-resumen-json'
+import ProspectoResumenJson from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import Estado from '@/components/estado/estado'
+import Link from 'next/link'
 import { CiCalendar } from 'react-icons/ci'
 
 type CardProspectosItemProps = {
@@ -16,9 +17,9 @@ const CardProspectosItem = ({ prospecto }: CardProspectosItemProps) => {
 	})
 
 	return (
-		<div
-			key={prospecto.nombre_riesgo}
-			className='flex flex-col gap-y-3 border-t border-border-primary py-3 transition-all hover:bg-card-hover hover:cursor-pointer'
+		<Link
+			href={`/prospectos/${prospecto.id}`}
+			className='flex flex-col gap-y-3 border-t border-border-primary py-3 transition-all hover:bg-card-hover '
 		>
 			<div>
 				<div className='flex gap-2 justify-between'>
@@ -30,6 +31,7 @@ const CardProspectosItem = ({ prospecto }: CardProspectosItemProps) => {
 						bordeTailwind='border-emerald-400'
 						textoTailwind='text-emerald-600'
 						conBorde
+						className='text-xs'
 					>
 						{prospecto.estado}
 					</Estado>
@@ -51,7 +53,7 @@ const CardProspectosItem = ({ prospecto }: CardProspectosItemProps) => {
 					</div>
 				)}
 			</div>
-		</div>
+		</Link>
 	)
 }
 

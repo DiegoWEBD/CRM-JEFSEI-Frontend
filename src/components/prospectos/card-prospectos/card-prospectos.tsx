@@ -1,4 +1,4 @@
-import ProspectoResumenJson from '@/aplicacion/prospectos/dto/prospecto-resumen-json'
+import ProspectoResumenJson from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import Card from '@/components/card/card'
 import CardHeader from '@/components/card/card-header/card-header'
 import { TbUsers } from 'react-icons/tb'

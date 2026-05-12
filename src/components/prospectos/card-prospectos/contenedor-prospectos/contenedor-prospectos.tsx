@@ -1,4 +1,4 @@
-import ProspectoResumenJson from '@/aplicacion/prospectos/dto/prospecto-resumen-json'
+import ProspectoResumenJson from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import CardProspectosItem from './card-prospectos-item/card-prospectos-item'
 
 type ContenedorProspectosProps = {

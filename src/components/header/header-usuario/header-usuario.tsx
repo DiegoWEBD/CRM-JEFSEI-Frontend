@@ -32,7 +32,7 @@ const HeaderUsuario = () => {
 			<button
 				type='button'
 				onClick={() => setMenuAbierto(actual => !actual)}
-				className='flex gap-2 items-center py-1 px-4 rounded-xl hover:bg-slate-100 transition-all border border-border-primary hover:cursor-pointer'
+				className='text-sm flex gap-2 items-center py-1 px-4 rounded-xl hover:bg-slate-100 transition-all border border-border-primary hover:cursor-pointer'
 			>
 				<InicialesUsuario nombre={usuario.nombre} primary />
 				<div className='text-left'>

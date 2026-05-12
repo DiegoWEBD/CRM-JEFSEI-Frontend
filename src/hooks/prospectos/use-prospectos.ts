@@ -1,5 +1,6 @@
-import ProspectoResumenJson from '@/aplicacion/prospectos/dto/prospecto-resumen-json'
-import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos'
+import ProspectoResumenJson from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
+import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/obtener-prospectos'
+
 import { RegistrarProspectoRequest } from '@/aplicacion/prospectos/use-cases/registrar-prospecto/dto/registrar-prospecto-request'
 import { registrarProspecto } from '@/aplicacion/prospectos/use-cases/registrar-prospecto/registrar-prospecto'
 import { AxiosError } from 'axios'

@@ -14,6 +14,8 @@ const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 	const pathname = usePathname()
 	const { setOpen } = useSidebarStore()
 
+	const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
+
 	return (
 		<Link
 			href={href}
@@ -21,7 +23,7 @@ const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 			onClick={() => setOpen(false)}
 		>
 			<span
-				className={`text-xl ${pathname === href ? 'text-primary-highlight' : undefined}`}
+				className={`text-xl ${isActive ? 'text-primary-highlight' : undefined}`}
 			>
 				{icono}
 			</span>
