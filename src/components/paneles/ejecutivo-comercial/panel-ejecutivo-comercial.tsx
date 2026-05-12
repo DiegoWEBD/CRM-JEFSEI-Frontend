@@ -6,10 +6,10 @@ import TituloPagina from '@/components/titulos/titulo-pagina'
 import PanelLayout from '../panel-layout/panel-layout'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelBody from '../panel-layout/panel-body/panel-body'
-import ProspectosAsignados from './cards/prospectos-asignados/prospectos-asignados'
 import PanelFooter from '../panel-layout/panel-footer/panel-footer'
 import PanelBodyMainContent from '../panel-layout/panel-body/panel-body-main-content/panel-body-main-content'
 import PanelBodySidebar from '../panel-layout/panel-body/panel-body-sidebar/panel-body-sidebar'
+import ProspectosAsignados from '@/components/paneles/ejecutivo-comercial/cards/prospectos-asignados/prospectos-asignados'
 
 const PanelEjecutivoComercial = () => {
 	return (

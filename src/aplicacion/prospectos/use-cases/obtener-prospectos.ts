@@ -11,7 +11,7 @@ export const obtenerProspectos = async (
 		endpoint = `${endpoint}?rut_usuario=${rutUsuario}`
 	}
 
-	const response = await axiosClient.get(endpoint)
-	const data: ObtenerProspectosResponse = response.data
-	return data.data
+	const axiosResponse = await axiosClient.get(endpoint)
+	const response: ObtenerProspectosResponse = axiosResponse.data
+	return response.data
 }

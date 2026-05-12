@@ -1,5 +1,6 @@
 export default class ProspectoResumenJson {
 	constructor(
+		public id: number,
 		public nombre_riesgo: string,
 		public nombre_contacto: string,
 		public linea_negocio: string,
