@@ -1,5 +1,3 @@
-'use client'
-
 import ProspectoResumenJson from '@/aplicacion/prospectos/dto/prospecto-resumen-json'
 import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos'
 import { RegistrarProspectoRequest } from '@/aplicacion/prospectos/use-cases/registrar-prospecto/dto/registrar-prospecto-request'
@@ -23,26 +21,26 @@ export const useProspectos = () => {
 
 	const crearProspecto = useCallback(
 		async (
-			rut_riesgo: string | undefined,
+			rut_riesgo: string | null,
 			nombre_riesgo: string,
 			nombre_contacto: string,
 			telefono_contacto: string,
-			correo_contacto: string | undefined,
+			correo_contacto: string | null,
 			direccion: string,
 			id_comuna: number,
-			observaciones: string | undefined,
+			observaciones: string | null,
 			id_linea_negocio: number,
-			cargo_contacto: string | undefined,
-			tiene_locales_comerciales: boolean | undefined,
-			uso_del_condominio: string | undefined,
-			numero_pisos: number | undefined,
-			numero_torres: number | undefined,
-			cantidad_departamentos: number | undefined,
-			cantidad_subterraneos: number | undefined,
-			tiene_piscina: boolean | undefined,
-			year_construccion: number | undefined,
-			metros_cuadrados: number | undefined,
-			desea_ser_contactado: boolean | undefined,
+			cargo_contacto: string | null,
+			tiene_locales_comerciales: boolean | null,
+			uso_del_condominio: string | null,
+			numero_pisos: number | null,
+			numero_torres: number | null,
+			cantidad_departamentos: number | null,
+			cantidad_subterraneos: number | null,
+			tiene_piscina: boolean | null,
+			year_construccion: number | null,
+			metros_cuadrados: number | null,
+			desea_ser_contactado: boolean | null,
 		) => {
 			setCargando(true)
 

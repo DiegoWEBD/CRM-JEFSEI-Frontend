@@ -32,6 +32,8 @@
 	--color-card-hover: var(--color-gray-100);
 	--color-normal: var(--text-normal);
 	--color-primary-text: var(--primary-text);
+
+	--color-error: var(--color-red-500);
 }
 
 body {
