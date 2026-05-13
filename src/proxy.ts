@@ -28,7 +28,7 @@ function getUserRoles(token: string): string[] {
 			Buffer.from(token.split('.')[1], 'base64').toString(),
 		)
 
-		return payload.roles ?? []
+		return payload.codigo_roles ?? []
 	} catch {
 		return []
 	}

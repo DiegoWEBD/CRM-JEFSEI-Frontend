@@ -1,15 +1,18 @@
 import { ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 type CardProps = {
 	children: ReactNode
 	className?: string
-	padding?: boolean
 }
 
-const Card = ({ children, className, padding = true }: CardProps) => {
+const Card = ({ children, className }: CardProps) => {
 	return (
 		<div
-			className={`${className} bg-card shadow-sm rounded-xl border border-border-primary ${padding ? 'px-3 py-4' : ''}`}
+			className={twMerge(
+				'bg-card shadow-sm rounded-xl border border-border-primary px-3 py-4',
+				className,
+			)}
 		>
 			{children}
 		</div>

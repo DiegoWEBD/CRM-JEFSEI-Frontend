@@ -1,7 +1,8 @@
+import { registrarProspecto } from '@/aplicacion/prospectos/use-cases/registrar-prospecto/registrar-prospecto'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { normalizarTexto } from '@/utils/normalizar-texto'
 import { useFormik } from 'formik'
-import { useProspectos } from './use-prospectos'
+import { useState } from 'react'
 import * as Yup from 'yup'
 
 type UseFormularioRegistrarProspecto = {
@@ -13,7 +14,7 @@ export const useFormularioRegistrarProspecto = ({
 	onClose,
 	onProspectoRegistrado,
 }: UseFormularioRegistrarProspecto = {}) => {
-	const { crearProspecto, cargando } = useProspectos()
+	const [cargando, setCargando] = useState(false)
 
 	const validationSchema = Yup.object({
 		nombre_riesgo: Yup.string().required('El nombre del riesgo es obligatorio'),
@@ -69,7 +70,9 @@ export const useFormularioRegistrarProspecto = ({
 			desea_ser_contactado: '',
 		},
 		onSubmit: async values => {
-			await crearProspecto(
+			setCargando(true)
+
+			await registrarProspecto(
 				values.rut_riesgo,
 				values.nombre_riesgo,
 				values.nombre_contacto,
@@ -92,6 +95,7 @@ export const useFormularioRegistrarProspecto = ({
 				normalizarTexto(values.desea_ser_contactado) == 'si',
 			)
 
+			setCargando(false)
 			onProspectoRegistrado?.()
 			onClose?.()
 		},

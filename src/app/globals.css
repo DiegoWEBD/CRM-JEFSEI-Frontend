@@ -23,9 +23,11 @@
 
 	--color-primary-highlight: var(--color-indigo-600);
 	--color-primary-highlight-hover: var(--color-indigo-500);
+	--color-primary-highlight-light: var(--color-indigo-100);
+
 	--color-secondary: var(--secondary);
 	--color-tertiary: var(--tertiary);
-	--color-subtitle: var(--text-secondary);
+	--color-subtitle: var(--color-gray-500);
 	--color-border-primary: var(--border-primary);
 	--color-border-secondary: var(--border-secondary);
 	--color-card: var(--card);
@@ -34,13 +36,19 @@
 	--color-primary-text: var(--primary-text);
 
 	--color-error: var(--color-red-500);
+
+	--color-background-estado-default: var(--color-slate-200);
+	--color-text-estado-default: var(--color-slate-700);
+	--color-border-estado-default: var(--color-slate-300);
+
+	--color-skeleton: var(--color-gray-200);
 }
 
 body {
 	background: var(--background);
 	color: var(--foreground);
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
+	font-family: var(--font-sans);
+	font-size: 16px;
 }
 
 .fc .fc-button {

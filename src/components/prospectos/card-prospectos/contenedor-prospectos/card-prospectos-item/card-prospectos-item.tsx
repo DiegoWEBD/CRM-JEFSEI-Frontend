@@ -1,5 +1,7 @@
-import ProspectoResumenJson from '@/aplicacion/prospectos/dto/prospecto-resumen-json'
+import ProspectoResumenJson from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import Estado from '@/components/estado/estado'
+import { normalizarFechaTexto } from '@/utils/normalizar-fecha-texto'
+import Link from 'next/link'
 import { CiCalendar } from 'react-icons/ci'
 
 type CardProspectosItemProps = {
@@ -9,28 +11,19 @@ type CardProspectosItemProps = {
 const CardProspectosItem = ({ prospecto }: CardProspectosItemProps) => {
 	const fechaUltimaAccion = new Date(prospecto.fecha_ultima_accion)
 
-	const fechaTexto = fechaUltimaAccion.toLocaleDateString('es-CL', {
-		day: '2-digit',
-		month: 'short',
-		year: 'numeric',
-	})
+	const fechaTexto = normalizarFechaTexto(fechaUltimaAccion)
 
 	return (
-		<div
-			key={prospecto.nombre_riesgo}
-			className='flex flex-col gap-y-3 border-t border-border-primary py-3 transition-all hover:bg-card-hover hover:cursor-pointer'
+		<Link
+			href={`/prospectos/${prospecto.id}`}
+			className='flex flex-col gap-y-3 border-t border-border-primary py-3 transition-all hover:bg-card-hover '
 		>
 			<div>
 				<div className='flex gap-2 justify-between'>
 					<p className='text-primary-highlight font-semibold max-w-2/3'>
 						{prospecto.nombre_riesgo}
 					</p>
-					<Estado
-						fondoTailwind='bg-emerald-100'
-						bordeTailwind='border-emerald-400'
-						textoTailwind='text-emerald-600'
-						conBorde
-					>
+					<Estado color={prospecto.color_estado} conBorde className='text-xs'>
 						{prospecto.estado}
 					</Estado>
 				</div>
@@ -51,7 +44,7 @@ const CardProspectosItem = ({ prospecto }: CardProspectosItemProps) => {
 					</div>
 				)}
 			</div>
-		</div>
+		</Link>
 	)
 }
 
