@@ -17,7 +17,9 @@ export default async function AuthGuard({
 	}
 
 	if (codigosRoles.length > 0) {
-		const tieneRol = usuario.roles.some(rol => codigosRoles.includes(rol))
+		const tieneRol = usuario.codigo_roles.some(rol =>
+			codigosRoles.includes(rol),
+		)
 
 		if (!tieneRol) {
 			return null
