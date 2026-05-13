@@ -6,7 +6,9 @@ const HeaderUsuarioServer = async () => {
 
 	if (!session) return null
 
-	return <HeaderUsuarioClient nombre={session.sub} roles={session.roles} />
+	return (
+		<HeaderUsuarioClient nombre={session.nombre} roles={session.nombre_roles} />
+	)
 }
 
 export default HeaderUsuarioServer

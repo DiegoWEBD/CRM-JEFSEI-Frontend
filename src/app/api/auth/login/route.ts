@@ -12,8 +12,6 @@ export async function POST(req: Request) {
 			Buffer.from(response.access_token.split('.')[1], 'base64').toString(),
 		)
 
-		console.log(payload)
-
 		// exp viene en segundos
 		const nowInSeconds = Math.floor(Date.now() / 1000)
 

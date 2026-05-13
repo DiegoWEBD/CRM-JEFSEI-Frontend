@@ -24,7 +24,7 @@ export async function hasRole(role: string) {
 
 	if (!session) return false
 
-	return session.roles.includes(role)
+	return session.codigo_roles.includes(role)
 }
 
 export async function hasSomeRole(roles: string[]) {
@@ -32,5 +32,5 @@ export async function hasSomeRole(roles: string[]) {
 
 	if (!session) return false
 
-	return session.roles.some(role => roles.includes(role))
+	return session.codigo_roles.some(role => roles.includes(role))
 }

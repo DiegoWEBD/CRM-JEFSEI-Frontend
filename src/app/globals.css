@@ -40,6 +40,8 @@
 	--color-background-estado-default: var(--color-slate-200);
 	--color-text-estado-default: var(--color-slate-700);
 	--color-border-estado-default: var(--color-slate-300);
+
+	--color-skeleton: var(--color-gray-200);
 }
 
 body {

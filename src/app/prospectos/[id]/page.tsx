@@ -7,7 +7,11 @@ import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
 import PanelBodyMainContent from '@/components/paneles/panel-layout/panel-body/panel-body-main-content/panel-body-main-content'
 import PanelBodySidebar from '@/components/paneles/panel-layout/panel-body/panel-body-sidebar/panel-body-sidebar'
 import InformacionProspecto from './components/informacion-prospecto/informacion-prospecto'
-import HistorialInteracciones from './components/historial-interacciones/historial-interacciones'
+import HistorialEstados from './components/historial-estados/historial-estados'
+import { Suspense } from 'react'
+import PaginaProspectoHeaderSkeleton from './components/pagina-prospecto-header/pagina-prospecto-header-skeleton'
+import InformacionProspectoSkeleton from './components/informacion-prospecto/informacion-prospecto-skeleton'
+import HistorialEstadosSkeleton from './components/historial-estados/historial-estados-skeleton'
 
 type ProspectoPageProps = {
 	params: Promise<{
@@ -21,20 +25,24 @@ export default async function ProspectoPage({ params }: ProspectoPageProps) {
 	const cookieStore = await cookies()
 	const cookieHeader = cookieStore.toString()
 
-	const prospecto = await obtenerProspecto(Number(id), cookieHeader)
+	const prospectoPromise = obtenerProspecto(Number(id), cookieHeader)
 
 	return (
 		<PanelLayout>
 			<PanelHeader>
-				<PaginaProspectoHeader prospecto={prospecto} />
+				<Suspense fallback={<PaginaProspectoHeaderSkeleton />}>
+					<PaginaProspectoHeader prospectoPromise={prospectoPromise} />
+				</Suspense>
 			</PanelHeader>
 
 			<PanelBody>
 				<PanelBodyMainContent>
-					<InformacionProspecto prospecto={prospecto} />
-					<HistorialInteracciones
-						historialEstados={prospecto.historial_estados}
-					/>
+					<Suspense fallback={<InformacionProspectoSkeleton />}>
+						<InformacionProspecto prospectoPromise={prospectoPromise} />
+					</Suspense>
+					<Suspense fallback={<HistorialEstadosSkeleton />}>
+						<HistorialEstados prospectoPromise={prospectoPromise} />
+					</Suspense>
 				</PanelBodyMainContent>
 
 				<PanelBodySidebar>

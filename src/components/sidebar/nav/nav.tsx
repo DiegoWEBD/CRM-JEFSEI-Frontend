@@ -7,12 +7,12 @@ type NavProps = {
 }
 
 const Nav = async ({ open }: NavProps) => {
-	const usuario = await getSession()
+	const session = await getSession()
 
 	const tieneRolPersonal =
-		usuario?.roles.some(rol =>
+		session?.codigo_roles.some(codigo =>
 			['GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'GERENTE_OPERACIONES'].includes(
-				rol,
+				codigo,
 			),
 		) ?? false
 
@@ -35,7 +35,7 @@ const Nav = async ({ open }: NavProps) => {
 					/>
 				)}
 
-				{usuario && (
+				{session && (
 					<NavElement
 						href='/prospectos'
 						icono={<MdGroups />}

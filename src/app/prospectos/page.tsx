@@ -1,23 +1,20 @@
-import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/obtener-prospectos'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import CardProspectos from '@/components/prospectos/card-prospectos/card-prospectos'
+import CardProspectosSkeleton from '@/components/prospectos/card-prospectos/card-prospectos-skeleton'
 import TituloPagina from '@/components/titulos/titulo-pagina'
+import { Suspense } from 'react'
 import ComponenteRegistrarProspecto from './components/componente-registrar-prospecto/componente-registrar-prospecto'
-import { cookies } from 'next/headers'
 
-const ProspectosPage = async () => {
-	const cookieStore = await cookies()
-	const prospectos = await obtenerProspectos({
-		cookie: cookieStore.toString(),
-	})
-
+const ProspectosPage = () => {
 	return (
 		<>
 			<TituloPagina>Prospectos</TituloPagina>
 
 			<PanelLayout>
 				<ComponenteRegistrarProspecto />
-				<CardProspectos prospectos={prospectos} />
+				<Suspense fallback={<CardProspectosSkeleton />}>
+					<CardProspectos />
+				</Suspense>
 			</PanelLayout>
 		</>
 	)

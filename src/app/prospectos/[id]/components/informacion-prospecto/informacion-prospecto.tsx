@@ -5,10 +5,14 @@ import { FiPhone, FiUser } from 'react-icons/fi'
 import ItemInformacion from './item-informacion/item-informacion'
 
 type InformacionProspectoProps = {
-	prospecto: ProspectoJson
+	prospectoPromise: Promise<ProspectoJson>
 }
 
-const InformacionProspecto = ({ prospecto }: InformacionProspectoProps) => {
+const InformacionProspecto = async ({
+	prospectoPromise,
+}: InformacionProspectoProps) => {
+	const prospecto = await prospectoPromise
+
 	return (
 		<Card>
 			<CardHeader title='Información del Prospecto' icon={<FiUser />} primary />

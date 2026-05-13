@@ -6,6 +6,7 @@ export const obtenerProspecto = async (
 	id: number,
 	cookie?: string,
 ): Promise<ProspectoJson> => {
+	await new Promise(resolve => setTimeout(resolve, 3000))
 	const axiosResponse = await axiosClient.get(`/prospectos/${id}`, {
 		headers: {
 			Cookie: cookie,

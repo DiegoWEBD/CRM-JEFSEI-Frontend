@@ -8,6 +8,7 @@ export const obtenerUsuarios = async (cookie?: string): Promise<Usuario[]> => {
 			Cookie: cookie,
 		},
 	})
+
 	const data: ObtenerUsuariosResponse = response.data
 	return data.data
 }

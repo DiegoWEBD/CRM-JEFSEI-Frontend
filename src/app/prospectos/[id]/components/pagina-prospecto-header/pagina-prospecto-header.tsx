@@ -8,10 +8,14 @@ import { FaRegUser } from 'react-icons/fa6'
 import { FiBriefcase } from 'react-icons/fi'
 
 type PaginaProspectoHeaderProps = {
-	prospecto: ProspectoJson
+	prospectoPromise: Promise<ProspectoJson>
 }
 
-const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
+const PaginaProspectoHeader = async ({
+	prospectoPromise,
+}: PaginaProspectoHeaderProps) => {
+	const prospecto = await prospectoPromise
+
 	const ultimoEstado =
 		prospecto.historial_estados[prospecto.historial_estados.length - 1]
 

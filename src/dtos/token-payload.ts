@@ -1,5 +1,7 @@
 export type TokenPayload = {
-	sub: string
+	rut: string
+	nombre: string
 	exp: number
-	roles: string[]
+	codigo_roles: string[]
+	nombre_roles: string[]
 }
