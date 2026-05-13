@@ -10,9 +10,9 @@ type HistorialInteraccionesProps = {
 const HistorialInteracciones = ({
 	historialEstados,
 }: HistorialInteraccionesProps) => {
-	historialEstados.forEach(historial => {
+	/*historialEstados.forEach(historial => {
 		console.log(historial)
-	})
+	})*/
 
 	return (
 		<Card>

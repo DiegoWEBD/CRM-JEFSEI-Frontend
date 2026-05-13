@@ -1,6 +1,4 @@
-'use client'
-
-import { useAuthStore } from '@/global_states/auth-store'
+import { getSession } from '@/lib/auth'
 import { ReactNode } from 'react'
 
 type AuthGuardProps = {
@@ -8,22 +6,18 @@ type AuthGuardProps = {
 	codigosRoles?: string[]
 }
 
-export default function AuthGuard({
+export default async function AuthGuard({
 	children,
 	codigosRoles = [],
 }: AuthGuardProps) {
-	const { usuario, hydrated } = useAuthStore()
-
-	if (!hydrated) return null
+	const usuario = await getSession()
 
 	if (!usuario) {
 		return null
 	}
 
 	if (codigosRoles.length > 0) {
-		const tieneRol = usuario.roles.some(rol =>
-			codigosRoles.includes(rol.codigo),
-		)
+		const tieneRol = usuario.roles.some(rol => codigosRoles.includes(rol))
 
 		if (!tieneRol) {
 			return null

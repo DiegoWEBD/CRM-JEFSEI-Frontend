@@ -1,7 +1,8 @@
 export interface HistorialEstadoJson {
 	estado: string
-	fecha_registringo: Date
+	color: string
+	fecha_registro: Date
 	dias_limite: number
 	dias_transcurridos: number
-	siguiente_estado?: string
+	proxima_accion?: string
 }

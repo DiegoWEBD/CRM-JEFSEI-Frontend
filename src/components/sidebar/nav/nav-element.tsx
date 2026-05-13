@@ -1,3 +1,5 @@
+'use client'
+
 import { useSidebarStore } from '@/global_states/sidebar-store'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -12,6 +14,7 @@ type NavElementProps = {
 
 const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 	const pathname = usePathname()
+
 	const { setOpen } = useSidebarStore()
 
 	const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
@@ -27,6 +30,7 @@ const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 			>
 				{icono}
 			</span>
+
 			{open && <span>{titulo}</span>}
 		</Link>
 	)

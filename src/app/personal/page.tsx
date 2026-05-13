@@ -1,10 +1,12 @@
-'use client'
-
-import { useObtenerUsuarios } from '@/hooks/usuarios/use-obtener-usuarios'
+import { obtenerUsuarios } from '@/aplicacion/usuarios/use-cases/obtener-usuarios'
 import ContenedorUsuarios from './components/contenedor-usuarios'
+import { cookies } from 'next/headers'
 
-const PersonalPage = () => {
-	const { usuarios } = useObtenerUsuarios()
+const PersonalPage = async () => {
+	const cookieStore = await cookies()
+	const cookieHeader = cookieStore.toString()
+
+	const usuarios = await obtenerUsuarios(cookieHeader)
 
 	return (
 		<>

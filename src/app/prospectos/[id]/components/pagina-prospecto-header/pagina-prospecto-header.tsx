@@ -13,7 +13,7 @@ type PaginaProspectoHeaderProps = {
 
 const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 	const ultimoEstado =
-		prospecto.historial_estados[prospecto.historial_estados.length - 1].estado
+		prospecto.historial_estados[prospecto.historial_estados.length - 1]
 
 	return (
 		<Card className='flex flex-col md:flex-row gap-4 py-8 px-6'>
@@ -42,8 +42,12 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 			</div>
 
 			<div className='w-full flex flex-col md:items-end'>
-				<Estado conBorde className='text-sm font-semibold'>
-					{ultimoEstado}
+				<Estado
+					conBorde
+					className='text-sm font-semibold'
+					color={ultimoEstado.color}
+				>
+					{ultimoEstado.estado}
 				</Estado>
 				<div className='space-y-1 mt-3'>
 					<div className='text-subtitle text-sm flex gap-2 items-center'>
