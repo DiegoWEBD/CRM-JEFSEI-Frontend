@@ -51,15 +51,14 @@ const PaginaProspectoHeader = async ({
 					className='text-sm font-semibold'
 					color={ultimoEstado.color}
 				>
-					{ultimoEstado.estado}
+					{ultimoEstado.estado_actual}
 				</Estado>
 				<div className='space-y-1 mt-3'>
 					<div className='text-subtitle text-sm flex gap-2 items-center'>
 						<BsPersonWorkspace size={'.9rem'} />
 						<p>Comercial:</p>
 						<p className='text-normal'>
-							{prospecto.evaluacion_riesgo?.ej_comercial?.nombre ||
-								'No asignado'}
+							{prospecto.ejecutivo_comercial?.nombre || 'No asignado'}
 						</p>
 					</div>
 
@@ -67,8 +66,7 @@ const PaginaProspectoHeader = async ({
 						<BsPersonWorkspace size={'.9rem'} />
 						<p>Evaluación:</p>
 						<p className='text-normal'>
-							{prospecto.evaluacion_riesgo?.ej_evaluacion?.nombre ||
-								'No asignado'}
+							{prospecto.ejecutivo_evaluacion?.nombre || 'No asignado'}
 						</p>
 					</div>
 				</div>

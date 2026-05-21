@@ -6,6 +6,8 @@ export default class ProspectoResumenJson {
 		public linea_negocio: string,
 		public estado: string,
 		public color_estado: string,
+		public dias_limite: number,
+		public dias_transcurridos: number,
 		public fecha_ultima_accion: string,
 		public proxima_accion: string | null,
 	) {}

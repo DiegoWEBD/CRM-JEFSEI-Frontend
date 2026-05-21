@@ -1,5 +1,5 @@
-import { ProspectoJson } from './prospecto-json'
+import { ProspectoCondominioJson } from './prospecto-condominio-json'
 
 export interface ObtenerProspectoResponse {
-	prospecto: ProspectoJson
+	prospecto: ProspectoCondominioJson
 }
