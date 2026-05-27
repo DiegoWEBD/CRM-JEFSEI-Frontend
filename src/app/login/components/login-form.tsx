@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/botones/button'
+import Button from '@/components/button/button'
 import Form from '@/components/forms/form/form'
 import Input from '@/components/forms/input/input'
 import { useAuth } from '@/hooks/auth/use-auth'
@@ -9,6 +9,9 @@ import LoginFormHeader from './login-form-header'
 import FormError from '@/components/forms/form-error/form-error'
 import Loader from '@/components/loaders/loder'
 import Card from '@/components/card/card'
+import CardContent from '@/components/card/card-content/card-content'
+import CardFooter from '@/components/card/card-footer/card-footer'
+import Label from '@/components/forms/label/label'
 
 const LoginForm = () => {
 	const { cargando, error, login } = useAuth()
@@ -25,24 +28,30 @@ const LoginForm = () => {
 	}
 
 	return (
-		<Card className='w-full sm:w-md'>
+		<Card className='w-110'>
 			<Form onSubmit={formik.handleSubmit}>
 				<LoginFormHeader />
-				<Input
-					name='rut'
-					label='Rut'
-					onChange={formik.handleChange}
-					value={formik.values.rut}
-				/>
-				<Input
-					name='password'
-					label='Contraseña'
-					type='password'
-					onChange={formik.handleChange}
-					value={formik.values.password}
-				/>
-				{error && <FormError>{error}</FormError>}
-				<Button type='submit'>Iniciar Sesión</Button>
+				<CardContent className='space-y-3'>
+					<Label>Rut</Label>
+					<Input
+						name='rut'
+						onChange={formik.handleChange}
+						value={formik.values.rut}
+					/>
+					<Label>Contraseña</Label>
+					<Input
+						name='password'
+						type='password'
+						onChange={formik.handleChange}
+						value={formik.values.password}
+					/>
+					{error && <FormError>{error}</FormError>}
+				</CardContent>
+				<CardFooter>
+					<Button type='submit' className='w-full'>
+						Iniciar Sesión
+					</Button>
+				</CardFooter>
 			</Form>
 		</Card>
 	)

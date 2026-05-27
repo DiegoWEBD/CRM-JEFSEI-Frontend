@@ -1,22 +1,17 @@
-import { ReactNode } from 'react'
-import { twMerge } from 'tailwind-merge'
+import { classname } from '@/lib/class-name'
 
-type CardProps = {
-	children: ReactNode
-	className?: string
-}
-
-const Card = ({ children, className }: CardProps) => {
+export default function Card({
+	className,
+	...props
+}: React.ComponentProps<'div'>) {
 	return (
 		<div
-			className={twMerge(
-				'bg-card shadow-sm rounded-xl border border-border-primary px-3 py-4',
+			data-slot='card'
+			className={classname(
+				'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm',
 				className,
 			)}
-		>
-			{children}
-		</div>
+			{...props}
+		/>
 	)
 }
-
-export default Card

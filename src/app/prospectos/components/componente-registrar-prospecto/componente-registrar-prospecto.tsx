@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/botones/button'
+import Button from '@/components/button/button'
 import Modal from '@/components/modal/modal'
 import { useState } from 'react'
 import FormularioRegistrarProspecto from '../formulario-registrar-prospecto/formulario-registrar-prospecto'

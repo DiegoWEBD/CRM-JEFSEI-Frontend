@@ -1,4 +1,4 @@
-import Button from '@/components/botones/button'
+import Button from '@/components/button/button'
 import Form from '@/components/forms/form/form'
 import Input from '@/components/forms/input/input'
 import Select from '@/components/forms/select/select'

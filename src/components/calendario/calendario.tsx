@@ -1,46 +1,53 @@
-'use client'
+import { classname } from '@/lib/class-name'
 
-import Card from '../card/card'
-
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-
-import esLocale from '@fullcalendar/core/locales/es'
-
-type CalendarioProps = {
-	className?: string
-}
-
-const Calendario = ({ className }: CalendarioProps) => {
+export default function Calendario({
+	dias,
+	diaSeleccionado,
+	onSeleccionarDia,
+}: {
+	dias: {
+		iso: string
+		dia: number
+		esMesActual: boolean
+		esHoy: boolean
+		tieneActividad: boolean
+	}[]
+	diaSeleccionado: string
+	onSeleccionarDia: (iso: string) => void
+}) {
 	return (
-		<div className={className}>
-			<Card className='w-full overflow-hidden p-4'>
-				<FullCalendar
-					plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-					initialView='dayGridMonth'
-					locale={esLocale}
-					height='auto'
-					headerToolbar={{
-						left: 'prev,next today',
-						center: 'title',
-						right: 'dayGridMonth,timeGridWeek,timeGridDay',
-					}}
-					events={[
-						{
-							title: 'Reunión',
-							date: '2026-05-07',
-						},
-						{
-							title: 'Llamada',
-							date: '2026-05-08',
-						},
-					]}
-				/>
-			</Card>
+		<div className='rounded-md border border-border/80 p-2'>
+			<div className='mb-1 grid grid-cols-7 gap-1 text-center text-[9px] font-medium uppercase text-muted-foreground'>
+				{['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, idx) => (
+					<span key={`${d}-${idx}`}>{d}</span>
+				))}
+			</div>
+			<div className='grid grid-cols-7 gap-1'>
+				{dias.map(d => (
+					<button
+						key={d.iso}
+						type='button'
+						className={classname(
+							'relative flex h-8 items-center justify-center rounded-md text-[11px] tabular-nums transition-colors hover:bg-muted',
+							!d.esMesActual && 'text-muted-foreground/45',
+							d.esHoy && 'border border-primary/50 font-semibold text-primary',
+							diaSeleccionado === d.iso &&
+								'bg-primary text-primary-foreground hover:bg-primary',
+						)}
+						onClick={() => onSeleccionarDia(d.iso)}
+					>
+						{d.dia}
+						{d.tieneActividad ? (
+							<span
+								className={classname(
+									'absolute bottom-1 h-1 w-1 rounded-full bg-primary',
+									diaSeleccionado === d.iso && 'bg-primary-foreground',
+								)}
+							/>
+						) : null}
+					</button>
+				))}
+			</div>
 		</div>
 	)
 }
-
-export default Calendario

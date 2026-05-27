@@ -1,23 +1,15 @@
-import { ReactElement } from 'react'
+import { classname } from '@/lib/class-name'
 
-type CardHeaderProps = {
-	title: string
-	icon?: ReactElement
-	primary?: boolean
-}
-
-const CardHeader = ({ title, icon, primary }: CardHeaderProps) => {
+const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>) => {
 	return (
 		<div
-			className={`flex gap-3 items-center ${primary ? 'mb-7' : 'justify-between flex-row-reverse'}`}
-		>
-			{icon ? (
-				<div className='text-primary-highlight text-xl'>{icon}</div>
-			) : null}
-			<p className={primary ? 'text-xl font-semibold' : 'text-subtitle'}>
-				{title}
-			</p>
-		</div>
+			data-slot='card-header'
+			className={classname(
+				'@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6',
+				className,
+			)}
+			{...props}
+		/>
 	)
 }
 
