@@ -1,4 +1,3 @@
-import { FaArrowTrendUp } from 'react-icons/fa6'
 import Card from '../card/card'
 import CardHeader from '../card/card-header/card-header'
 
@@ -17,12 +16,10 @@ const ProgresoMeta = ({
 
 	return (
 		<Card className={className}>
-			<CardHeader title='Progreso de Ventas' icon={<FaArrowTrendUp />} />
-
+			<CardHeader title='Progreso de Ventas' />{' '}
 			<h2 className='text-2xl md:text-3xl font-semibold mt-2'>
 				{actual.toLocaleString('es-CL')} UF
 			</h2>
-
 			<div className='mt-3'>
 				<div className='w-full bg-gray-200 rounded-full h-2'>
 					<div
@@ -31,7 +28,6 @@ const ProgresoMeta = ({
 					/>
 				</div>
 			</div>
-
 			<div className='flex justify-between text-sm text-gray-600 mt-2'>
 				<span>{porcentaje}% completado</span>
 				<span>Meta: {meta.toLocaleString('es-CL')} UF</span>

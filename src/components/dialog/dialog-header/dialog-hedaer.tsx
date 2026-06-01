@@ -8,7 +8,7 @@ export default function DialogHeader({
 		<div
 			data-slot='dialog-header'
 			className={classname(
-				'flex flex-col gap-2 text-center sm:text-left',
+				'flex flex-col gap-2 text-center sm:text-left mb-4',
 				className,
 			)}
 			{...props}

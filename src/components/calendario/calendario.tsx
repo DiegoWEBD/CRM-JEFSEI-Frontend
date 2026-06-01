@@ -10,7 +10,7 @@ export default function Calendario({
 		dia: number
 		esMesActual: boolean
 		esHoy: boolean
-		tieneActividad: boolean
+		tieneRecordatorio: boolean
 	}[]
 	diaSeleccionado: string
 	onSeleccionarDia: (iso: string) => void
@@ -37,7 +37,7 @@ export default function Calendario({
 						onClick={() => onSeleccionarDia(d.iso)}
 					>
 						{d.dia}
-						{d.tieneActividad ? (
+						{d.tieneRecordatorio ? (
 							<span
 								className={classname(
 									'absolute bottom-1 h-1 w-1 rounded-full bg-primary',

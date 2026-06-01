@@ -1,12 +1,17 @@
+import { getSession } from '@/lib/auth'
 import HeaderClient from './header-client/header-client'
-import HeaderUsuarioServer from './header-usuario-server/header-usuario-server'
 
-const Header = () => {
+const Header = async () => {
+	const session = await getSession()
+
+	if (!session) return null
+
 	return (
-		<header className='h-16 bg-white flex items-center justify-between lg:justify-end px-4 shadow z-10'>
-			<HeaderClient />
-
-			<HeaderUsuarioServer />
+		<header className='border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50'>
+			<HeaderClient
+				nombreUsuario={session.nombre}
+				rolPrincipal={session.nombre_roles[0]}
+			/>
 		</header>
 	)
 }

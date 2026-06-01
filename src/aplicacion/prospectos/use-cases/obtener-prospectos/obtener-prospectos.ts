@@ -1,27 +1,16 @@
 import { axiosClient } from '@/infraestructura/axios/axios-client'
+import { cookies } from 'next/headers'
 import { ObtenerProspectosResponse } from './dto/obtener-prospectos-response'
-import ProspectoResumenJson from './dto/prospecto-resumen-json'
+import { ProspectoResumenJson } from './dto/prospecto-resumen-json'
 
-type ObtenerProspectosProps = {
-	rutUsuario?: string
-	cookie?: string
-}
+export const obtenerProspectos = async (): Promise<ProspectoResumenJson[]> => {
+	const cookieStore = await cookies()
 
-export const obtenerProspectos = async ({
-	rutUsuario,
-	cookie,
-}: ObtenerProspectosProps): Promise<ProspectoResumenJson[]> => {
-	let endpoint = '/prospectos'
-
-	if (rutUsuario) {
-		endpoint = `${endpoint}?rut_usuario=${rutUsuario}`
-	}
-
-	const axiosResponse = await axiosClient.get(endpoint, {
-		headers: {
-			Cookie: cookie,
-		},
+	const response = await axiosClient.get('/prospectos', {
+		headers: { Cookie: cookieStore.toString() },
 	})
-	const response: ObtenerProspectosResponse = axiosResponse.data
-	return response.data
+
+	const data: ObtenerProspectosResponse = response.data
+
+	return data.data
 }

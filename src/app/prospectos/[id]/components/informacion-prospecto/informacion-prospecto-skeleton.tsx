@@ -1,11 +1,10 @@
 import Card from '@/components/card/card'
 import CardHeader from '@/components/card/card-header/card-header'
-import { FiUser } from 'react-icons/fi'
 
 const InformacionProspectoSkeleton = () => {
 	return (
 		<Card>
-			<CardHeader title='Información del Prospecto' icon={<FiUser />} primary />
+			<CardHeader title='Información del Prospecto' />
 
 			<div className='flex flex-col gap-4 xl:flex-row animate-pulse'>
 				{/* Item 1 */}

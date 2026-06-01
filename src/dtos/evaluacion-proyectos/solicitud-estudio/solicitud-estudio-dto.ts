@@ -1,6 +1,6 @@
-import { EstadoSolicitudEstudio } from '@/app/types/evaluacion-proyectos/solicitud-estudio/estado-solicitud-estudio'
-import { InformacionFaltanteTagId } from '@/app/types/evaluacion-proyectos/solicitud-estudio/informacion-faltante-tag-id'
-import { PrioridadSolicitud } from '@/app/types/evaluacion-proyectos/solicitud-estudio/prioridad-solicitud'
+import { EstadoSolicitudEstudio } from '@/types/evaluacion-proyectos/solicitud-estudio/estado-solicitud-estudio'
+import { InformacionFaltanteTagId } from '@/types/evaluacion-proyectos/solicitud-estudio/informacion-faltante-tag-id'
+import { PrioridadSolicitud } from '@/types/evaluacion-proyectos/solicitud-estudio/prioridad-solicitud'
 
 export interface SolicitudEstudioDto {
 	id: string

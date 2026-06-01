@@ -1,18 +1,18 @@
+import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { axiosClient } from '@/infraestructura/axios/axios-client'
-import { ProspectoJson } from './dto/prospecto-json'
 import { ObtenerProspectoResponse } from './dto/obtener-prospecto-response'
 
 export const obtenerProspecto = async (
 	id: number,
 	cookie?: string,
-): Promise<ProspectoJson> => {
-	const axiosResponse = await axiosClient.get(`/prospectos/${id}`, {
+): Promise<ProspectoCondominio> => {
+	const response = await axiosClient.get(`/prospectos/${id}`, {
 		headers: {
 			Cookie: cookie,
 		},
 	})
 
-	const response: ObtenerProspectoResponse = axiosResponse.data
+	const data: ObtenerProspectoResponse = response.data
 
-	return response.prospecto
+	return data.prospecto
 }

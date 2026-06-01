@@ -60,39 +60,45 @@ export const useFormularioRegistrarProspecto = ({
 			cargo_contacto: '',
 			tiene_locales_comerciales: '',
 			uso_del_condominio: '',
-			numero_pisos: null,
-			numero_torres: null,
-			cantidad_departamentos: null,
-			cantidad_subterraneos: null,
+			numero_pisos: undefined,
+			numero_torres: undefined,
+			cantidad_departamentos: undefined,
+			cantidad_subterraneos: undefined,
 			tiene_piscina: '',
-			year_construccion: null,
-			metros_cuadrados: null,
+			year_construccion: undefined,
+			metros_cuadrados: undefined,
 			desea_ser_contactado: '',
 		},
 		onSubmit: async values => {
 			setCargando(true)
 
 			await registrarProspecto(
-				values.rut_riesgo,
+				values.rut_riesgo ?? null,
 				values.nombre_riesgo,
 				values.nombre_contacto,
 				values.telefono_contacto,
-				values.correo_contacto,
+				values.correo_contacto ?? null,
 				values.direccion,
 				values.id_comuna,
-				values.observaciones,
+				values.observaciones ?? null,
 				values.id_linea_negocio,
-				values.cargo_contacto,
-				normalizarTexto(values.tiene_locales_comerciales) == 'si',
-				values.uso_del_condominio,
-				values.numero_pisos,
-				values.numero_torres,
-				values.cantidad_departamentos,
-				values.cantidad_subterraneos,
-				normalizarTexto(values.tiene_piscina) == 'si',
-				values.year_construccion,
-				values.metros_cuadrados,
-				normalizarTexto(values.desea_ser_contactado) == 'si',
+				values.cargo_contacto ?? null,
+				values.tiene_locales_comerciales
+					? normalizarTexto(values.tiene_locales_comerciales) == 'si'
+					: null,
+				values.uso_del_condominio ?? null,
+				values.numero_pisos ?? null,
+				values.numero_torres ?? null,
+				values.cantidad_departamentos ?? null,
+				values.cantidad_subterraneos ?? null,
+				values.tiene_piscina
+					? normalizarTexto(values.tiene_piscina) == 'si'
+					: null,
+				values.year_construccion ?? null,
+				values.metros_cuadrados ?? null,
+				values.desea_ser_contactado
+					? normalizarTexto(values.desea_ser_contactado) == 'si'
+					: null,
 			)
 
 			setCargando(false)

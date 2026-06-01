@@ -1,6 +1,5 @@
 import Card from '@/components/card/card'
 import CardHeader from '@/components/card/card-header/card-header'
-import { RxCounterClockwiseClock } from 'react-icons/rx'
 
 type HistorialEstadosSkeletonProps = {
 	cantidad?: number
@@ -11,11 +10,7 @@ const HistorialEstadosSkeleton = ({
 }: HistorialEstadosSkeletonProps) => {
 	return (
 		<Card>
-			<CardHeader
-				title='Historial de Acciones'
-				icon={<RxCounterClockwiseClock />}
-				primary
-			/>
+			<CardHeader title='Historial de Acciones' />
 
 			<div className='space-y-8 animate-pulse'>
 				{Array.from({ length: cantidad }).map((_, index) => (

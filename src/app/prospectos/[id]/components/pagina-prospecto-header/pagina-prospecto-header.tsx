@@ -1,4 +1,4 @@
-import { ProspectoJson } from '@/aplicacion/prospectos/use-cases/obtener-prospecto/dto/prospecto-json'
+import { Prospecto } from '@/dominio/prospecto/prospecto'
 import InicialesUsuario from '@/app/personal/components/iniciales-usuario'
 import Card from '@/components/card/card'
 import Estado from '@/components/estado/estado'
@@ -8,7 +8,7 @@ import { FaRegUser } from 'react-icons/fa6'
 import { FiBriefcase } from 'react-icons/fi'
 
 type PaginaProspectoHeaderProps = {
-	prospectoPromise: Promise<ProspectoJson>
+	prospectoPromise: Promise<Prospecto>
 }
 
 const PaginaProspectoHeader = async ({
@@ -17,7 +17,9 @@ const PaginaProspectoHeader = async ({
 	const prospecto = await prospectoPromise
 
 	const ultimoEstado =
-		prospecto.historial_estados[prospecto.historial_estados.length - 1]
+		prospecto.proceso_comercial.historial_estados[
+			prospecto.proceso_comercial.historial_estados.length - 1
+		]
 
 	return (
 		<Card className='flex flex-col md:flex-row gap-4 py-8 px-6'>
@@ -46,19 +48,16 @@ const PaginaProspectoHeader = async ({
 			</div>
 
 			<div className='w-full flex flex-col md:items-end'>
-				<Estado
-					conBorde
-					className='text-sm font-semibold'
-					color={ultimoEstado.color}
-				>
-					{ultimoEstado.estado_actual}
+				<Estado conBorde className='text-sm font-semibold'>
+					{ultimoEstado?.estado_actual}
 				</Estado>
 				<div className='space-y-1 mt-3'>
 					<div className='text-subtitle text-sm flex gap-2 items-center'>
 						<BsPersonWorkspace size={'.9rem'} />
 						<p>Comercial:</p>
 						<p className='text-normal'>
-							{prospecto.ejecutivo_comercial?.nombre || 'No asignado'}
+							{prospecto.proceso_comercial.ejecutivo_comercial?.nombre ||
+								'No asignado'}
 						</p>
 					</div>
 
@@ -66,7 +65,8 @@ const PaginaProspectoHeader = async ({
 						<BsPersonWorkspace size={'.9rem'} />
 						<p>Evaluación:</p>
 						<p className='text-normal'>
-							{prospecto.ejecutivo_evaluacion?.nombre || 'No asignado'}
+							{prospecto.proceso_comercial.ejecutivo_evaluacion?.nombre ||
+								'No asignado'}
 						</p>
 					</div>
 				</div>

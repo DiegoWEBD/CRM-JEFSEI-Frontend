@@ -1,4 +1,4 @@
-import { MdGroups, MdOutlineDashboard } from 'react-icons/md'
+import { Group, Home, Users } from 'lucide-react'
 import NavElement from './nav-element'
 import { getSession } from '@/lib/auth'
 
@@ -19,17 +19,12 @@ const Nav = async ({ open }: NavProps) => {
 	return (
 		<nav className='mt-4 px-2'>
 			<ul className='flex flex-col gap-3'>
-				<NavElement
-					href='/'
-					icono={<MdOutlineDashboard />}
-					titulo='Inicio'
-					open={open}
-				/>
+				<NavElement href='/' icono={<Home />} titulo='Inicio' open={open} />
 
 				{tieneRolPersonal && (
 					<NavElement
 						href='/personal'
-						icono={<MdGroups />}
+						icono={<Group />}
 						titulo='Personal'
 						open={open}
 					/>
@@ -38,7 +33,7 @@ const Nav = async ({ open }: NavProps) => {
 				{session && (
 					<NavElement
 						href='/prospectos'
-						icono={<MdGroups />}
+						icono={<Users />}
 						titulo='Prospectos'
 						open={open}
 					/>

@@ -1,11 +1,10 @@
 import Card from '@/components/card/card'
 import CardHeader from '@/components/card/card-header/card-header'
-import { RiPulseFill } from 'react-icons/ri'
 
 const PanelInformativo = () => {
 	return (
 		<Card className='space-y-4'>
-			<CardHeader title='Panel informativo' icon={<RiPulseFill />} primary />
+			<CardHeader title='Panel informativo' />
 			{[1, 2, 3].map(item => (
 				<div key={item}>
 					<div className='flex items-center gap-3 mb-2'>

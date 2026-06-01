@@ -1,6 +1,7 @@
 'use client'
 
 import { useSidebarStore } from '@/global_states/sidebar-store'
+import { classname } from '@/lib/class-name'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
@@ -22,16 +23,23 @@ const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 	return (
 		<Link
 			href={href}
-			className='h-11 flex items-center gap-3 p-2 rounded hover:bg-white/10 transition-all'
 			onClick={() => setOpen(false)}
+			className={classname(
+				'text-muted-foreground group flex h-11 w-full items-center gap-3 overflow-hidden rounded-md px-3 text-sm transition-all outline-hidden select-none',
+				isActive
+					? 'bg-sidebar-primary/15 text-sidebar-primary font-medium'
+					: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+			)}
 		>
 			<span
-				className={`text-xl ${isActive ? 'text-primary-highlight' : undefined}`}
+				className={classname(
+					'flex size-4 shrink-0 items-center justify-center',
+				)}
 			>
 				{icono}
 			</span>
 
-			{open && <span>{titulo}</span>}
+			{open && <span className='truncate'>{titulo}</span>}
 		</Link>
 	)
 }

@@ -5,7 +5,7 @@ type PanelHeaderProps = {
 }
 
 const PanelHeader = ({ children }: PanelHeaderProps) => {
-	return <div>{children}</div>
+	return <div className='space-y-6'>{children}</div>
 }
 
 export default PanelHeader

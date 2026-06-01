@@ -1,4 +1,4 @@
-import { axiosClient } from '@/infraestructura/axios/axios-client'
+import axios from 'axios'
 
 export const registrarProspecto = async (
 	rut_riesgo: string | null,
@@ -21,36 +21,27 @@ export const registrarProspecto = async (
 	year_construccion: number | null,
 	metros_cuadrados: number | null,
 	desea_ser_contactado: boolean | null,
-	cookie?: string,
 ) => {
-	await axiosClient.post(
-		'/prospectos',
-		{
-			rut_riesgo,
-			nombre_contacto,
-			nombre_riesgo,
-			telefono_contacto,
-			correo_contacto,
-			direccion,
-			id_comuna,
-			observaciones,
-			id_linea_negocio,
-			cargo_contacto,
-			tiene_locales_comerciales,
-			uso_del_condominio,
-			numero_pisos,
-			numero_torres,
-			cantidad_departamentos,
-			cantidad_subterraneos,
-			tiene_piscina,
-			year_construccion,
-			metros_cuadrados,
-			desea_ser_contactado,
-		},
-		{
-			headers: {
-				Cookie: cookie,
-			},
-		},
-	)
+	await axios.post('/api/prospectos', {
+		rut_riesgo,
+		nombre_contacto,
+		nombre_riesgo,
+		telefono_contacto,
+		correo_contacto,
+		direccion,
+		id_comuna,
+		observaciones,
+		id_linea_negocio,
+		cargo_contacto,
+		tiene_locales_comerciales,
+		uso_del_condominio,
+		numero_pisos,
+		numero_torres,
+		cantidad_departamentos,
+		cantidad_subterraneos,
+		tiene_piscina,
+		year_construccion,
+		metros_cuadrados,
+		desea_ser_contactado,
+	})
 }

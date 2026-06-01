@@ -1,11 +1,12 @@
-import { ProspectoJson } from '@/aplicacion/prospectos/use-cases/obtener-prospecto/dto/prospecto-json'
+import { Prospecto } from '@/dominio/prospecto/prospecto'
 import Card from '@/components/card/card'
 import CardHeader from '@/components/card/card-header/card-header'
 import { FiPhone, FiUser } from 'react-icons/fi'
 import ItemInformacion from './item-informacion/item-informacion'
+import CardTitle from '@/components/card/card-title/card-title'
 
 type InformacionProspectoProps = {
-	prospectoPromise: Promise<ProspectoJson>
+	prospectoPromise: Promise<Prospecto>
 }
 
 const InformacionProspecto = async ({
@@ -15,7 +16,10 @@ const InformacionProspecto = async ({
 
 	return (
 		<Card>
-			<CardHeader title='Información del Prospecto' icon={<FiUser />} primary />
+			<CardHeader>
+				<CardTitle>Información del prospecto</CardTitle>
+				<FiUser />
+			</CardHeader>
 			<div className='flex flex-col gap-4 xl:flex-row'>
 				<ItemInformacion
 					title='Teléfono'

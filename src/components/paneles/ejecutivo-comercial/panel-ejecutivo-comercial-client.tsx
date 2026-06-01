@@ -1,77 +1,29 @@
 'use client'
 
-import Link from 'next/link'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
-import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { LucideIcon } from 'lucide-react'
-import {
-	Bell,
-	CalendarDays,
-	ClipboardList,
-	FileText,
-	Plus,
-	Search,
-	UserCheck,
-	Users,
-} from 'lucide-react'
+import { ClipboardList, FileText, UserCheck, Users } from 'lucide-react'
+import { useState } from 'react'
 
-import { SolicitudEstudioDto } from '@/dtos/evaluacion-proyectos/solicitud-estudio/solicitud-estudio-dto'
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import { KpiPanelDetalleKey } from '@/app/types/ejecutivo-comercial/panel/kpi-panel-detalle-key'
-import { EstudioEmitidoRegistro } from '@/app/types/evaluacion-proyectos/estudios-emitidos/estudio-emitido-registro'
-import { FiltroEstadoComercialValor } from '@/app/types/estados/estado-comercial-cliente'
+import CardCalendario from '@/components/card-calendario/card-calendario'
+import CardComunicadoGerencia from '@/components/card-comunicado-gerencia/card-comunicado-gerencia'
+import { SolicitudEstudioDto } from '@/dtos/evaluacion-proyectos/solicitud-estudio/solicitud-estudio-dto'
+import { DatosKpi } from '@/hooks/kpi/dto/datos-kpi'
+import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
+import { EstudioEmitidoRegistro } from '@/types/evaluacion-proyectos/estudios-emitidos/estudio-emitido-registro'
 import {
 	SharedReminder,
-	SharedReminderPriority,
 	SharedReminderStatus,
 	SharedReminderType,
-} from '@/app/types/shared/shared-reminders'
-import Calendario from '@/components/calendario/calendario'
-import FilaProspecto from './cards/card-prospectos/fila-prospecto'
-import Table from '@/components/table/table'
-import TableHeader from '@/components/table/table-header/table-header'
-import TableRow from '@/components/table/table-row/table-row'
-import TableHead from '@/components/table/table-head/table-head'
-import TableBody from '@/components/table/table-body/table-body'
-import Sheet from '@/components/sheet/sheet'
-import SheetContent from '@/components/sheet/sheet-content/sheet-content'
-import SheetHeader from '@/components/sheet/sheet-header/sheet-header'
-import SheetTitle from '@/components/sheet/sheet-title/sheet-title'
-import CardContent from '@/components/card/card-content/card-content'
-import Card from '@/components/card/card'
-import { Badge } from '@/components/badge/badge'
-import CardHeader from '@/components/card/card-header/card-header'
-import CardTitle from '@/components/card/card-title/card-title'
-import Button from '@/components/button/button'
+} from '@/types/shared/shared-reminders'
 import { formatFechaCorta } from '@/utils/format-fecha-corta'
-import Dialog from '@/components/dialog/dialog'
-import DialogContent from '@/components/dialog/dialog-content/dialog-content'
-import DialogFooter from '@/components/dialog/dialog-footer/dialog-footer'
-import Input from '@/components/forms/input/input'
-import DialogHeader from '@/components/dialog/dialog-header/dialog-hedaer'
-import DialogTitle from '@/components/dialog/dialog-title/dialog-title'
-import DialogDescription from '@/components/dialog/dialog-description/dialog-description'
-import Select from '@/components/forms/select/select'
-import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
-import SelectValue from '@/components/forms/select/select-value/select-value'
-import SelectContent from '@/components/forms/select/select-content/select-content'
-import SelectItem from '@/components/forms/select/select-item/select-item'
-import { classname } from '@/lib/class-name'
-import Textarea from '@/components/forms/text-area/text-area'
-import { PanelKpiDetalleDatos } from './panel-kpi-detalle-sheet'
+import CardProspectosClient from '../../prospectos/card-prospectos/card-prospectos-client'
+import PanelFooter from '../panel-layout/panel-footer/panel-footer'
+import PanelHeader from '../panel-layout/panel-header/panel-header'
+import PanelLayout from '../panel-layout/panel-layout'
+import CardKpi from './cards/card-kpi/card-kpi'
 
 const SECTION =
 	'text-sm font-semibold leading-tight tracking-tight text-foreground'
-
-type TarjetaKpi = {
-	key: KpiPanelDetalleKey
-	label: string
-	value: number
-	icon: LucideIcon
-	bellNuevosSinRevisar?: number
-}
 
 type PanelDetalleSecundario = 'clientes' | 'calendario' | null
 
@@ -147,23 +99,17 @@ const AVISOS_GERENCIA: AvisoGerencia[] = [
 ]
 
 type EjecutivoComercialPanelClientProps = {
-	prospectos: ProspectoResumenJson[]
+	prospectosIniciales: ProspectoResumenJson[]
 }
 
 export default function EjecutivoComercialPanelClient({
-	prospectos,
+	prospectosIniciales,
 }: EjecutivoComercialPanelClientProps) {
-	const searchParams = useSearchParams()
 	//const { clientesPanel, getLineasCliente } = useClientesComercialesWorkspace()
 	const registrosEstudiosEmitidos: EstudioEmitidoRegistro[] = []
-
-	const hoyIso = useMemo(() => format(new Date(), 'yyyy-MM-dd'), [])
-	const fechaHoy = useMemo(
-		() => format(new Date(), "EEEE d 'de' MMMM yyyy", { locale: es }),
-		[],
-	)
-
 	const solicitudesEjecutivo: SolicitudEstudioDto[] = []
+
+	const { data: prospectos } = useObtenerProspectos(prospectosIniciales)
 
 	/*const clientesEjecutivo = useMemo(
 		() => clientesDelEjecutivoPanel(clientesPanel),
@@ -190,44 +136,13 @@ export default function EjecutivoComercialPanelClient({
 		],
 	)*/
 
-	const [busqueda, setBusqueda] = useState('')
-	const [filtroEstadoComercial, setFiltroEstadoComercial] =
-		useState<FiltroEstadoComercialValor>('todos')
-	const [kpiAbierto, setKpiAbierto] = useState<KpiPanelDetalleKey | null>(null)
-	const [avisoClienteRegistrado, setAvisoClienteRegistrado] = useState<
-		string | null
-	>(null)
+	const [kpiAbierto, setKpiAbierto] = useState<string | null>(null)
 	const [panelSecundario, setPanelSecundario] =
 		useState<PanelDetalleSecundario>(null)
-	const [diaSeleccionado, setDiaSeleccionado] = useState(hoyIso)
-	//const { reminders, addReminder, updateReminder, deleteReminder } = useSharedReminders()
-	const [openReminderModal, setOpenReminderModal] = useState(false)
-	const [editingReminderId, setEditingReminderId] = useState<string | null>(
-		null,
-	)
+
 	const defaultClienteRecordatorioId = ''
 
-	const [reminderForm, setReminderForm] = useState<{
-		clientId: string
-		title: string
-		date: string
-		time: string
-		type: SharedReminderType
-		detail: string
-		status: SharedReminderStatus
-		prioridad: SharedReminderPriority
-	}>({
-		clientId: defaultClienteRecordatorioId,
-		title: '',
-		date: hoyIso,
-		time: '09:00',
-		type: 'llamada',
-		detail: '',
-		status: 'pendiente',
-		prioridad: 'normal',
-	})
-
-	const clientesConFiltroEstado = useMemo(
+	/*const clientesConFiltroEstado = useMemo(
 		() =>
 			filtrarClientesPorEstadoComercial(
 				clientesEjecutivo,
@@ -341,10 +256,10 @@ export default function EjecutivoComercialPanelClient({
 							: 'normal',
 			})
 		}
-	}, [idsClientesEjecutivo, reminders, addReminder, nombreClienteRecordatorio])
+	}, [idsClientesEjecutivo, reminders, addReminder, nombreClienteRecordatorio])*/
 
 	/** Migra recordatorios del perfil que guardaron el nombre del formulario en ejecutivoId. */
-	const recordatoriosMigradosRef = useRef(false)
+	/*const recordatoriosMigradosRef = useRef(false)
 	useEffect(() => {
 		if (recordatoriosMigradosRef.current || idsClientesEjecutivo.size === 0)
 			return
@@ -638,375 +553,56 @@ export default function EjecutivoComercialPanelClient({
 
 	const handleDeleteReminder = useCallback((reminderId: string) => {
 		eliminarRecordatorioSeguimientoSiAplica(reminderId)
-	}, [])
+	}, [])*/
 
-	const etiquetaRecordatoriosDia = format(
-		new Date(`${diaSeleccionado}T12:00:00`),
-		'dd/MM/yyyy',
-	)
+	const tarjetasResumen: DatosKpi[] = [
+		{
+			key: 'asignados',
+			label: 'Clientes asignados',
+			value: 7,
+			icon: UserCheck,
+			infoAdicional: 2,
+		},
+		{
+			key: 'cotiz',
+			label: 'Cotizaciones solicitadas',
+			value: 3,
+			icon: ClipboardList,
+		},
+		{
+			key: 'estDisp',
+			label: 'Estudios disponibles',
+			value: 2,
+			icon: FileText,
+		},
+		{
+			key: 'activos',
+			label: 'Clientes activos',
+			value: 1,
+			icon: Users,
+		},
+	]
 
 	return (
-		<div className='min-h-screen bg-background'>
-			<div>HEADER</div>
-			<main className='px-3 py-4 sm:px-4 sm:py-5 lg:p-6'>
-				<div className='mx-auto max-w-400 space-y-4 sm:space-y-5'>
-					<div>
-						<p className='text-sm capitalize text-muted-foreground'>
-							{fechaHoy}
-						</p>
-					</div>
-
-					<div className='grid grid-cols-2 gap-2 lg:grid-cols-4'>
-						{tarjetasResumen.map(t => {
-							const Icon = t.icon
-							return (
-								<Card
-									key={t.key}
-									role='button'
-									tabIndex={0}
-									className='cursor-pointer border-border bg-card shadow-none transition-colors hover:border-primary/40 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-									onClick={() => setKpiAbierto(t.key)}
-									onKeyDown={e => {
-										if (e.key === 'Enter' || e.key === ' ') {
-											e.preventDefault()
-											setKpiAbierto(t.key)
-										}
-									}}
-								>
-									<CardHeader className='flex flex-row items-start justify-between gap-1 space-y-0 pb-1 pt-3'>
-										<CardTitle className='line-clamp-3 min-h-[2.5rem] text-[10px] font-medium leading-snug text-muted-foreground sm:text-[11px]'>
-											{t.label}
-										</CardTitle>
-										<Icon
-											className='h-4 w-4 shrink-0 text-muted-foreground'
-											aria-hidden
-										/>
-									</CardHeader>
-									<CardContent className='space-y-1.5 pb-3 pt-0'>
-										<p className='text-2xl font-semibold tabular-nums text-foreground'>
-											{t.value}
-										</p>
-										{t.bellNuevosSinRevisar != null &&
-										t.bellNuevosSinRevisar > 0 ? (
-											<div className='flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/[0.08] px-2 py-1.5 text-[10px] text-amber-950 dark:text-amber-50'>
-												<Bell
-													className='h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400'
-													aria-hidden
-												/>
-												<span>
-													<span className='font-semibold tabular-nums'>
-														{t.bellNuevosSinRevisar}
-													</span>{' '}
-													nuevo
-													{t.bellNuevosSinRevisar !== 1 ? 's' : ''} por revisar
-												</span>
-											</div>
-										) : null}
-									</CardContent>
-								</Card>
-							)
-						})}
-					</div>
-
-					<div className='flex flex-col gap-4 sm:gap-5'>
-						<Card className='border-border bg-card shadow-none'>
-							<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
-								<CardTitle className={SECTION}>Búsqueda de clientes</CardTitle>
-								<div className='flex shrink-0 flex-wrap gap-1.5'>
-									<Button
-										size='sm'
-										variant='outline'
-										className='h-9 text-xs'
-										asChild
-									>
-										<Link href='/ejecutivo-comercial/nuevo-prospecto'>
-											<Plus className='mr-1.5 h-3.5 w-3.5' aria-hidden />
-											Prospecto
-										</Link>
-									</Button>
-									<Button size='sm' className='h-9 text-xs' asChild>
-										<Link href='/ejecutivo-comercial/nuevo-cliente'>
-											<Plus className='mr-1.5 h-3.5 w-3.5' aria-hidden />
-											Cliente
-										</Link>
-									</Button>
-								</div>
-							</CardHeader>
-							<CardContent className='space-y-3 p-4'>
-								{avisoClienteRegistrado ? (
-									<p className='rounded-md border border-emerald-500/30 bg-emerald-500/[0.08] px-3 py-2 text-xs text-emerald-950 dark:text-emerald-50'>
-										Cliente registrado correctamente. {avisoClienteRegistrado}
-									</p>
-								) : null}
-								<div className='relative'>
-									<Search
-										className='absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground'
-										aria-hidden
-									/>
-									<Input
-										placeholder='Nombre, RUT, estado comercial, correo, teléfono o contacto...'
-										className='h-9 pl-9 text-sm shadow-none'
-										value={busqueda}
-										onChange={e => setBusqueda(e.target.value)}
-									/>
-								</div>
-
-								<FiltrosEstadoComercialPanel
-									filtroActivo={filtroEstadoComercial}
-									onFiltroChange={setFiltroEstadoComercial}
-									conteos={conteosEstadoComercial}
-								/>
-
-								{mostrarResultadosFiltrados ? (
-									<div className='space-y-2'>
-										<p className='text-[11px] text-muted-foreground'>
-											{clientesResultadoBusquedaOrdenados.length} cliente
-											{clientesResultadoBusquedaOrdenados.length !== 1
-												? 's'
-												: ''}
-											{filtroEstadoComercial !== 'todos' ? (
-												<>
-													{' '}
-													·{' '}
-													<span className='text-foreground'>
-														{
-															ESTADO_CLIENTE_COMERCIAL_LABELS[
-																filtroEstadoComercial
-															]
-														}
-													</span>
-												</>
-											) : null}
-											{busqueda.trim() && prospectosFiltrados.length > 0
-												? ` · ${prospectosFiltrados.length} prospecto${prospectosFiltrados.length !== 1 ? 's' : ''} en búsqueda`
-												: ''}
-										</p>
-										<div className='max-h-[min(52vh,420px)] space-y-1 overflow-y-auto rounded-md border border-border p-1.5'>
-											{clientesResultadoBusquedaOrdenados.length === 0 &&
-											(!busqueda.trim() || prospectosFiltrados.length === 0) ? (
-												<p className='py-6 text-center text-xs text-muted-foreground'>
-													No hay clientes con este estado
-													{busqueda.trim()
-														? ' que coincidan con la búsqueda'
-														: ''}
-													.
-												</p>
-											) : (
-												<>
-													{clientesResultadoBusquedaOrdenados.map(c => (
-														<ClienteFilaBusquedaCompacta key={c.id} c={c} />
-													))}
-													{busqueda.trim()
-														? prospectosFiltrados.map(p => (
-																<div
-																	key={p.id}
-																	className='flex items-center justify-between gap-3 rounded-md border border-violet-500/25 bg-violet-500/[0.04] px-3 py-2 text-xs'
-																>
-																	<div className='min-w-0 flex-1'>
-																		<p className='truncate font-medium leading-snug text-foreground'>
-																			{p.nombre}
-																		</p>
-																		<p className='truncate text-[11px] leading-snug text-muted-foreground'>
-																			{TIPO_PROSPECTO_LABELS[p.tipoProspecto]} ·
-																			Prospecto
-																		</p>
-																	</div>
-																	<Button
-																		size='sm'
-																		variant='outline'
-																		className='h-7 shrink-0 px-2.5 text-[10px]'
-																		asChild
-																	>
-																		<Link
-																			href={`/ejecutivo-comercial/prospecto/${p.id}`}
-																		>
-																			Ver prospecto
-																		</Link>
-																	</Button>
-																</div>
-															))
-														: null}
-												</>
-											)}
-										</div>
-									</div>
-								) : (
-									<p className='rounded-md border border-dashed border-border/80 px-3 py-4 text-center text-[11px] text-muted-foreground'>
-										Selecciona un estado comercial o escribe en la búsqueda para
-										ver clientes.
-									</p>
-								)}
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									className='h-8 w-full text-xs'
-									onClick={() => setPanelSecundario('clientes')}
-								>
-									Ver todos los clientes asignados (
-									{conteosEstadoComercial.todos})
-								</Button>
-							</CardContent>
-						</Card>
-
-						<Card className='border-border bg-card shadow-none'>
-							<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-start sm:justify-between'>
-								<div className='min-w-0 flex-1 space-y-2'>
-									<CardTitle className={SECTION}>Recordatorios</CardTitle>
-									<p className='text-xs tabular-nums text-muted-foreground'>
-										{etiquetaRecordatoriosDia}
-										{diaSeleccionado === hoyIso ? ' · Hoy' : ''}
-									</p>
-									<Input
-										type='date'
-										value={diaSeleccionado}
-										onChange={e => setDiaSeleccionado(e.target.value)}
-										className='h-8 max-w-[11rem] text-xs'
-										aria-label='Seleccionar fecha de recordatorios'
-									/>
-								</div>
-								<Button
-									type='button'
-									size='sm'
-									variant='outline'
-									className='h-8 shrink-0 px-2.5 text-xs'
-									onClick={abrirCrearRecordatorio}
-								>
-									+ Nuevo
-								</Button>
-							</CardHeader>
-							<CardContent className='space-y-2 p-4'>
-								{recordatoriosFechaSeleccionada.length === 0 ? (
-									<p className='rounded-md border border-dashed border-border/80 py-4 text-center text-xs text-muted-foreground'>
-										No hay recordatorios para esta fecha.
-									</p>
-								) : (
-									<div className='space-y-2'>
-										{recordatoriosFechaSeleccionada.map(item => (
-											<RecordatorioDiaCard
-												key={item.id}
-												item={item}
-												clientName={nombreClienteRecordatorio(item.clientId)}
-												onComplete={() => handleCompleteReminder(item.id)}
-												onEdit={() => handleEditReminder(item.id)}
-												onDelete={() => handleDeleteReminder(item.id)}
-											/>
-										))}
-									</div>
-								)}
-							</CardContent>
-						</Card>
-
-						<div className='grid gap-4 md:grid-cols-2'>
-							<Card className='border-border bg-card shadow-none'>
-								<CardHeader className='flex flex-row items-center justify-between border-b border-border pb-2 pt-3'>
-									<CardTitle className={SECTION}>Calendario</CardTitle>
-									<CalendarDays
-										className='h-4 w-4 text-muted-foreground'
-										aria-hidden
-									/>
-								</CardHeader>
-								<CardContent className='space-y-2 p-3'>
-									<div className='flex items-center justify-between gap-2'>
-										<p className='text-xs font-medium capitalize text-foreground'>
-											{format(new Date(`${hoyIso}T12:00:00`), 'MMMM yyyy', {
-												locale: es,
-											})}
-										</p>
-										<p className='text-[10px] text-muted-foreground'>
-											Hoy: {formatFechaCorta(hoyIso)}
-										</p>
-									</div>
-									<Calendario
-										dias={diasCalendario}
-										diaSeleccionado={diaSeleccionado}
-										onSeleccionarDia={setDiaSeleccionado}
-									/>
-									<div className='rounded-md border border-border/80 px-3 py-2'>
-										<p className='mb-1 text-[11px] font-medium text-foreground'>
-											{etiquetaDiaAgenda(diaSeleccionado, hoyIso)}
-										</p>
-										{actividadesDiaSeleccionado.length === 0 ? (
-											<p className='text-[11px] text-muted-foreground'>
-												Sin actividades para este día.
-											</p>
-										) : (
-											<div className='space-y-1.5'>
-												{actividadesDiaSeleccionado.slice(0, 3).map(a => (
-													<Link
-														key={a.id}
-														href={a.href}
-														className='block text-[11px] hover:underline'
-													>
-														<span className='font-medium tabular-nums text-foreground'>
-															{a.hora}
-														</span>{' '}
-														<span className='text-muted-foreground'>
-															{a.titulo} · {a.cliente}
-														</span>
-													</Link>
-												))}
-											</div>
-										)}
-									</div>
-									<Button
-										type='button'
-										variant='outline'
-										size='sm'
-										className='h-8 w-full text-xs'
-										onClick={() => setPanelSecundario('calendario')}
-									>
-										Ver calendario
-									</Button>
-								</CardContent>
-							</Card>
-
-							{/*<NotasPanelSection panelId='ejecutivo-comercial' />*/}
-						</div>
-
-						<Card className='border-border bg-card shadow-none'>
-							<CardHeader className='flex flex-row items-center justify-between border-b border-border pb-2 pt-3'>
-								<CardTitle className={SECTION}>Avisos de gerencia</CardTitle>
-								<Bell className='h-4 w-4 text-muted-foreground' aria-hidden />
-							</CardHeader>
-							<CardContent className='space-y-2 p-3 sm:p-4'>
-								{AVISOS_GERENCIA.length === 0 ? (
-									<p className='py-3 text-center text-xs text-muted-foreground'>
-										Sin avisos relevantes por ahora.
-									</p>
-								) : (
-									<div className='grid gap-2 sm:grid-cols-2 lg:grid-cols-3'>
-										{AVISOS_GERENCIA.map(aviso => (
-											<div
-												key={aviso.id}
-												className='rounded-md border border-border/80 px-3 py-2 text-xs'
-											>
-												<div className='flex items-start justify-between gap-2'>
-													<p className='font-medium text-foreground'>
-														{aviso.titulo}
-													</p>
-													<Badge
-														variant='outline'
-														className='h-5 shrink-0 text-[9px]'
-													>
-														{aviso.prioridad}
-													</Badge>
-												</div>
-												<p className='mt-1 leading-snug text-muted-foreground'>
-													{aviso.mensaje}
-												</p>
-												<p className='mt-1 text-[10px] tabular-nums text-muted-foreground'>
-													{aviso.fecha}
-												</p>
-											</div>
-										))}
-									</div>
-								)}
-							</CardContent>
-						</Card>
-					</div>
+		<PanelLayout>
+			<PanelHeader>
+				<div className='grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4'>
+					{tarjetasResumen.map(datos => (
+						<CardKpi
+							key={datos.key}
+							datos={datos}
+							setKpiAbierto={setKpiAbierto}
+						/>
+					))}
 				</div>
-			</main>
+				<CardProspectosClient prospectos={prospectos} />
+			</PanelHeader>
+
+			<CardCalendario prospectos={prospectos} />
+
+			<PanelFooter>
+				<CardComunicadoGerencia />
+			</PanelFooter>
 
 			{/*<PanelKpiDetalleSheet
 				abierto={kpiAbierto != null}
@@ -1017,7 +613,7 @@ export default function EjecutivoComercialPanelClient({
 				datos={detalleKpi}
 			/>*/}
 
-			<Sheet
+			{/*<Sheet
 				open={panelSecundario != null}
 				onOpenChange={open => !open && setPanelSecundario(null)}
 			>
@@ -1053,8 +649,8 @@ export default function EjecutivoComercialPanelClient({
 									</TableRow>
 								</TableHeader>
 								<TableBody>
-									{todosClientesEjecutivoOrdenados.map(c => (
-										<FilaProspecto key={c.id} prospecto={c} />
+									{prospectos.map(prospecto => (
+										<FilaProspecto key={prospecto.id} prospecto={prospecto} />
 									))}
 								</TableBody>
 							</Table>
@@ -1086,141 +682,12 @@ export default function EjecutivoComercialPanelClient({
 						</div>
 					) : null}
 				</SheetContent>
-			</Sheet>
-
-			<Dialog open={openReminderModal} onOpenChange={setOpenReminderModal}>
-				<DialogContent className='max-w-md'>
-					<DialogHeader>
-						<DialogTitle>
-							{editingReminderId ? 'Editar recordatorio' : 'Crear recordatorio'}
-						</DialogTitle>
-						<DialogDescription>
-							Asocia recordatorios comerciales al calendario del día.
-						</DialogDescription>
-					</DialogHeader>
-					<div className='space-y-3'>
-						<Select
-							value={reminderForm.clientId}
-							onValueChange={value =>
-								setReminderForm(p => ({ ...p, clientId: value }))
-							}
-						>
-							<SelectTrigger className='w-full'>
-								<SelectValue placeholder='Cliente asociado' />
-							</SelectTrigger>
-							<SelectContent>
-								{clientesEjecutivo.map(c => (
-									<SelectItem key={c.id} value={c.id}>
-										{c.nombre}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-						<Input
-							placeholder='Título'
-							value={reminderForm.title}
-							onChange={e =>
-								setReminderForm(p => ({ ...p, title: e.target.value }))
-							}
-						/>
-						<div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
-							<Input
-								type='date'
-								value={reminderForm.date}
-								onChange={e =>
-									setReminderForm(p => ({ ...p, date: e.target.value }))
-								}
-							/>
-							<Input
-								type='time'
-								value={reminderForm.time}
-								onChange={e =>
-									setReminderForm(p => ({ ...p, time: e.target.value }))
-								}
-							/>
-						</div>
-						<div className='grid grid-cols-1 gap-2 sm:grid-cols-3'>
-							<Select
-								value={reminderForm.prioridad}
-								onValueChange={(value: SharedReminderPriority) =>
-									setReminderForm(p => ({
-										...p,
-										prioridad: value,
-									}))
-								}
-							>
-								<SelectTrigger className='w-full'>
-									<SelectValue placeholder='Prioridad' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='baja'>Baja</SelectItem>
-									<SelectItem value='normal'>Normal</SelectItem>
-									<SelectItem value='alta'>Alta</SelectItem>
-								</SelectContent>
-							</Select>
-							<Select
-								value={reminderForm.type}
-								onValueChange={(value: SharedReminderType) =>
-									setReminderForm(p => ({ ...p, type: value }))
-								}
-							>
-								<SelectTrigger className='w-full'>
-									<SelectValue placeholder='Tipo' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='llamada'>Llamada</SelectItem>
-									<SelectItem value='correo'>Correo</SelectItem>
-									<SelectItem value='whatsapp'>Mensaje</SelectItem>
-									<SelectItem value='visita'>Visita</SelectItem>
-									<SelectItem value='otro'>General</SelectItem>
-								</SelectContent>
-							</Select>
-							<Select
-								value={reminderForm.status}
-								onValueChange={(value: SharedReminderStatus) =>
-									setReminderForm(p => ({
-										...p,
-										status: value,
-									}))
-								}
-							>
-								<SelectTrigger className='w-full'>
-									<SelectValue placeholder='Estado' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='pendiente'>Pendiente</SelectItem>
-									<SelectItem value='realizado'>Completado</SelectItem>
-									<SelectItem value='atrasado'>Atrasado</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<Textarea
-							placeholder='Detalle'
-							value={reminderForm.detail}
-							onChange={e =>
-								setReminderForm(p => ({ ...p, detail: e.target.value }))
-							}
-						/>
-					</div>
-					<DialogFooter>
-						<Button
-							type='button'
-							variant='outline'
-							size='sm'
-							onClick={() => setOpenReminderModal(false)}
-						>
-							Cancelar
-						</Button>
-						<Button type='button' size='sm' onClick={handleAddReminder}>
-							{editingReminderId ? 'Guardar cambios' : 'Guardar recordatorio'}
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
-		</div>
+			</Sheet>*/}
+		</PanelLayout>
 	)
 }
 
+/*
 function RecordatorioDiaCard({
 	item,
 	clientName,
@@ -1296,7 +763,7 @@ function RecordatorioDiaCard({
 			</div>
 		</div>
 	)
-}
+}*/
 
 function etiquetaDiaAgenda(fechaIso: string, hoyIso: string) {
 	const fecha = new Date(`${fechaIso}T12:00:00`)

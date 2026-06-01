@@ -1,20 +1,14 @@
-import { obtenerComunas } from '@/aplicacion/comunas/use-cases/obtener-comunas'
 import Comuna from '@/dominio/comuna/comuna'
-import { useCallback, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 export const useComunas = () => {
-	const [comunas, setComunas] = useState<Comuna[]>([])
-	const [cargando, setCargando] = useState(false)
-	const [error, setError] = useState<string | null>(null)
-
-	const cargarComunas = useCallback(() => {
-		setCargando(true)
-
-		obtenerComunas()
-			.then(setComunas)
-			.catch(err => setError(err.message))
-			.finally(() => setCargando(false))
-	}, [])
-
-	return { comunas, cargando, error, cargarComunas }
+	return useQuery({
+		queryKey: ['comunas'],
+		queryFn: async () => {
+			const response = await axios.get('/api/comunas')
+			const data: Comuna[] = response.data
+			return data
+		},
+	})
 }

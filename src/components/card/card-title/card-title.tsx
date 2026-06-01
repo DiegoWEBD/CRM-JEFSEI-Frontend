@@ -1,13 +1,23 @@
 import { classname } from '@/lib/class-name'
 
+type CardTitleProps = React.ComponentProps<'div'> & {
+	primary?: boolean
+}
+
 export default function CardTitle({
 	className,
+	primary,
 	...props
-}: React.ComponentProps<'div'>) {
+}: CardTitleProps) {
 	return (
 		<div
 			data-slot='card-title'
-			className={classname('leading-none font-semibold', className)}
+			className={classname(
+				'leading-none font-semibold',
+				primary &&
+					'text-sm font-semibold leading-tight tracking-tight text-foreground',
+				className,
+			)}
 			{...props}
 		/>
 	)
