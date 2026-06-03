@@ -11,7 +11,7 @@ export default function CardComunicadoGerencia() {
 	const { data: comunicados } = useComunicadosGerencia()
 
 	return (
-		<Card className='border-border bg-card shadow-none'>
+		<Card className='border-border bg-card'>
 			<CardHeader className='flex flex-row items-center justify-between border-b border-border pb-2 pt-3'>
 				<CardTitle primary>Avisos de gerencia</CardTitle>
 				<Bell className='h-4 w-4 text-muted-foreground' aria-hidden />

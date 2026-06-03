@@ -1,7 +1,8 @@
+import { EstadoComercialProspecto } from '@/types/estados/estado-comercial-cliente'
+
 export interface HistorialEstadoJson {
-	estado_anterior?: string
-	estado_actual: string
-	color: string
+	estado_anterior?: EstadoComercialProspecto
+	estado_actual: EstadoComercialProspecto
 	fecha_registro: string
 	dias_limite: number
 	dias_transcurridos: number

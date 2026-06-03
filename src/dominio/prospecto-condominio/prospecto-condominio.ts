@@ -14,5 +14,5 @@ export interface ProspectoCondominio extends Prospecto {
 	year_construccion?: number
 	metros_cuadrados?: number
 	desea_ser_contactado?: boolean
-	cantidad_unidades?: number
+	informacion_completa: boolean
 }

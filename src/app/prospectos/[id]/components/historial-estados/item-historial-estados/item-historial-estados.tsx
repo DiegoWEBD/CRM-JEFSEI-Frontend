@@ -1,6 +1,7 @@
 import { HistorialEstadoJson } from '@/aplicacion/estados/dto/historial-estado-json'
 import InicialesUsuario from '@/app/personal/components/iniciales-usuario'
 import { normalizarFechaTexto } from '@/utils/normalizar-fecha-texto'
+
 type ItemHistorialEstadosProps = { estado: HistorialEstadoJson }
 
 const ItemHistorialEstados = ({ estado }: ItemHistorialEstadosProps) => {
@@ -11,13 +12,7 @@ const ItemHistorialEstados = ({ estado }: ItemHistorialEstadosProps) => {
 	return (
 		<div className='flex gap-4 md:items-center'>
 			<div>
-				<InicialesUsuario
-					nombre={estado.cambiado_por}
-					style={{
-						color: estado.color,
-						backgroundColor: estado.color.replace(')', ' / 0.12)'),
-					}}
-				/>
+				<InicialesUsuario nombre={estado.cambiado_por} />
 			</div>
 			<div className='w-full flex flex-col gap-y-1 gap-x-4 md:flex-row md:justify-between'>
 				<div>

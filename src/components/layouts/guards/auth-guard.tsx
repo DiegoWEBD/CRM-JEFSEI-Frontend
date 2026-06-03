@@ -1,30 +1,44 @@
-import { getSession } from '@/lib/auth'
-import { ReactNode } from 'react'
+'use client'
+
+import { obtenerSesion } from '@/aplicacion/auth/use-cases/obtener-sesion'
+import { TokenPayload } from '@/dtos/token-payload'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 type AuthGuardProps = {
 	children: ReactNode
 	codigosRoles?: string[]
 }
 
-export default async function AuthGuard({
+export default function AuthGuard({
 	children,
 	codigosRoles = [],
 }: AuthGuardProps) {
-	const usuario = await getSession()
+	const [permitido, setPermitido] = useState<boolean>(false)
 
-	if (!usuario) {
-		return null
-	}
+	const validar = useCallback(
+		(payload: TokenPayload | null): boolean => {
+			if (!payload) {
+				return false
+			}
 
-	if (codigosRoles.length > 0) {
-		const tieneRol = usuario.codigo_roles.some(rol =>
-			codigosRoles.includes(rol),
-		)
+			if (codigosRoles.length === 0) return true
 
-		if (!tieneRol) {
-			return null
-		}
-	}
+			const tieneRol = payload.codigo_roles.some(rol =>
+				codigosRoles.includes(rol),
+			)
+
+			return tieneRol
+		},
+		[codigosRoles],
+	)
+
+	useEffect(() => {
+		obtenerSesion()
+			.then(payload => setPermitido(validar(payload)))
+			.catch(() => setPermitido(false))
+	}, [validar])
+
+	if (!permitido) return null
 
 	return <>{children}</>
 }
