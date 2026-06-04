@@ -1,9 +1,6 @@
 import { obtenerProspecto } from '@/aplicacion/prospectos/use-cases/obtener-prospecto/obtener-prospecto'
-import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
-import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { cookies } from 'next/headers'
-import CardInformacionProspecto from './components/card-informacion-prospecto/card-informacion-prospecto'
-import PaginaProspectoHeader from './components/pagina-prospecto-header/pagina-prospecto-header'
+import PaginaProspectoClient from './components/pagina-prospecto-client/pagina-prospecto-client'
 
 type ProspectoPageProps = {
 	params: Promise<{
@@ -19,13 +16,5 @@ export default async function ProspectoPage({ params }: ProspectoPageProps) {
 
 	const prospecto = await obtenerProspecto(Number(id), cookieHeader)
 
-	return (
-		<PanelLayout>
-			<PanelHeader>
-				<PaginaProspectoHeader prospecto={prospecto} />
-			</PanelHeader>
-
-			<CardInformacionProspecto prospecto={prospecto} />
-		</PanelLayout>
-	)
+	return <PaginaProspectoClient prospectoInicial={prospecto} />
 }

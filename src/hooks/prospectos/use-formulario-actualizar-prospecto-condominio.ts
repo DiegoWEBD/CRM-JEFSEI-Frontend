@@ -1,16 +1,79 @@
+import { actualizarProspectoCondominio } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto-condominio/actualizar-prospecto-condominio'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
-import { useState } from 'react'
+import * as Yup from 'yup'
 
 type UseFormularioActualizarProspecto = {
 	prospecto: ProspectoCondominio
+	onComplete?: () => void
 }
 
 export const useFormularioActualizarProspectoCondominio = ({
 	prospecto,
+	onComplete,
 }: UseFormularioActualizarProspecto) => {
-	const [cargando, setCargando] = useState(false)
+	const queryClient = useQueryClient()
+
+	const mutation = useMutation({
+		mutationFn: async (values: FormularioInitialValues) => {
+			await actualizarProspectoCondominio(prospecto.id, {
+				rut_riesgo: values.rut_riesgo ?? null,
+				nombre_riesgo: values.nombre_riesgo,
+				nombre_contacto: values.nombre_contacto,
+				telefono_contacto: values.telefono_contacto,
+				correo_contacto: values.correo_contacto ?? null,
+				direccion: values.direccion,
+				region: values.region,
+				comuna: values.comuna,
+				observaciones: values.observaciones ?? null,
+				id_linea_negocio: values.id_linea_negocio,
+				uf_por_metro_cuadrado: values.uf_por_metro_cuadrado ?? null,
+				porcentaje_depreciacion: values.porcentaje_depreciacion
+					? values.porcentaje_depreciacion / 100
+					: null,
+				porcentaje_espacios_comunes: values.porcentaje_espacios_comunes
+					? values.porcentaje_espacios_comunes / 100
+					: null,
+				cargo_contacto: values.cargo_contacto ?? null,
+				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
+				uso_del_condominio: values.uso_del_condominio ?? null,
+				numero_pisos: values.numero_pisos ?? null,
+				numero_torres: values.numero_torres ?? null,
+				cantidad_departamentos: values.cantidad_departamentos ?? null,
+				cantidad_subterraneos: values.cantidad_subterraneos ?? null,
+				tiene_piscina: values.tiene_piscina ?? null,
+				year_construccion: values.year_construccion ?? null,
+				metros_cuadrados: values.metros_cuadrados ?? null,
+				desea_ser_contactado: values.desea_ser_contactado ?? null,
+			})
+		},
+		onSuccess: () => {
+			console.log('success')
+			queryClient.invalidateQueries({
+				queryKey: ['prospecto', prospecto.id],
+			})
+
+			queryClient.invalidateQueries({
+				queryKey: ['prospectos'],
+			})
+		},
+	})
+
+	const validationSchema = Yup.object({
+		uf_por_metro_cuadrado: Yup.number()
+			.min(0, 'Debe ingresar un número mayor a 0')
+			.nullable(),
+		porcentaje_depreciacion: Yup.number()
+			.min(0, 'Debe ingresar un número entre 0 y 100')
+			.max(100, 'Debe ingresar un número entre 0 y 100')
+			.nullable(),
+		porcentaje_espacios_comunes: Yup.number()
+			.min(0, 'Debe ingresar un número entre 0 y 100')
+			.max(100, 'Debe ingresar un número entre 0 y 100')
+			.nullable(),
+	})
 
 	const formik = useFormik<FormularioInitialValues>({
 		initialValues: {
@@ -35,46 +98,26 @@ export const useFormularioActualizarProspectoCondominio = ({
 			year_construccion: prospecto.year_construccion,
 			metros_cuadrados: prospecto.metros_cuadrados,
 			desea_ser_contactado: prospecto.desea_ser_contactado,
+			uf_por_metro_cuadrado:
+				prospecto.evaluacion_riesgo?.uf_por_metro_cuadrado ?? undefined,
+			porcentaje_depreciacion: prospecto.evaluacion_riesgo
+				?.porcentaje_depreciacion
+				? prospecto.evaluacion_riesgo.porcentaje_depreciacion * 100
+				: undefined,
+			porcentaje_espacios_comunes: prospecto.evaluacion_riesgo
+				?.porcentaje_espacios_comunes
+				? prospecto.evaluacion_riesgo.porcentaje_espacios_comunes * 100
+				: undefined,
 		},
 		onSubmit: async values => {
-			setCargando(true)
-			console.log(values)
-
-			/*await registrarProspecto(
-                values.rut_riesgo ?? null,
-                values.nombre_riesgo,
-                values.nombre_contacto,
-                values.telefono_contacto,
-                values.correo_contacto ?? null,
-                values.direccion,
-                values.id_comuna,
-                values.observaciones ?? null,
-                values.id_linea_negocio,
-                values.cargo_contacto ?? null,
-                values.tiene_locales_comerciales
-                    ? normalizarTexto(values.tiene_locales_comerciales) == 'si'
-                    : null,
-                values.uso_del_condominio ?? null,
-                values.numero_pisos ?? null,
-                values.numero_torres ?? null,
-                values.cantidad_departamentos ?? null,
-                values.cantidad_subterraneos ?? null,
-                values.tiene_piscina
-                    ? normalizarTexto(values.tiene_piscina) == 'si'
-                    : null,
-                values.year_construccion ?? null,
-                values.metros_cuadrados ?? null,
-                values.desea_ser_contactado
-                    ? normalizarTexto(values.desea_ser_contactado) == 'si'
-                    : null,
-            )*/
-
-			setCargando(false)
+			await mutation.mutateAsync(values)
+			onComplete?.()
 		},
+		validationSchema,
 	})
 
 	return {
 		formik,
-		cargando,
+		cargando: mutation.isPending,
 	}
 }

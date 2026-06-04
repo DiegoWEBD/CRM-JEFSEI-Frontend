@@ -50,7 +50,10 @@ export default function FormularioActualizarProspecto({
 	prospecto,
 	cancelarEdicionInformacion,
 }: FormularioActualizarProspectoProps) {
-	const { formik } = useFormularioActualizarProspectoCondominio({ prospecto })
+	const { formik } = useFormularioActualizarProspectoCondominio({
+		prospecto,
+		onComplete: cancelarEdicionInformacion,
+	})
 
 	const estadoRut = useMemo(
 		() => rutChilenoEstadoValidacion(formik.values.rut_riesgo),

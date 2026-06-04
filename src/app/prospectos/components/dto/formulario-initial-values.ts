@@ -20,4 +20,7 @@ export interface FormularioInitialValues {
 	year_construccion?: number
 	metros_cuadrados?: number
 	desea_ser_contactado?: boolean
+	uf_por_metro_cuadrado?: number
+	porcentaje_depreciacion?: number
+	porcentaje_espacios_comunes?: number
 }

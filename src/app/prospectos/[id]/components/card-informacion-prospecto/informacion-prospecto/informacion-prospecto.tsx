@@ -70,6 +70,11 @@ export default function InformacionProspecto({
 				value={prospecto.nombre_contacto}
 				highlightMissing={inputPendiente(prospecto.nombre_contacto)}
 			/>
+			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
+				<InformacionAdicionalProspectoCondominio
+					prospecto={prospecto as ProspectoCondominio}
+				/>
+			)}
 			<ItemInformacionProspecto
 				label='Ejecutivo comercial asignado'
 				value={prospecto.proceso_comercial.ejecutivo_comercial?.nombre ?? '—'}
@@ -81,12 +86,6 @@ export default function InformacionProspecto({
 					'dd-MM-yyy · HH:mm',
 				)}
 			/>
-
-			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
-				<InformacionAdicionalProspectoCondominio
-					prospecto={prospecto as ProspectoCondominio}
-				/>
-			)}
 		</CardContent>
 	)
 }

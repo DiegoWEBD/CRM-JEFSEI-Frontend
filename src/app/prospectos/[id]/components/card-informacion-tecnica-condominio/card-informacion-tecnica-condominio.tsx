@@ -7,20 +7,22 @@ import CardTitle from '@/components/card/card-title/card-title'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { useState } from 'react'
-import FormularioActualizarProspecto from './formulario-actualizar-prospecto/formulario-actualizar-prospecto'
-import InformacionProspecto from './informacion-prospecto/informacion-prospecto'
+import FormularioActualizarInformacionTecnicaCondominio from './formulario-actualizar-informacion-tecnica-condominio/formulario-actualizar-informacion-tecnica-condominio'
+import InformacionTecnicaCondominio from './informacion-tecnica-condominio/informacion-tecnica-condominio'
 
-type InformacionProspectoProps = {
+type CardInformacionTecnicaCondominioProps = {
 	prospecto: ProspectoCondominio
 }
 
-const CardInformacionProspecto = ({ prospecto }: InformacionProspectoProps) => {
-	const [editar, setEditar] = useState(false)
+export default function CardInformacionTecnicaCondominio({
+	prospecto,
+}: CardInformacionTecnicaCondominioProps) {
+	const [editar, setEditar] = useState<boolean>(false)
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
 			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
-				<CardTitle primary>Información general del prospecto</CardTitle>
+				<CardTitle primary>Información técnica del condominio</CardTitle>
 				<AuthGuard codigosRoles={['EJECUTIVO_COMERCIAL']}>
 					{!editar && (
 						<Button
@@ -35,10 +37,14 @@ const CardInformacionProspecto = ({ prospecto }: InformacionProspectoProps) => {
 					)}
 				</AuthGuard>
 			</CardHeader>
-			{!editar && <InformacionProspecto prospecto={prospecto} />}
+			{!editar && (
+				<InformacionTecnicaCondominio
+					evaluacionRiesgo={prospecto.evaluacion_riesgo}
+				/>
+			)}
 			<AuthGuard codigosRoles={['EJECUTIVO_COMERCIAL']}>
 				{editar && (
-					<FormularioActualizarProspecto
+					<FormularioActualizarInformacionTecnicaCondominio
 						prospecto={prospecto}
 						cancelarEdicionInformacion={() => setEditar(false)}
 					/>
@@ -47,5 +53,3 @@ const CardInformacionProspecto = ({ prospecto }: InformacionProspectoProps) => {
 		</Card>
 	)
 }
-
-export default CardInformacionProspecto
