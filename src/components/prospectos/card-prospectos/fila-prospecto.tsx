@@ -24,7 +24,8 @@ export default function FilaProspecto({
 					{prospecto.nombre_riesgo}
 				</p>
 				<p className='truncate text-[11px] leading-snug text-muted-foreground'>
-					{prospecto.linea_negocio} · Prospecto
+					{prospecto.linea_negocio} ·{' '}
+					{prospecto.id_cliente ? 'Cliente' : 'Prospecto'}
 				</p>
 			</div>
 			<Button

@@ -10,6 +10,8 @@ import { AlertTriangle } from 'lucide-react'
 import CardInformacionProspecto from '../card-informacion-prospecto/card-informacion-prospecto'
 import CardInformacionTecnicaCondominio from '../card-informacion-tecnica-condominio/card-informacion-tecnica-condominio'
 import PaginaProspectoHeader from '../pagina-prospecto-header/pagina-prospecto-header'
+import CardSolicitudesCotizacion from '../card-solicitudes-cotizacion/card-solicitudes-cotizacion'
+import CardPolizas from '../card-polizas/card-polizas'
 
 type PaginaProspectoClientProps = {
 	prospectoInicial: Prospecto
@@ -40,6 +42,13 @@ export default function PaginaProspectoClient({
 					prospecto={prospecto as ProspectoCondominio}
 				/>
 			)}
+
+			{/**<CardSolicitudesCotizacion
+				solicitudes={prospecto.proceso_comercial.solicitudes_cotizacion}
+				informacion_completa={prospecto.informacion_completa}
+			/> */}
+
+			<CardPolizas idCliente={prospecto.id_cliente} />
 		</PanelLayout>
 	)
 }

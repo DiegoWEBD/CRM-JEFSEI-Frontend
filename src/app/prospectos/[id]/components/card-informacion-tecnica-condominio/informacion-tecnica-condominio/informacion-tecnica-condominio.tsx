@@ -1,47 +1,53 @@
 import CardContent from '@/components/card/card-content/card-content'
-import EvaluacionRiesgo from '@/dominio/evaluacion-riesgo/evaluacion-riesgo'
+import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { inputPendiente } from '@/utils/input/input-pendiente'
+import InformacionAdicionalProspectoCondominio from '../../card-informacion-prospecto/informacion-prospecto/informacion-adicional-prospecto-condominio/informacion-adicional-prospecto-condominio'
 import ItemInformacionProspecto from '../../card-informacion-prospecto/item-informacion-prospecto/item-informacion-prospecto'
 
 type InformacionTecnicaCondominioProps = {
-	evaluacionRiesgo?: EvaluacionRiesgo
+	prospecto: ProspectoCondominio
 }
 
 export default function InformacionTecnicaCondominio({
-	evaluacionRiesgo,
+	prospecto,
 }: InformacionTecnicaCondominioProps) {
 	return (
 		<CardContent className='grid gap-x-6 gap-y-3 p-4 sm:grid-cols-2 lg:grid-cols-3'>
 			<ItemInformacionProspecto
-				label='Valor UF/m²'
-				value={evaluacionRiesgo?.uf_por_metro_cuadrado}
+				label='Administrador asociado'
+				value={prospecto.administrador?.nombre_administrador}
 				highlightMissing={inputPendiente(
-					evaluacionRiesgo?.uf_por_metro_cuadrado,
+					prospecto.administrador?.nombre_administrador,
 				)}
-				className='sm:col-span-2 lg:col-span-3'
+			/>
+			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
+				<InformacionAdicionalProspectoCondominio
+					prospecto={prospecto as ProspectoCondominio}
+				/>
+			)}
+			<ItemInformacionProspecto
+				label='Valor UF/m²'
+				value={prospecto.uf_por_metro_cuadrado}
+				highlightMissing={inputPendiente(prospecto.uf_por_metro_cuadrado)}
 			/>
 			<ItemInformacionProspecto
 				label='Porcentaje de depreciación'
 				value={
-					evaluacionRiesgo?.porcentaje_depreciacion
-						? `${evaluacionRiesgo.porcentaje_depreciacion * 100}%`
+					prospecto.porcentaje_depreciacion
+						? `${prospecto.porcentaje_depreciacion * 100}%`
 						: undefined
 				}
-				highlightMissing={inputPendiente(
-					evaluacionRiesgo?.porcentaje_depreciacion,
-				)}
+				highlightMissing={inputPendiente(prospecto.porcentaje_depreciacion)}
 			/>
 
 			<ItemInformacionProspecto
 				label='Porcentaje de espacios comunes'
 				value={
-					evaluacionRiesgo?.porcentaje_espacios_comunes
-						? `${evaluacionRiesgo.porcentaje_espacios_comunes * 100}%`
+					prospecto.porcentaje_espacios_comunes
+						? `${prospecto.porcentaje_espacios_comunes * 100}%`
 						: undefined
 				}
-				highlightMissing={inputPendiente(
-					evaluacionRiesgo?.porcentaje_espacios_comunes,
-				)}
+				highlightMissing={inputPendiente(prospecto.porcentaje_espacios_comunes)}
 			/>
 		</CardContent>
 	)

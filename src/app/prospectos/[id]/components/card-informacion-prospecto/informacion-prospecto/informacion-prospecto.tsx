@@ -1,10 +1,9 @@
 import CardContent from '@/components/card/card-content/card-content'
-import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import ItemInformacionProspecto from '../item-informacion-prospecto/item-informacion-prospecto'
-import InformacionAdicionalProspectoCondominio from './informacion-adicional-prospecto-condominio/informacion-adicional-prospecto-condominio'
+import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 
 type InformacionProspectoProps = {
 	prospecto: Prospecto
@@ -50,34 +49,39 @@ export default function InformacionProspecto({
 				highlightMissing={inputPendiente(prospecto.region)}
 			/>
 			<ItemInformacionProspecto label='Comuna' value={prospecto.comuna} />
+
+			{prospecto.linea_negocio.nombre.toLowerCase() !== 'condominio' && (
+				<ItemInformacionProspecto
+					label='Teléfono de contacto'
+					value={prospecto.telefono_contacto}
+					highlightMissing={inputPendiente(prospecto.telefono_contacto)}
+				/>
+			)}
+
+			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
+				<ItemInformacionProspecto
+					label='Contacto de administrador'
+					value={(prospecto as ProspectoCondominio).administrador?.telefono}
+					highlightMissing={inputPendiente(
+						(prospecto as ProspectoCondominio).administrador?.telefono,
+					)}
+				/>
+			)}
+
 			<ItemInformacionProspecto
-				label='Teléfono'
-				value={prospecto.telefono_contacto}
-				highlightMissing={inputPendiente(prospecto.telefono_contacto)}
-			/>
-			<ItemInformacionProspecto
-				label='Correo'
+				label='Correo prospecto'
 				value={prospecto.correo_contacto}
 				highlightMissing={inputPendiente(prospecto.correo_contacto)}
 			/>
+
 			<ItemInformacionProspecto
-				label='Contacto administrador/a'
-				value={prospecto.telefono_contacto}
-				highlightMissing={inputPendiente(prospecto.telefono_contacto)}
+				label='Registrado por'
+				value={prospecto.registrado_por.nombre}
 			/>
-			<ItemInformacionProspecto
-				label='Administrador asociado'
-				value={prospecto.nombre_contacto}
-				highlightMissing={inputPendiente(prospecto.nombre_contacto)}
-			/>
-			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
-				<InformacionAdicionalProspectoCondominio
-					prospecto={prospecto as ProspectoCondominio}
-				/>
-			)}
+
 			<ItemInformacionProspecto
 				label='Ejecutivo comercial asignado'
-				value={prospecto.proceso_comercial.ejecutivo_comercial?.nombre ?? '—'}
+				value={prospecto.ejecutivo_comercial_asignado?.nombre ?? '—'}
 			/>
 			<ItemInformacionProspecto
 				label='Última actualización'

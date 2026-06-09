@@ -21,7 +21,6 @@ export const useFormularioActualizarProspectoCondominio = ({
 			await actualizarProspectoCondominio(prospecto.id, {
 				rut_riesgo: values.rut_riesgo ?? null,
 				nombre_riesgo: values.nombre_riesgo,
-				nombre_contacto: values.nombre_contacto,
 				telefono_contacto: values.telefono_contacto,
 				correo_contacto: values.correo_contacto ?? null,
 				direccion: values.direccion,
@@ -36,7 +35,6 @@ export const useFormularioActualizarProspectoCondominio = ({
 				porcentaje_espacios_comunes: values.porcentaje_espacios_comunes
 					? values.porcentaje_espacios_comunes / 100
 					: null,
-				cargo_contacto: values.cargo_contacto ?? null,
 				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
 				uso_del_condominio: values.uso_del_condominio ?? null,
 				numero_pisos: values.numero_pisos ?? null,
@@ -46,7 +44,6 @@ export const useFormularioActualizarProspectoCondominio = ({
 				tiene_piscina: values.tiene_piscina ?? null,
 				year_construccion: values.year_construccion ?? null,
 				metros_cuadrados: values.metros_cuadrados ?? null,
-				desea_ser_contactado: values.desea_ser_contactado ?? null,
 			})
 		},
 		onSuccess: () => {
@@ -79,7 +76,6 @@ export const useFormularioActualizarProspectoCondominio = ({
 		initialValues: {
 			rut_riesgo: prospecto.rut_riesgo,
 			nombre_riesgo: prospecto.nombre_riesgo,
-			nombre_contacto: prospecto.nombre_contacto,
 			telefono_contacto: prospecto.telefono_contacto,
 			correo_contacto: prospecto.correo_contacto,
 			direccion: prospecto.direccion,
@@ -87,26 +83,28 @@ export const useFormularioActualizarProspectoCondominio = ({
 			comuna: prospecto.comuna,
 			observaciones: prospecto.observaciones,
 			id_linea_negocio: prospecto.linea_negocio.id,
-			cargo_contacto: prospecto.cargo_contacto,
 			tiene_locales_comerciales: prospecto.tiene_locales_comerciales,
 			uso_del_condominio: prospecto.uso_del_condominio,
+			materialidad: prospecto.materialidad,
+			clasificacion_preliminar_incendio:
+				prospecto.clasificacion_preliminar_incendio,
+			procesos_productivos: prospecto.procesos_productivos,
 			numero_pisos: prospecto.numero_pisos,
 			numero_torres: prospecto.numero_torres,
 			cantidad_departamentos: prospecto.cantidad_departamentos,
 			cantidad_subterraneos: prospecto.cantidad_subterraneos,
 			tiene_piscina: prospecto.tiene_piscina,
+			ubicacion_piscina: prospecto.ubicacion_piscina,
+			tiene_alarma_incencio: prospecto.tiene_alarma_incencio,
+			tiene_sprinklers: prospecto.tiene_sprinklers,
 			year_construccion: prospecto.year_construccion,
 			metros_cuadrados: prospecto.metros_cuadrados,
-			desea_ser_contactado: prospecto.desea_ser_contactado,
-			uf_por_metro_cuadrado:
-				prospecto.evaluacion_riesgo?.uf_por_metro_cuadrado ?? undefined,
-			porcentaje_depreciacion: prospecto.evaluacion_riesgo
-				?.porcentaje_depreciacion
-				? prospecto.evaluacion_riesgo.porcentaje_depreciacion * 100
+			uf_por_metro_cuadrado: prospecto.uf_por_metro_cuadrado ?? undefined,
+			porcentaje_depreciacion: prospecto.porcentaje_depreciacion
+				? prospecto.porcentaje_depreciacion * 100
 				: undefined,
-			porcentaje_espacios_comunes: prospecto.evaluacion_riesgo
-				?.porcentaje_espacios_comunes
-				? prospecto.evaluacion_riesgo.porcentaje_espacios_comunes * 100
+			porcentaje_espacios_comunes: prospecto.porcentaje_espacios_comunes
+				? prospecto.porcentaje_espacios_comunes * 100
 				: undefined,
 		},
 		onSubmit: async values => {

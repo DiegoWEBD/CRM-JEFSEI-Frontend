@@ -1,14 +1,11 @@
-import { EstadoComercialProspecto } from '@/types/estados/estado-comercial-cliente'
+import { ProcesoComercialResumenJson } from '@/aplicacion/procesos-comerciales/dto/proceso-comercial-resumen-json'
 
 export interface ProspectoResumenJson {
 	id: number
+	id_cliente?: number
 	nombre_riesgo: string
-	nombre_contacto: string
+	nombre_administrador?: string
 	linea_negocio: string
-	codigo_estado: EstadoComercialProspecto
-	nombre_estado: string
-	dias_limite: number
-	dias_transcurridos: number
-	fecha_ultima_accion: string
-	proxima_accion: string
+	ejecutivo_comercial?: string
+	procesos_comerciales: ProcesoComercialResumenJson[]
 }

@@ -37,11 +37,7 @@ export default function CardInformacionTecnicaCondominio({
 					)}
 				</AuthGuard>
 			</CardHeader>
-			{!editar && (
-				<InformacionTecnicaCondominio
-					evaluacionRiesgo={prospecto.evaluacion_riesgo}
-				/>
-			)}
+			{!editar && <InformacionTecnicaCondominio prospecto={prospecto} />}
 			<AuthGuard codigosRoles={['EJECUTIVO_COMERCIAL']}>
 				{editar && (
 					<FormularioActualizarInformacionTecnicaCondominio

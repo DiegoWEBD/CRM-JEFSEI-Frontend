@@ -17,7 +17,7 @@ export default function Campo({
 }: CampoProps) {
 	return (
 		<div className={classname('space-y-1.5', className)}>
-			<Label className={classname('text-sx', labelClassName)}>{label}</Label>
+			<Label className={classname('text-xs', labelClassName)}>{label}</Label>
 			{children}
 		</div>
 	)

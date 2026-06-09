@@ -62,8 +62,9 @@ export function normalizarNombreRegion(raw: string): string | null {
 }
 
 export function obtenerComunasDeRegion(
-	regionNombre: string,
+	regionNombre?: string,
 ): readonly string[] {
+	if (!regionNombre) return []
 	const canon = normalizarNombreRegion(regionNombre)
 	if (!canon) return []
 	return CHILE_COMUNAS_POR_REGION[canon] ?? []

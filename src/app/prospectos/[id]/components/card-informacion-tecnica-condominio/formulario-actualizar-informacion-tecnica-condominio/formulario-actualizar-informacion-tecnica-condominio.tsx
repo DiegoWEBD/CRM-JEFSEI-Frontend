@@ -7,6 +7,7 @@ import { useFormularioActualizarProspectoCondominio } from '@/hooks/prospectos/u
 import { classname } from '@/lib/class-name'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import { inp } from '../../card-informacion-prospecto/formulario-actualizar-prospecto/formulario-actualizar-prospecto'
+import CamposAdicionalesProspectoCondominio from '../../card-informacion-prospecto/formulario-actualizar-prospecto/campos-adicionales-prospecto-condominio/campos-adicionales-prospecto-condominio'
 
 type FormularioActualizarInformacionTecnicaCondominioProps = {
 	prospecto: Prospecto
@@ -26,6 +27,8 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 		<CardContent className='space-y-4 p-4'>
 			<form onSubmit={formik.handleSubmit}>
 				<div className='grid gap-4 sm:grid-cols-2'>
+					<CamposAdicionalesProspectoCondominio formik={formik} />
+
 					<Campo
 						label='Valor UF/m²'
 						labelClassName={classname(

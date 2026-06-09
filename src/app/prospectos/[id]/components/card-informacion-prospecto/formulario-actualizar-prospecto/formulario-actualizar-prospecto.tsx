@@ -20,7 +20,6 @@ import {
 	rutChilenoEstadoValidacion,
 } from '@/utils/validar-rut'
 import { useMemo } from 'react'
-import CamposAdicionalesProspectoCondominio from './campos-adicionales-prospecto-condominio/campos-adicionales-prospecto-condominio'
 
 export function inp(pendiente: boolean, extra?: string) {
 	return classname(
@@ -226,24 +225,26 @@ export default function FormularioActualizarProspecto({
 							</SelectContent>
 						</Select>
 					</div>
-					<div className='space-y-1.5'>
-						<Label
-							className={classname(
-								'text-xs',
-								inputPendiente(formik.values.telefono_contacto) &&
-									'text-amber-800 dark:text-amber-200',
-							)}
-						>
-							Teléfono
-						</Label>
-						<Input
-							className={inp(inputPendiente(formik.values.telefono_contacto))}
-							inputMode='tel'
-							name='telefono_contacto'
-							value={formik.values.telefono_contacto}
-							onChange={formik.handleChange}
-						/>
-					</div>
+					{prospecto.linea_negocio.nombre.toLowerCase() !== 'condominio' && (
+						<div className='space-y-1.5'>
+							<Label
+								className={classname(
+									'text-xs',
+									inputPendiente(formik.values.telefono_contacto) &&
+										'text-amber-800 dark:text-amber-200',
+								)}
+							>
+								Teléfono de contacto
+							</Label>
+							<Input
+								className={inp(inputPendiente(formik.values.telefono_contacto))}
+								inputMode='tel'
+								name='telefono_contacto'
+								value={formik.values.telefono_contacto}
+								onChange={formik.handleChange}
+							/>
+						</div>
+					)}
 					<div className='space-y-1.5'>
 						<Label
 							className={classname(
@@ -252,7 +253,7 @@ export default function FormularioActualizarProspecto({
 									'text-amber-800 dark:text-amber-200',
 							)}
 						>
-							Correo
+							Correo prospecto
 						</Label>
 						<Input
 							className={inp(inputPendiente(formik.values.correo_contacto))}
@@ -262,27 +263,6 @@ export default function FormularioActualizarProspecto({
 							onChange={formik.handleChange}
 						/>
 					</div>
-					<div className='space-y-1.5 sm:col-span-2'>
-						<Label
-							className={classname(
-								'text-xs',
-								inputPendiente(formik.values.nombre_contacto) &&
-									'text-amber-800 dark:text-amber-200',
-							)}
-						>
-							Contacto administrador/a
-						</Label>
-						<Input
-							className={inp(inputPendiente(formik.values.nombre_contacto))}
-							name='nombre_contacto'
-							value={formik.values.nombre_contacto}
-							onChange={formik.handleChange}
-						/>
-					</div>
-
-					{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
-						<CamposAdicionalesProspectoCondominio formik={formik} />
-					)}
 				</div>
 				<div className='flex flex-wrap justify-end gap-2 border-t mt-6 border-border pt-3'>
 					<Button

@@ -6,23 +6,27 @@ import Button from '@/components/button/button'
 import Card from '@/components/card/card'
 import CardContent from '@/components/card/card-content/card-content'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
-import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
+import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { useHistorialEstadoDialog } from '@/hooks/historial-estado/use-historial-estado-dialog'
 import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { Building2 } from 'lucide-react'
 import Link from 'next/link'
 import HistorialEstados from '../historial-estados/historial-estados'
+import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
+import AdministradorAsociado from './administrador-asociado/administrador-asociado'
 
 type PaginaProspectoHeaderProps = {
-	prospecto: ProspectoCondominio
+	prospecto: Prospecto
 }
 
 const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
-	const ultimoEstado =
+	/*const ultimoEstado =
 		prospecto.proceso_comercial.historial_estados[
 			prospecto.proceso_comercial.historial_estados.length - 1
-		]
+		]*/
+
+	const ultimoEstado = 'No informado'
 
 	const {
 		openHistorialEstadoDialog,
@@ -44,38 +48,18 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								{prospecto.nombre_riesgo}
 							</h1>
 						</div>
-						<div className='flex flex-wrap items-center gap-2 text-sm text-muted-foreground'>
-							<span>
-								<span className='text-foreground'>Administrador asociado:</span>{' '}
-								{prospecto.nombre_contacto.trim() ? (
-									<span className='font-medium text-foreground'>
-										{prospecto.nombre_contacto}
-									</span>
-								) : (
-									'—'
-								)}
-							</span>
-							{prospecto.nombre_contacto ? (
-								<Button
-									variant='outline'
-									size='sm'
-									className='px-2 text-[10px]'
-									asChild
-								>
-									<Link href={`/clientes/${prospecto.nombre_contacto}`}>
-										Ver perfil
-									</Link>
-								</Button>
-							) : null}
-						</div>
+						{prospecto.linea_negocio.nombre.toLowerCase() == 'condominio' && (
+							<AdministradorAsociado
+								administrador={(prospecto as ProspectoCondominio).administrador}
+							/>
+						)}
 						<div className='flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground'>
 							<span>
 								<span className='text-muted-foreground'>
 									Ejecutivo asignado:
 								</span>{' '}
 								<span className='font-medium text-foreground'>
-									{prospecto.proceso_comercial.ejecutivo_comercial?.nombre ??
-										'—'}
+									{prospecto.ejecutivo_comercial_asignado?.nombre ?? '—'}
 								</span>
 							</span>
 							<span className='hidden sm:inline'>·</span>
@@ -98,13 +82,13 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 							<div className='flex flex-wrap items-center gap-2'>
 								<Badge
 									variant='outline'
-									className={ESTADO_COMERCIAL_BADGE[ultimoEstado.estado_actual]}
+									className={ESTADO_COMERCIAL_BADGE['PROSPECTO_CARGADO']}
 								>
-									{ESTADO_PROSPECTO_LABELS[ultimoEstado.estado_actual]}
+									{ESTADO_PROSPECTO_LABELS['PROSPECTO_CARGADO']}
 								</Badge>
+								{/*onClick={abrirDialogHistorialEstado}*/}
 								<Button
 									type='button'
-									onClick={abrirDialogHistorialEstado}
 									variant='ghost'
 									size='sm'
 									className='h-7 px-2 text-[10px] text-muted-foreground hover:text-foreground'
@@ -125,11 +109,11 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 				</div>
 			</CardContent>
 
-			<HistorialEstados
+			{/**<HistorialEstados
 				prospecto={prospecto}
 				openHistorialEstadoDialog={openHistorialEstadoDialog}
 				setOpenHistorialEstadoDialog={setOpenHistorialEstadoDialog}
-			/>
+			/> */}
 		</Card>
 	)
 }
