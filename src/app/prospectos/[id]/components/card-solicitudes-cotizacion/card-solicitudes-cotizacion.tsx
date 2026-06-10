@@ -7,7 +7,7 @@ import CardHeader from '@/components/card/card-header/card-header'
 import CardTitle from '@/components/card/card-title/card-title'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
-import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
+import { useObtenerSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-cotizacion'
 import { classname } from '@/lib/class-name'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { normalizarTexto } from '@/utils/normalizar-texto'
@@ -15,14 +15,16 @@ import { Plus } from 'lucide-react'
 import { useState } from 'react'
 
 type CardSolicitudesCotizacionProps = {
-	informacion_completa: boolean
-	solicitudes: SolicitudCotizacion[]
+	idProspecto: number
+	informacionCompleta: boolean
 }
 
 export default function CardSolicitudesCotizacion({
-	informacion_completa,
-	solicitudes,
+	informacionCompleta,
+	idProspecto,
 }: CardSolicitudesCotizacionProps) {
+	const { data: solicitudes } = useObtenerSolicitudesCotizacion(idProspecto)
+
 	const [openDialogNuevaSolicitud, setOpenDialogNuevaSolicitud] =
 		useState<boolean>(false)
 
@@ -45,12 +47,12 @@ export default function CardSolicitudesCotizacion({
 					Solicitudes de cotización por línea de seguro
 				</CardTitle>
 				<AuthGuard codigosRoles={['EJECUTIVO_COMERCIAL']}>
-					{solicitudes.length > 0 ? botonNueva : null}
+					{solicitudes && solicitudes.length > 0 ? botonNueva : null}
 				</AuthGuard>
 			</CardHeader>
 
 			<CardContent className='p-0'>
-				{solicitudes.length === 0 && (
+				{solicitudes?.length === 0 && (
 					<div className='flex flex-col items-center gap-3 px-4 py-8 text-center'>
 						<p className='max-w-md text-sm text-muted-foreground'>
 							Aún no hay solicitudes de cotización registradas para este
@@ -62,7 +64,7 @@ export default function CardSolicitudesCotizacion({
 					</div>
 				)}
 				<ul className='divide-y divide-border'>
-					{solicitudes.map(solicitud => (
+					{solicitudes?.map(solicitud => (
 						<li
 							key={solicitud.id}
 							className='flex flex-col gap-2 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4'
@@ -90,7 +92,7 @@ export default function CardSolicitudesCotizacion({
 										</Badge>
 									)}
 									<EstadoCompletitudInformacion
-										completa={informacion_completa}
+										completa={informacionCompleta}
 										className='text-[10px] font-medium capitalize'
 									/>
 								</div>

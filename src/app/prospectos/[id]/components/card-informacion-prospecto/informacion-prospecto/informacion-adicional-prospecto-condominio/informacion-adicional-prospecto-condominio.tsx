@@ -2,6 +2,10 @@ import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-co
 import ItemInformacionProspecto from '../../item-informacion-prospecto/item-informacion-prospecto'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import { normalizarNumeroFormatoChileno } from '@/utils/normalizar-numero-formato-chileno'
+import {
+	CLASIFICACION_PRELIMINAR_INCENDIO_LABELS,
+	MATERIALIDAD_PRINCIPAL_LABELS,
+} from '@/lib/materialidades'
 
 type InformacionAdicionalProspectoCondominioProps = {
 	prospecto: ProspectoCondominio
@@ -26,14 +30,26 @@ export default function InformacionAdicionalProspectoCondominio({
 
 			<ItemInformacionProspecto
 				label='Materialidad principal de construcción'
-				value={prospecto.materialidad}
+				value={
+					prospecto.materialidad
+						? MATERIALIDAD_PRINCIPAL_LABELS[prospecto.materialidad]
+						: undefined
+				}
 				highlightMissing={inputPendiente(prospecto.materialidad)}
 			/>
 
 			<ItemInformacionProspecto
 				label='Clasificación preliminar incendio'
-				value={prospecto.year_construccion}
-				highlightMissing={inputPendiente(prospecto.year_construccion)}
+				value={
+					prospecto.clasificacion_preliminar_incendio
+						? CLASIFICACION_PRELIMINAR_INCENDIO_LABELS[
+								prospecto.clasificacion_preliminar_incendio
+							]
+						: undefined
+				}
+				highlightMissing={inputPendiente(
+					prospecto.clasificacion_preliminar_incendio,
+				)}
 			/>
 
 			<ItemInformacionProspecto
@@ -98,8 +114,8 @@ export default function InformacionAdicionalProspectoCondominio({
 
 			<ItemInformacionProspecto
 				label='Cuenta con alarma de incendio'
-				value={prospecto.tiene_alarma_incencio}
-				highlightMissing={inputPendiente(prospecto.tiene_alarma_incencio)}
+				value={prospecto.tiene_alarma_incendio}
+				highlightMissing={inputPendiente(prospecto.tiene_alarma_incendio)}
 			/>
 
 			<ItemInformacionProspecto

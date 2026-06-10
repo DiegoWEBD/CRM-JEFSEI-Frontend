@@ -28,13 +28,20 @@ export default function PaginaProspectoClient({
 				<PaginaProspectoHeader prospecto={prospecto} />
 			</PanelHeader>
 
-			<EstadoCompletitudInformacion
-				completa={prospecto.informacion_completa}
-				className='px-3 py-2.5 flex gap-2 w-full items-center justify-start'
-			>
-				<AlertTriangle className='mt-0.5 shrink-0 text-amber-600' aria-hidden />
-				<p className='font-medium'>Faltan datos obligatorios del prospecto.</p>
-			</EstadoCompletitudInformacion>
+			{!prospecto.informacion_completa && (
+				<EstadoCompletitudInformacion
+					completa={prospecto.informacion_completa}
+					className='px-3 py-2.5 flex gap-2 w-full items-center justify-start'
+				>
+					<AlertTriangle
+						className='mt-0.5 shrink-0 text-amber-600'
+						aria-hidden
+					/>
+					<p className='font-medium'>
+						Faltan datos obligatorios del prospecto.
+					</p>
+				</EstadoCompletitudInformacion>
+			)}
 			<CardInformacionProspecto prospecto={prospecto} />
 
 			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
@@ -43,10 +50,10 @@ export default function PaginaProspectoClient({
 				/>
 			)}
 
-			{/**<CardSolicitudesCotizacion
-				solicitudes={prospecto.proceso_comercial.solicitudes_cotizacion}
-				informacion_completa={prospecto.informacion_completa}
-			/> */}
+			<CardSolicitudesCotizacion
+				idProspecto={prospecto.id}
+				informacionCompleta={prospecto.informacion_completa}
+			/>
 
 			<CardPolizas idCliente={prospecto.id_cliente} />
 		</PanelLayout>

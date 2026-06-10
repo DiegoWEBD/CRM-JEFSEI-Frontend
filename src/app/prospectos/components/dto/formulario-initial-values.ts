@@ -19,7 +19,7 @@ export interface FormularioInitialValues {
 	cantidad_subterraneos?: number
 	tiene_piscina?: boolean
 	ubicacion_piscina?: string
-	tiene_alarma_incencio?: boolean
+	tiene_alarma_incendio?: boolean
 	tiene_sprinklers?: boolean
 	year_construccion?: number
 	metros_cuadrados?: number

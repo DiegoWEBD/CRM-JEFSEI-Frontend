@@ -21,11 +21,11 @@ export const useFormularioActualizarProspectoCondominio = ({
 			await actualizarProspectoCondominio(prospecto.id, {
 				rut_riesgo: values.rut_riesgo ?? null,
 				nombre_riesgo: values.nombre_riesgo,
-				telefono_contacto: values.telefono_contacto,
+				telefono_contacto: values.telefono_contacto ?? null,
 				correo_contacto: values.correo_contacto ?? null,
-				direccion: values.direccion,
-				region: values.region,
-				comuna: values.comuna,
+				direccion: values.direccion ?? null,
+				region: values.region ?? null,
+				comuna: values.comuna ?? null,
 				observaciones: values.observaciones ?? null,
 				id_linea_negocio: values.id_linea_negocio,
 				uf_por_metro_cuadrado: values.uf_por_metro_cuadrado ?? null,
@@ -37,17 +37,23 @@ export const useFormularioActualizarProspectoCondominio = ({
 					: null,
 				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
 				uso_del_condominio: values.uso_del_condominio ?? null,
+				materialidad: values.materialidad ?? null,
+				clasificacion_preliminar_incendio:
+					values.clasificacion_preliminar_incendio ?? null,
+				procesos_productivos: values.procesos_productivos ?? null,
 				numero_pisos: values.numero_pisos ?? null,
 				numero_torres: values.numero_torres ?? null,
 				cantidad_departamentos: values.cantidad_departamentos ?? null,
 				cantidad_subterraneos: values.cantidad_subterraneos ?? null,
 				tiene_piscina: values.tiene_piscina ?? null,
+				ubicacion_piscina: values.ubicacion_piscina ?? null,
+				tiene_alarma_incendio: values.tiene_alarma_incendio ?? null,
+				tiene_sprinklers: values.tiene_sprinklers ?? null,
 				year_construccion: values.year_construccion ?? null,
 				metros_cuadrados: values.metros_cuadrados ?? null,
 			})
 		},
 		onSuccess: () => {
-			console.log('success')
 			queryClient.invalidateQueries({
 				queryKey: ['prospecto', prospecto.id],
 			})
@@ -95,7 +101,7 @@ export const useFormularioActualizarProspectoCondominio = ({
 			cantidad_subterraneos: prospecto.cantidad_subterraneos,
 			tiene_piscina: prospecto.tiene_piscina,
 			ubicacion_piscina: prospecto.ubicacion_piscina,
-			tiene_alarma_incencio: prospecto.tiene_alarma_incencio,
+			tiene_alarma_incendio: prospecto.tiene_alarma_incendio,
 			tiene_sprinklers: prospecto.tiene_sprinklers,
 			year_construccion: prospecto.year_construccion,
 			metros_cuadrados: prospecto.metros_cuadrados,

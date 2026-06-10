@@ -1,15 +1,13 @@
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import Campo from '@/components/forms/campo/campo'
 import Input from '@/components/forms/input/input'
-import SiNoSelect from '@/components/forms/si-no-select/si-no-select'
-import { inputPendiente } from '@/utils/input/input-pendiente'
-import { FormikProps } from 'formik'
-import { inp } from '../formulario-actualizar-prospecto'
 import Select from '@/components/forms/select/select'
-import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectContent from '@/components/forms/select/select-content/select-content'
 import SelectItem from '@/components/forms/select/select-item/select-item'
+import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
+import SiNoSelect from '@/components/forms/si-no-select/si-no-select'
+import { classname } from '@/lib/class-name'
 import {
 	CLASIFICACION_PRELIMINAR_INCENDIO_LABELS,
 	clasificacionPreliminarDesdeMaterialidad,
@@ -17,13 +15,15 @@ import {
 	MATERIALIDAD_PRINCIPAL_LABELS,
 	MaterialidadPrincipalCondominio,
 } from '@/lib/materialidades'
-import { classname } from '@/lib/class-name'
 import {
 	UBICACION_PISCINA_LABELS,
 	UBICACION_PISCINA_OPCIONES_CON_PISCINA,
 	UbicacionPiscinaCondominio,
 } from '@/lib/ubicacion.piscina'
+import { inputPendiente } from '@/utils/input/input-pendiente'
+import { FormikProps } from 'formik'
 import { useMemo } from 'react'
+import { inp } from '../formulario-actualizar-prospecto'
 
 type CamposAdicionalesProspectoCondominioProps = {
 	formik: FormikProps<FormularioInitialValues>
@@ -293,16 +293,16 @@ export default function CamposAdicionalesProspectoCondominio({
 
 			<SiNoSelect
 				label='Cuenta con alarma de incendio'
-				value={formik.values.tiene_alarma_incencio}
+				value={formik.values.tiene_alarma_incendio}
 				labelClassName={
-					inputPendiente(formik.values.tiene_alarma_incencio)
+					inputPendiente(formik.values.tiene_alarma_incendio)
 						? 'text-amber-800 dark:text-amber-200'
 						: undefined
 				}
 				triggerClassName={inp(
-					inputPendiente(formik.values.tiene_alarma_incencio),
+					inputPendiente(formik.values.tiene_alarma_incendio),
 				)}
-				onChange={value => formik.setFieldValue('tiene_alarma_incencio', value)}
+				onChange={value => formik.setFieldValue('tiene_alarma_incendio', value)}
 			/>
 
 			<SiNoSelect

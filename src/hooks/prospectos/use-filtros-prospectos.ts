@@ -13,7 +13,6 @@ export const useFiltrosProspectos = (prospectos?: ProspectoResumenJson[]) => {
 	)
 
 	const prospectosFiltrados = useMemo(() => {
-		console.log(prospectos)
 		if (!prospectos) return []
 		if (filtro === 'todos') return [...prospectos]
 
@@ -22,7 +21,6 @@ export const useFiltrosProspectos = (prospectos?: ProspectoResumenJson[]) => {
 
 	const contarFiltro = useCallback(
 		(value: FiltroEstadoComercialValor): number => {
-			console.log('contando filtros')
 			if (value === 'todos') return prospectos?.length ?? 0
 
 			return (
