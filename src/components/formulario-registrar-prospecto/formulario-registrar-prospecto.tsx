@@ -62,32 +62,6 @@ const FormularioRegistrarProspecto = ({
 			</FormRow>
 
 			<FormRow>
-				<Label>Nombre contacto</Label>
-				<Input
-					name='nombre_contacto'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.nombre_contacto}
-				/>
-				{formik.touched.nombre_contacto && formik.errors.nombre_contacto ? (
-					<FormError>{formik.errors.nombre_contacto}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Cargo contacto</Label>
-				<Input
-					name='cargo_contacto'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.cargo_contacto}
-				/>
-				{formik.touched.cargo_contacto && formik.errors.cargo_contacto ? (
-					<FormError>{formik.errors.cargo_contacto}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
 				<Label>Correo contacto</Label>
 				<Input
 					name='correo_contacto'
@@ -126,7 +100,7 @@ const FormularioRegistrarProspecto = ({
 				) : null}
 			</FormRow>
 
-			<FormRow>
+			{/**<FormRow>
 				<Label>Comuna</Label>
 				<Select
 					name='id_comuna'
@@ -148,7 +122,7 @@ const FormularioRegistrarProspecto = ({
 				{formik.touched.id_comuna && formik.errors.id_comuna ? (
 					<FormError>{formik.errors.id_comuna}</FormError>
 				) : null}
-			</FormRow>
+			</FormRow> */}
 
 			<FormRow>
 				<Label>Observaciones</Label>
@@ -188,20 +162,6 @@ const FormularioRegistrarProspecto = ({
 				</Select>
 				{formik.touched.id_linea_negocio && formik.errors.id_linea_negocio ? (
 					<FormError>{formik.errors.id_linea_negocio}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Cuenta con locales comerciales</Label>
-				<Input
-					name='tiene_locales_comerciales'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.tiene_locales_comerciales}
-				/>
-				{formik.touched.tiene_locales_comerciales &&
-				formik.errors.tiene_locales_comerciales ? (
-					<FormError>{formik.errors.tiene_locales_comerciales}</FormError>
 				) : null}
 			</FormRow>
 
@@ -278,19 +238,6 @@ const FormularioRegistrarProspecto = ({
 			</FormRow>
 
 			<FormRow>
-				<Label>Cuenta con piscina</Label>
-				<Input
-					name='tiene_piscina'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.tiene_piscina}
-				/>
-				{formik.touched.tiene_piscina && formik.errors.tiene_piscina ? (
-					<FormError>{formik.errors.tiene_piscina}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
 				<Label>Año de construcción</Label>
 				<Input
 					name='year_construccion'
@@ -315,20 +262,6 @@ const FormularioRegistrarProspecto = ({
 				/>
 				{formik.touched.metros_cuadrados && formik.errors.metros_cuadrados ? (
 					<FormError>{formik.errors.metros_cuadrados}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Administrador desea ser contactado</Label>
-				<Input
-					name='desea_ser_contactado'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.desea_ser_contactado}
-				/>
-				{formik.touched.desea_ser_contactado &&
-				formik.errors.desea_ser_contactado ? (
-					<FormError>{formik.errors.desea_ser_contactado}</FormError>
 				) : null}
 			</FormRow>
 

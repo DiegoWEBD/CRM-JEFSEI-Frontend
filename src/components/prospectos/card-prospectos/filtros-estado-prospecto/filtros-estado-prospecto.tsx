@@ -1,34 +1,40 @@
+import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import ChipFiltro from '@/components/chip-filtro/chip-filtro'
 import Select from '@/components/forms/select/select'
 import SelectContent from '@/components/forms/select/select-content/select-content'
 import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
-import { FiltroEstadoComercialValor } from '@/hooks/prospectos/use-filtros-prospectos'
+import {
+	FiltroEstadoComercialValor,
+	useFiltrosProspectos,
+} from '@/hooks/prospectos/use-filtros-prospectos'
 import {
 	ESTADO_PROSPECTO_LABELS,
+	EstadoComercialProspecto,
 	ESTADOS_PROSPECTO,
 } from '@/types/estados/estado-comercial-cliente'
 import { useMemo } from 'react'
 
 type FiltrosEstadoProspectoProps = {
+	prospectos?: ProspectoResumenJson[]
 	filtroActivo: FiltroEstadoComercialValor
 	onFiltroChange: (valor: FiltroEstadoComercialValor) => void
 	contarFiltro: (value: FiltroEstadoComercialValor) => number
 }
 
 export function FiltrosEstadoProspecto({
+	prospectos,
 	filtroActivo,
 	onFiltroChange,
 	contarFiltro,
 }: FiltrosEstadoProspectoProps) {
 	const opcionesSelect: {
-		value: FiltroEstadoComercialValor
+		value: EstadoComercialProspecto
 		label: string
 		count: number
 	}[] = useMemo(
 		() => [
-			{ value: 'todos', label: 'Todos', count: 12 },
 			...ESTADOS_PROSPECTO.map(estado => ({
 				value: estado,
 				label: ESTADO_PROSPECTO_LABELS[estado],
@@ -41,6 +47,8 @@ export function FiltrosEstadoProspecto({
 	const labelSelectActivo =
 		opcionesSelect.find(o => o.value === filtroActivo)?.label ??
 		'Estado comercial'
+
+	const { filtrosContados } = useFiltrosProspectos(prospectos)
 
 	return (
 		<div className='space-y-1.5'>
@@ -63,9 +71,12 @@ export function FiltrosEstadoProspecto({
 						</SelectValue>
 					</SelectTrigger>
 					<SelectContent>
+						<SelectItem value='todos' className='text-xs'>
+							Todos ({prospectos?.length ?? 0})
+						</SelectItem>
 						{opcionesSelect.map(o => (
 							<SelectItem key={o.value} value={o.value} className='text-xs'>
-								{o.label} ({o.count})
+								{o.label} ({filtrosContados.get(o.value)})
 							</SelectItem>
 						))}
 					</SelectContent>
@@ -82,7 +93,7 @@ export function FiltrosEstadoProspecto({
 					activo={filtroActivo === 'todos'}
 					onClick={() => onFiltroChange('todos')}
 					label='Todos'
-					count={1}
+					count={prospectos?.length ?? 0}
 				/>
 				{ESTADOS_PROSPECTO.map(est => (
 					<ChipFiltro
@@ -90,7 +101,7 @@ export function FiltrosEstadoProspecto({
 						activo={filtroActivo === est}
 						onClick={() => onFiltroChange(est)}
 						label={ESTADO_PROSPECTO_LABELS[est]}
-						count={1}
+						count={filtrosContados.get(est) ?? 0}
 					/>
 				))}
 			</div>

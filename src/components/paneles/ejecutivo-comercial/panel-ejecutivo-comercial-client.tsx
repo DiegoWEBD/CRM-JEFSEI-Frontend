@@ -14,6 +14,7 @@ import PanelFooter from '../panel-layout/panel-footer/panel-footer'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelLayout from '../panel-layout/panel-layout'
 import CardKpi from './cards/card-kpi/card-kpi'
+import MetricasEjecutivoComercial from './metricas-ejecutivo-comercial/metricas-ejecutivo-comercial'
 
 type EjecutivoComercialPanelClientProps = {
 	prospectosIniciales: ProspectoResumenJson[]
@@ -57,6 +58,7 @@ export default function EjecutivoComercialPanelClient({
 	return (
 		<PanelLayout>
 			<PanelHeader>
+				<MetricasEjecutivoComercial />
 				<div className='grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4'>
 					{tarjetasResumen.map(datos => (
 						<CardKpi

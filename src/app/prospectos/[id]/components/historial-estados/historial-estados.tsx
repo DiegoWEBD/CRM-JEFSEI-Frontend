@@ -8,6 +8,7 @@ import DialogHeader from '@/components/dialog/dialog-header/dialog-hedaer'
 import DialogTitle from '@/components/dialog/dialog-title/dialog-title'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { HistorialEstadoComercialLista } from './historial-estado-comercial-lista/historial-estado-comercial-lista'
+import { HistorialEstadoJson } from '@/aplicacion/estados/dto/historial-estado-json'
 
 type HistorialInteraccionesProps = {
 	prospecto: Prospecto
@@ -20,7 +21,8 @@ const HistorialEstados = ({
 	openHistorialEstadoDialog,
 	setOpenHistorialEstadoDialog,
 }: HistorialInteraccionesProps) => {
-	const historialEstados = prospecto.proceso_comercial.historial_estados
+	//const historialEstados = prospecto.proceso_comercial.historial_estados
+	const historialEstados: HistorialEstadoJson[] = []
 
 	return (
 		<Dialog

@@ -70,6 +70,7 @@ export default function CardProspectosClient({
 				</div>
 
 				<FiltrosEstadoProspecto
+					prospectos={prospectos}
 					filtroActivo={filtro}
 					onFiltroChange={cambiarFiltro}
 					contarFiltro={contarFiltro}

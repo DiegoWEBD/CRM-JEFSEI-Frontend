@@ -5,6 +5,7 @@ export default class SolicitudCotizacion {
 		public id: number,
 		public fecha: string,
 		public prioridad: Prioridad,
+		public producto: string,
 		public tipo: string,
 		public observaciones?: string,
 		public revisado: boolean = false,

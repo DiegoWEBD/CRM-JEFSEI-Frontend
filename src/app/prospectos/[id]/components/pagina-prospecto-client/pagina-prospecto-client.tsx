@@ -55,7 +55,10 @@ export default function PaginaProspectoClient({
 				informacionCompleta={prospecto.informacion_completa}
 			/>
 
-			<CardPolizas idCliente={prospecto.id_cliente} />
+			<CardPolizas
+				idCliente={prospecto.id_cliente}
+				nombreCliente={prospecto.nombre_riesgo}
+			/>
 		</PanelLayout>
 	)
 }
