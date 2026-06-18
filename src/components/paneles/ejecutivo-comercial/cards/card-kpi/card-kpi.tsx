@@ -1,7 +1,4 @@
-import Card from '@/components/card/card'
-import CardContent from '@/components/card/card-content/card-content'
-import CardHeader from '@/components/card/card-header/card-header'
-import CardTitle from '@/components/card/card-title/card-title'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { DatosKpi } from '@/hooks/kpi/dto/datos-kpi'
 import { Bell } from 'lucide-react'
 import { Dispatch, SetStateAction } from 'react'

@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/button/button'
+import { Button } from '@/components/button'
 import Form from '@/components/forms/form/form'
 import Input from '@/components/forms/input/input'
 import { useAuth } from '@/hooks/auth/use-auth'
@@ -8,9 +8,7 @@ import { useFormik } from 'formik'
 import LoginFormHeader from './login-form-header'
 import FormError from '@/components/forms/form-error/form-error'
 import Loader from '@/components/loaders/loder'
-import Card from '@/components/card/card'
-import CardContent from '@/components/card/card-content/card-content'
-import CardFooter from '@/components/card/card-footer/card-footer'
+import { Card, CardContent, CardFooter } from '@/components/card'
 import Label from '@/components/forms/label/label'
 
 const LoginForm = () => {

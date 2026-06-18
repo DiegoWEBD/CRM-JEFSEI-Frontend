@@ -1,4 +1,4 @@
-import CardContent from '@/components/card/card-content/card-content'
+import { CardContent } from '@/components/card'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { inputPendiente } from '@/utils/input/input-pendiente'

@@ -7,7 +7,7 @@ export const useObtenerSolicitudesCotizacion = (idProspecto: number) => {
 		queryKey: ['solicitudes-cotizacion', idProspecto],
 		queryFn: async () => {
 			const response = await axios.get(
-				`/api/solicitudes-cotizacion?id_prospecto=${idProspecto}`,
+				`/api/prospectos/${idProspecto}/solicitudes-cotizacion`,
 			)
 			const data: SolicitudCotizacion[] = response.data
 

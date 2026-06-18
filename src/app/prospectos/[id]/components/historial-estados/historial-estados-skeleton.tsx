@@ -1,5 +1,4 @@
-import Card from '@/components/card/card'
-import CardHeader from '@/components/card/card-header/card-header'
+import { Card, CardHeader } from '@/components/card'
 
 type HistorialEstadosSkeletonProps = {
 	cantidad?: number

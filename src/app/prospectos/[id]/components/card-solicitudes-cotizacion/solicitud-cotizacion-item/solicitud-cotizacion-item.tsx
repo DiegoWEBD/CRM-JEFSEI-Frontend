@@ -1,6 +1,6 @@
 import { PRIORIDAD_BADGE } from '@/app/styles/estados/prioridad-badge'
-import { Badge } from '@/components/badge/badge'
-import Button from '@/components/button/button'
+import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
 import { classname } from '@/lib/class-name'
@@ -39,12 +39,12 @@ export default function SolicitudCotizacionItem({
 					>
 						{normalizarTexto(solicitud.prioridad, true)}
 					</Badge>
-					{!solicitud.revisado && (
+					{!solicitud.informacion_completa && (
 						<Badge
 							variant='outline'
 							className='text-[10px] font-medium capitalize border-sky-500/35 bg-sky-500/10 text-sky-950 dark:text-sky-100'
 						>
-							Pendiente de revisión
+							Información incompleta
 						</Badge>
 					)}
 					<EstadoCompletitudInformacion

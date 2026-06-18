@@ -1,10 +1,9 @@
 'use client'
 
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
-import { Badge } from '@/components/badge/badge'
-import Button from '@/components/button/button'
-import Card from '@/components/card/card'
-import CardContent from '@/components/card/card-content/card-content'
+import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
+import { Card, CardContent } from '@/components/card'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { useHistorialEstadoDialog } from '@/hooks/historial-estado/use-historial-estado-dialog'

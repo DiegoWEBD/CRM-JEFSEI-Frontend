@@ -1,4 +1,5 @@
 import { getSession } from '@/lib/auth'
+import axios from 'axios'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -12,7 +13,13 @@ export async function GET() {
 			)
 
 		return NextResponse.json(payload)
-	} catch {
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			return NextResponse.json(
+				{ error: error.response?.data?.error || error.response?.data?.detail || error.message },
+				{ status: error.response?.status ?? 500 },
+			)
+		}
 		return NextResponse.json(
 			{ error: 'Error obteniendo sesión' },
 			{ status: 500 },

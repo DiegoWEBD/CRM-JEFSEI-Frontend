@@ -1,48 +1,53 @@
-import axios from 'axios'
+'use client'
+
+import { clientAxios } from '@/infraestructura/axios/client-axios'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useUserSession } from './use-user-session'
 
 export const useAuth = () => {
-	const [cargando, setCargando] = useState(false)
-	const [error, setError] = useState<string | null>(null)
+  const [cargando, setCargando] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-	const router = useRouter()
+  const router = useRouter()
+  const session = useUserSession()
 
-	const login = async (rut: string, password: string) => {
-		try {
-			setCargando(true)
-			setError(null)
+  const login = async (rut: string, password: string) => {
+    try {
+      setCargando(true)
+      setError(null)
 
-			await axios.post('/api/auth/login', {
-				rut,
-				password,
-			})
+      await clientAxios.post('/api/auth/login', {
+        rut,
+        password,
+      })
 
-			// Refrescar server components para actualizar cookies
-			router.replace('/')
-			router.refresh()
-		} catch {
-			setError('Credenciales inválidas')
-		} finally {
-			setCargando(false)
-		}
-	}
+      router.replace('/')
+      router.refresh()
+    } catch {
+      setError('Credenciales inválidas')
+    } finally {
+      setCargando(false)
+    }
+  }
 
-	const logout = async () => {
-		try {
-			await axios.post('/api/auth/logout')
+  const logout = async () => {
+    try {
+      await clientAxios.post('/api/auth/logout')
+      router.replace('/login')
+      router.refresh()
+    } catch {
+      console.error('Error al cerrar sesión')
+    }
+  }
 
-			router.replace('/login')
-			router.refresh()
-		} catch {
-			console.error('Error al cerrar sesión')
-		}
-	}
-
-	return {
-		cargando,
-		error,
-		login,
-		logout,
-	}
+  return {
+    cargando: cargando || session.cargando,
+    error,
+    login,
+    logout,
+    usuario: session.usuario,
+    tieneRol: session.tieneRol,
+    tieneAlgunRol: session.tieneAlgunRol,
+  }
 }

@@ -1,5 +1,5 @@
-import Button from '@/components/button/button'
-import CardContent from '@/components/card/card-content/card-content'
+import { Button } from '@/components/button'
+import { CardContent } from '@/components/card'
 import Input from '@/components/forms/input/input'
 import Label from '@/components/forms/label/label'
 import Select from '@/components/forms/select/select'

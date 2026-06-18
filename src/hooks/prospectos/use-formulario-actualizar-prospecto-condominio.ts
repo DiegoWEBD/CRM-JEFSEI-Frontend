@@ -10,6 +10,11 @@ type UseFormularioActualizarProspecto = {
 	onComplete?: () => void
 }
 
+function n2(value: unknown): number | null {
+	if (value === '' || value == null) return null
+	return Number(value)
+}
+
 export const useFormularioActualizarProspectoCondominio = ({
 	prospecto,
 	onComplete,
@@ -28,7 +33,7 @@ export const useFormularioActualizarProspectoCondominio = ({
 				comuna: values.comuna ?? null,
 				observaciones: values.observaciones ?? null,
 				id_linea_negocio: values.id_linea_negocio,
-				uf_por_metro_cuadrado: values.uf_por_metro_cuadrado ?? null,
+				uf_por_metro_cuadrado: n2(values.uf_por_metro_cuadrado),
 				porcentaje_depreciacion: values.porcentaje_depreciacion
 					? values.porcentaje_depreciacion / 100
 					: null,
@@ -41,16 +46,16 @@ export const useFormularioActualizarProspectoCondominio = ({
 				clasificacion_preliminar_incendio:
 					values.clasificacion_preliminar_incendio ?? null,
 				procesos_productivos: values.procesos_productivos ?? null,
-				numero_pisos: values.numero_pisos ?? null,
-				numero_torres: values.numero_torres ?? null,
-				cantidad_departamentos: values.cantidad_departamentos ?? null,
-				cantidad_subterraneos: values.cantidad_subterraneos ?? null,
+				numero_pisos: n2(values.numero_pisos),
+				numero_torres: n2(values.numero_torres),
+				cantidad_departamentos: n2(values.cantidad_departamentos),
+				cantidad_subterraneos: n2(values.cantidad_subterraneos),
 				tiene_piscina: values.tiene_piscina ?? null,
 				ubicacion_piscina: values.ubicacion_piscina ?? null,
 				tiene_alarma_incendio: values.tiene_alarma_incendio ?? null,
 				tiene_sprinklers: values.tiene_sprinklers ?? null,
-				year_construccion: values.year_construccion ?? null,
-				metros_cuadrados: values.metros_cuadrados ?? null,
+				year_construccion: n2(values.year_construccion),
+				metros_cuadrados: n2(values.metros_cuadrados),
 			})
 		},
 		onSuccess: () => {

@@ -1,11 +1,8 @@
 'use client'
 
 import InicialesUsuario from '@/app/personal/components/iniciales-usuario'
-import Button from '@/components/button/button'
-import DropdownMenu from '@/components/dropdown-menu/dropdown-menu'
-import DropdownMenuContent from '@/components/dropdown-menu/dropdown-menu-conten/dropdown-menu-content'
-import DropdownMenuItem from '@/components/dropdown-menu/dropdown-menu-item/dropdown-menu-item'
-import DropdownMenuTrigger from '@/components/dropdown-menu/dropdown-menu-trigger/dropdown-menu-trigger'
+import { Button } from '@/components/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/dropdown-menu'
 import { useAuth } from '@/hooks/auth/use-auth'
 import { ChevronDown, LogOut, Settings, User } from 'lucide-react'
 

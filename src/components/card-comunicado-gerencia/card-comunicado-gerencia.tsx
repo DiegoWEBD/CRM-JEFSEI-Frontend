@@ -1,10 +1,7 @@
 import { useComunicadosGerencia } from '@/hooks/comunicados-gerencia/use-comunicados-gerencia'
 import { Bell } from 'lucide-react'
-import { Badge } from '../badge/badge'
-import Card from '../card/card'
-import CardContent from '../card/card-content/card-content'
-import CardHeader from '../card/card-header/card-header'
-import CardTitle from '../card/card-title/card-title'
+import { Badge } from '@/components/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { formatearFecha } from '@/utils/formatear-fecha'
 
 export default function CardComunicadoGerencia() {

@@ -15,7 +15,7 @@ export interface Prospecto {
 	observaciones?: string
 	linea_negocio: LineaNegocio
 	registrado_por: UsuarioResumenJson
-	ejecutivo_comercial_asignado: UsuarioResumenJson
+	ejecutivo_comercial_asignado?: UsuarioResumenJson
 	planificacion_prospecto?: PlanificacionProspectoJson
 	ultima_actualizacion: string
 	informacion_completa: boolean

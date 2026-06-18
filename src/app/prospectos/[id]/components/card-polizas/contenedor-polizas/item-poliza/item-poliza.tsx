@@ -1,4 +1,4 @@
-import { Badge } from '@/components/badge/badge'
+import { Badge } from '@/components/badge'
 import Poliza from '@/dominio/poliza/poliza'
 import { classname } from '@/lib/class-name'
 import {

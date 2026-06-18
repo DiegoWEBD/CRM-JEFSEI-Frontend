@@ -1,5 +1,5 @@
-import Button from '@/components/button/button'
-import CardContent from '@/components/card/card-content/card-content'
+import { Button } from '@/components/button'
+import { CardContent } from '@/components/card'
 import Campo from '@/components/forms/campo/campo'
 import Input from '@/components/forms/input/input'
 import { Prospecto } from '@/dominio/prospecto/prospecto'

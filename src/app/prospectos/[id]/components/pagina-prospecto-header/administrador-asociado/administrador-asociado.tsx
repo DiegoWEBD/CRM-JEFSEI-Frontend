@@ -1,4 +1,4 @@
-import Button from '@/components/button/button'
+import { Button } from '@/components/button'
 import AdministradorCondominio from '@/dominio/administrador-condominio/administrador-condominio'
 import Link from 'next/link'
 

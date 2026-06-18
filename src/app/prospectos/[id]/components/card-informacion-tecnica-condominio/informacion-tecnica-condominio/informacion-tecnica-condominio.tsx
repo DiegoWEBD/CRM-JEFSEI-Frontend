@@ -1,4 +1,4 @@
-import CardContent from '@/components/card/card-content/card-content'
+import { CardContent } from '@/components/card'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import InformacionAdicionalProspectoCondominio from '../../card-informacion-prospecto/informacion-prospecto/informacion-adicional-prospecto-condominio/informacion-adicional-prospecto-condominio'

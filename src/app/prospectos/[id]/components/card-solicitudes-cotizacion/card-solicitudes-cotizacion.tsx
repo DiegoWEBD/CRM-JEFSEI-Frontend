@@ -1,8 +1,5 @@
-import Button from '@/components/button/button'
-import Card from '@/components/card/card'
-import CardContent from '@/components/card/card-content/card-content'
-import CardHeader from '@/components/card/card-header/card-header'
-import CardTitle from '@/components/card/card-title/card-title'
+import { Button } from '@/components/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import { useObtenerSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-cotizacion'
 import { Plus } from 'lucide-react'
@@ -41,7 +38,7 @@ export default function CardSolicitudesCotizacion({
 				<CardTitle className='min-w-0 text-sm font-semibold leading-tight tracking-tight text-foreground'>
 					Solicitudes de cotización por línea de seguro
 				</CardTitle>
-				<AuthGuard codigosRoles={['EJECUTIVO_COMERCIAL']}>
+				<AuthGuard allowedRoles={['EJECUTIVO_COMERCIAL']}>
 					{solicitudes && solicitudes.length > 0 ? botonNueva : null}
 				</AuthGuard>
 			</CardHeader>
@@ -53,7 +50,7 @@ export default function CardSolicitudesCotizacion({
 							Aún no hay solicitudes de cotización registradas para este
 							cliente.
 						</p>
-						<AuthGuard codigosRoles={['EJECUTIVO_COMERCIAL']}>
+						<AuthGuard allowedRoles={['EJECUTIVO_COMERCIAL']}>
 							{botonNueva}
 						</AuthGuard>
 					</div>

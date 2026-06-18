@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/auth/use-auth'
-import Button from '../button/button'
+import { Button } from '@/components/button'
 
 const LogoutButton = () => {
 	const { logout } = useAuth()

@@ -1,4 +1,4 @@
-import CardHeader from '@/components/card/card-header/card-header'
+import { CardHeader } from '@/components/card'
 import { Shield } from 'lucide-react'
 
 const LoginFormHeader = () => {

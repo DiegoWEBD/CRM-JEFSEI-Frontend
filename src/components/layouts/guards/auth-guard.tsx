@@ -1,44 +1,29 @@
 'use client'
 
-import { obtenerSesion } from '@/aplicacion/auth/use-cases/obtener-sesion'
-import { TokenPayload } from '@/dtos/token-payload'
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { useUserSession } from '@/hooks/auth/use-user-session'
+import { ReactNode } from 'react'
 
 type AuthGuardProps = {
-	children: ReactNode
-	codigosRoles?: string[]
+  children: ReactNode
+  /** Solo se renderiza si el usuario tiene al menos uno de estos roles */
+  allowedRoles?: string[]
+  /** Contenido alternativo cuando no está autorizado (default: null) */
+  fallback?: ReactNode
+  /** Contenido alternativo mientras se verifica auth (default: null) */
+  loadingFallback?: ReactNode
 }
 
 export default function AuthGuard({
-	children,
-	codigosRoles = [],
+  children,
+  allowedRoles = [],
+  fallback = null,
+  loadingFallback = null,
 }: AuthGuardProps) {
-	const [permitido, setPermitido] = useState<boolean>(false)
+  const { usuario, cargando, tieneAlgunRol } = useUserSession()
 
-	const validar = useCallback(
-		(payload: TokenPayload | null): boolean => {
-			if (!payload) {
-				return false
-			}
+  if (cargando) return <>{loadingFallback}</>
+  if (!usuario) return <>{fallback}</>
+  if (allowedRoles.length > 0 && !tieneAlgunRol(allowedRoles)) return <>{fallback}</>
 
-			if (codigosRoles.length === 0) return true
-
-			const tieneRol = payload.codigo_roles.some(rol =>
-				codigosRoles.includes(rol),
-			)
-
-			return tieneRol
-		},
-		[codigosRoles],
-	)
-
-	useEffect(() => {
-		obtenerSesion()
-			.then(payload => setPermitido(validar(payload)))
-			.catch(() => setPermitido(false))
-	}, [validar])
-
-	if (!permitido) return null
-
-	return <>{children}</>
+  return <>{children}</>
 }

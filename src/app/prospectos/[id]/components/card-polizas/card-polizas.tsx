@@ -1,14 +1,12 @@
 'use client'
 
-import Button from '@/components/button/button'
-import Card from '@/components/card/card'
-import CardContent from '@/components/card/card-content/card-content'
+import { Button } from '@/components/button'
+import { Card, CardContent } from '@/components/card'
 import { useQueryPolizas } from '@/hooks/polizas/use-query-polizas'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import KpiEstadoPoliza from './kpi-estado-poliza/kpi-estado-poliza'
-import CardHeader from '@/components/card/card-header/card-header'
-import CardTitle from '@/components/card/card-title/card-title'
+import { CardHeader, CardTitle } from '@/components/card'
 import ContenedorPolizas from './contenedor-polizas/contenedor-polizas'
 import { useFiltrarPolizas } from '@/hooks/polizas/use-filtrar-polizas'
 

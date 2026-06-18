@@ -8,7 +8,7 @@ export const obtenerSolicitudesCotizacionActivas = async (
 ): Promise<SolicitudCotizacion[]> => {
 	const cookieStore = await cookies()
 	const response = await axiosClient.get(
-		`/solicitudes-cotizacion?id_prospecto=${idProspecto}`,
+		`/prospectos/${idProspecto}/solicitudes-cotizacion`,
 		{
 			headers: {
 				Cookie: cookieStore.toString(),

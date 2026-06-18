@@ -1,6 +1,6 @@
 import { HistorialEstadoJson } from '@/aplicacion/estados/dto/historial-estado-json'
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
-import { Badge } from '@/components/badge/badge'
+import { Badge } from '@/components/badge'
 import { classname } from '@/lib/class-name'
 import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { formatearFecha } from '@/utils/formatear-fecha'

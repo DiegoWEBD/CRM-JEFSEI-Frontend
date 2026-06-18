@@ -1,20 +1,14 @@
 'use client'
 
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import Button from '@/components/button/button'
-import Card from '@/components/card/card'
-import CardContent from '@/components/card/card-content/card-content'
-import CardHeader from '@/components/card/card-header/card-header'
-import CardTitle from '@/components/card/card-title/card-title'
-import Dialog from '@/components/dialog/dialog'
-import DialogContent from '@/components/dialog/dialog-content/dialog-content'
-import DialogDescription from '@/components/dialog/dialog-description/dialog-description'
-import DialogHeader from '@/components/dialog/dialog-header/dialog-hedaer'
-import DialogTitle from '@/components/dialog/dialog-title/dialog-title'
-import Input from '@/components/forms/input/input'
+import { Button } from '@/components/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import { Dialog, DialogContent } from '@/components/dialog'
+import { Input } from '@/components/input'
 import FormularioRegistrarProspecto from '@/components/formulario-registrar-prospecto/formulario-registrar-prospecto'
 import { useControlledInput } from '@/hooks/input/use-controlled-input'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
+import { useQueryClient } from '@tanstack/react-query'
 import { Plus, Search } from 'lucide-react'
 import { useState } from 'react'
 import FilaProspecto from './fila-prospecto'
@@ -31,10 +25,16 @@ export default function CardProspectosClient({
 	const { filtro, prospectosFiltrados, cambiarFiltro, contarFiltro } =
 		useFiltrosProspectos(prospectos)
 
+	const queryClient = useQueryClient()
+
 	const [
 		openFormularioRegistrarProspecto,
 		setOpenFormularioRegistrarProspecto,
 	] = useState<boolean>(false)
+
+	const onProspectoRegistrado = () => {
+		queryClient.invalidateQueries({ queryKey: ['prospectos'] })
+	}
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
@@ -128,14 +128,19 @@ export default function CardProspectosClient({
 					setOpenFormularioRegistrarProspecto(open)
 				}
 			>
-				<DialogContent className='h-screen max-w-screen sm:max-w-200 sm:h-150 overflow-y-auto'>
-					<DialogHeader>
-						<DialogTitle>Registrar prospecto</DialogTitle>
-						<DialogDescription>
+				<DialogContent className='max-h-[90vh] max-w-3xl overflow-y-auto p-0'>
+					<div className='border-b border-border px-6 py-4'>
+						<h2 className='text-lg font-semibold'>Registrar prospecto</h2>
+						<p className='text-sm text-muted-foreground'>
 							Completa los datos del prospecto para crear un nuevo registro.
-						</DialogDescription>
-					</DialogHeader>
-					<FormularioRegistrarProspecto />
+						</p>
+					</div>
+					<div className='px-6 py-4'>
+						<FormularioRegistrarProspecto
+							onClose={() => setOpenFormularioRegistrarProspecto(false)}
+							onProspectoRegistrado={onProspectoRegistrado}
+						/>
+					</div>
 				</DialogContent>
 			</Dialog>
 		</Card>

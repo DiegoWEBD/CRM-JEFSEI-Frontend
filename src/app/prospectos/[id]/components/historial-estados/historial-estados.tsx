@@ -1,11 +1,7 @@
 'use client'
 
-import Button from '@/components/button/button'
-import Dialog from '@/components/dialog/dialog'
-import DialogContent from '@/components/dialog/dialog-content/dialog-content'
-import DialogFooter from '@/components/dialog/dialog-footer/dialog-footer'
-import DialogHeader from '@/components/dialog/dialog-header/dialog-hedaer'
-import DialogTitle from '@/components/dialog/dialog-title/dialog-title'
+import { Button } from '@/components/button'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/dialog'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { HistorialEstadoComercialLista } from './historial-estado-comercial-lista/historial-estado-comercial-lista'
 import { HistorialEstadoJson } from '@/aplicacion/estados/dto/historial-estado-json'

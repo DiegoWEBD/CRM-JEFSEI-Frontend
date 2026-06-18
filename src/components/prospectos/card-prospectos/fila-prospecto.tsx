@@ -1,5 +1,5 @@
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import Button from '@/components/button/button'
+import { Button } from '@/components/button'
 import { classname } from '@/lib/class-name'
 import Link from 'next/link'
 

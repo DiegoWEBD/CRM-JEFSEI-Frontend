@@ -1,26 +1,49 @@
-import { obtenerSolicitudesCotizacionActivas } from '@/aplicacion/solicitudes-cotizacion/use-cases/obtener-solicitudes-cotizacion/obtener-solicitudes-cotizacion-activas'
+import { obtenerTodasSolicitudesCotizacion } from '@/aplicacion/solicitudes-cotizacion/use-cases/obtener-todas-solicitudes-cotizacion/obtener-todas-solicitudes-cotizacion'
+import { axiosClient } from '@/infraestructura/axios/axios-client'
+import axios from 'axios'
+import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
-	try {
-		const { searchParams } = new URL(request.url)
-		const idProspecto = searchParams.get('id_prospecto')
+export async function GET() {
+  try {
+    const solicitudes = await obtenerTodasSolicitudesCotizacion()
+    return NextResponse.json(solicitudes)
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return NextResponse.json(
+        { error: error.response?.data?.error || error.response?.data?.detail || error.message },
+        { status: error.response?.status ?? 500 },
+      )
+    }
+    return NextResponse.json(
+      { error: 'Error obteniendo solicitudes' },
+      { status: 500 },
+    )
+  }
+}
 
-		if (!idProspecto)
-			return NextResponse.json(
-				{ error: 'Solicitud inválida, indique id_prospecto' },
-				{ status: 400 },
-			)
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const cookieStore = await cookies()
 
-		const solicitudes = await obtenerSolicitudesCotizacionActivas(
-			Number(idProspecto),
-		)
+    const response = await axiosClient.post('/solicitudes-cotizacion', body, {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    })
 
-		return NextResponse.json(solicitudes)
-	} catch {
-		return NextResponse.json(
-			{ error: 'Error obteniendo solicitudes' },
-			{ status: 500 },
-		)
-	}
+    return NextResponse.json(response.data, { status: 201 })
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return NextResponse.json(
+        { error: error.response?.data?.error || error.response?.data?.detail || error.message },
+        { status: error.response?.status ?? 500 },
+      )
+    }
+    return NextResponse.json(
+      { error: 'Error al solicitar cotización' },
+      { status: 500 },
+    )
+  }
 }
