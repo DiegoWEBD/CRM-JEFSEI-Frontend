@@ -1,6 +1,13 @@
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/dialog'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/dialog'
 import Label from '@/components/forms/label/label'
 import Select from '@/components/forms/select/select'
 import SelectContent from '@/components/forms/select/select-content/select-content'
@@ -23,6 +30,7 @@ import {
 	MOTIVOS_CIERRE_PERDIDO_LINEA,
 	MOTIVOS_RECOTIZACION_LINEA,
 } from '@/lib/motivos-recotizacion'
+import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatFechaCorta } from '@/utils/format-fecha-corta'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { addMonths, format } from 'date-fns'
@@ -143,9 +151,114 @@ export default function DialogDetalleSolicitud({
 							<div>
 								<dt className='text-xs text-muted-foreground'>Producto</dt>
 								<dd className='text-sm font-medium text-foreground'>
-									Unidades
+									{solicitud.producto ||
+										TIPO_LINEA_LABELS[solicitud.tipo] ||
+										solicitud.tipo}
 								</dd>
 							</div>
+
+							{solicitud.rut_ejecutivo_comercial ||
+							solicitud.nombre_ejecutivo_comercial ? (
+								<div>
+									<dt className='text-xs text-muted-foreground'>
+										Ejecutivo comercial
+									</dt>
+									<dd className='text-sm font-medium text-foreground'>
+										{solicitud.nombre_ejecutivo_comercial ||
+											solicitud.ejecutivo_comercial}
+										{solicitud.rut_ejecutivo_comercial
+											? ` (${solicitud.rut_ejecutivo_comercial})`
+											: null}
+									</dd>
+								</div>
+							) : null}
+
+							{solicitud.tipo === 'vida_guardia' &&
+							solicitud.numero_guardias != null ? (
+								<div>
+									<dt className='text-xs text-muted-foreground'>
+										Número de guardias
+									</dt>
+									<dd className='text-sm font-medium text-foreground'>
+										{solicitud.numero_guardias}
+									</dd>
+								</div>
+							) : null}
+
+							{solicitud.tipo === 'unidades' &&
+							solicitud.monto_asegurado_total != null ? (
+								<div>
+									<dt className='text-xs text-muted-foreground'>
+										Monto asegurado total
+									</dt>
+									<dd className='text-sm font-medium text-foreground'>
+										{solicitud.monto_asegurado_total.toLocaleString('es-CL')}
+									</dd>
+								</div>
+							) : null}
+
+							{solicitud.tipo === 'unidades' && solicitud.nombre_excel ? (
+								<div>
+									<dt className='text-xs text-muted-foreground'>
+										Archivo Excel
+									</dt>
+									<dd className='text-sm font-medium text-foreground'>
+										{solicitud.nombre_excel}
+									</dd>
+								</div>
+							) : null}
+
+							{solicitud.tipo === 'accidentes_personales' &&
+							solicitud.actividades &&
+							solicitud.actividades.length > 0 ? (
+								<div>
+									<dt className='mb-1 text-xs text-muted-foreground'>
+										Actividades aseguradas
+									</dt>
+									<dd className='space-y-1'>
+										{solicitud.actividades.map((act, i) => (
+											<div
+												key={i}
+												className='flex items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'
+											>
+												<span className='text-sm text-foreground'>
+													{act.actividad}
+												</span>
+												<Badge variant='outline' className='shrink-0 text-xs'>
+													{act.numero_asegurados} asegurado
+													{act.numero_asegurados !== 1 ? 's' : ''}
+												</Badge>
+											</div>
+										))}
+									</dd>
+								</div>
+							) : null}
+
+							{solicitud.tipo === 'rc_condominio' ? (
+								<>
+									{solicitud.actividad_del_condominio ? (
+										<div>
+											<dt className='text-xs text-muted-foreground'>
+												Actividad del condominio
+											</dt>
+											<dd className='text-sm font-medium text-foreground'>
+												{solicitud.actividad_del_condominio}
+											</dd>
+										</div>
+									) : null}
+									{solicitud.limite != null ? (
+										<div>
+											<dt className='text-xs text-muted-foreground'>
+												Límite RC
+											</dt>
+											<dd className='text-sm font-medium text-foreground'>
+												{solicitud.limite.toLocaleString('es-CL')}
+											</dd>
+										</div>
+									) : null}
+								</>
+							) : null}
+
 							<div>
 								<dt className='text-xs text-muted-foreground'>
 									Estado de cotización
@@ -176,34 +289,6 @@ export default function DialogDetalleSolicitud({
 								</dd>
 							</div>
 
-							{/*solicitud.estudios.length > 0 ? (
-								<div>
-									<dt className='mb-1 text-xs text-muted-foreground'>
-										Estudios asociados
-									</dt>
-									<dd className='space-y-1.5'>
-										{solicitud.estudios.map(estudio => (
-											<div
-												key={estudio.id}
-												className='flex flex-wrap items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'
-											>
-												<span className='text-sm font-medium text-foreground'>
-													{estudio.nombre}
-												</span>
-												{estadoEstudio ? (
-													<EstadoPerfilClienteBadge
-														label={ESTADO_ESTUDIO_PERFIL_LABELS[estadoEstudio]}
-														badgeClassName={
-															ESTADO_ESTUDIO_PERFIL_BADGE[estadoEstudio]
-														}
-													/>
-												) : null}
-											</div>
-										))}
-									</dd>
-								</div>
-							) : null*/}
-
 							<div>
 								<dt className='text-xs text-muted-foreground'>
 									Fecha de solicitud
@@ -221,37 +306,6 @@ export default function DialogDetalleSolicitud({
 									</dd>
 								</div>
 							) : null}
-
-							{/**{estadoPerfil === 'recotizacion_solicitada' && fechaRecot ? (
-								<CampoInfo label='Fecha de recotización' value={fechaRecot} />
-							) : null}
-
-							{estadoPerfil === 'recotizacion_solicitada' &&
-							motivoRecotLabel ? (
-								<CampoInfo
-									label='Motivo de recotización'
-									value={motivoRecotLabel}
-								/>
-							) : null}
-                            
-							{(estadoPerfil === 'cerrado_ganado' ||
-								estadoPerfil === 'cerrado_perdido') &&
-							fechaCierre ? (
-								<CampoInfo
-									label={
-										estadoPerfil === 'cerrado_perdido'
-											? 'Fecha de cierre perdido'
-											: 'Fecha de cierre'
-									}
-									value={fechaCierre}
-								/>
-							) : null}
-							{estadoPerfil === 'cerrado_perdido' && motivoPerdidoLabel ? (
-								<CampoInfo
-									label='Motivo de cierre perdido'
-									value={motivoPerdidoLabel}
-								/>
-							) : null} */}
 						</dl>
 					) : null}
 

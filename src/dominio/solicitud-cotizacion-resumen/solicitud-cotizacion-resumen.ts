@@ -13,5 +13,7 @@ export default class SolicitudCotizacionResumen {
     public fecha: string,
     public cantidad_cotizaciones: number,
     public campos_faltantes: string[],
+    public recotizacion: boolean = false,
+    public motivo_recotizacion: string | null = null,
   ) {}
 }

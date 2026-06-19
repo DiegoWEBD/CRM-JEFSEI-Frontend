@@ -2,7 +2,7 @@ import { registrarCotizacion } from '@/aplicacion/cotizaciones/use-cases/registr
 import { RegistrarCotizacionRequest } from '@/aplicacion/cotizaciones/use-cases/registrar-cotizacion/dto/registrar-cotizacion-request'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export const useRegistrarCotizacion = (idSolicitud: number) => {
+export const useRegistrarCotizacion = (idSolicitud: number, idProspecto?: number) => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -12,6 +12,11 @@ export const useRegistrarCotizacion = (idSolicitud: number) => {
       queryClient.invalidateQueries({
         queryKey: ['cotizaciones', idSolicitud],
       })
+      if (idProspecto) {
+        queryClient.invalidateQueries({
+          queryKey: ['solicitudes-cotizacion', idProspecto],
+        })
+      }
     },
   })
 }

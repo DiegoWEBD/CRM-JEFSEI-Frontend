@@ -1,5 +1,7 @@
+import { Suspense } from 'react'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import CardProspectos from '@/components/prospectos/card-prospectos/card-prospectos'
+import { CardProspectosSkeleton } from '@/components/prospectos/card-prospectos/card-prospectos-skeleton'
 import TituloPagina from '@/components/titulos/titulo-pagina'
 
 const ProspectosPage = () => {
@@ -8,10 +10,9 @@ const ProspectosPage = () => {
 			<TituloPagina>Prospectos</TituloPagina>
 
 			<PanelLayout>
-				{/*<Suspense fallback={<CardProspectosSkeleton />}>
+				<Suspense fallback={<CardProspectosSkeleton />}>
 					<CardProspectos />
-				</Suspense>*/}
-				<CardProspectos />
+				</Suspense>
 			</PanelLayout>
 		</>
 	)

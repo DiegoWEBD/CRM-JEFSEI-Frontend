@@ -10,6 +10,7 @@ import {
 	TableRow,
 } from '@/components/table'
 
+import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
 import { Eye, ChevronRight } from 'lucide-react'
@@ -20,7 +21,9 @@ import BadgeEstadoSolicitud, {
 import BadgePrioridad from '@/components/badge-prioridad/badge-prioridad'
 import { cn } from '@/lib/utils'
 
-function resolverEstadoBandeja(s: SolicitudCotizacionResumen): EstadoSolicitudBandeja {
+function resolverEstadoBandeja(
+	s: SolicitudCotizacionResumen,
+): EstadoSolicitudBandeja {
 	if (!s.informacion_completa) return 'informacion_incompleta'
 	if (s.cantidad_cotizaciones > 0) return 'con_cotizaciones'
 	return 'lista_para_cotizar'
@@ -52,14 +55,14 @@ export default function TablaSolicitudesEstudio({
 		<>
 			{/* Mobile: card layout */}
 			<div className='space-y-3 lg:hidden'>
-				{solicitudes.map((s) => {
+				{solicitudes.map(s => {
 					const estado = resolverEstadoBandeja(s)
 					return (
 						<Card
 							key={s.id}
 							className='cursor-pointer border-border bg-card shadow-none transition-colors hover:border-primary/40'
 							onClick={() => onVerDetalle(s)}
-							onKeyDown={(e) => {
+							onKeyDown={e => {
 								if (e.key === 'Enter' || e.key === ' ') {
 									e.preventDefault()
 									onVerDetalle(s)
@@ -82,16 +85,21 @@ export default function TablaSolicitudesEstudio({
 								</div>
 
 								<div className='mt-3 flex flex-wrap items-center gap-2'>
-								<BadgeEstadoSolicitud estado={estado} />
-								<BadgePrioridad prioridad={s.prioridad} />
-							</div>
+									<BadgeEstadoSolicitud estado={estado} />
+									{s.recotizacion && (
+										<Badge className='border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800 dark:border-fuchsia-700 dark:bg-fuchsia-950 dark:text-fuchsia-200'>
+											Recotización
+										</Badge>
+									)}
+									<BadgePrioridad prioridad={s.prioridad} />
+								</div>
 
-							<div className='mt-2 flex items-center justify-between text-[11px] text-muted-foreground'>
-								<span>{s.ejecutivo_comercial}</span>
-								<span className='tabular-nums'>
-									{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy HH:mm')}
-								</span>
-							</div>
+								<div className='mt-2 flex items-center justify-between text-[11px] text-muted-foreground'>
+									<span>{s.ejecutivo_comercial}</span>
+									<span className='tabular-nums'>
+										{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy HH:mm')}
+									</span>
+								</div>
 							</CardContent>
 						</Card>
 					)
@@ -127,7 +135,7 @@ export default function TablaSolicitudesEstudio({
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{solicitudes.map((s) => {
+						{solicitudes.map(s => {
 							const estado = resolverEstadoBandeja(s)
 							return (
 								<TableRow
@@ -148,7 +156,14 @@ export default function TablaSolicitudesEstudio({
 										</p>
 									</TableCell>
 									<TableCell className='px-3 py-2'>
-										<BadgeEstadoSolicitud estado={estado} />
+										<div className='flex flex-wrap items-center gap-1.5'>
+											<BadgeEstadoSolicitud estado={estado} />
+											{s.recotizacion && (
+												<Badge className='border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800 dark:border-fuchsia-700 dark:bg-fuchsia-950 dark:text-fuchsia-200'>
+													Recotización
+												</Badge>
+											)}
+										</div>
 									</TableCell>
 									<TableCell className='max-w-[120px] truncate px-3 py-2 text-[11px] text-muted-foreground'>
 										{s.ejecutivo_comercial}
@@ -162,7 +177,7 @@ export default function TablaSolicitudesEstudio({
 										</p>
 									</TableCell>
 									<TableCell className='px-3 py-1.5'>
-									<BadgePrioridad prioridad={s.prioridad} />
+										<BadgePrioridad prioridad={s.prioridad} />
 									</TableCell>
 									<TableCell className='min-w-[220px] px-3 py-2 text-right'>
 										<div className='flex flex-wrap items-center justify-end gap-1.5'>

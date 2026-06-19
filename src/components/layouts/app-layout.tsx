@@ -13,7 +13,7 @@ export default async function AppLayout({
 	const autenticado = !!session
 
 	return (
-		<body className='h-screen flex overflow-hidden'>
+		<>
 			{autenticado && <SideBar />}
 
 			<div className='flex flex-col flex-1'>
@@ -27,6 +27,6 @@ export default async function AppLayout({
 					{children}
 				</MainContentLayout>
 			</div>
-		</body>
+		</>
 	)
 }

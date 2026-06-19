@@ -9,9 +9,9 @@ import { useObtenerProspecto } from '@/hooks/prospectos/use-obtener-prospecto'
 import { AlertTriangle } from 'lucide-react'
 import CardInformacionProspecto from '../card-informacion-prospecto/card-informacion-prospecto'
 import CardInformacionTecnicaCondominio from '../card-informacion-tecnica-condominio/card-informacion-tecnica-condominio'
-import PaginaProspectoHeader from '../pagina-prospecto-header/pagina-prospecto-header'
-import CardSolicitudesCotizacion from '../card-solicitudes-cotizacion/card-solicitudes-cotizacion'
 import CardPolizas from '../card-polizas/card-polizas'
+import CardSolicitudesCotizacion from '../card-solicitudes-cotizacion/card-solicitudes-cotizacion'
+import PaginaProspectoHeader from '../pagina-prospecto-header/pagina-prospecto-header'
 
 type PaginaProspectoClientProps = {
 	prospectoInicial: Prospecto
@@ -42,6 +42,7 @@ export default function PaginaProspectoClient({
 					</p>
 				</EstadoCompletitudInformacion>
 			)}
+
 			<CardInformacionProspecto prospecto={prospecto} />
 
 			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
@@ -50,10 +51,14 @@ export default function PaginaProspectoClient({
 				/>
 			)}
 
-			<CardSolicitudesCotizacion
-				idProspecto={prospecto.id}
-				informacionCompleta={prospecto.informacion_completa}
-			/>
+			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
+				<CardSolicitudesCotizacion
+					idProspecto={prospecto.id}
+					informacionCompleta={prospecto.informacion_completa}
+					nombreCliente={prospecto.nombre_riesgo}
+					lineaNegocioNombre={prospecto.linea_negocio.nombre}
+				/>
+			)}
 
 			<CardPolizas
 				idCliente={prospecto.id_cliente}

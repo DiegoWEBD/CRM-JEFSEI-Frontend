@@ -1,4 +1,5 @@
 import { Card, CardHeader } from '@/components/card'
+import { Skeleton } from '@/components/skeleton'
 
 const InformacionProspectoSkeleton = () => {
 	return (
@@ -6,24 +7,22 @@ const InformacionProspectoSkeleton = () => {
 			<CardHeader title='Información del Prospecto' />
 
 			<div className='flex flex-col gap-4 xl:flex-row animate-pulse'>
-				{/* Item 1 */}
-				<div className='flex-1 border border-border-primary rounded-xl p-4'>
+				<div className='flex-1 border border-border rounded-xl p-4'>
 					<div className='flex items-center gap-3 mb-4'>
-						<div className='h-5 w-5 rounded bg-skeleton' />
-						<div className='h-4 w-24 rounded bg-skeleton' />
+						<Skeleton className='h-5 w-5 rounded' />
+						<Skeleton className='h-4 w-24' />
 					</div>
 
-					<div className='h-5 w-40 rounded bg-skeleton' />
+					<Skeleton className='h-5 w-40' />
 				</div>
 
-				{/* Item 2 */}
-				<div className='flex-1 border border-border-primary rounded-xl p-4'>
+				<div className='flex-1 border border-border rounded-xl p-4'>
 					<div className='flex items-center gap-3 mb-4'>
-						<div className='h-5 w-5 rounded bg-skeleton' />
-						<div className='h-4 w-20 rounded bg-skeleton' />
+						<Skeleton className='h-5 w-5 rounded' />
+						<Skeleton className='h-4 w-20' />
 					</div>
 
-					<div className='h-5 w-56 rounded bg-skeleton' />
+					<Skeleton className='h-5 w-56' />
 				</div>
 			</div>
 		</Card>

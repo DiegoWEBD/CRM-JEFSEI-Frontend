@@ -11,7 +11,7 @@ import CommercialActivitiesSection from './contents/actividades-comerciales/comm
 import PoliciesReportsSection from './contents/reportes-polizas/policies-reports-section'
 import EvaluacionProyectosSection from './contents/evaluacion-proyectos/evaluacion-proyectos-section'
 import { Separator } from '@/components/separator'
-import Loader from '@/components/loaders/loder'
+import { DashboardSkeleton } from '@/components/paneles/dashboard/panel-dashboard-skeleton'
 
 const ROLES_GERENTE = ['GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'GERENTE_OPERACIONES']
 
@@ -25,7 +25,7 @@ export default function PanelDashboardClient({
   const { data: metricas, isLoading, error } = useMetricasDashboardGerente()
 
   if (isLoading) {
-    return <Loader />
+    return <DashboardSkeleton />
   }
 
   if (error || !metricas) {

@@ -1,8 +1,10 @@
+import { Suspense } from 'react'
 import { obtenerUsuarios } from '@/aplicacion/usuarios/use-cases/obtener-usuarios'
 import ContenedorUsuarios from './components/contenedor-usuarios'
+import { PersonalPageSkeleton } from './components/personal-page-skeleton'
 import { cookies } from 'next/headers'
 
-const PersonalPage = async () => {
+async function PersonalInner() {
 	const cookieStore = await cookies()
 	const cookieHeader = cookieStore.toString()
 
@@ -13,6 +15,14 @@ const PersonalPage = async () => {
 			<h1>Gestión de Personal</h1>
 			<ContenedorUsuarios usuarios={usuarios} />
 		</>
+	)
+}
+
+const PersonalPage = () => {
+	return (
+		<Suspense fallback={<PersonalPageSkeleton />}>
+			<PersonalInner />
+		</Suspense>
 	)
 }
 

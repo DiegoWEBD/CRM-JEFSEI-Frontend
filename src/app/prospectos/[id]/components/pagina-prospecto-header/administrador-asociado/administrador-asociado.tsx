@@ -22,7 +22,7 @@ export default function AdministradorAsociado({
 					className='px-2 text-[10px]'
 					asChild
 				>
-					<Link href={`/clientes/${administrador.id}`}>Ver perfil</Link>
+					<Link href={`/administradores/${administrador.id}`}>Ver perfil</Link>
 				</Button>
 			) : null}
 		</div>

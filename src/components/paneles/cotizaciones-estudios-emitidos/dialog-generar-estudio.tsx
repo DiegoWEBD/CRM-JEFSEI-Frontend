@@ -46,16 +46,24 @@ function calcularEstadoVenc(fechaStr: string): string {
   return 'vigente'
 }
 
+export type ConfiguracionEstudio = {
+  infraseguro_primer_ejemplo: number
+  infraseguro_segundo_ejemplo: number
+  cantidad_cuotas: number
+}
+
 type DialogGenerarEstudioProps = {
   fila: PanelEstudioFila
   open: boolean
   onOpenChange: (open: boolean) => void
+  configuracionEstudio?: ConfiguracionEstudio
 }
 
 export default function DialogGenerarEstudio({
   fila,
   open,
   onOpenChange,
+  configuracionEstudio,
 }: DialogGenerarEstudioProps) {
   const { data: cotizaciones } = useCotizaciones(fila.id)
   const armarMutation = useArmarEstudioComercial()
@@ -66,11 +74,24 @@ export default function DialogGenerarEstudio({
   const [archivo, setArchivo] = useState<File | null>(null)
   const [observaciones, setObservaciones] = useState('')
 
+  const [infraseguro1, setInfraseguro1] = useState(
+    configuracionEstudio?.infraseguro_primer_ejemplo ?? 0.3,
+  )
+  const [infraseguro2, setInfraseguro2] = useState(
+    configuracionEstudio?.infraseguro_segundo_ejemplo ?? 0.5,
+  )
+  const [cuotas, setCuotas] = useState(
+    configuracionEstudio?.cantidad_cuotas ?? 6,
+  )
+
   const handleOpenChange = (next: boolean) => {
     if (!next) {
       setIdsSeleccionados([])
       setArchivo(null)
       setObservaciones('')
+      setInfraseguro1(configuracionEstudio?.infraseguro_primer_ejemplo ?? 0.3)
+      setInfraseguro2(configuracionEstudio?.infraseguro_segundo_ejemplo ?? 0.5)
+      setCuotas(configuracionEstudio?.cantidad_cuotas ?? 6)
     }
     onOpenChange(next)
   }
@@ -86,9 +107,9 @@ export default function DialogGenerarEstudio({
 
     const response = await armarMutation.mutateAsync({
       id_prospecto: fila.id_prospecto,
-      infraseguro_primer_ejemplo: 0.3,
-      infraseguro_segundo_ejemplo: 0.5,
-      cantidad_cuotas: 6,
+      infraseguro_primer_ejemplo: infraseguro1,
+      infraseguro_segundo_ejemplo: infraseguro2,
+      cantidad_cuotas: cuotas,
       ids_cotizacion: idsSeleccionados,
     })
 
@@ -244,6 +265,50 @@ export default function DialogGenerarEstudio({
                 </p>
               )}
             </div>
+
+            {configuracionEstudio ? (
+              <div className='space-y-3 rounded-md border border-border/80 bg-muted/20 p-3'>
+                <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+                  Configuración del estudio
+                </p>
+                <div className='grid gap-3 sm:grid-cols-3'>
+                  <div className='space-y-1.5'>
+                    <Label className='text-xs'>Infraseguro ej. 1</Label>
+                    <Input
+                      type='number'
+                      step='0.01'
+                      min='0'
+                      max='1'
+                      className='h-8 text-xs'
+                      value={infraseguro1}
+                      onChange={(e) => setInfraseguro1(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className='space-y-1.5'>
+                    <Label className='text-xs'>Infraseguro ej. 2</Label>
+                    <Input
+                      type='number'
+                      step='0.01'
+                      min='0'
+                      max='1'
+                      className='h-8 text-xs'
+                      value={infraseguro2}
+                      onChange={(e) => setInfraseguro2(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className='space-y-1.5'>
+                    <Label className='text-xs'>Cant. cuotas</Label>
+                    <Input
+                      type='number'
+                      min='1'
+                      className='h-8 text-xs'
+                      value={cuotas}
+                      onChange={(e) => setCuotas(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : null}
           </div>
         </ScrollArea>
 

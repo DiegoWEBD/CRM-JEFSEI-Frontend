@@ -24,9 +24,9 @@ export default function CardPolizas({
 	const { polizasPorEstado, primaVigente } = useFiltrarPolizas(polizas)
 
 	return (
-		<Card className='space-y-3'>
-			<CardHeader className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
-				<CardTitle>Pólizas del cliente</CardTitle>
+		<Card className='border-border bg-card shadow-none'>
+			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
+				<CardTitle className='min-w-0 text-sm font-semibold leading-tight tracking-tight text-foreground'>Pólizas del cliente</CardTitle>
 				<Button
 					type='button'
 					size='sm'

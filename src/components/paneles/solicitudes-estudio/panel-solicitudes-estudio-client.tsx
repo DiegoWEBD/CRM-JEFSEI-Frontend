@@ -6,7 +6,7 @@ import TituloPagina from '@/components/titulos/titulo-pagina'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import { useObtenerTodasSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-todas-solicitudes-cotizacion'
-import Loader from '@/components/loaders/loder'
+import { PanelSolicitudesEstudioSkeleton } from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-skeleton'
 import KpiSolicitudesEstudio, {
   type TarjetaActiva,
 } from './kpi-solicitudes-estudio'
@@ -122,7 +122,7 @@ export default function PanelSolicitudesEstudioClient() {
     return rows
   }, [solicitudes, filtros, tarjetaActiva])
 
-  if (isLoading) return <Loader />
+  if (isLoading) return <PanelSolicitudesEstudioSkeleton />
   if (error)
     return (
       <div className='flex items-center justify-center py-12'>
