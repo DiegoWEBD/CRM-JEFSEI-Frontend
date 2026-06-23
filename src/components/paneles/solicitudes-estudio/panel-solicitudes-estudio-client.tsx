@@ -2,9 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
-import TituloPagina from '@/components/titulos/titulo-pagina'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import { useObtenerTodasSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-todas-solicitudes-cotizacion'
 import { PanelSolicitudesEstudioSkeleton } from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-skeleton'
 import KpiSolicitudesEstudio, {
@@ -135,10 +133,6 @@ export default function PanelSolicitudesEstudioClient() {
   return (
     <AuthGuard allowedRoles={ROLES} fallback={null}>
       <PanelLayout>
-        <PanelHeader>
-          <TituloPagina>Solicitudes de Estudio</TituloPagina>
-        </PanelHeader>
-
         <KpiSolicitudesEstudio
           conteos={conteos}
           tarjetaActiva={tarjetaActiva}

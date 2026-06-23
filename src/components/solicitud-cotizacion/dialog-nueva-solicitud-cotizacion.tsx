@@ -9,6 +9,7 @@ import { Label } from '@/components/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/select'
 import { Textarea } from '@/components/textarea'
 import { useSolicitarCotizacion } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion'
+import { useSolicitarCotizacionProceso } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion-proceso'
 import type {
   LineaSeguroSolicitudKey,
   PrioridadSolicitud,
@@ -41,15 +42,17 @@ interface DialogNuevaSolicitudFormValues {
   limite: string
 }
 
-const initialValues: DialogNuevaSolicitudFormValues = {
-  lineaSeguro: '',
-  observaciones: '',
-  prioridad: 'normal',
-  monto_asegurado_total: '',
-  numero_guardias: '',
-  actividades: [{ actividad: '', numero_asegurados: '' }],
-  actividad_del_condominio: '',
-  limite: '',
+function valoresIniciales(tipo?: string): DialogNuevaSolicitudFormValues {
+  return {
+    lineaSeguro: (tipo as LineaSeguroSolicitudKey) ?? '',
+    observaciones: '',
+    prioridad: 'normal',
+    monto_asegurado_total: '',
+    numero_guardias: '',
+    actividades: [{ actividad: '', numero_asegurados: '' }],
+    actividad_del_condominio: '',
+    limite: '',
+  }
 }
 
 function nuevaActividadFila(): ActividadFila {
@@ -62,6 +65,8 @@ type DialogNuevaSolicitudCotizacionProps = {
   idProspecto: number
   nombreCliente: string
   lineaNegocioNombre: string
+  tipoPredefinido?: string
+  idProceso?: number
 }
 
 export default function DialogNuevaSolicitudCotizacion({
@@ -70,15 +75,18 @@ export default function DialogNuevaSolicitudCotizacion({
   idProspecto,
   nombreCliente,
   lineaNegocioNombre,
+  tipoPredefinido,
+  idProceso,
 }: DialogNuevaSolicitudCotizacionProps) {
   const tipoCliente = inferirTipoClienteSolicitud(lineaNegocioNombre)
   const mutation = useSolicitarCotizacion(idProspecto)
+  const mutationProceso = useSolicitarCotizacionProceso(idProceso ?? 0)
 
   const lineasOpciones = lineasSolicitudParaTipo(tipoCliente)
 
   function validar(values: DialogNuevaSolicitudFormValues) {
     const errors: Record<string, string> = {}
-    if (!values.lineaSeguro) {
+    if (!tipoPredefinido && !values.lineaSeguro) {
       errors.lineaSeguro = 'Debe seleccionar una línea de seguro'
     }
     const campos = camposSolicitudParaLinea(tipoCliente, values.lineaSeguro)
@@ -168,21 +176,27 @@ export default function DialogNuevaSolicitudCotizacion({
   }
 
   const formik = useFormik({
-    initialValues,
+    initialValues: valoresIniciales(tipoPredefinido),
     validate: validar,
     onSubmit: async (values) => {
       const request = transformarARequest(values)
-      await mutation.mutateAsync(request)
+      if (idProceso) {
+        await mutationProceso.mutateAsync(request)
+      } else {
+        await mutation.mutateAsync(request)
+      }
       onOpenChange(false)
     },
     enableReinitialize: false,
   })
 
-  const camposDinamicos = camposSolicitudParaLinea(tipoCliente, formik.values.lineaSeguro)
+  const lineaActual: LineaSeguroSolicitudKey | '' = (tipoPredefinido as LineaSeguroSolicitudKey) ?? formik.values.lineaSeguro
+  const camposDinamicos = camposSolicitudParaLinea(tipoCliente, lineaActual)
   const camposEstandar = camposDinamicos.filter((c) => c.tipo !== 'actividades_aseguradas')
-  const esAccidentesPersonales = lineaUsaActividadesAseguradas(tipoCliente, formik.values.lineaSeguro)
+  const esAccidentesPersonales = lineaUsaActividadesAseguradas(tipoCliente, lineaActual)
 
   function handleLineaChange(value: string) {
+    if (tipoPredefinido) return
     formik.setFieldValue('lineaSeguro', value)
     reiniciarCamposDinamicos(formik.setFieldValue)
   }
@@ -218,27 +232,29 @@ export default function DialogNuevaSolicitudCotizacion({
             </p>
           </div>
 
-          <div className='space-y-1.5'>
-            <Label className='text-xs'>Línea de seguro</Label>
-            <Select
-              value={formik.values.lineaSeguro || '__none__'}
-              onValueChange={handleLineaChange}
-            >
-              <SelectTrigger className='h-9 w-full text-sm'>
-                <SelectValue placeholder='Seleccione línea de seguro' />
-              </SelectTrigger>
-              <SelectContent>
-                {lineasOpciones.map((l) => (
-                  <SelectItem key={l.key} value={l.key} className='text-sm'>
-                    {l.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {formik.errors.lineaSeguro && formik.touched.lineaSeguro && (
-              <p className='text-xs font-medium text-destructive'>{formik.errors.lineaSeguro}</p>
-            )}
-          </div>
+          {!tipoPredefinido && (
+            <div className='space-y-1.5'>
+              <Label className='text-xs'>Línea de seguro</Label>
+              <Select
+                value={formik.values.lineaSeguro || '__none__'}
+                onValueChange={handleLineaChange}
+              >
+                <SelectTrigger className='h-9 w-full text-sm'>
+                  <SelectValue placeholder='Seleccione línea de seguro' />
+                </SelectTrigger>
+                <SelectContent>
+                  {lineasOpciones.map((l) => (
+                    <SelectItem key={l.key} value={l.key} className='text-sm'>
+                      {l.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formik.errors.lineaSeguro && formik.touched.lineaSeguro && (
+                <p className='text-xs font-medium text-destructive'>{formik.errors.lineaSeguro}</p>
+              )}
+            </div>
+          )}
 
           {esAccidentesPersonales ? (
             <div className='space-y-2 rounded-md border border-border/70 bg-muted/10 p-3'>
@@ -392,7 +408,7 @@ export default function DialogNuevaSolicitudCotizacion({
             <Button
               type='submit'
               size='sm'
-              disabled={formik.isSubmitting || !formik.values.lineaSeguro}
+              disabled={formik.isSubmitting || (!tipoPredefinido && !formik.values.lineaSeguro)}
             >
               {formik.isSubmitting ? (
                 <Loader2 className='mr-2 h-4 w-4 animate-spin' aria-hidden />

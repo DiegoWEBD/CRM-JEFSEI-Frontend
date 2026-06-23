@@ -81,9 +81,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 							<div className='flex flex-wrap items-center gap-2'>
 								<Badge
 									variant='outline'
-									className={ESTADO_COMERCIAL_BADGE['NUEVO']}
+									className={ESTADO_COMERCIAL_BADGE['OPORTUNIDAD_CREADA']}
 								>
-									{ESTADO_PROSPECTO_LABELS['NUEVO']}
+									{ESTADO_PROSPECTO_LABELS['OPORTUNIDAD_CREADA']}
 								</Badge>
 								{/*onClick={abrirDialogHistorialEstado}*/}
 								<Button

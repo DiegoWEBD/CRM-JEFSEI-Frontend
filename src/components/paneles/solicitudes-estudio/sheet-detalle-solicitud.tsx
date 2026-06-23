@@ -70,10 +70,9 @@ export default function SheetDetalleSolicitud({
 		queryKey: ['solicitud-detalle', solicitud?.id],
 		queryFn: async () => {
 			const res = await axios.get(
-				`/api/prospectos/${solicitud!.id_prospecto}/solicitudes-cotizacion`,
+				`/api/solicitudes-cotizacion/${solicitud!.id}`,
 			)
-			const lista = res.data as SolicitudCotizacion[]
-			return lista.find(s => s.id === solicitud!.id) ?? null
+			return res.data as SolicitudCotizacion
 		},
 		enabled: !!solicitud,
 	})

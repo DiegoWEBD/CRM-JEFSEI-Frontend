@@ -113,9 +113,6 @@ export default function AdministradoresClient({
 	if (isLoading) {
 		return (
 			<div className='space-y-6'>
-				<h1 className='text-2xl font-semibold tracking-tight'>
-					Administradores
-				</h1>
 				<Skeleton className='h-9 w-full rounded-md' />
 				<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 					{Array.from({ length: 6 }).map((_, i) => (
@@ -138,10 +135,7 @@ export default function AdministradoresClient({
 
 	return (
 		<div className='space-y-6'>
-			<div className='flex items-center justify-between'>
-				<h1 className='text-2xl font-semibold tracking-tight'>
-					Administradores
-				</h1>
+			<div className='flex items-center justify-end'>
 				<div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
 					<Building2 className='size-4' />
 					<span>

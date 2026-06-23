@@ -2,7 +2,7 @@ import { EstadoComercialProspecto } from '@/types/estados/estado-comercial-clien
 
 export const ESTADO_COMERCIAL_BADGE: Record<EstadoComercialProspecto, string> =
 	{
-		NUEVO:
+		OPORTUNIDAD_CREADA:
 			'border-slate-500/35 bg-slate-500/10 text-slate-900 dark:text-slate-100',
 		EJECUTIVO_COMERCIAL_ASIGNADO:
 			'border-cyan-500/35 bg-cyan-500/10 text-cyan-950 dark:text-cyan-100',
@@ -18,6 +18,8 @@ export const ESTADO_COMERCIAL_BADGE: Record<EstadoComercialProspecto, string> =
 			'border-violet-500/35 bg-violet-500/10 text-violet-950 dark:text-violet-100',
 		RECOTIZACION_SOLICITADA:
 			'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
+		PROPUESTA_ACEPTADA:
+			'border-teal-500/35 bg-teal-500/10 text-teal-950 dark:text-teal-100',
 		GANADO:
 			'border-emerald-700/45 bg-emerald-700/15 text-emerald-950 dark:text-emerald-100',
 		PERDIDO: 'border-border bg-muted/50 text-muted-foreground',

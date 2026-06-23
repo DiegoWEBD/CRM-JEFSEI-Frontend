@@ -1,26 +1,31 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+'use client'
+
+import { Card, CardContent } from '@/components/card'
+import { cn } from '@/lib/utils'
 
 type EvaluacionKpiCardProps = {
   label: string
-  value: string | number
+  value: number
   hint?: string
+  className?: string
 }
 
 export default function EvaluacionKpiCard({
   label,
   value,
-  hint,
+  hint = 'Per\u00edodo seleccionado',
+  className,
 }: EvaluacionKpiCardProps) {
   return (
-    <Card>
-      <CardHeader className='pb-2'>
-        <CardTitle className='text-xs font-medium text-muted-foreground'>
+    <Card className={cn('border-border bg-card shadow-none', className)}>
+      <CardContent className='p-3'>
+        <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
           {label}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className='text-2xl font-bold tabular-nums'>{value}</p>
-        {hint && <p className='mt-1 text-xs text-muted-foreground'>{hint}</p>}
+        </p>
+        <p className='mt-0.5 text-2xl font-semibold tabular-nums tracking-tight text-foreground'>
+          {value.toLocaleString('es-CL')}
+        </p>
+        <p className='mt-0.5 text-[10px] text-muted-foreground'>{hint}</p>
       </CardContent>
     </Card>
   )

@@ -9,10 +9,36 @@ export function useUserSession() {
   const [cargando, setCargando] = useState(true)
 
   useEffect(() => {
-    obtenerSesion()
-      .then(payload => setUsuario(payload))
-      .catch(() => setUsuario(null))
-      .finally(() => setCargando(false))
+    function fetch() {
+      setCargando(true)
+      obtenerSesion()
+        .then(payload => setUsuario(payload))
+        .catch(() => setUsuario(null))
+        .finally(() => setCargando(false))
+    }
+
+    fetch()
+
+    function onVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        obtenerSesion()
+          .then(payload => setUsuario(payload))
+          .catch(() => setUsuario(null))
+      }
+    }
+
+    function onFocus() {
+      obtenerSesion()
+        .then(payload => setUsuario(payload))
+        .catch(() => setUsuario(null))
+    }
+
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    window.addEventListener('focus', onFocus)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      window.removeEventListener('focus', onFocus)
+    }
   }, [])
 
   const tieneRol = useCallback(

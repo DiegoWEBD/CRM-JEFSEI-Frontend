@@ -1,12 +1,38 @@
+'use client'
+
+import { useMemo } from 'react'
+import { usePathname } from 'next/navigation'
 import HeaderUsuario from '../header-usuario/header-usuario'
 import ToggleSidebarButton from '../toggle-sidebar-button/toggle-sidebar-button'
 
-interface HeaderClientProps {
-	nombreUsuario: string
-	rolPrincipal: string
+const ROUTE_TITLES: Record<string, string> = {
+	'/': 'Inicio',
+	'/dashboard': 'Dashboard',
+	'/oportunidades': 'Oportunidades',
+	'/prospectos': 'Prospectos',
+	'/solicitudes-estudio': 'Solicitudes de Estudio',
+	'/cotizaciones-estudios-emitidos': 'Cotizaciones / Estudios Emitidos',
+	'/personal': 'Personal',
+	'/administradores': 'Administradores',
 }
 
-const HeaderClient = ({ nombreUsuario, rolPrincipal }: HeaderClientProps) => {
+interface HeaderClientProps {
+	nombreUsuario: string
+	nombreRoles: string[]
+	codigoRoles: string[]
+}
+
+const HeaderClient = ({ nombreUsuario, nombreRoles }: HeaderClientProps) => {
+	const pathname = usePathname()
+
+	const panelTitle = useMemo(() => {
+		const sorted = Object.keys(ROUTE_TITLES).sort((a, b) => b.length - a.length)
+		for (const route of sorted) {
+			if (pathname.startsWith(route)) return ROUTE_TITLES[route]
+		}
+		return 'JEFSEI'
+	}, [pathname])
+
 	const today = new Date()
 	const formattedDate = today.toLocaleDateString('es-ES', {
 		weekday: 'long',
@@ -29,7 +55,7 @@ const HeaderClient = ({ nombreUsuario, rolPrincipal }: HeaderClientProps) => {
 							</div>
 							<div className='min-w-0'>
 								<h1 className='text-base font-semibold text-foreground sm:text-lg'>
-									{rolPrincipal}
+									{panelTitle}
 								</h1>
 								<p className='line-clamp-1 text-[11px] text-muted-foreground sm:text-xs'>
 									{formattedDate}
@@ -39,7 +65,7 @@ const HeaderClient = ({ nombreUsuario, rolPrincipal }: HeaderClientProps) => {
 					</div>
 				</div>
 
-				<HeaderUsuario nombre={nombreUsuario} />
+				<HeaderUsuario nombre={nombreUsuario} nombreRoles={nombreRoles} />
 			</div>
 		</>
 	)

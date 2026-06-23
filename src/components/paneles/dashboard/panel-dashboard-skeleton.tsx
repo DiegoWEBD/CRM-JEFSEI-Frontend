@@ -35,15 +35,10 @@ export function DashboardSkeleton() {
         </div>
       </PanelHeader>
 
-      <div className='space-y-8'>
-        <SectionSkeleton />
-        <Skeleton className='h-px w-full' />
-        <SectionSkeleton />
-        <Skeleton className='h-px w-full' />
-        <SectionSkeleton />
-        <Skeleton className='h-px w-full' />
-        <SectionSkeleton />
-      </div>
+      <SectionSkeleton />
+      <SectionSkeleton />
+      <SectionSkeleton />
+      <SectionSkeleton />
     </PanelLayout>
   )
 }

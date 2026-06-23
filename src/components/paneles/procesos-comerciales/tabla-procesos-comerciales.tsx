@@ -158,9 +158,8 @@ export default function TablaProcesosComerciales({
       </div>
 
       <div className='max-h-[65vh] overflow-y-auto'>
-        <div className='min-w-0 overflow-x-auto'>
         <Table className='min-w-[1200px] w-full border-separate border-spacing-0'>
-          <TableHeader>
+          <TableHeader className='sticky top-0 z-10 bg-background'>
             <TableRow className='border-0 hover:bg-transparent'>
               <TableHead className={cn(headClass, 'w-10')}>
                 <span className='sr-only'>Prioridad</span>
@@ -261,7 +260,6 @@ export default function TablaProcesosComerciales({
             ))}
           </TableBody>
         </Table>
-      </div>
       </div>
     </>
   )

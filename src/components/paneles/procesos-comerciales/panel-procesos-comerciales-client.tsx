@@ -2,9 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import type { ReporteProcesoComercial, ReporteProcesoComercialAbierto } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
-import TituloPagina from '@/components/titulos/titulo-pagina'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import { useReportesProcesosComerciales } from '@/hooks/procesos-comerciales/use-reportes-procesos-comerciales'
 import KpiProcesosComerciales, {
   type TarjetaActiva,
@@ -36,9 +34,11 @@ function buildConteos(filas: ReporteProcesoComercial[]): ConteosProcesos {
     else if (f.proceso.estado_actual.codigo === 'GANADO') conteos.ganados++
     else if (f.proceso.estado_actual.codigo === 'PERDIDO') conteos.perdidos++
 
-    if (f.estado_semaforo === 'VERDE') conteos.verde++
-    else if (f.estado_semaforo === 'AMARILLO') conteos.amarillo++
-    else if (f.estado_semaforo === 'ROJO') conteos.rojo++
+    if (!f.proceso.cerrado) {
+      if (f.estado_semaforo === 'VERDE') conteos.verde++
+      else if (f.estado_semaforo === 'AMARILLO') conteos.amarillo++
+      else if (f.estado_semaforo === 'ROJO') conteos.rojo++
+    }
   }
   return conteos
 }
@@ -71,8 +71,6 @@ export default function PanelProcesosComercialesClient({
     busqueda: '',
     ejecutivo: TODOS,
     etapa: TODOS,
-    estado_semaforo: TODOS,
-    estado_proceso: 'abierto',
   })
 
   const data = reportes ?? initialData
@@ -103,20 +101,15 @@ export default function PanelProcesosComercialesClient({
         if (tarjetaActiva === 'abiertos' && f.proceso.cerrado) return false
         if (tarjetaActiva === 'ganados' && f.proceso.estado_actual.codigo !== 'GANADO') return false
         if (tarjetaActiva === 'perdidos' && f.proceso.estado_actual.codigo !== 'PERDIDO') return false
-        if (tarjetaActiva === 'verde' && f.estado_semaforo !== 'VERDE') return false
-        if (tarjetaActiva === 'amarillo' && f.estado_semaforo !== 'AMARILLO') return false
-        if (tarjetaActiva === 'rojo' && f.estado_semaforo !== 'ROJO') return false
+        if (tarjetaActiva === 'verde' && (f.proceso.cerrado || f.estado_semaforo !== 'VERDE')) return false
+        if (tarjetaActiva === 'amarillo' && (f.proceso.cerrado || f.estado_semaforo !== 'AMARILLO')) return false
+        if (tarjetaActiva === 'rojo' && (f.proceso.cerrado || f.estado_semaforo !== 'ROJO')) return false
       }
 
       if (filtros.ejecutivo !== TODOS) {
         if ((f.proceso.ejecutivo_comercial?.nombre ?? '') !== filtros.ejecutivo) return false
       }
       if (filtros.etapa !== TODOS && f.proceso.etapa_actual.nombre !== filtros.etapa) return false
-      if (filtros.estado_semaforo !== TODOS && f.estado_semaforo !== filtros.estado_semaforo) return false
-      if (tarjetaActiva !== 'todas') {
-        if (filtros.estado_proceso === 'abierto' && f.proceso.cerrado) return false
-        if (filtros.estado_proceso === 'cerrado' && !f.proceso.cerrado) return false
-      }
 
       return true
     })
@@ -129,10 +122,6 @@ export default function PanelProcesosComercialesClient({
 
   return (
     <PanelLayout>
-      <PanelHeader>
-        <TituloPagina>Panel Gerencial - Procesos Comerciales</TituloPagina>
-      </PanelHeader>
-
       {isFetching && (
         <div className='mb-2 text-xs text-muted-foreground'>
           Actualizando...
@@ -145,15 +134,13 @@ export default function PanelProcesosComercialesClient({
         onToggleTarjeta={setTarjetaActiva}
       />
 
-      <section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
+      <section className='overflow-x-auto rounded-lg border border-border bg-card shadow-none'>
         <div className='space-y-3 border-b border-border/80 p-3 sm:p-4'>
           <FiltrosProcesosComerciales
             filtros={filtros}
             onChange={setFiltros}
             opcionesEjecutivo={opcionesEjecutivo}
             opcionesEtapa={opcionesEtapa}
-            total={data.length}
-            filtrados={listaFiltrada.length}
           />
         </div>
 

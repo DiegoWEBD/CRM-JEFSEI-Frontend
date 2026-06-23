@@ -10,7 +10,8 @@ const Header = async () => {
 		<header className='border-b border-border bg-card sticky top-0 z-50'>
 			<HeaderClient
 				nombreUsuario={session.nombre}
-				rolPrincipal={session.nombre_roles[0]}
+				nombreRoles={session.nombre_roles}
+				codigoRoles={session.codigo_roles}
 			/>
 		</header>
 	)

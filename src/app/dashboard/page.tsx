@@ -1,26 +1,25 @@
-import { Suspense } from 'react'
-import { getSession, hasSomeRole } from '@/lib/auth'
-import { redirect } from 'next/navigation'
 import PanelDashboardClient from '@/components/paneles/dashboard/panel-dashboard-client'
 import { DashboardSkeleton } from '@/components/paneles/dashboard/panel-dashboard-skeleton'
+import { hasSomeRole } from '@/lib/auth'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
-const ROLES_GERENTE = ['GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'GERENTE_OPERACIONES']
-
-async function DashboardInner() {
-  const session = await getSession()
-  return <PanelDashboardClient usuarioNombre={session?.nombre ?? ''} />
-}
+const ROLES_GERENTE = [
+	'GERENTE_COMERCIAL',
+	'GERENTE_GENERAL',
+	'GERENTE_OPERACIONES',
+]
 
 export default async function DashboardPage() {
-  const esGerente = await hasSomeRole(ROLES_GERENTE)
+	const esGerente = await hasSomeRole(ROLES_GERENTE)
 
-  if (!esGerente) {
-    redirect('/')
-  }
+	if (!esGerente) {
+		redirect('/')
+	}
 
-  return (
-    <Suspense fallback={<DashboardSkeleton />}>
-      <DashboardInner />
-    </Suspense>
-  )
+	return (
+		<Suspense fallback={<DashboardSkeleton />}>
+			<PanelDashboardClient />
+		</Suspense>
+	)
 }

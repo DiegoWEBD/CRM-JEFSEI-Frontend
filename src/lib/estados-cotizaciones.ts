@@ -38,7 +38,7 @@ export function estadoGeneralClientePerfilDesdeComercial(
 	estado: EstadoComercialProspecto,
 ): EstadoGeneralClientePerfil {
 	switch (estado) {
-		case 'NUEVO':
+		case 'OPORTUNIDAD_CREADA':
 			return 'nuevo'
 		case 'CONTACTADO':
 			return 'en_seguimiento'
@@ -46,6 +46,7 @@ export function estadoGeneralClientePerfilDesdeComercial(
 		case 'ESTUDIO_DISPONIBLE':
 		case 'ESTUDIO_ENVIADO_CLIENTE':
 		case 'RECOTIZACION_SOLICITADA':
+		case 'PROPUESTA_ACEPTADA':
 			return 'en_proceso_comercial'
 		case 'GANADO':
 			return 'cliente_activo'

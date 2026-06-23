@@ -41,7 +41,7 @@ export const useFiltrosProspectos = (prospectos?: ProspectoResumenJson[]) => {
 
 	const filtrosContados = useMemo<Map<EstadoComercialProspecto, number>>(() => {
 		const contados = new Map<EstadoComercialProspecto, number>([
-			['NUEVO', 0],
+			['OPORTUNIDAD_CREADA', 0],
 			['EJECUTIVO_COMERCIAL_ASIGNADO', 0],
 			['CONTACTADO', 0],
 			['ESTUDIO_EN_DESARROLLO', 0],
@@ -49,6 +49,7 @@ export const useFiltrosProspectos = (prospectos?: ProspectoResumenJson[]) => {
 			['ESTUDIO_DISPONIBLE', 0],
 			['ESTUDIO_ENVIADO_CLIENTE', 0],
 			['RECOTIZACION_SOLICITADA', 0],
+			['PROPUESTA_ACEPTADA', 0],
 			['GANADO', 0],
 			['PERDIDO', 0],
 		])

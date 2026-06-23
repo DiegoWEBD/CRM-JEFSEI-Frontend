@@ -23,7 +23,7 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
 				className='w-full flex justify-between text-left text-xs leading-snug text-foreground hover:underline cursor-pointer'
 			>
 				<p>
-					· Póliza {poliza.numero_poliza} · {poliza.company ?? undefined}
+					· Póliza {poliza.numero_poliza} · {poliza.company?.nombre ?? '—'}
 				</p>
 				<Badge
 					className={classname(

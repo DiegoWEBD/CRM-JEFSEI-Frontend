@@ -1,6 +1,7 @@
 import Header from '../header/header'
 import SideBar from '../sidebar/sidebar'
 import MainContentLayout from './main-content-layout/main-content-layout'
+import SessionWatcher from './session-watcher'
 import { getSession } from '@/lib/auth'
 
 export default async function AppLayout({
@@ -14,6 +15,8 @@ export default async function AppLayout({
 
 	return (
 		<>
+			<SessionWatcher autenticado={autenticado} />
+
 			{autenticado && <SideBar />}
 
 			<div className='flex flex-col flex-1'>

@@ -1,5 +1,5 @@
 export type EstadoComercialProspecto =
-	| 'NUEVO'
+	| 'OPORTUNIDAD_CREADA'
 	| 'EJECUTIVO_COMERCIAL_ASIGNADO'
 	| 'CONTACTADO'
 	| 'ESTUDIO_EN_DESARROLLO'
@@ -7,11 +7,12 @@ export type EstadoComercialProspecto =
 	| 'ESTUDIO_DISPONIBLE'
 	| 'ESTUDIO_ENVIADO_CLIENTE'
 	| 'RECOTIZACION_SOLICITADA'
+	| 'PROPUESTA_ACEPTADA'
 	| 'GANADO'
 	| 'PERDIDO'
 
 export const ESTADOS_PROSPECTO: EstadoComercialProspecto[] = [
-	'NUEVO',
+	'OPORTUNIDAD_CREADA',
 	'EJECUTIVO_COMERCIAL_ASIGNADO',
 	'CONTACTADO',
 	'ESTUDIO_EN_DESARROLLO',
@@ -19,13 +20,14 @@ export const ESTADOS_PROSPECTO: EstadoComercialProspecto[] = [
 	'ESTUDIO_DISPONIBLE',
 	'ESTUDIO_ENVIADO_CLIENTE',
 	'RECOTIZACION_SOLICITADA',
+	'PROPUESTA_ACEPTADA',
 	'GANADO',
 	'PERDIDO',
 ]
 
 export const ESTADO_PROSPECTO_LABELS: Record<EstadoComercialProspecto, string> =
 	{
-		NUEVO: 'Nuevo',
+		OPORTUNIDAD_CREADA: 'Oportunidad creada',
 		EJECUTIVO_COMERCIAL_ASIGNADO: 'Ejecutivo asignado',
 		CONTACTADO: 'Contactado',
 		ESTUDIO_EN_DESARROLLO: 'Estudio en desarrollo',
@@ -33,6 +35,7 @@ export const ESTADO_PROSPECTO_LABELS: Record<EstadoComercialProspecto, string> =
 		ESTUDIO_DISPONIBLE: 'Estudio disponible',
 		ESTUDIO_ENVIADO_CLIENTE: 'Enviado al cliente',
 		RECOTIZACION_SOLICITADA: 'Recotización',
+		PROPUESTA_ACEPTADA: 'Propuesta aceptada',
 		GANADO: 'Ganado',
 		PERDIDO: 'Perdido',
 	}

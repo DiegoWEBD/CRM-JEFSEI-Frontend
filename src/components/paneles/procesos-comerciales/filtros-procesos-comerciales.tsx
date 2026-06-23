@@ -17,8 +17,6 @@ export type FiltrosPanel = {
   busqueda: string
   ejecutivo: string
   etapa: string
-  estado_semaforo: string
-  estado_proceso: string
 }
 
 type FiltrosProcesosComercialesProps = {
@@ -26,31 +24,13 @@ type FiltrosProcesosComercialesProps = {
   onChange: (f: FiltrosPanel) => void
   opcionesEjecutivo: string[]
   opcionesEtapa: string[]
-  total: number
-  filtrados: number
 }
-
-const SEMAFOROS = [
-  { value: TODOS, label: 'Todos' },
-  { value: 'ROJO', label: 'Rojo' },
-  { value: 'AMARILLO', label: 'Amarillo' },
-  { value: 'VERDE', label: 'Verde' },
-  { value: 'NO_APLICA', label: 'No aplica' },
-]
-
-const ESTADOS_PROCESO = [
-  { value: 'todos', label: 'Todos' },
-  { value: 'abierto', label: 'Abierto' },
-  { value: 'cerrado', label: 'Cerrado' },
-]
 
 export default function FiltrosProcesosComerciales({
   filtros,
   onChange,
   opcionesEjecutivo,
   opcionesEtapa,
-  total,
-  filtrados,
 }: FiltrosProcesosComercialesProps) {
   const actualizar = (key: keyof FiltrosPanel, value: string) => {
     onChange({ ...filtros, [key]: value })
@@ -61,17 +41,13 @@ export default function FiltrosProcesosComerciales({
       busqueda: '',
       ejecutivo: TODOS,
       etapa: TODOS,
-      estado_semaforo: TODOS,
-      estado_proceso: 'abierto',
     })
   }
 
   const hayFiltros =
     filtros.busqueda !== '' ||
     filtros.ejecutivo !== TODOS ||
-    filtros.etapa !== TODOS ||
-    filtros.estado_semaforo !== TODOS ||
-    filtros.estado_proceso !== 'abierto'
+    filtros.etapa !== TODOS
 
   return (
     <div className='flex flex-wrap items-center gap-2'>
@@ -123,38 +99,6 @@ export default function FiltrosProcesosComerciales({
         </SelectContent>
       </Select>
 
-      <Select
-        value={filtros.estado_semaforo}
-        onValueChange={(v) => actualizar('estado_semaforo', v)}
-      >
-        <SelectTrigger className='h-9 w-28 text-xs'>
-          <SelectValue placeholder='Estado SLA' />
-        </SelectTrigger>
-        <SelectContent>
-          {SEMAFOROS.map((op) => (
-            <SelectItem key={op.value} value={op.value} className='text-xs'>
-              {op.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      <Select
-        value={filtros.estado_proceso}
-        onValueChange={(v) => actualizar('estado_proceso', v)}
-      >
-        <SelectTrigger className='h-9 w-28 text-xs'>
-          <SelectValue placeholder='Estado' />
-        </SelectTrigger>
-        <SelectContent>
-          {ESTADOS_PROCESO.map((op) => (
-            <SelectItem key={op.value} value={op.value} className='text-xs'>
-              {op.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
       {hayFiltros && (
         <Button
           variant='ghost'
@@ -166,10 +110,6 @@ export default function FiltrosProcesosComerciales({
           Limpiar
         </Button>
       )}
-
-      <span className='hidden text-[11px] text-muted-foreground lg:inline'>
-        {filtrados} de {total}
-      </span>
     </div>
   )
 }

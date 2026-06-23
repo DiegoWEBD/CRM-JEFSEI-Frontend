@@ -11,6 +11,6 @@ export default class Poliza {
 		public estado: EstadoPoliza,
 		public inicio_vigencia?: string,
 		public fin_vigencia?: string,
-		public company?: string,
+		public company?: { id: number; nombre: string } | null,
 	) {}
 }

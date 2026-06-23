@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/select'
 import { Textarea } from '@/components/textarea'
+import { useAdministradores } from '@/hooks/administradores/use-administradores'
 import { useLineasNegocio } from '@/hooks/lineas-negocio/use-lineas-negocio'
 import { useFormularioRegistrarProspecto } from '@/hooks/prospectos/use-formulario-registrar-prospecto'
 import {
@@ -29,11 +30,8 @@ type FormularioRegistrarProspectoProps = {
 
 type TipoCliente = 'condominio' | 'linea_personal'
 
-function inp(pendiente: boolean, extra?: string) {
+function inp(_pendiente: boolean, extra?: string) {
   const base = 'h-9 text-sm shadow-none'
-  if (pendiente) {
-    return `${base} border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25${extra ? ` ${extra}` : ''}`
-  }
   return `${base}${extra ? ` ${extra}` : ''}`
 }
 
@@ -58,6 +56,7 @@ export default function FormularioRegistrarProspecto({
   })
 
   const { data: lineasNegocio } = useLineasNegocio()
+  const { data: administradores } = useAdministradores()
 
   const [region, setRegion] = useState(formik.values.region ?? '')
   const comunasDeRegion = useMemo(
@@ -333,15 +332,24 @@ export default function FormularioRegistrarProspecto({
           )}
 
           <div className='space-y-1.5'>
-            <label className='text-xs'>ID Administrador</label>
-            <Input
-              className={inp(formik.values.id_administrador === undefined)}
-              name='id_administrador'
-              value={formik.values.id_administrador ?? ''}
-              onChange={formik.handleChange}
-              inputMode='numeric'
-              type='number'
-            />
+            <label className='text-xs'>Administrador</label>
+            <Select
+              value={formik.values.id_administrador ? String(formik.values.id_administrador) : ''}
+              onValueChange={(value) =>
+                formik.setFieldValue('id_administrador', value ? Number(value) : undefined)
+              }
+            >
+              <SelectTrigger className={inp(formik.values.id_administrador === undefined)}>
+                <SelectValue placeholder='Selecciona un administrador' />
+              </SelectTrigger>
+              <SelectContent className='max-h-70'>
+                {administradores?.map((admin) => (
+                  <SelectItem key={admin.id} value={String(admin.id)} className='text-xs'>
+                    {admin.nombre_administrador}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>

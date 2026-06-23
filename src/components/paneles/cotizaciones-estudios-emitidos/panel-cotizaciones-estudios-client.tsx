@@ -1,9 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import TituloPagina from '@/components/titulos/titulo-pagina'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import { PanelEstudioFila } from '@/aplicacion/cotizaciones-estudios/dto/panel-estudio-fila'
 import { usePanelEstudios } from '@/hooks/cotizaciones-estudios/use-panel-estudios'
 import KpiCotizacionesEstudios, {
@@ -127,10 +125,6 @@ export default function PanelCotizacionesEstudiosClient({
 
 	return (
 		<PanelLayout>
-			<PanelHeader>
-				<TituloPagina>Cotizaciones Estudios Emitidos</TituloPagina>
-			</PanelHeader>
-
 			{isFetching && (
 				<div className='mb-2 text-xs text-muted-foreground'>
 					Actualizando...

@@ -10,7 +10,7 @@ import { AlertTriangle } from 'lucide-react'
 import CardInformacionProspecto from '../card-informacion-prospecto/card-informacion-prospecto'
 import CardInformacionTecnicaCondominio from '../card-informacion-tecnica-condominio/card-informacion-tecnica-condominio'
 import CardPolizas from '../card-polizas/card-polizas'
-import CardSolicitudesCotizacion from '../card-solicitudes-cotizacion/card-solicitudes-cotizacion'
+import CardOportunidadesComerciales from '../card-oportunidades-comerciales/card-oportunidades-comerciales'
 import PaginaProspectoHeader from '../pagina-prospecto-header/pagina-prospecto-header'
 
 type PaginaProspectoClientProps = {
@@ -51,14 +51,12 @@ export default function PaginaProspectoClient({
 				/>
 			)}
 
-			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
-				<CardSolicitudesCotizacion
-					idProspecto={prospecto.id}
-					informacionCompleta={prospecto.informacion_completa}
-					nombreCliente={prospecto.nombre_riesgo}
-					lineaNegocioNombre={prospecto.linea_negocio.nombre}
-				/>
-			)}
+			<CardOportunidadesComerciales
+				idProspecto={prospecto.id}
+				informacionCompleta={prospecto.informacion_completa}
+				nombreCliente={prospecto.nombre_riesgo}
+				lineaNegocioNombre={prospecto.linea_negocio.nombre}
+			/>
 
 			<CardPolizas
 				idCliente={prospecto.id_cliente}

@@ -12,7 +12,6 @@ async function PersonalInner() {
 
 	return (
 		<>
-			<h1>Gestión de Personal</h1>
 			<ContenedorUsuarios usuarios={usuarios} />
 		</>
 	)

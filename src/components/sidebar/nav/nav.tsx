@@ -35,23 +35,23 @@ const Nav = async ({ open }: NavProps) => {
 			<ul className='flex flex-col gap-3'>
 				<NavElement href='/' icono={<Home />} titulo='Inicio' open={open} />
 
-			{tieneAlgunRol(roles, ROLES_GERENTE) && (
-				<NavElement
-					href='/dashboard'
-					icono={<LayoutDashboard />}
-					titulo='Dashboard'
-					open={open}
-				/>
-			)}
+				{tieneAlgunRol(roles, ROLES_GERENTE) && (
+					<NavElement
+						href='/dashboard'
+						icono={<LayoutDashboard />}
+						titulo='Dashboard'
+						open={open}
+					/>
+				)}
 
-			{tieneAlgunRol(roles, ROLES_GERENTE) && (
-				<NavElement
-					href='/procesos-comerciales'
-					icono={<ChartBar />}
-					titulo='Procesos Comerciales'
-					open={open}
-				/>
-			)}
+				{tieneAlgunRol(roles, ROLES_GERENTE) && (
+					<NavElement
+						href='/oportunidades'
+						icono={<ChartBar />}
+						titulo='Oportunidades'
+						open={open}
+					/>
+				)}
 
 				{session && (
 					<NavElement
@@ -66,7 +66,7 @@ const Nav = async ({ open }: NavProps) => {
 					<NavElement
 						href='/solicitudes-estudio'
 						icono={<FileSearch />}
-						titulo='Solicitudes de estudio'
+						titulo='Solicitudes de cotización'
 						open={open}
 					/>
 				)}
@@ -75,7 +75,7 @@ const Nav = async ({ open }: NavProps) => {
 					<NavElement
 						href='/cotizaciones-estudios-emitidos'
 						icono={<FileCheck />}
-						titulo='Cotizaciones estudios emitidos'
+						titulo='Cotizaciones / estudios emitidos'
 						open={open}
 					/>
 				)}
@@ -89,14 +89,14 @@ const Nav = async ({ open }: NavProps) => {
 					/>
 				)}
 
-			{session && (
-				<NavElement
-					href='/administradores'
-					icono={<Building2 />}
-					titulo='Administradores'
-					open={open}
-				/>
-			)}
+				{session && (
+					<NavElement
+						href='/administradores'
+						icono={<Building2 />}
+						titulo='Administradores'
+						open={open}
+					/>
+				)}
 			</ul>
 		</nav>
 	)

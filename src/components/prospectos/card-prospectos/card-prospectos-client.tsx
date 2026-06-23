@@ -5,7 +5,7 @@ import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-ba
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
-import { Dialog, DialogContent } from '@/components/dialog'
+import { Dialog, DialogContent, DialogTitle } from '@/components/dialog'
 import { Input } from '@/components/input'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/sheet'
 import FormularioRegistrarProspecto from '@/components/formulario-registrar-prospecto/formulario-registrar-prospecto'
@@ -160,9 +160,9 @@ export default function CardProspectosClient({
 					setOpenFormularioRegistrarProspecto(open)
 				}
 			>
-				<DialogContent className='max-h-[90vh] max-w-3xl overflow-y-auto p-0'>
+				<DialogContent className='max-h-[90vh] sm:max-w-5xl overflow-y-auto p-0'>
 					<div className='border-b border-border px-6 py-4'>
-						<h2 className='text-lg font-semibold'>Registrar prospecto</h2>
+						<DialogTitle className='text-lg font-semibold'>Registrar prospecto</DialogTitle>
 						<p className='text-sm text-muted-foreground'>
 							Completa los datos del prospecto para crear un nuevo registro.
 						</p>

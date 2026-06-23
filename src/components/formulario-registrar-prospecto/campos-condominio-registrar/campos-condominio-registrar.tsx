@@ -43,8 +43,8 @@ const USO_CONDOMINIO_OPTIONS = [
   { value: 'habitacional_y_comercial', label: 'Habitacional y comercial' },
 ]
 
-function inp(pendiente: boolean, extra?: string) {
-  return `h-9 text-sm shadow-none${pendiente ? ' border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25' : ''}${extra ? ` ${extra}` : ''}`
+function inp(_pendiente: boolean, extra?: string) {
+  return `h-9 text-sm shadow-none${extra ? ` ${extra}` : ''}`
 }
 
 function classPendienteLabel(pendiente: boolean) {

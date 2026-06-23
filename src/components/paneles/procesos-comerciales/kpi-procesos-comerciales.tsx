@@ -16,7 +16,7 @@ export type TarjetaActiva =
 export type ConteosProcesos = Record<TarjetaActiva, number>
 
 const KPI_LABELS: Record<TarjetaActiva, string> = {
-  todas: 'Total procesos',
+  todas: 'Total oportunidades',
   abiertos: 'Abiertos',
   ganados: 'Ganados',
   perdidos: 'Perdidos',
@@ -38,8 +38,8 @@ const TARJETAS: TarjetaActiva[] = [
 const KPI_COLORS: Record<TarjetaActiva, string> = {
   todas: '',
   abiertos: '',
-  ganados: 'border-emerald-400/40 bg-emerald-500/5',
-  perdidos: 'border-red-400/40 bg-red-500/5',
+	ganados: '',
+	perdidos: '',
   verde: 'border-emerald-400/40 bg-emerald-500/5',
   amarillo: 'border-amber-400/40 bg-amber-500/5',
   rojo: 'border-red-400/40 bg-red-500/5',

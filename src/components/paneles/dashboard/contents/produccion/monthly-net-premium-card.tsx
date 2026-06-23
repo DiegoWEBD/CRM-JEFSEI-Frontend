@@ -1,51 +1,47 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
-import { TrendingDown, TrendingUp, Minus } from 'lucide-react'
+'use client'
+
+import { TrendingDown, TrendingUp } from 'lucide-react'
+import { Card, CardContent } from '@/components/card'
+import { cn } from '@/lib/utils'
 
 type MonthlyNetPremiumCardProps = {
-  total_prima_neta: number
-  variacion_mes_anterior: number
-  mes_label: string
+  totalPrimaNeta: number
+  variacionMesAnterior: number
+  mesLabel: string
 }
 
 export default function MonthlyNetPremiumCard({
-  total_prima_neta,
-  variacion_mes_anterior,
-  mes_label,
+  totalPrimaNeta,
+  variacionMesAnterior,
+  mesLabel,
 }: MonthlyNetPremiumCardProps) {
-  const TendenciaIcon =
-    variacion_mes_anterior > 0
-      ? TrendingUp
-      : variacion_mes_anterior < 0
-        ? TrendingDown
-        : Minus
-
-  const tendenciaColor =
-    variacion_mes_anterior > 0
-      ? 'text-green-600'
-      : variacion_mes_anterior < 0
-        ? 'text-red-600'
-        : 'text-muted-foreground'
+  const positiva = variacionMesAnterior >= 0
 
   return (
-    <Card>
-      <CardHeader className='pb-2'>
-        <CardTitle className='text-xs font-medium text-muted-foreground'>
-          Prima Neta Mensual
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className='flex items-baseline gap-2'>
-          <span className='text-3xl font-bold tabular-nums'>{total_prima_neta.toLocaleString('es-CL')}</span>
-          <span className='text-sm text-muted-foreground'>UF</span>
-        </div>
-        <div className='mt-2 flex items-center gap-2'>
-          <TendenciaIcon className={`h-4 w-4 ${tendenciaColor}`} />
-          <span className={`text-sm font-medium ${tendenciaColor}`}>
-            {variacion_mes_anterior > 0 ? '+' : ''}{variacion_mes_anterior}%
-          </span>
-          <span className='text-xs text-muted-foreground'>vs. mes anterior</span>
-        </div>
-        <p className='mt-1 text-xs text-muted-foreground'>{mes_label}</p>
+    <Card className='border-border bg-card shadow-none'>
+      <CardContent className='p-3.5'>
+        <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+          Prima neta mensual
+        </p>
+        <p className='mt-1 text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-[1.75rem]'>
+          {totalPrimaNeta.toLocaleString('es-CL')} UF
+        </p>
+        <p className='mt-0.5 text-[10px] text-muted-foreground'>{mesLabel}</p>
+        <p
+          className={cn(
+            'mt-1.5 inline-flex items-center gap-0.5 text-[10px]',
+            positiva
+              ? 'text-emerald-600/90 dark:text-emerald-400/90'
+              : 'text-amber-700/90 dark:text-amber-400/90',
+          )}
+        >
+          {positiva ? (
+            <TrendingUp className='h-2.5 w-2.5' aria-hidden />
+          ) : (
+            <TrendingDown className='h-2.5 w-2.5' aria-hidden />
+          )}
+          {positiva ? '+' : ''}{variacionMesAnterior.toFixed(1)}% vs. mes anterior
+        </p>
       </CardContent>
     </Card>
   )
