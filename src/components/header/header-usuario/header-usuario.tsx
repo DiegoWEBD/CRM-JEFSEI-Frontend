@@ -1,19 +1,17 @@
 'use client'
 
 import InicialesUsuario from '@/app/personal/components/iniciales-usuario'
-import Button from '@/components/button/button'
-import DropdownMenu from '@/components/dropdown-menu/dropdown-menu'
-import DropdownMenuContent from '@/components/dropdown-menu/dropdown-menu-conten/dropdown-menu-content'
-import DropdownMenuItem from '@/components/dropdown-menu/dropdown-menu-item/dropdown-menu-item'
-import DropdownMenuTrigger from '@/components/dropdown-menu/dropdown-menu-trigger/dropdown-menu-trigger'
+import { Button } from '@/components/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/dropdown-menu'
 import { useAuth } from '@/hooks/auth/use-auth'
 import { ChevronDown, LogOut, Settings, User } from 'lucide-react'
 
 type Props = {
 	nombre: string
+	nombreRoles: string[]
 }
 
-const HeaderUsuario = ({ nombre }: Props) => {
+const HeaderUsuario = ({ nombre, nombreRoles }: Props) => {
 	const { logout } = useAuth()
 
 	return (
@@ -23,8 +21,12 @@ const HeaderUsuario = ({ nombre }: Props) => {
 					<div className='h-7 w-7 rounded-full bg-primary/20 flex items-center justify-center'>
 						<InicialesUsuario nombre={nombre} className='text-primary ' />
 					</div>
-					<span className='text-sm hidden md:inline-block'>{nombre}</span>
-
+					<span className='hidden md:flex flex-col items-start'>
+						<span className='text-sm leading-tight'>{nombre}</span>
+						<span className='text-[10px] leading-tight text-muted-foreground'>
+							{nombreRoles.join(', ')}
+						</span>
+					</span>
 					<ChevronDown className='h-3 w-3 text-muted-foreground' />
 				</Button>
 			</DropdownMenuTrigger>

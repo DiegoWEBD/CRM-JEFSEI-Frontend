@@ -1,22 +1,21 @@
 'use client'
 
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import Button from '@/components/button/button'
-import Card from '@/components/card/card'
-import CardContent from '@/components/card/card-content/card-content'
-import CardHeader from '@/components/card/card-header/card-header'
-import CardTitle from '@/components/card/card-title/card-title'
-import Dialog from '@/components/dialog/dialog'
-import DialogContent from '@/components/dialog/dialog-content/dialog-content'
-import DialogDescription from '@/components/dialog/dialog-description/dialog-description'
-import DialogHeader from '@/components/dialog/dialog-header/dialog-hedaer'
-import DialogTitle from '@/components/dialog/dialog-title/dialog-title'
-import Input from '@/components/forms/input/input'
+import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
+import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import { Dialog, DialogContent, DialogTitle } from '@/components/dialog'
+import { Input } from '@/components/input'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/sheet'
 import FormularioRegistrarProspecto from '@/components/formulario-registrar-prospecto/formulario-registrar-prospecto'
+import { cn } from '@/lib/utils'
 import { useControlledInput } from '@/hooks/input/use-controlled-input'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
+import { useQueryClient } from '@tanstack/react-query'
 import { Plus, Search } from 'lucide-react'
-import { useState } from 'react'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
 import FilaProspecto from './fila-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
 
@@ -31,10 +30,38 @@ export default function CardProspectosClient({
 	const { filtro, prospectosFiltrados, cambiarFiltro, contarFiltro } =
 		useFiltrosProspectos(prospectos)
 
+	const queryClient = useQueryClient()
+
 	const [
 		openFormularioRegistrarProspecto,
 		setOpenFormularioRegistrarProspecto,
 	] = useState<boolean>(false)
+
+	const prospectosConBusqueda = useMemo(() => {
+		if (!busqueda.trim()) return prospectosFiltrados
+		const q = busqueda.trim().toLowerCase()
+		return prospectosFiltrados.filter(p => {
+			const enNombre = p.nombre_riesgo.toLowerCase().includes(q)
+			const enLinea = p.linea_negocio.toLowerCase().includes(q)
+			const enAdmin =
+				p.nombre_administrador?.toLowerCase().includes(q) ?? false
+			const enEjecutivo =
+				p.ejecutivo_comercial?.toLowerCase().includes(q) ?? false
+			const enEstado = (p.procesos_comerciales ?? []).some(
+				pro =>
+					(pro.nombre_estado?.toLowerCase() ?? '').includes(q) ||
+					(pro.codigo_estado?.toLowerCase() ?? '').includes(q),
+			)
+			return enNombre || enLinea || enAdmin || enEjecutivo || enEstado
+		})
+	}, [busqueda, prospectosFiltrados])
+
+	const [sheetTodosAbierto, setSheetTodosAbierto] =
+		useState<boolean>(false)
+
+	const onProspectoRegistrado = () => {
+		queryClient.invalidateQueries({ queryKey: ['prospectos'] })
+	}
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
@@ -70,6 +97,7 @@ export default function CardProspectosClient({
 				</div>
 
 				<FiltrosEstadoProspecto
+					prospectos={prospectos}
 					filtroActivo={filtro}
 					onFiltroChange={cambiarFiltro}
 					contarFiltro={contarFiltro}
@@ -77,37 +105,41 @@ export default function CardProspectosClient({
 
 				<div className='space-y-2'>
 					<p className='text-[11px] text-muted-foreground'>
-						{prospectosFiltrados.length} cliente
-						{prospectosFiltrados.length !== 1 ? 's' : ''}
-						{filtro !== 'todos' ? (
-							<>
-								{' '}
-								· <span className='text-foreground'>{filtro}</span>
-							</>
-						) : null}
-						{busqueda.trim() && prospectosFiltrados.length > 0
-							? ` · ${prospectosFiltrados.length} prospecto${prospectosFiltrados.length !== 1 ? 's' : ''} en búsqueda`
+						{filtro === 'todos'
+							? `Total de prospectos: ${prospectos?.length ?? 0}`
+							: <>
+									{prospectosConBusqueda.length} cliente
+									{prospectosConBusqueda.length !== 1 ? 's' : ''}
+									{' '}· <span className='text-foreground'>{filtro}</span>
+								</>
+						}
+						{busqueda.trim() && prospectosConBusqueda.length > 0
+							? ` · ${prospectosConBusqueda.length} prospecto${prospectosConBusqueda.length !== 1 ? 's' : ''} en búsqueda`
 							: ''}
 					</p>
 					<div className='max-h-[min(52vh,420px)] space-y-2 overflow-y-auto rounded-md border border-border p-1.5'>
-						{prospectosFiltrados.length === 0 && (
+						{filtro === 'todos' && !busqueda.trim() ? (
+							<p className='py-6 text-center text-xs text-muted-foreground'>
+								Total de prospectos: {prospectos?.length ?? 0}
+							</p>
+						) : prospectosConBusqueda.length === 0 ? (
 							<p className='py-6 text-center text-xs text-muted-foreground'>
 								No hay clientes con este estado
 								{busqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
 							</p>
-						)}
-
-						{prospectosFiltrados.map(prospecto => (
-							<FilaProspecto key={prospecto.id} prospecto={prospecto} />
-						))}
-						{busqueda.trim() &&
-							prospectosFiltrados.map(prospecto => (
+						) : (
+							prospectosConBusqueda.map(prospecto => (
 								<FilaProspecto
 									key={prospecto.id}
 									prospecto={prospecto}
-									className='border-violet-500/25 bg-violet-500/4'
+									className={
+										busqueda.trim()
+											? 'border-violet-500/25 bg-violet-500/4'
+											: undefined
+									}
 								/>
-							))}
+							))
+						)}
 					</div>
 				</div>
 
@@ -116,6 +148,7 @@ export default function CardProspectosClient({
 					variant='outline'
 					size='sm'
 					className='h-8 w-full text-xs'
+					onClick={() => setSheetTodosAbierto(true)}
 				>
 					Ver todos los clientes asignados ({prospectos?.length ?? 0})
 				</Button>
@@ -127,16 +160,101 @@ export default function CardProspectosClient({
 					setOpenFormularioRegistrarProspecto(open)
 				}
 			>
-				<DialogContent className='h-screen max-w-screen sm:max-w-200 sm:h-150 overflow-y-auto'>
-					<DialogHeader>
-						<DialogTitle>Registrar prospecto</DialogTitle>
-						<DialogDescription>
+				<DialogContent className='max-h-[90vh] sm:max-w-5xl overflow-y-auto p-0'>
+					<div className='border-b border-border px-6 py-4'>
+						<DialogTitle className='text-lg font-semibold'>Registrar prospecto</DialogTitle>
+						<p className='text-sm text-muted-foreground'>
 							Completa los datos del prospecto para crear un nuevo registro.
-						</DialogDescription>
-					</DialogHeader>
-					<FormularioRegistrarProspecto />
+						</p>
+					</div>
+					<div className='px-6 py-4'>
+						<FormularioRegistrarProspecto
+							onClose={() => setOpenFormularioRegistrarProspecto(false)}
+							onProspectoRegistrado={onProspectoRegistrado}
+						/>
+					</div>
 				</DialogContent>
 			</Dialog>
+
+			<Sheet
+				open={sheetTodosAbierto}
+				onOpenChange={setSheetTodosAbierto}
+			>
+				<SheetContent className='flex w-full flex-col gap-0 p-0 sm:max-w-2xl'>
+					<SheetHeader className='border-b border-border px-4 py-3 text-left'>
+						<SheetTitle className='text-base leading-snug'>
+							Todos los clientes asignados
+						</SheetTitle>
+					</SheetHeader>
+					<div className='flex-1 space-y-2 overflow-y-auto p-4'>
+						{prospectos?.map(prospecto => {
+							const primerEstado =
+								prospecto.procesos_comerciales[0]
+							return (
+								<div
+									key={prospecto.id}
+									className='rounded-md border border-border p-3'
+								>
+									<div className='flex items-start justify-between gap-3'>
+										<div className='min-w-0 flex-1 space-y-0.5'>
+											<p className='truncate text-sm font-medium leading-snug text-foreground'>
+												{prospecto.nombre_riesgo}
+											</p>
+											{prospecto.ejecutivo_comercial && (
+												<p className='truncate text-[11px] leading-snug text-muted-foreground'>
+													{prospecto.ejecutivo_comercial}
+												</p>
+											)}
+											<div className='flex flex-wrap items-center gap-1.5 pt-0.5'>
+												{primerEstado ? (
+													<Badge
+														variant='outline'
+														className={cn(
+															'text-[10px] font-medium',
+															ESTADO_COMERCIAL_BADGE[
+																primerEstado.codigo_estado
+															],
+														)}
+													>
+														{primerEstado.nombre_estado}
+													</Badge>
+												) : (
+													<span className='text-[10px] text-muted-foreground'>
+														—
+													</span>
+												)}
+												<span className='text-[11px] text-muted-foreground'>
+													{prospecto.linea_negocio}
+												</span>
+												{prospecto.nombre_administrador && (
+													<span className='text-[11px] text-muted-foreground'>
+														· {prospecto.nombre_administrador}
+													</span>
+												)}
+											</div>
+										</div>
+										<Button
+											size='sm'
+											variant='outline'
+											className='h-7 shrink-0 px-2.5 text-[10px]'
+											asChild
+										>
+											<Link href={`/prospectos/${prospecto.id}`}>
+												Ver prospecto
+											</Link>
+										</Button>
+									</div>
+								</div>
+							)
+						})}
+						{(!prospectos || prospectos.length === 0) && (
+							<p className='py-12 text-center text-xs text-muted-foreground'>
+								No hay clientes asignados.
+							</p>
+						)}
+					</div>
+				</SheetContent>
+			</Sheet>
 		</Card>
 	)
 }

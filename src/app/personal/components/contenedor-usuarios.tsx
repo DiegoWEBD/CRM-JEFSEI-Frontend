@@ -1,4 +1,4 @@
-import Card from '@/components/card/card'
+import { Card } from '@/components/card'
 import Usuario from '@/dominio/usuario/usuario'
 import InicialesUsuario from './iniciales-usuario'
 

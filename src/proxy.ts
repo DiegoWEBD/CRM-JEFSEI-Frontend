@@ -2,106 +2,95 @@ import { NextRequest, NextResponse } from 'next/server'
 import { TokenPayload } from './dtos/token-payload'
 
 type RoleProtectedRoute = {
-	path: string
-	roles: string[]
+  path: string
+  roles: string[]
 }
 
-/**
- * Rutas públicas
- * No requieren autenticación
- */
 const publicRoutes: string[] = ['/login']
 
-/**
- * Rutas protegidas por roles
- */
 const roleProtectedRoutes: RoleProtectedRoute[] = [
-	{
-		path: '/personal',
-		roles: ['GERENTE_OPERACIONES', 'GERENTE_GENERAL', 'GERENTE_COMERCIAL'],
-	},
+  {
+    path: '/personal',
+    roles: ['GERENTE_OPERACIONES', 'GERENTE_GENERAL', 'GERENTE_COMERCIAL'],
+  },
+  {
+    path: '/solicitudes-estudio',
+    roles: [
+      'EJECUTIVO_EVALUACION_PROYECTOS',
+      'GERENTE_COMERCIAL',
+      'GERENTE_GENERAL',
+      'GERENTE_OPERACIONES',
+    ],
+  },
+  {
+    path: '/cotizaciones-estudios-emitidos',
+    roles: [
+      'EJECUTIVO_EVALUACION_PROYECTOS',
+      'GERENTE_COMERCIAL',
+      'GERENTE_GENERAL',
+      'GERENTE_OPERACIONES',
+    ],
+  },
 ]
 
 function getUserRoles(token: string): string[] {
-	try {
-		const payload: TokenPayload = JSON.parse(
-			Buffer.from(token.split('.')[1], 'base64').toString(),
-		)
-
-		return payload.codigo_roles ?? []
-	} catch {
-		return []
-	}
+  try {
+    const payload: TokenPayload = JSON.parse(
+      Buffer.from(token.split('.')[1], 'base64').toString(),
+    )
+    return payload.codigo_roles ?? []
+  } catch {
+    return []
+  }
 }
 
 function isPublicRoute(pathname: string): boolean {
-	return publicRoutes.includes(pathname)
+  return publicRoutes.includes(pathname)
 }
 
 function getRoleProtectedRoute(
-	pathname: string,
+  pathname: string,
 ): RoleProtectedRoute | undefined {
-	return roleProtectedRoutes.find(route => pathname.startsWith(route.path))
+  return roleProtectedRoutes.find(route => pathname.startsWith(route.path))
 }
 
 function hasRequiredRole(
-	userRoles: string[],
-	requiredRoles: string[],
+  userRoles: string[],
+  requiredRoles: string[],
 ): boolean {
-	return userRoles.some(role => requiredRoles.includes(role))
+  return userRoles.some(role => requiredRoles.includes(role))
 }
 
 export function proxy(req: NextRequest) {
-	const token = req.cookies.get('token')?.value
-	const pathname = req.nextUrl.pathname
+  const token = req.cookies.get('token')?.value
+  const pathname = req.nextUrl.pathname
 
-	/**
-	 * Si el usuario autenticado entra a /login,
-	 * redirigir al home
-	 */
-	if (pathname === '/login' && token) {
-		return NextResponse.redirect(new URL('/', req.url))
-	}
+  if (pathname === '/login' && token) {
+    return NextResponse.redirect(new URL('/', req.url))
+  }
 
-	/**
-	 * Permitir rutas públicas
-	 */
-	if (isPublicRoute(pathname)) {
-		return NextResponse.next()
-	}
+  if (isPublicRoute(pathname)) {
+    return NextResponse.next()
+  }
 
-	/**
-	 * Todo lo demás requiere autenticación
-	 */
-	if (!token) {
-		return NextResponse.redirect(new URL('/login', req.url))
-	}
+  if (!token) {
+    return NextResponse.redirect(new URL('/login', req.url))
+  }
 
-	/**
-	 * Validación de roles
-	 */
-	const protectedRoute = getRoleProtectedRoute(pathname)
+  const protectedRoute = getRoleProtectedRoute(pathname)
 
-	if (protectedRoute) {
-		const userRoles = getUserRoles(token)
+  if (protectedRoute) {
+    const userRoles = getUserRoles(token)
+    if (!hasRequiredRole(userRoles, protectedRoute.roles)) {
+      return NextResponse.redirect(new URL('/', req.url))
+    }
+  }
 
-		if (!hasRequiredRole(userRoles, protectedRoute.roles)) {
-			return NextResponse.redirect(new URL('/no-autorizado', req.url))
-		}
-	}
-
-	return NextResponse.next()
+  return NextResponse.next()
 }
 
 export const config = {
-	matcher: [
-		/*
-		 * Excluir:
-		 * - api
-		 * - archivos estáticos
-		 * - imágenes
-		 * - favicon
-		 */
-		'/((?!api|_next/static|_next/image|favicon.ico).*)',
-	],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 }

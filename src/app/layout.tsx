@@ -29,9 +29,11 @@ export default function RootLayout({
 			lang='en'
 			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
-			<Providers>
-				<AppLayout>{children}</AppLayout>
-			</Providers>
+			<body className='h-screen flex overflow-hidden'>
+				<Providers>
+					<AppLayout>{children}</AppLayout>
+				</Providers>
+			</body>
 		</html>
 	)
 }

@@ -1,4 +1,4 @@
-import { Badge } from '@/components/badge/badge'
+import { Badge } from '@/components/badge'
 import { useRecordatorios } from '@/hooks/recordatorios/use-recordatorios'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { useMemo } from 'react'

@@ -1,17 +1,14 @@
+import { Suspense } from 'react'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import CardProspectos from '@/components/prospectos/card-prospectos/card-prospectos'
-import TituloPagina from '@/components/titulos/titulo-pagina'
-
+import { CardProspectosSkeleton } from '@/components/prospectos/card-prospectos/card-prospectos-skeleton'
 const ProspectosPage = () => {
 	return (
 		<>
-			<TituloPagina>Prospectos</TituloPagina>
-
 			<PanelLayout>
-				{/*<Suspense fallback={<CardProspectosSkeleton />}>
+				<Suspense fallback={<CardProspectosSkeleton />}>
 					<CardProspectos />
-				</Suspense>*/}
-				<CardProspectos />
+				</Suspense>
 			</PanelLayout>
 		</>
 	)

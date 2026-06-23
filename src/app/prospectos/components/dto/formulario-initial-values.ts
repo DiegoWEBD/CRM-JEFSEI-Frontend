@@ -1,22 +1,30 @@
 export interface FormularioInitialValues {
-	rut_riesgo?: string
-	nombre_riesgo: string
-	nombre_contacto: string
-	telefono_contacto: string
-	correo_contacto?: string
-	direccion: string
-	id_comuna: number
-	observaciones?: string
-	id_linea_negocio: number
-	cargo_contacto?: string
-	tiene_locales_comerciales?: '' | 'Sí' | 'No'
-	uso_del_condominio?: string
-	numero_pisos?: number
-	numero_torres?: number
-	cantidad_departamentos?: number
-	cantidad_subterraneos?: number
-	tiene_piscina?: '' | 'Sí' | 'No'
-	year_construccion?: number
-	metros_cuadrados?: number
-	desea_ser_contactado?: '' | 'Sí' | 'No'
+  rut_riesgo?: string
+  nombre_riesgo: string
+  telefono_contacto?: string
+  correo_contacto?: string
+  direccion?: string
+  region?: string
+  comuna?: string
+  observaciones?: string
+  id_linea_negocio: number
+  id_administrador?: number
+  tiene_locales_comerciales?: boolean
+  uso_del_condominio?: string
+  materialidad?: string
+  clasificacion_preliminar_incendio?: string
+  procesos_productivos?: boolean
+  numero_pisos?: number
+  numero_torres?: number
+  cantidad_departamentos?: number
+  cantidad_subterraneos?: number
+  tiene_piscina?: boolean
+  ubicacion_piscina?: string
+  tiene_alarma_incendio?: boolean
+  tiene_sprinklers?: boolean
+  year_construccion?: number
+  metros_cuadrados?: number
+  uf_por_metro_cuadrado?: number
+  porcentaje_depreciacion?: number
+  porcentaje_espacios_comunes?: number
 }

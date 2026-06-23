@@ -1,17 +1,14 @@
 import { useComunicadosGerencia } from '@/hooks/comunicados-gerencia/use-comunicados-gerencia'
 import { Bell } from 'lucide-react'
-import { Badge } from '../badge/badge'
-import Card from '../card/card'
-import CardContent from '../card/card-content/card-content'
-import CardHeader from '../card/card-header/card-header'
-import CardTitle from '../card/card-title/card-title'
+import { Badge } from '@/components/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { formatearFecha } from '@/utils/formatear-fecha'
 
 export default function CardComunicadoGerencia() {
 	const { data: comunicados } = useComunicadosGerencia()
 
 	return (
-		<Card className='border-border bg-card shadow-none'>
+		<Card className='border-border bg-card'>
 			<CardHeader className='flex flex-row items-center justify-between border-b border-border pb-2 pt-3'>
 				<CardTitle primary>Avisos de gerencia</CardTitle>
 				<Bell className='h-4 w-4 text-muted-foreground' aria-hidden />

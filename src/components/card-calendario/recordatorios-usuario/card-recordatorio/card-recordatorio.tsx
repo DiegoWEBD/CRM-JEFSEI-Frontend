@@ -1,5 +1,5 @@
-import { Badge } from '@/components/badge/badge'
-import Button from '@/components/button/button'
+import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
 import Recordatorio from '@/dominio/recordatorio/recordatorio'
 import { classname } from '@/lib/class-name'
 import {

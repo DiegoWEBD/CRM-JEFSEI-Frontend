@@ -1,344 +1,440 @@
-import Button from '@/components/button/button'
-import Form from '@/components/forms/form/form'
-import Input from '@/components/forms/input/input'
-import Select from '@/components/forms/select/select'
-import { useComunas } from '@/hooks/comunas/use-comunas'
+'use client'
+
+import { Button } from '@/components/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import { Input } from '@/components/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/select'
+import { Textarea } from '@/components/textarea'
+import { useAdministradores } from '@/hooks/administradores/use-administradores'
 import { useLineasNegocio } from '@/hooks/lineas-negocio/use-lineas-negocio'
 import { useFormularioRegistrarProspecto } from '@/hooks/prospectos/use-formulario-registrar-prospecto'
-import FormError from '../forms/form-error/form-error'
-import FormRow from '../forms/form-row/form-row'
-import Label from '../forms/label/label'
-import SelectContent from '../forms/select/select-content/select-content'
-import SelectItem from '../forms/select/select-item/select-item'
-import SelectTrigger from '../forms/select/select-trigger/select-trigger'
-import SelectValue from '../forms/select/select-value/select-value'
+import {
+  CHILE_REGIONES_NOMBRES,
+  obtenerComunasDeRegion,
+} from '@/lib/chile-regiones-comunas'
+import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
+import { Building2, LoaderCircle, User } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import CamposCondominioRegistrar from './campos-condominio-registrar/campos-condominio-registrar'
 
 type FormularioRegistrarProspectoProps = {
-	onProspectoRegistrado?: () => void
-	onClose?: () => void
+  onProspectoRegistrado?: () => void
+  onClose?: () => void
 }
 
-const FormularioRegistrarProspecto = ({
-	onProspectoRegistrado,
-	onClose,
-}: FormularioRegistrarProspectoProps) => {
-	const { formik, cargando } = useFormularioRegistrarProspecto({
-		onProspectoRegistrado,
-		onClose,
-	})
+type TipoCliente = 'condominio' | 'linea_personal'
 
-	const { data: lineasNegocio } = useLineasNegocio()
-	const { data: comunas } = useComunas()
-
-	return (
-		<Form
-			onSubmit={formik.handleSubmit}
-			className='grid! grid-cols-1! md:grid-cols-2! gap-4!'
-		>
-			<FormRow>
-				<Label>Rut</Label>
-				<Input
-					name='rut_riesgo'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.rut_riesgo}
-				/>
-				{formik.touched.rut_riesgo && formik.errors.rut_riesgo ? (
-					<FormError>{formik.errors.rut_riesgo}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Nombre / Razón social</Label>
-				<Input
-					name='nombre_riesgo'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.nombre_riesgo}
-				/>
-				{formik.touched.nombre_riesgo && formik.errors.nombre_riesgo ? (
-					<FormError>{formik.errors.nombre_riesgo}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Nombre contacto</Label>
-				<Input
-					name='nombre_contacto'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.nombre_contacto}
-				/>
-				{formik.touched.nombre_contacto && formik.errors.nombre_contacto ? (
-					<FormError>{formik.errors.nombre_contacto}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Cargo contacto</Label>
-				<Input
-					name='cargo_contacto'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.cargo_contacto}
-				/>
-				{formik.touched.cargo_contacto && formik.errors.cargo_contacto ? (
-					<FormError>{formik.errors.cargo_contacto}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Correo contacto</Label>
-				<Input
-					name='correo_contacto'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.correo_contacto}
-				/>
-				{formik.touched.correo_contacto && formik.errors.correo_contacto ? (
-					<FormError>{formik.errors.correo_contacto}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Teléfono contacto</Label>
-				<Input
-					name='telefono_contacto'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.telefono_contacto}
-				/>
-				{formik.touched.telefono_contacto && formik.errors.telefono_contacto ? (
-					<FormError>{formik.errors.telefono_contacto}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Dirección</Label>
-				<Input
-					name='direccion'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.direccion}
-				/>
-				{formik.touched.direccion && formik.errors.direccion ? (
-					<FormError>{formik.errors.direccion}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Comuna</Label>
-				<Select
-					name='id_comuna'
-					onValueChange={value =>
-						formik.setFieldValue('id_comuna', Number(value))
-					}
-				>
-					<SelectTrigger className='w-full'>
-						<SelectValue placeholder='Seleccione una comuna' />
-					</SelectTrigger>
-					<SelectContent>
-						{comunas?.map(comuna => (
-							<SelectItem key={comuna.id} value={comuna.id.toString()}>
-								{comuna.nombre}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-				{formik.touched.id_comuna && formik.errors.id_comuna ? (
-					<FormError>{formik.errors.id_comuna}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Observaciones</Label>
-				<Input
-					name='observaciones'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.observaciones}
-					className='md:col-span-2'
-				/>
-				{formik.touched.observaciones && formik.errors.observaciones ? (
-					<FormError>{formik.errors.observaciones}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Línea de negocio</Label>
-				<Select
-					name='id_linea_negocio'
-					onValueChange={value =>
-						formik.setFieldValue('id_linea_negocio', Number(value))
-					}
-				>
-					<SelectTrigger className='w-full'>
-						<SelectValue placeholder='Seleccione una línea de negocio' />
-					</SelectTrigger>
-					<SelectContent>
-						{lineasNegocio?.map(lineaNegocio => (
-							<SelectItem
-								key={lineaNegocio.id}
-								value={lineaNegocio.id.toString()}
-							>
-								{lineaNegocio.nombre}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-				{formik.touched.id_linea_negocio && formik.errors.id_linea_negocio ? (
-					<FormError>{formik.errors.id_linea_negocio}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Cuenta con locales comerciales</Label>
-				<Input
-					name='tiene_locales_comerciales'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.tiene_locales_comerciales}
-				/>
-				{formik.touched.tiene_locales_comerciales &&
-				formik.errors.tiene_locales_comerciales ? (
-					<FormError>{formik.errors.tiene_locales_comerciales}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Uso del condominio</Label>
-				<Input
-					name='uso_del_condominio'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.uso_del_condominio}
-				/>
-				{formik.touched.uso_del_condominio &&
-				formik.errors.uso_del_condominio ? (
-					<FormError>{formik.errors.uso_del_condominio}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Número de pisos</Label>
-				<Input
-					name='numero_pisos'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.numero_pisos}
-					type='number'
-				/>
-				{formik.touched.numero_pisos && formik.errors.numero_pisos ? (
-					<FormError>{formik.errors.numero_pisos}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Número de torres</Label>
-				<Input
-					name='numero_torres'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.numero_torres}
-					type='number'
-				/>
-				{formik.touched.numero_torres && formik.errors.numero_torres ? (
-					<FormError>{formik.errors.numero_torres}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Número de departamentos</Label>
-				<Input
-					name='cantidad_departamentos'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.cantidad_departamentos}
-					type='number'
-				/>
-				{formik.touched.cantidad_departamentos &&
-				formik.errors.cantidad_departamentos ? (
-					<FormError>{formik.errors.cantidad_departamentos}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Número de subterraneos</Label>
-				<Input
-					name='cantidad_subterraneos'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.cantidad_subterraneos}
-					type='number'
-				/>
-				{formik.touched.cantidad_subterraneos &&
-				formik.errors.cantidad_subterraneos ? (
-					<FormError>{formik.errors.cantidad_subterraneos}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Cuenta con piscina</Label>
-				<Input
-					name='tiene_piscina'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.tiene_piscina}
-				/>
-				{formik.touched.tiene_piscina && formik.errors.tiene_piscina ? (
-					<FormError>{formik.errors.tiene_piscina}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Año de construcción</Label>
-				<Input
-					name='year_construccion'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.year_construccion}
-					type='number'
-				/>
-				{formik.touched.year_construccion && formik.errors.year_construccion ? (
-					<FormError>{formik.errors.year_construccion}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Metros cuadrados</Label>
-				<Input
-					name='metros_cuadrados'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.metros_cuadrados}
-					type='number'
-				/>
-				{formik.touched.metros_cuadrados && formik.errors.metros_cuadrados ? (
-					<FormError>{formik.errors.metros_cuadrados}</FormError>
-				) : null}
-			</FormRow>
-
-			<FormRow>
-				<Label>Administrador desea ser contactado</Label>
-				<Input
-					name='desea_ser_contactado'
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					value={formik.values.desea_ser_contactado}
-				/>
-				{formik.touched.desea_ser_contactado &&
-				formik.errors.desea_ser_contactado ? (
-					<FormError>{formik.errors.desea_ser_contactado}</FormError>
-				) : null}
-			</FormRow>
-
-			<div className='md:col-span-2 flex justify-end'>
-				<Button type='submit'>
-					{cargando ? 'Registrando...' : 'Registrar'}
-				</Button>
-			</div>
-		</Form>
-	)
+function inp(_pendiente: boolean, extra?: string) {
+  const base = 'h-9 text-sm shadow-none'
+  return `${base}${extra ? ` ${extra}` : ''}`
 }
 
-export default FormularioRegistrarProspecto
+function classInputRut(estado: string) {
+  const base = 'h-9 text-sm shadow-none'
+  if (estado === 'vacio' || estado === 'incompleto') {
+    return `${base} border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25`
+  }
+  if (estado === 'formato_invalido' || estado === 'dv_invalido') {
+    return `${base} border-destructive/60 bg-destructive/[0.07] dark:border-destructive/55 dark:bg-destructive/15`
+  }
+  return base
+}
+
+export default function FormularioRegistrarProspecto({
+  onProspectoRegistrado,
+  onClose,
+}: FormularioRegistrarProspectoProps) {
+  const { formik, cargando } = useFormularioRegistrarProspecto({
+    onProspectoRegistrado,
+    onClose,
+  })
+
+  const { data: lineasNegocio } = useLineasNegocio()
+  const { data: administradores } = useAdministradores()
+
+  const [region, setRegion] = useState(formik.values.region ?? '')
+  const comunasDeRegion = useMemo(
+    () => [...obtenerComunasDeRegion(region)],
+    [region],
+  )
+
+  const lineaCondominio = useMemo(
+    () =>
+      lineasNegocio?.find(l =>
+        l.nombre.toLowerCase().includes('condominio'),
+      ),
+    [lineasNegocio],
+  )
+
+  const lineaPersonal = useMemo(
+    () =>
+      lineasNegocio?.find(
+        l =>
+          l.nombre.toLowerCase().includes('personal') ||
+          l.nombre.toLowerCase().includes('persona'),
+      ),
+    [lineasNegocio],
+  )
+
+  const tipoActual: TipoCliente = useMemo(() => {
+    if (
+      lineaCondominio &&
+      formik.values.id_linea_negocio === lineaCondominio.id
+    )
+      return 'condominio'
+    return 'linea_personal'
+  }, [formik.values.id_linea_negocio, lineaCondominio])
+
+  const setTipo = (tipo: TipoCliente) => {
+    const id =
+      tipo === 'condominio'
+        ? lineaCondominio?.id
+        : lineaPersonal?.id
+    if (id) {
+      formik.setFieldValue('id_linea_negocio', id)
+    }
+  }
+
+  const estadoRut = useMemo(
+    () => rutChilenoEstadoValidacion(formik.values.rut_riesgo ?? ''),
+    [formik.values.rut_riesgo],
+  )
+
+  return (
+    <form onSubmit={formik.handleSubmit} className='space-y-6'>
+      <Card className='border-border bg-card shadow-none'>
+        <CardHeader className='pb-2 pt-3'>
+          <CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
+            Tipo de cliente
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='flex flex-wrap gap-2 pb-4'>
+          <Button
+            type='button'
+            size='sm'
+            variant={tipoActual === 'condominio' ? 'default' : 'outline'}
+            className='h-9 text-xs'
+            onClick={() => setTipo('condominio')}
+            disabled={!lineaCondominio}
+          >
+            <Building2 className='mr-1.5 h-3.5 w-3.5' aria-hidden />
+            Condominio
+          </Button>
+          <Button
+            type='button'
+            size='sm'
+            variant={tipoActual === 'linea_personal' ? 'default' : 'outline'}
+            className='h-9 text-xs'
+            onClick={() => setTipo('linea_personal')}
+            disabled={!lineaPersonal}
+          >
+            <User className='mr-1.5 h-3.5 w-3.5' aria-hidden />
+            Línea personal / Persona natural
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card className='border-border bg-card shadow-none'>
+        <CardHeader className='pb-2 pt-3'>
+          <CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
+            Datos generales
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
+          <div className='space-y-1.5'>
+            <label
+              className={`text-xs${(estadoRut === 'vacio' || estadoRut === 'incompleto') ? ' text-amber-800 dark:text-amber-200' : ''}${(estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido') ? ' text-destructive' : ''}`}
+            >
+              RUT
+            </label>
+            <Input
+              className={classInputRut(estadoRut)}
+              placeholder='12.345.678-9'
+              inputMode='text'
+              autoComplete='off'
+              maxLength={14}
+              name='rut_riesgo'
+              value={formik.values.rut_riesgo ?? ''}
+              onChange={formik.handleChange}
+            />
+            {estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? (
+              <p className='text-[10px] text-destructive'>
+                {estadoRut === 'dv_invalido'
+                  ? 'El dígito verificador no corresponde.'
+                  : 'Ingrese 8 números y el dígito verificador (0-9 o K).'}
+              </p>
+            ) : estadoRut === 'incompleto' ? (
+              <p className='text-[10px] text-muted-foreground'>
+                8 dígitos + verificador (número o K).
+              </p>
+            ) : null}
+          </div>
+
+          <div className='space-y-1.5'>
+            <label
+              className={`text-xs${formik.values.nombre_riesgo ? '' : ' text-amber-800 dark:text-amber-200'}`}
+            >
+              Nombre / Razón social *
+            </label>
+            <Input
+              className={inp(!formik.values.nombre_riesgo)}
+              name='nombre_riesgo'
+              value={formik.values.nombre_riesgo}
+              onChange={formik.handleChange}
+            />
+            {formik.touched.nombre_riesgo && formik.errors.nombre_riesgo ? (
+              <p className='text-[10px] text-destructive'>
+                {formik.errors.nombre_riesgo}
+              </p>
+            ) : null}
+          </div>
+
+          <div className='space-y-1.5 sm:col-span-2'>
+            <label
+              className={`text-xs${inputPendienteSimple(formik.values.direccion) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+            >
+              Dirección
+            </label>
+            <Input
+              className={inp(inputPendienteSimple(formik.values.direccion))}
+              name='direccion'
+              value={formik.values.direccion}
+              onChange={formik.handleChange}
+            />
+          </div>
+
+          <div className='space-y-1.5'>
+            <label
+              className={`text-xs${inputPendienteSimple(region) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+            >
+              Región
+            </label>
+            <Select
+              value={region || '__none__'}
+              onValueChange={value => {
+                const r = value === '__none__' ? '' : value
+                setRegion(r)
+                formik.setFieldValue('region', r)
+                if (
+                  r &&
+                  !comunasDeRegion.includes(formik.values.comuna ?? '')
+                ) {
+                  formik.setFieldValue('comuna', '')
+                }
+              }}
+            >
+              <SelectTrigger className={inp(inputPendienteSimple(region))}>
+                <SelectValue placeholder='Selecciona una región' />
+              </SelectTrigger>
+              <SelectContent className='max-h-70'>
+                <SelectItem
+                  value='__none__'
+                  className='text-xs text-muted-foreground'
+                >
+                  Selecciona una región
+                </SelectItem>
+                {CHILE_REGIONES_NOMBRES.map(r => (
+                  <SelectItem key={r} value={r} className='text-xs'>
+                    {r}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className='space-y-1.5'>
+            <label
+              className={`text-xs${inputPendienteSimple(formik.values.comuna) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+            >
+              Comuna
+            </label>
+            <Select
+              disabled={!region}
+              value={
+                formik.values.comuna &&
+                comunasDeRegion.includes(formik.values.comuna)
+                  ? formik.values.comuna
+                  : '__none__'
+              }
+              onValueChange={value => {
+                const c = value === '__none__' ? '' : value
+                formik.setFieldValue('comuna', c)
+              }}
+            >
+              <SelectTrigger
+                className={`${inp(inputPendienteSimple(formik.values.comuna))}${!region ? ' cursor-not-allowed opacity-70' : ''}`}
+              >
+                <SelectValue
+                  placeholder={
+                    region
+                      ? 'Selecciona una comuna'
+                      : 'Primero selecciona una región'
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent className='max-h-70'>
+                <SelectItem
+                  value='__none__'
+                  className='text-xs text-muted-foreground'
+                >
+                  {region
+                    ? 'Selecciona una comuna'
+                    : 'Primero selecciona una región'}
+                </SelectItem>
+                {comunasDeRegion.map(c => (
+                  <SelectItem key={c} value={c} className='text-xs'>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className='space-y-1.5'>
+            <label className='text-xs'>Correo contacto</label>
+            <Input
+              className={inp(inputPendienteSimple(formik.values.correo_contacto))}
+              type='email'
+              name='correo_contacto'
+              value={formik.values.correo_contacto}
+              onChange={formik.handleChange}
+            />
+            {formik.touched.correo_contacto && formik.errors.correo_contacto ? (
+              <p className='text-[10px] text-destructive'>
+                {formik.errors.correo_contacto}
+              </p>
+            ) : null}
+          </div>
+
+          {tipoActual === 'linea_personal' && (
+            <div className='space-y-1.5'>
+              <label
+                className={`text-xs${inputPendienteSimple(formik.values.telefono_contacto) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+              >
+                Teléfono de contacto
+              </label>
+              <Input
+                className={inp(
+                  inputPendienteSimple(formik.values.telefono_contacto),
+                )}
+                inputMode='tel'
+                name='telefono_contacto'
+                value={formik.values.telefono_contacto}
+                onChange={formik.handleChange}
+              />
+            </div>
+          )}
+
+          <div className='space-y-1.5'>
+            <label className='text-xs'>Administrador</label>
+            <Select
+              value={formik.values.id_administrador ? String(formik.values.id_administrador) : ''}
+              onValueChange={(value) =>
+                formik.setFieldValue('id_administrador', value ? Number(value) : undefined)
+              }
+            >
+              <SelectTrigger className={inp(formik.values.id_administrador === undefined)}>
+                <SelectValue placeholder='Selecciona un administrador' />
+              </SelectTrigger>
+              <SelectContent className='max-h-70'>
+                {administradores?.map((admin) => (
+                  <SelectItem key={admin.id} value={String(admin.id)} className='text-xs'>
+                    {admin.nombre_administrador}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {tipoActual === 'condominio' && (
+        <>
+          <Card className='border-border bg-card shadow-none'>
+            <CardHeader className='pb-2 pt-3'>
+              <CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
+                Características de construcción
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
+              <CamposCondominioRegistrar formik={formik} section='construccion' />
+            </CardContent>
+          </Card>
+
+          <Card className='border-border bg-card shadow-none'>
+            <CardHeader className='pb-2 pt-3'>
+              <CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
+                Información para evaluación del seguro
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
+              <CamposCondominioRegistrar formik={formik} section='evaluacion' />
+            </CardContent>
+          </Card>
+
+          <Card className='border-border bg-card shadow-none'>
+            <CardHeader className='pb-2 pt-3'>
+              <CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
+                Medidas de seguridad
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
+              <CamposCondominioRegistrar formik={formik} section='seguridad' />
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      <Card className='border-border bg-card shadow-none'>
+        <CardHeader className='pb-2 pt-3'>
+          <CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
+            Observaciones comerciales
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='pb-4'>
+          <Textarea
+            className='min-h-[120px] resize-y text-sm leading-relaxed shadow-none'
+            placeholder='Agrega un comentario...'
+            name='observaciones'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.observaciones}
+          />
+        </CardContent>
+      </Card>
+
+      <div className='flex flex-wrap justify-end gap-2 border-t border-border pt-2'>
+        <Button
+          type='button'
+          variant='outline'
+          size='sm'
+          className='h-9 text-xs'
+          onClick={onClose}
+        >
+          Cancelar
+        </Button>
+        <Button
+          type='submit'
+          size='sm'
+          className='h-9 text-xs'
+          disabled={cargando}
+        >
+          {cargando && <LoaderCircle className='mr-1.5 h-3.5 w-3.5 animate-spin' />}
+          {cargando ? 'Registrando...' : 'Guardar cliente'}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+function inputPendienteSimple(input?: string | number | boolean | null) {
+  if (input === undefined || input === null) return true
+  if (typeof input === 'boolean' || typeof input === 'number') return false
+  return !String(input).trim()
+}

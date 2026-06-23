@@ -1,5 +1,4 @@
-import Card from '../card/card'
-import CardHeader from '../card/card-header/card-header'
+import { Card, CardHeader } from '@/components/card'
 
 type ProgresoMetaProps = {
 	className?: string

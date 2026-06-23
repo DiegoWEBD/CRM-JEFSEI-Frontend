@@ -1,5 +1,5 @@
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import Button from '@/components/button/button'
+import { Button } from '@/components/button'
 import { classname } from '@/lib/class-name'
 import Link from 'next/link'
 
@@ -24,7 +24,8 @@ export default function FilaProspecto({
 					{prospecto.nombre_riesgo}
 				</p>
 				<p className='truncate text-[11px] leading-snug text-muted-foreground'>
-					{prospecto.linea_negocio} · Prospecto
+					{prospecto.linea_negocio} ·{' '}
+					{prospecto.id_cliente ? 'Cliente' : 'Prospecto'}
 				</p>
 			</div>
 			<Button

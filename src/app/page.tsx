@@ -1,8 +1,17 @@
-import PanelEjecutivoComercial from '@/components/paneles/ejecutivo-comercial/panel-ejecutivo-comercial'
-import { hasRole } from '@/lib/auth'
+import { Suspense } from 'react'
+import PanelHome from '@/components/paneles/home/panel-home'
+import { PanelHomeSkeleton } from '@/components/paneles/home/panel-home-skeleton'
+import { getSession } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
 export default async function Home() {
-	const esEjecutivoComercial = await hasRole('EJECUTIVO_COMERCIAL')
+	const session = await getSession()
 
-	return <>{esEjecutivoComercial && <PanelEjecutivoComercial />}</>
+	if (!session) redirect('/login')
+
+	return (
+		<Suspense fallback={<PanelHomeSkeleton />}>
+			<PanelHome />
+		</Suspense>
+	)
 }
