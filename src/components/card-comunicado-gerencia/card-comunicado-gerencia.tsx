@@ -1,17 +1,100 @@
+'use client'
+
 import { useComunicadosGerencia } from '@/hooks/comunicados-gerencia/use-comunicados-gerencia'
-import { Bell } from 'lucide-react'
+import { useRegistrarComunicadoGerencia } from '@/hooks/comunicados-gerencia/use-registrar-comunicado-gerencia'
+import { Bell, Plus } from 'lucide-react'
 import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import {
+	Dialog,
+	DialogContent,
+	DialogTitle,
+	DialogDescription,
+} from '@/components/dialog'
+import Input from '@/components/forms/input/input'
+import Textarea from '@/components/forms/text-area/text-area'
+import Select from '@/components/forms/select/select'
+import SelectContent from '@/components/forms/select/select-content/select-content'
+import SelectItem from '@/components/forms/select/select-item/select-item'
+import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
+import SelectValue from '@/components/forms/select/select-value/select-value'
+import { Label } from '@/components/label'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 import { formatearFecha } from '@/utils/formatear-fecha'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import { useState } from 'react'
+
+const PRIORIDAD_STYLES: Record<string, string> = {
+	media: 'border-blue-500/35 bg-blue-500/10 text-blue-950 dark:text-blue-100',
+	alta: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
+}
 
 export default function CardComunicadoGerencia() {
 	const { data: comunicados } = useComunicadosGerencia()
+	const mutation = useRegistrarComunicadoGerencia()
+	const [dialogAbierto, setDialogAbierto] = useState(false)
+
+	const formik = useFormik({
+		initialValues: {
+			titulo: '',
+			descripcion: '',
+			prioridad: 'media',
+			caducidad: '',
+		},
+		validationSchema: Yup.object({
+			titulo: Yup.string().required('El título es obligatorio'),
+			descripcion: Yup.string().required('La descripción es obligatoria'),
+			prioridad: Yup.string()
+				.oneOf(['media', 'alta'], 'Selecciona una prioridad')
+				.required(),
+			caducidad: Yup.string().required('La fecha de caducidad es obligatoria'),
+		}),
+		onSubmit: values => {
+			mutation.mutate(
+				{
+					titulo: values.titulo,
+					descripcion: values.descripcion,
+					prioridad: values.prioridad,
+					caducidad: values.caducidad,
+				},
+				{
+					onSuccess: () => {
+						setDialogAbierto(false)
+						formik.resetForm()
+					},
+				},
+			)
+		},
+	})
 
 	return (
 		<Card className='border-border bg-card'>
 			<CardHeader className='flex flex-row items-center justify-between border-b border-border pb-2 pt-3'>
 				<CardTitle primary>Avisos de gerencia</CardTitle>
-				<Bell className='h-4 w-4 text-muted-foreground' aria-hidden />
+				<div className='flex items-center gap-2'>
+					<AuthGuard
+						allowedRoles={[
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'GERENTE_OPERACIONES',
+						]}
+						fallback={null}
+					>
+						<Button
+							type='button'
+							variant='outline'
+							size='sm'
+							className='h-8 gap-1 text-xs'
+							onClick={() => setDialogAbierto(true)}
+						>
+							<Plus className='h-3.5 w-3.5' aria-hidden />
+							Nuevo aviso
+						</Button>
+					</AuthGuard>
+					<Bell className='h-4 w-4 text-muted-foreground' aria-hidden />
+				</div>
 			</CardHeader>
 			<CardContent className='space-y-2 p-3 sm:p-4'>
 				{comunicados?.length === 0 && (
@@ -27,7 +110,10 @@ export default function CardComunicadoGerencia() {
 						>
 							<div className='flex items-start justify-between gap-2'>
 								<p className='font-medium text-foreground'>{aviso.titulo}</p>
-								<Badge variant='outline' className='h-5 shrink-0 text-[9px]'>
+								<Badge
+									variant='outline'
+									className={`h-5 shrink-0 text-[9px] ${PRIORIDAD_STYLES[aviso.prioridad] ?? ''}`}
+								>
 									{aviso.prioridad}
 								</Badge>
 							</div>
@@ -41,6 +127,98 @@ export default function CardComunicadoGerencia() {
 					))}
 				</div>
 			</CardContent>
+
+			<Dialog open={dialogAbierto} onOpenChange={setDialogAbierto}>
+				<DialogContent className='p-0 sm:max-w-md'>
+					<div className='border-b border-border px-6 py-4'>
+						<DialogTitle className='text-lg font-semibold'>
+							Nuevo aviso
+						</DialogTitle>
+						<DialogDescription className='text-sm text-muted-foreground'>
+							Crea un nuevo aviso o comunicado de gerencia.
+						</DialogDescription>
+					</div>
+					<form onSubmit={formik.handleSubmit}>
+						<div className='space-y-4 px-6 py-4'>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>Título</Label>
+								<Input
+									name='titulo'
+									value={formik.values.titulo}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									className='h-9 text-sm shadow-none'
+								/>
+								{formik.touched.titulo && formik.errors.titulo && (
+									<p className='text-[10px] text-destructive'>{formik.errors.titulo}</p>
+								)}
+							</div>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>Descripción</Label>
+								<Textarea
+									name='descripcion'
+									value={formik.values.descripcion}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									className='min-h-[80px] text-sm shadow-none'
+								/>
+								{formik.touched.descripcion && formik.errors.descripcion && (
+									<p className='text-[10px] text-destructive'>{formik.errors.descripcion}</p>
+								)}
+							</div>
+							<div className='grid grid-cols-2 gap-3'>
+								<div className='space-y-1.5'>
+									<Label className='text-xs'>Prioridad</Label>
+									<Select
+										value={formik.values.prioridad}
+										onValueChange={v => formik.setFieldValue('prioridad', v)}
+									>
+										<SelectTrigger className='h-9 text-sm shadow-none'>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value='media'>Media</SelectItem>
+											<SelectItem value='alta'>Alta</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+								<div className='space-y-1.5'>
+									<Label className='text-xs'>Caducidad</Label>
+									<Input
+										type='date'
+										name='caducidad'
+										value={formik.values.caducidad}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+										className='h-9 text-sm shadow-none'
+									/>
+									{formik.touched.caducidad && formik.errors.caducidad && (
+										<p className='text-[10px] text-destructive'>{formik.errors.caducidad}</p>
+									)}
+								</div>
+							</div>
+						</div>
+						<div className='flex items-center justify-end gap-2 border-t border-border px-6 py-4'>
+							<Button
+								type='button'
+								variant='outline'
+								size='sm'
+								className='h-9 text-xs'
+								onClick={() => setDialogAbierto(false)}
+							>
+								Cancelar
+							</Button>
+							<Button
+								type='submit'
+								size='sm'
+								className='h-9 text-xs'
+							>
+								Guardar
+							</Button>
+						</div>
+					</form>
+				</DialogContent>
+			</Dialog>
 		</Card>
 	)
 }

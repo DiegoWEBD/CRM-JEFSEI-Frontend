@@ -85,7 +85,7 @@ export default function SheetRegistrarPoliza({
         tipo,
         id_company: Number(idCompany),
         prima_neta: Number(primaNeta),
-        comision_corredora_pct: Number(comisionPct),
+        comision_corredora_pct: Number(comisionPct) / 100,
         fecha_emision: fechaEmision,
         inicio_vigencia: inicioVigencia,
         fin_vigencia: finVigencia,

@@ -2,14 +2,14 @@ import { MetricasEjecutivoComercialJson } from '@/aplicacion/metricas/use-cases/
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
-export const useMetricasEjecutivoComercial = (initialData: MetricasEjecutivoComercialJson) => {
-  return useQuery({
-    queryKey: ['metricas-ejecutivo-comercial'],
-    queryFn: async () => {
-      const response = await axios.get('/api/metricas/ejecutivos-comerciales')
-      const data: MetricasEjecutivoComercialJson = response.data
-      return data
-    },
-    initialData,
-  })
+export const useMetricasEjecutivoComercial = () => {
+	return useQuery<MetricasEjecutivoComercialJson>({
+		queryKey: ['metricas-ejecutivo-comercial'],
+		queryFn: async () => {
+			console.log('obteniendo metricas')
+			const response = await axios.get('/api/metricas/ejecutivos-comerciales')
+			const data: MetricasEjecutivoComercialJson = response.data
+			return data
+		},
+	})
 }
