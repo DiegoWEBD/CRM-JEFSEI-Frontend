@@ -11,7 +11,8 @@ import {
 } from '@/components/table'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
-import { FileText, ChevronRight, Eye } from 'lucide-react'
+import Link from 'next/link'
+import { ChevronRight, Eye, ExternalLink } from 'lucide-react'
 import BadgeEstadoEstudio from './badge-estado-estudio'
 import BadgePrioridad from '@/components/badge-prioridad/badge-prioridad'
 import VencimientoCell from './vencimiento-cell'
@@ -42,16 +43,12 @@ type TablaCotizacionesEstudiosProps = {
   filas: PanelEstudioFila[]
   isFetching: boolean
   onVerCotizaciones: (f: PanelEstudioFila) => void
-  onGenerarEstudio: (f: PanelEstudioFila) => void
-  onVerEstudio: (f: PanelEstudioFila) => void
 }
 
 export default function TablaCotizacionesEstudios({
   filas,
   isFetching,
   onVerCotizaciones,
-  onGenerarEstudio,
-  onVerEstudio,
 }: TablaCotizacionesEstudiosProps) {
   if (isFetching && filas.length === 0) {
     return <SkeletonTabla />
@@ -128,29 +125,17 @@ export default function TablaCotizacionesEstudios({
                   <Eye className='mr-1 h-3.5 w-3.5' />
                   Cotizaciones
                 </Button>
-                {f.tiene_estudio ? (
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    className='h-8 shrink-0 px-2.5 text-xs shadow-none'
-                    onClick={() => onVerEstudio(f)}
-                  >
-                    <FileText className='mr-1 h-3.5 w-3.5' />
-                    Ver estudio
-                  </Button>
-                ) : (
-                  <Button
-                    type='button'
-                    variant='default'
-                    size='sm'
-                    className='h-8 shrink-0 px-2.5 text-xs shadow-none'
-                    onClick={() => onGenerarEstudio(f)}
-                    disabled={f.cantidad_cotizaciones === 0}
-                  >
-                    Generar estudio
-                  </Button>
-                )}
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='h-8 shrink-0 px-2.5 text-xs shadow-none'
+                  asChild
+                >
+                  <Link href={`/prospectos/${f.id_prospecto}`}>
+                    <ExternalLink className='mr-1 h-3.5 w-3.5' />
+                    Ver perfil
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -241,29 +226,17 @@ export default function TablaCotizacionesEstudios({
                     >
                       Ver cotizaciones
                     </Button>
-                    {f.tiene_estudio ? (
-                      <Button
-                        type='button'
-                        variant='outline'
-                        size='sm'
-                        className='h-7 w-full px-2 text-[11px] shadow-none sm:w-auto'
-                        onClick={() => onVerEstudio(f)}
-                      >
-                        <FileText className='mr-1 size-3' aria-hidden />
-                        Ver estudio
-                      </Button>
-                    ) : (
-                      <Button
-                        type='button'
-                        variant='default'
-                        size='sm'
-                        className='h-7 w-full px-2 text-[11px] shadow-none sm:w-auto'
-                        onClick={() => onGenerarEstudio(f)}
-                        disabled={f.cantidad_cotizaciones === 0}
-                      >
-                        Generar estudio
-                      </Button>
-                    )}
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      className='h-7 w-full px-2 text-[11px] shadow-none sm:w-auto'
+                      asChild
+                    >
+                      <Link href={`/prospectos/${f.id_prospecto}`}>
+                        <ExternalLink className='mr-1 size-3' aria-hidden />
+                        Ver perfil
+                      </Link>
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>

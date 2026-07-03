@@ -9,5 +9,7 @@ export default class Cotizacion {
 		public company: string,
 		public fecha_emision: string,
 		public fecha_vencimiento: string,
+		public nombre_archivo?: string,
+		public archivo_base64?: string,
 	) {}
 }

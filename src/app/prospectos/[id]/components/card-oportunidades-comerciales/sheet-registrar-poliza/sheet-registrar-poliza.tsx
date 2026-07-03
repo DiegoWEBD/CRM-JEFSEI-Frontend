@@ -28,6 +28,7 @@ type SheetRegistrarPolizaProps = {
   onOpenChange: (open: boolean) => void
   idProceso: number
   idProspecto: number
+  idCliente?: number
   nombreCliente: string
   producto: string
 }
@@ -37,6 +38,7 @@ export default function SheetRegistrarPoliza({
   onOpenChange,
   idProceso,
   idProspecto,
+  idCliente,
   nombreCliente,
   producto,
 }: SheetRegistrarPolizaProps) {
@@ -91,7 +93,9 @@ export default function SheetRegistrarPoliza({
 
       toast.success('Póliza registrada exitosamente')
       queryClient.invalidateQueries({ queryKey: ['procesos-comerciales', idProspecto] })
-      queryClient.invalidateQueries({ queryKey: ['polizas', idProspecto] })
+      if (idCliente) {
+        queryClient.invalidateQueries({ queryKey: ['polizas', idCliente] })
+      }
       resetForm()
       onOpenChange(false)
     } catch {

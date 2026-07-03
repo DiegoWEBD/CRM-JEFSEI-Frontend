@@ -6,13 +6,24 @@ import { Toaster } from '@/components/sonner'
 import axios from 'axios'
 import { toast } from 'sonner'
 
+function extraerMensaje(data: unknown): string {
+  if (typeof data === 'string') return data
+  if (Array.isArray(data)) {
+    return data.map((d: unknown) => {
+      if (d && typeof d === 'object' && 'msg' in d) return String((d as Record<string, unknown>).msg)
+      return String(d)
+    }).join(', ')
+  }
+  return String(data)
+}
+
 function notificarError(error: Error) {
   if (axios.isAxiosError(error)) {
-    toast.error(
-      error.response?.data?.error
-        || error.response?.data?.detail
-        || 'Ha ocurrido un error inesperado',
-    )
+    const detail = error.response?.data?.detail
+    const mensaje = Array.isArray(detail)
+      ? extraerMensaje(detail)
+      : error.response?.data?.error || detail || 'Ha ocurrido un error inesperado'
+    toast.error(mensaje)
   } else {
     toast.error(error.message || 'Ha ocurrido un error inesperado')
   }

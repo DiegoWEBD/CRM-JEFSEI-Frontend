@@ -13,7 +13,8 @@ import {
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
-import { Eye, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
+import { Eye, ChevronRight, ExternalLink } from 'lucide-react'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import BadgeEstadoSolicitud, {
 	EstadoSolicitudBandeja,
@@ -100,6 +101,20 @@ export default function TablaSolicitudesEstudio({
 										{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy HH:mm')}
 									</span>
 								</div>
+
+								<div className='mt-3' onClick={e => e.stopPropagation()} role='presentation'>
+									<Button
+										variant='outline'
+										size='sm'
+										className='h-8 w-full px-2.5 text-xs shadow-none'
+										asChild
+									>
+										<Link href={`/prospectos/${s.id_prospecto}`}>
+											<ExternalLink className='mr-1 h-3.5 w-3.5' />
+											Ver perfil
+										</Link>
+									</Button>
+								</div>
 							</CardContent>
 						</Card>
 					)
@@ -181,16 +196,27 @@ export default function TablaSolicitudesEstudio({
 									</TableCell>
 									<TableCell className='min-w-[220px] px-3 py-2 text-right'>
 										<div className='flex flex-wrap items-center justify-end gap-1.5'>
-											<Button
-												type='button'
-												variant='outline'
-												size='sm'
-												className='h-8 shrink-0 px-2.5 text-xs'
-												onClick={() => onVerDetalle(s)}
-											>
-												<Eye className='mr-1 h-3.5 w-3.5' />
-												Ver solicitud
-											</Button>
+									<Button
+										type='button'
+										variant='outline'
+										size='sm'
+										className='h-8 shrink-0 px-2.5 text-xs'
+										onClick={() => onVerDetalle(s)}
+									>
+										<Eye className='mr-1 h-3.5 w-3.5' />
+										Ver solicitud
+									</Button>
+									<Button
+										variant='outline'
+										size='sm'
+										className='h-8 shrink-0 px-2.5 text-xs'
+										asChild
+									>
+										<Link href={`/prospectos/${s.id_prospecto}`}>
+											<ExternalLink className='mr-1 h-3.5 w-3.5' />
+											Ver perfil
+										</Link>
+									</Button>
 										</div>
 									</TableCell>
 								</TableRow>

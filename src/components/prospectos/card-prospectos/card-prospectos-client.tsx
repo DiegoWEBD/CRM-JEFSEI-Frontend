@@ -27,7 +27,7 @@ export default function CardProspectosClient({
 	prospectos,
 }: CardProspectosClientProps) {
 	const { value: busqueda, handleChange } = useControlledInput()
-	const { filtro, prospectosFiltrados, cambiarFiltro, contarFiltro } =
+	const { filtro, prospectosFiltrados, cambiarFiltro } =
 		useFiltrosProspectos(prospectos)
 
 	const queryClient = useQueryClient()
@@ -100,7 +100,6 @@ export default function CardProspectosClient({
 					prospectos={prospectos}
 					filtroActivo={filtro}
 					onFiltroChange={cambiarFiltro}
-					contarFiltro={contarFiltro}
 				/>
 
 				<div className='space-y-2'>

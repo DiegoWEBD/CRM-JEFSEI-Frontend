@@ -2,9 +2,9 @@
 
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
 import { Skeleton } from '@/components/skeleton'
 import { useObtenerProcesosComerciales } from '@/hooks/procesos-comerciales/use-obtener-procesos-comerciales'
+import { useUserSession } from '@/hooks/auth/use-user-session'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import DialogNuevaOportunidad from './dialog-nueva-oportunidad/dialog-nueva-oportunidad'
@@ -12,18 +12,25 @@ import OportunidadItem from './oportunidad-item/oportunidad-item'
 
 type CardOportunidadesComercialesProps = {
   idProspecto: number
+  idCliente?: number
   informacionCompleta: boolean
   nombreCliente: string
   lineaNegocioNombre: string
+  ejecutivoComercialRut?: string
+  ejecutivoEvaluacionRut?: string
 }
 
 export default function CardOportunidadesComerciales({
   idProspecto,
+  idCliente,
   informacionCompleta,
   nombreCliente,
   lineaNegocioNombre,
+  ejecutivoComercialRut,
+  ejecutivoEvaluacionRut,
 }: CardOportunidadesComercialesProps) {
   const { data: procesos, isLoading } = useObtenerProcesosComerciales(idProspecto)
+  const { usuario } = useUserSession()
   const [openNuevaOportunidad, setOpenNuevaOportunidad] = useState(false)
 
   return (
@@ -33,7 +40,7 @@ export default function CardOportunidadesComerciales({
           <CardTitle className='min-w-0 text-sm font-semibold leading-tight tracking-tight text-foreground'>
             Oportunidades comerciales
           </CardTitle>
-          <AuthGuard allowedRoles={['EJECUTIVO_COMERCIAL']}>
+          {usuario?.rut === ejecutivoComercialRut ? (
             <Button
               type='button'
               size='sm'
@@ -43,7 +50,7 @@ export default function CardOportunidadesComerciales({
               <Plus className='h-3.5 w-3.5' aria-hidden />
               Nueva oportunidad
             </Button>
-          </AuthGuard>
+          ) : null}
         </CardHeader>
 
         <CardContent className='p-3 sm:p-4'>
@@ -60,9 +67,12 @@ export default function CardOportunidadesComerciales({
                   key={proceso.id}
                   proceso={proceso}
                   idProspecto={idProspecto}
+                  idCliente={idCliente}
                   informacionCompleta={informacionCompleta}
                   nombreCliente={nombreCliente}
                   lineaNegocioNombre={lineaNegocioNombre}
+                  ejecutivoComercialRut={ejecutivoComercialRut}
+                  ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
                 />
               ))}
             </div>
@@ -71,7 +81,7 @@ export default function CardOportunidadesComerciales({
               <p className='max-w-md text-sm text-muted-foreground'>
                 Aún no hay oportunidades comerciales para este cliente.
               </p>
-              <AuthGuard allowedRoles={['EJECUTIVO_COMERCIAL']}>
+              {usuario?.rut === ejecutivoComercialRut ? (
                 <Button
                   type='button'
                   size='sm'
@@ -81,7 +91,7 @@ export default function CardOportunidadesComerciales({
                   <Plus className='h-3.5 w-3.5' aria-hidden />
                   Nueva oportunidad
                 </Button>
-              </AuthGuard>
+              ) : null}
             </div>
           )}
         </CardContent>

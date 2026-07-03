@@ -18,6 +18,7 @@ type SolicitudCotizacionItemProps = {
 	idProspecto: number
 	nombreCliente: string
 	lineaNegocioNombre: string
+	ejecutivoEvaluacionRut?: string
 }
 
 const TAB_LABELS: Record<TabId, string> = {
@@ -35,6 +36,7 @@ export default function SolicitudCotizacionItem({
 	idProspecto,
 	nombreCliente,
 	lineaNegocioNombre,
+	ejecutivoEvaluacionRut,
 }: SolicitudCotizacionItemProps) {
 	const [gestionesAbiertas, setGestionesAbiertas] = useState(false)
 	const [tabActiva, setTabActiva] = useState<TabId>('solicitud')
@@ -135,6 +137,7 @@ export default function SolicitudCotizacionItem({
 							tab={tabActiva}
 							nombreCliente={nombreCliente}
 							lineaNegocioNombre={lineaNegocioNombre}
+							ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
 						/>
 					</div>
 				) : null}

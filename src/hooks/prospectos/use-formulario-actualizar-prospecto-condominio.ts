@@ -34,12 +34,12 @@ export const useFormularioActualizarProspectoCondominio = ({
 				observaciones: values.observaciones ?? null,
 				id_linea_negocio: values.id_linea_negocio,
 				uf_por_metro_cuadrado: n2(values.uf_por_metro_cuadrado),
-				porcentaje_depreciacion: values.porcentaje_depreciacion
-					? values.porcentaje_depreciacion / 100
-					: null,
-				porcentaje_espacios_comunes: values.porcentaje_espacios_comunes
-					? values.porcentaje_espacios_comunes / 100
-					: null,
+			porcentaje_depreciacion: values.porcentaje_depreciacion == null
+				? null
+				: values.porcentaje_depreciacion / 100,
+			porcentaje_espacios_comunes: values.porcentaje_espacios_comunes == null
+				? null
+				: values.porcentaje_espacios_comunes / 100,
 				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
 				uso_del_condominio: values.uso_del_condominio ?? null,
 				materialidad: values.materialidad ?? null,
@@ -111,12 +111,12 @@ export const useFormularioActualizarProspectoCondominio = ({
 			year_construccion: prospecto.year_construccion,
 			metros_cuadrados: prospecto.metros_cuadrados,
 			uf_por_metro_cuadrado: prospecto.uf_por_metro_cuadrado ?? undefined,
-			porcentaje_depreciacion: prospecto.porcentaje_depreciacion
-				? prospecto.porcentaje_depreciacion * 100
-				: undefined,
-			porcentaje_espacios_comunes: prospecto.porcentaje_espacios_comunes
-				? prospecto.porcentaje_espacios_comunes * 100
-				: undefined,
+			porcentaje_depreciacion: prospecto.porcentaje_depreciacion == null
+				? undefined
+				: prospecto.porcentaje_depreciacion * 100,
+			porcentaje_espacios_comunes: prospecto.porcentaje_espacios_comunes == null
+				? undefined
+				: prospecto.porcentaje_espacios_comunes * 100,
 		},
 		onSubmit: async values => {
 			await mutation.mutateAsync(values)

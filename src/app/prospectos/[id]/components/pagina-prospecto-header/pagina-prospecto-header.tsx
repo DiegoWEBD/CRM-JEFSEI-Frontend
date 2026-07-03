@@ -5,33 +5,22 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
-import { Prospecto } from '@/dominio/prospecto/prospecto'
-import { useHistorialEstadoDialog } from '@/hooks/historial-estado/use-historial-estado-dialog'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
-import { formatearFecha } from '@/utils/formatear-fecha'
-import { Building2 } from 'lucide-react'
-import Link from 'next/link'
-import HistorialEstados from '../historial-estados/historial-estados'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
+import { Prospecto } from '@/dominio/prospecto/prospecto'
+import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
+import { Building2 } from 'lucide-react'
+import { useState } from 'react'
 import AdministradorAsociado from './administrador-asociado/administrador-asociado'
+import { AsignarEjecutivoDialog } from './asignar-ejecutivo-dialog'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 
 type PaginaProspectoHeaderProps = {
 	prospecto: Prospecto
 }
 
 const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
-	/*const ultimoEstado =
-		prospecto.proceso_comercial.historial_estados[
-			prospecto.proceso_comercial.historial_estados.length - 1
-		]*/
-
-	const ultimoEstado = 'No informado'
-
-	const {
-		openHistorialEstadoDialog,
-		abrirDialogHistorialEstado,
-		setOpenHistorialEstadoDialog,
-	} = useHistorialEstadoDialog()
+	const [openAsignarComercial, setOpenAsignarComercial] = useState(false)
+	const [openAsignarEvaluacion, setOpenAsignarEvaluacion] = useState(false)
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
@@ -52,25 +41,65 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								administrador={(prospecto as ProspectoCondominio).administrador}
 							/>
 						)}
-						<div className='flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+						<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
 							<span>
 								<span className='text-muted-foreground'>
-									Ejecutivo asignado:
+									Gestión comercial:
 								</span>{' '}
 								<span className='font-medium text-foreground'>
 									{prospecto.ejecutivo_comercial_asignado?.nombre ?? '—'}
 								</span>
 							</span>
-							<span className='hidden sm:inline'>·</span>
-							<span className='tabular-nums'>
+							<AuthGuard
+								allowedRoles={[
+									'GERENTE_GENERAL',
+									'GERENTE_COMERCIAL',
+									'GERENTE_OPERACIONES',
+								]}
+								fallback={null}
+							>
+								<Button
+									type='button'
+									variant='ghost'
+									size='sm'
+									className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+									onClick={() => setOpenAsignarComercial(true)}
+								>
+									{prospecto.ejecutivo_comercial_asignado
+										? 'Reasignar'
+										: 'Asignar'}
+								</Button>
+							</AuthGuard>
+						</div>
+						<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+							<span>
 								<span className='text-muted-foreground'>
-									Última actualización:
+									Evaluación técnica:
 								</span>{' '}
-								{formatearFecha(
-									new Date(prospecto.ultima_actualizacion),
-									'dd-MM-yyyy · HH:mm',
-								)}
+								<span className='font-medium text-foreground'>
+									{prospecto.ejecutivo_evaluacion_asignado?.nombre ?? '—'}
+								</span>
 							</span>
+							<AuthGuard
+								allowedRoles={[
+									'GERENTE_GENERAL',
+									'GERENTE_COMERCIAL',
+									'GERENTE_OPERACIONES',
+								]}
+								fallback={null}
+							>
+								<Button
+									type='button'
+									variant='ghost'
+									size='sm'
+									className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+									onClick={() => setOpenAsignarEvaluacion(true)}
+								>
+									{prospecto.ejecutivo_evaluacion_asignado
+										? 'Reasignar'
+										: 'Asignar'}
+								</Button>
+							</AuthGuard>
 						</div>
 					</div>
 					<div className='flex flex-col gap-3 sm:flex-row sm:gap-6 lg:flex-col lg:items-end lg:gap-3 lg:pt-0.5'>
@@ -85,15 +114,6 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								>
 									{ESTADO_PROSPECTO_LABELS['OPORTUNIDAD_CREADA']}
 								</Badge>
-								{/*onClick={abrirDialogHistorialEstado}*/}
-								<Button
-									type='button'
-									variant='ghost'
-									size='sm'
-									className='h-7 px-2 text-[10px] text-muted-foreground hover:text-foreground'
-								>
-									Ver historial
-								</Button>
 							</div>
 						</div>
 						<div className='flex flex-col items-start gap-1.5 lg:items-end'>
@@ -107,12 +127,39 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 					</div>
 				</div>
 			</CardContent>
+			<AuthGuard
+				allowedRoles={[
+					'GERENTE_GENERAL',
+					'GERENTE_COMERCIAL',
+					'GERENTE_OPERACIONES',
+				]}
+				fallback={null}
+			>
+				<AsignarEjecutivoDialog
+					open={openAsignarComercial}
+					onOpenChange={setOpenAsignarComercial}
+					idProspecto={prospecto.id}
+					tipo='comercial'
+					ejecutivoActual={prospecto.ejecutivo_comercial_asignado?.rut}
+				/>
+			</AuthGuard>
 
-			{/**<HistorialEstados
-				prospecto={prospecto}
-				openHistorialEstadoDialog={openHistorialEstadoDialog}
-				setOpenHistorialEstadoDialog={setOpenHistorialEstadoDialog}
-			/> */}
+			<AuthGuard
+				allowedRoles={[
+					'GERENTE_GENERAL',
+					'GERENTE_COMERCIAL',
+					'GERENTE_OPERACIONES',
+				]}
+				fallback={null}
+			>
+				<AsignarEjecutivoDialog
+					open={openAsignarEvaluacion}
+					onOpenChange={setOpenAsignarEvaluacion}
+					idProspecto={prospecto.id}
+					tipo='evaluacion'
+					ejecutivoActual={prospecto.ejecutivo_evaluacion_asignado?.rut}
+				/>
+			</AuthGuard>
 		</Card>
 	)
 }

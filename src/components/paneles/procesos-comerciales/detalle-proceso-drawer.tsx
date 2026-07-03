@@ -39,6 +39,7 @@ import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-client
 import { useCerrarProcesoComercial } from '@/hooks/procesos-comerciales/use-cerrar-proceso-comercial'
 import { useAceptarProcesoComercial } from '@/hooks/procesos-comerciales/use-aceptar-proceso-comercial'
 import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
+import HistorialEstadosTimeline from '@/components/historial-estados-timeline/historial-estados-timeline'
 
 function esAbierto(
 	r: ReporteProcesoComercial,
@@ -278,69 +279,10 @@ export default function DetalleProcesoDrawer({
 							</>
 						)}
 
-						<div className='border-t border-border/50 pt-3'>
-							<p className='mb-2 text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
-								Historial de estados
-							</p>
-						</div>
-
-						{historialCargando && (
-							<div className='space-y-2'>
-								<div className='h-3 w-24 animate-pulse rounded bg-muted' />
-								<div className='ml-4 space-y-2'>
-									<div className='h-3 w-40 animate-pulse rounded bg-muted' />
-									<div className='h-3 w-32 animate-pulse rounded bg-muted' />
-								</div>
-							</div>
-						)}
-
-						{historial && Object.keys(historial).length === 0 && (
-							<p className='text-xs text-muted-foreground'>
-								No hay historial de estados
-							</p>
-						)}
-
-						{historial &&
-							Object.entries(historial).map(([etapaNombre, etapaData]) => (
-								<div key={etapaNombre}>
-									<div className='flex items-center gap-2 py-1'>
-										<span className='h-2 w-2 rounded-full bg-muted-foreground/40' />
-										<span className='text-xs font-semibold text-foreground'>
-											{etapaData.etapa}
-										</span>
-									</div>
-									<div className='ml-4 border-l-2 border-border/50 pl-4 space-y-3'>
-										{etapaData.estados.map((estado, estIdx) => (
-											<div key={estIdx} className='relative'>
-												<div className='absolute -left-[1.35rem] top-1.5 h-2 w-2 rounded-full border-2 border-primary bg-background' />
-												<p className='text-xs font-medium text-foreground'>
-													{estado.estado}
-												</p>
-												<p className='text-[11px] text-muted-foreground'>
-													Por: {estado.registrado_por}
-												</p>
-												<p className='text-[11px] text-muted-foreground tabular-nums'>
-													{new Date(estado.fecha_registro).toLocaleDateString(
-														'es-CL',
-														{
-															day: 'numeric',
-															month: 'short',
-															year: 'numeric',
-															hour: '2-digit',
-															minute: '2-digit',
-														},
-													)}
-												</p>
-												{estado.observacion && (
-													<p className='mt-0.5 text-[11px] text-muted-foreground/80 italic'>
-														{estado.observacion}
-													</p>
-												)}
-											</div>
-										))}
-									</div>
-								</div>
-							))}
+						<HistorialEstadosTimeline
+							historial={historial}
+							cargando={historialCargando}
+						/>
 
 						{abierto && (
 							<>

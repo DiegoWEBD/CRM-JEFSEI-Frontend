@@ -16,5 +16,6 @@ export default class Recordatorio {
 		public tipo_gestion: SharedReminderType,
 		public fecha_recordatorio: string,
 		public estado: SharedReminderStatus,
+		public numero_poliza?: string,
 	) {}
 }

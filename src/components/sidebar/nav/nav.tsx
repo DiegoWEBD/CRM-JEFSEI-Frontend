@@ -93,7 +93,7 @@ const Nav = async ({ open }: NavProps) => {
 					<NavElement
 						href='/administradores'
 						icono={<Building2 />}
-						titulo='Administradores'
+						titulo='Administradores de condominios'
 						open={open}
 					/>
 				)}

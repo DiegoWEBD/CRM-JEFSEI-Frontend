@@ -1,3 +1,3 @@
 export interface AsignarEjecutivoEvaluacionRequest {
-  rut_ej_evaluacion: string
+  rut_ej_evaluacion: string | null
 }

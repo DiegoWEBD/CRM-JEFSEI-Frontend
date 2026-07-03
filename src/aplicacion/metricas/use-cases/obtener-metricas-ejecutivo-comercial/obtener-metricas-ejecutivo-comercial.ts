@@ -1,6 +1,5 @@
 import { axiosClient } from '@/infraestructura/axios/axios-client'
 import { cookies } from 'next/headers'
-import { ObtenerMetricasResponse } from './dto/obtener-metricas-response'
 import { MetricasEjecutivoComercialJson } from './dto/metricas-ejecutivo-comercial-json'
 
 export const obtenerMetricasEjecutivoComercial = async (): Promise<MetricasEjecutivoComercialJson> => {
@@ -10,7 +9,5 @@ export const obtenerMetricasEjecutivoComercial = async (): Promise<MetricasEjecu
     headers: { Cookie: cookieStore.toString() },
   })
 
-  const data: ObtenerMetricasResponse = response.data
-
-  return data.data
+  return response.data
 }

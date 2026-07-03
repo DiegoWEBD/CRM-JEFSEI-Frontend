@@ -23,10 +23,15 @@ export default function CardRecordatorio({
 	onEdit,
 	onDelete,
 }: RecordatoriosUsuarioProps) {
-	const asociado = recordatorio.id_prospecto !== undefined
+	const esRenovacion = Boolean(recordatorio.numero_poliza)
+	const asociado = !esRenovacion && recordatorio.id_prospecto != null
 	const prio = recordatorio.prioridad
 
-	const clienteLabel = recordatorio.nombre_prospecto?.trim()
+	const badgePrincipal = esRenovacion
+		? { label: `Póliza ${recordatorio.numero_poliza}`, className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal border-sky-500/25 bg-sky-500/10 text-sky-950 dark:text-sky-100' }
+		: asociado
+			? { label: recordatorio.nombre_prospecto?.trim() ?? '—', className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal' }
+			: { label: 'General', className: 'h-5 border-muted-foreground/30 bg-muted/50 px-1.5 text-[9px] font-normal text-muted-foreground' }
 
 	return (
 		<div className='rounded-md border border-border bg-secondary/25 px-2.5 py-2'>
@@ -44,21 +49,12 @@ export default function CardRecordatorio({
 				</Badge>
 			</div>
 			<div className='mt-1 flex flex-wrap items-center gap-1'>
-				{asociado ? (
-					<Badge
-						variant='outline'
-						className='h-5 max-w-full truncate px-1.5 text-[9px] font-normal'
-					>
-						{clienteLabel}
-					</Badge>
-				) : (
-					<Badge
-						variant='outline'
-						className='h-5 border-muted-foreground/30 bg-muted/50 px-1.5 text-[9px] font-normal text-muted-foreground'
-					>
-						General
-					</Badge>
-				)}
+				<Badge
+					variant='outline'
+					className={badgePrincipal.className}
+				>
+					{badgePrincipal.label}
+				</Badge>
 				<Badge
 					variant='outline'
 					className={classname(

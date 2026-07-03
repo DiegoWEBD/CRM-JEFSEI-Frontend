@@ -1,5 +1,4 @@
 import { obtenerCotizacionesPorSolicitud } from '@/aplicacion/cotizaciones/use-cases/obtener-cotizaciones-por-solicitud/obtener-cotizaciones-por-solicitud'
-import { RegistrarCotizacionRequest } from '@/aplicacion/cotizaciones/use-cases/registrar-cotizacion/dto/registrar-cotizacion-request'
 import { axiosClient } from '@/infraestructura/axios/axios-client'
 import axios from 'axios'
 import { cookies } from 'next/headers'
@@ -37,12 +36,12 @@ export async function POST(
 ) {
   try {
     const { id } = await params
-    const body: RegistrarCotizacionRequest = await request.json()
+    const formData = await request.formData()
     const cookieStore = await cookies()
 
     const response = await axiosClient.post(
       `/solicitudes-cotizacion/${id}/cotizaciones`,
-      body,
+      formData,
       {
         headers: {
           Cookie: cookieStore.toString(),

@@ -39,8 +39,11 @@ export function estadoGeneralClientePerfilDesdeComercial(
 ): EstadoGeneralClientePerfil {
 	switch (estado) {
 		case 'OPORTUNIDAD_CREADA':
+		case 'CLIENTE_CARGADO_MASIVO':
 			return 'nuevo'
+		case 'EJECUTIVO_COMERCIAL_ASIGNADO':
 		case 'CONTACTADO':
+		case 'COTIZACION_DISPONIBLE':
 			return 'en_seguimiento'
 		case 'COTIZACION_SOLICITADA_COMPANY':
 		case 'ESTUDIO_DISPONIBLE':
@@ -49,6 +52,8 @@ export function estadoGeneralClientePerfilDesdeComercial(
 		case 'PROPUESTA_ACEPTADA':
 			return 'en_proceso_comercial'
 		case 'GANADO':
+		case 'POLIZA_REGISTRADA':
+		case 'PLAN_PAGO_CREADO':
 			return 'cliente_activo'
 		case 'PERDIDO':
 			return 'perdido'

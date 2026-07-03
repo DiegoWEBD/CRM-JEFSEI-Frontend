@@ -19,12 +19,12 @@ export default async function AppLayout({
 
 			{autenticado && <SideBar />}
 
-			<div className='flex flex-col flex-1'>
+			<div className='flex flex-col flex-1 min-w-0'>
 				{autenticado && <Header />}
 
 				<MainContentLayout
 					className={
-						!autenticado ? 'bg-secondary flex items-center justify-center' : ''
+						!autenticado ? 'bg-secondary flex items-center justify-center p-0' : ''
 					}
 				>
 					{children}

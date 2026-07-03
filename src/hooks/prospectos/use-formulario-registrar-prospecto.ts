@@ -29,12 +29,12 @@ export const useFormularioRegistrarProspecto = ({
         observaciones: values.observaciones || null,
         id_linea_negocio: values.id_linea_negocio,
         uf_por_metro_cuadrado: values.uf_por_metro_cuadrado ?? null,
-        porcentaje_depreciacion: values.porcentaje_depreciacion
-          ? values.porcentaje_depreciacion / 100
-          : null,
-        porcentaje_espacios_comunes: values.porcentaje_espacios_comunes
-          ? values.porcentaje_espacios_comunes / 100
-          : null,
+        porcentaje_depreciacion: values.porcentaje_depreciacion == null
+          ? null
+          : values.porcentaje_depreciacion / 100,
+        porcentaje_espacios_comunes: values.porcentaje_espacios_comunes == null
+          ? null
+          : values.porcentaje_espacios_comunes / 100,
         tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
         uso_del_condominio: values.uso_del_condominio || null,
         materialidad: values.materialidad || null,

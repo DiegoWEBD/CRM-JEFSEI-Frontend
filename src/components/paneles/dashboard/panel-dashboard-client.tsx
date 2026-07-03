@@ -2,14 +2,12 @@
 
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 
-import { useMetricasDashboardGerente } from '@/hooks/dashboard-gerente/use-metricas-dashboard-gerente'
-import ProductionSection from './contents/produccion/production-section'
-import CommercialActivitiesSection from './contents/actividades-comerciales/commercial-activities-section'
-import PoliciesReportsSection from './contents/reportes-polizas/policies-reports-section'
-import EvaluacionProyectosSection from './contents/evaluacion-proyectos/evaluacion-proyectos-section'
 import { DashboardSkeleton } from '@/components/paneles/dashboard/panel-dashboard-skeleton'
+import { useMetricasDashboardGerente } from '@/hooks/dashboard-gerente/use-metricas-dashboard-gerente'
+import CommercialActivitiesSection from './contents/actividades-comerciales/commercial-activities-section'
+import ProductionSection from './contents/produccion/production-section'
+import PoliciesReportsSection from './contents/reportes-polizas/policies-reports-section'
 
 const ROLES_GERENTE = [
 	'GERENTE_COMERCIAL',
@@ -40,7 +38,6 @@ export default function PanelDashboardClient() {
 				<ProductionSection data={metricas.produccion} />
 				<CommercialActivitiesSection data={metricas.actividades_comerciales} />
 				<PoliciesReportsSection data={metricas.reportes_polizas} />
-				<EvaluacionProyectosSection data={metricas.evaluacion_proyectos} />
 			</PanelLayout>
 		</AuthGuard>
 	)

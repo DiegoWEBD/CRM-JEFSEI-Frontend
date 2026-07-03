@@ -6,7 +6,7 @@ import { Button } from '@/components/button'
 import { Input } from '@/components/input'
 import { Label } from '@/components/label'
 import { Skeleton } from '@/components/skeleton'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
+import { useUserSession } from '@/hooks/auth/use-user-session'
 import type SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
 import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
 import { useListarEstudiosComerciales } from '@/hooks/estudio-comercial/use-listar-estudios-comerciales'
@@ -19,6 +19,7 @@ import {
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { cn } from '@/lib/utils'
+import { Download } from 'lucide-react'
 import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-registrar-cotizacion'
 import DialogVerCotizacionesWrapper from './dialog-ver-cotizaciones-wrapper'
 import DialogGenerarEstudioWrapper from './dialog-generar-estudio-wrapper'
@@ -31,6 +32,7 @@ type SolicitudCotizacionTabContentProps = {
   tab: TabId
   nombreCliente: string
   lineaNegocioNombre: string
+  ejecutivoEvaluacionRut?: string
 }
 
 function formatNum(n: number) {
@@ -43,6 +45,22 @@ function formatFecha(iso: string) {
     month: 'short',
     year: 'numeric',
   })
+}
+
+function descargarPDF(base64: string, nombreArchivo: string) {
+  const byteCharacters = atob(base64)
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+  const blob = new Blob([byteArray], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = nombreArchivo
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 const ESTADO_VENC_COLORS: Record<string, string> = {
@@ -72,7 +90,9 @@ export default function SolicitudCotizacionTabContent({
   tab,
   nombreCliente,
   lineaNegocioNombre,
+  ejecutivoEvaluacionRut,
 }: SolicitudCotizacionTabContentProps) {
+  const { usuario } = useUserSession()
   const { data: cotizaciones, isLoading: loadingCotizaciones } = useCotizaciones(solicitud.id)
   const { data: estudios, isLoading: loadingEstudios } = useListarEstudiosComerciales(idProspecto)
 
@@ -215,7 +235,7 @@ export default function SolicitudCotizacionTabContent({
                 Ver cotizaciones detallado
               </Button>
             ) : null}
-            <AuthGuard allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS', 'GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'GERENTE_OPERACIONES']}>
+            {usuario?.rut === ejecutivoEvaluacionRut ? (
               <Button
                 type='button'
                 size='sm'
@@ -224,7 +244,7 @@ export default function SolicitudCotizacionTabContent({
               >
                 Agregar cotización
               </Button>
-            </AuthGuard>
+            ) : null}
           </div>
         </div>
 
@@ -258,6 +278,18 @@ export default function SolicitudCotizacionTabContent({
                     <span>Emisión: {formatFecha(c.fecha_emision)}</span>
                     <span>Vence: {formatFecha(c.fecha_vencimiento)}</span>
                   </div>
+                  {c.nombre_archivo && c.archivo_base64 && (
+                    <Button
+                      type='button'
+                      variant='outline'
+                      size='sm'
+                      className='mt-2 h-7 text-[10px]'
+                      onClick={() => descargarPDF(c.archivo_base64!, c.nombre_archivo!)}
+                    >
+                      <Download className='mr-1 h-3 w-3' />
+                      Descargar PDF
+                    </Button>
+                  )}
                 </div>
               )
             })}
@@ -390,7 +422,7 @@ export default function SolicitudCotizacionTabContent({
                   </div>
                 </div>
 
-                <AuthGuard allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS', 'GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'GERENTE_OPERACIONES']}>
+                {usuario?.rut === ejecutivoEvaluacionRut ? (
                   <Button
                     type='button'
                     size='sm'
@@ -400,7 +432,7 @@ export default function SolicitudCotizacionTabContent({
                   >
                     Generar estudio
                   </Button>
-                </AuthGuard>
+                ) : null}
               </>
             )}
           </div>

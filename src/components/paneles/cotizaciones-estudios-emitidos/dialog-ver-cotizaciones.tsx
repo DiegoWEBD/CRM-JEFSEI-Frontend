@@ -21,6 +21,7 @@ import {
 import { Skeleton } from '@/components/skeleton'
 import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
 import { cn } from '@/lib/utils'
+import { Download } from 'lucide-react'
 
 function formatFecha(iso: string) {
   return new Date(iso).toLocaleDateString('es-CL', {
@@ -75,6 +76,22 @@ const ESTADO_LABEL: Record<string, string> = {
   vigente: 'Vigente',
   por_vencer: 'Por vencer',
   vencida: 'Vencida',
+}
+
+function descargarPDF(base64: string, nombreArchivo: string) {
+  const byteCharacters = atob(base64)
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+  const blob = new Blob([byteArray], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = nombreArchivo
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 type DialogVerCotizacionesProps = {
@@ -163,8 +180,27 @@ export default function DialogVerCotizaciones({
                           {formatNum(c.monto_total_asegurado)} UF
                         </p>
                       </div>
+                      {c.nombre_archivo && c.archivo_base64 && (
+                        <div className='col-span-2 mt-1'>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            size='sm'
+                            className='h-7 w-full text-[10px]'
+                            onClick={() =>
+                              descargarPDF(
+                                c.archivo_base64!,
+                                c.nombre_archivo!,
+                              )
+                            }
+                          >
+                            <Download className='mr-1 h-3 w-3' />
+                            Descargar PDF
+                          </Button>
+                        </div>
+                      )}
                       <div>
-                          <span className='text-[9px] uppercase tracking-wide'>
+                            <span className='text-[9px] uppercase tracking-wide'>
                           Tasa afecta
                         </span>
                         <p className='tabular-nums text-foreground/90'>
@@ -249,6 +285,7 @@ export default function DialogVerCotizaciones({
                     <TableHead className='text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
                       Estado venc.
                     </TableHead>
+                    <TableHead className='w-10'></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -292,6 +329,23 @@ export default function DialogVerCotizaciones({
                           >
                             {ESTADO_LABEL[ev]}
                           </span>
+                        </TableCell>
+                        <TableCell className='py-2'>
+                          {c.nombre_archivo && c.archivo_base64 && (
+                            <button
+                              type='button'
+                              className='text-muted-foreground hover:text-foreground'
+                              title='Descargar PDF'
+                              onClick={() =>
+                                descargarPDF(
+                                  c.archivo_base64!,
+                                  c.nombre_archivo!,
+                                )
+                              }
+                            >
+                              <Download className='h-3.5 w-3.5' />
+                            </button>
+                          )}
                         </TableCell>
                       </TableRow>
                     )

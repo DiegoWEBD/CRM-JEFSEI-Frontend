@@ -16,7 +16,12 @@ export async function GET() {
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			return NextResponse.json(
-				{ error: error.response?.data?.error || error.response?.data?.detail || error.message },
+				{
+					error:
+						error.response?.data?.error ||
+						error.response?.data?.detail ||
+						error.message,
+				},
 				{ status: error.response?.status ?? 500 },
 			)
 		}

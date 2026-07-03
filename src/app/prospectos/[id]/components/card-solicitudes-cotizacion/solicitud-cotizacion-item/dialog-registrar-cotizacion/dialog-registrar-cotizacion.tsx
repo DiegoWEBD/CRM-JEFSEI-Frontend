@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormik } from 'formik'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Upload, X } from 'lucide-react'
 import { Button } from '@/components/button'
 import {
   Dialog,
@@ -12,6 +12,7 @@ import {
 } from '@/components/dialog'
 import { Input } from '@/components/input'
 import { Label } from '@/components/label'
+import { useRef } from 'react'
 import {
   Select,
   SelectContent,
@@ -39,6 +40,7 @@ type FormValues = {
   prima_adicional_asistencia: string
   fecha_emision: string
   fecha_vencimiento: string
+  archivo: File | null
 }
 
 const initialValues: FormValues = {
@@ -50,6 +52,7 @@ const initialValues: FormValues = {
   prima_adicional_asistencia: '',
   fecha_emision: '',
   fecha_vencimiento: '',
+  archivo: null,
 }
 
 function transformarARequest(values: FormValues): RegistrarCotizacionRequest {
@@ -62,6 +65,7 @@ function transformarARequest(values: FormValues): RegistrarCotizacionRequest {
     prima_adicional_asistencia: Number(values.prima_adicional_asistencia),
     fecha_emision: values.fecha_emision,
     fecha_vencimiento: values.fecha_vencimiento,
+    archivo: values.archivo ?? undefined,
   }
 }
 
@@ -71,6 +75,7 @@ export default function DialogRegistrarCotizacion({
   open,
   onOpenChange,
 }: DialogRegistrarCotizacionProps) {
+  const archivoInputRef = useRef<HTMLInputElement>(null)
   const { data: companies, isLoading: loadingCompanies } = useCompaniesSeguros()
   const mutation = useRegistrarCotizacion(solicitudId, idProspecto)
 
@@ -214,6 +219,47 @@ export default function DialogRegistrarCotizacion({
                 <p className='text-xs font-medium text-destructive'>{formik.errors.fecha_vencimiento}</p>
               )}
             </div>
+          </div>
+
+          <div className='space-y-1.5'>
+            <Label className='text-xs'>Archivo cotización (PDF)</Label>
+            <input
+              ref={archivoInputRef}
+              type='file'
+              accept='.pdf,application/pdf'
+              className='sr-only'
+              onChange={(e) =>
+                formik.setFieldValue('archivo', e.target.files?.[0] ?? null)
+              }
+            />
+            {formik.values.archivo ? (
+              <div className='flex items-center gap-2 rounded-md border border-border px-3 py-2'>
+                <Upload className='h-3.5 w-3.5 shrink-0 text-muted-foreground' />
+                <span className='flex-1 truncate text-xs'>
+                  {formik.values.archivo.name}
+                </span>
+                <button
+                  type='button'
+                  className='shrink-0 text-muted-foreground hover:text-foreground'
+                  onClick={() => {
+                    formik.setFieldValue('archivo', null)
+                    if (archivoInputRef.current) archivoInputRef.current.value = ''
+                  }}
+                >
+                  <X className='h-3.5 w-3.5' />
+                </button>
+              </div>
+            ) : (
+              <Button
+                type='button'
+                variant='outline'
+                size='sm'
+                onClick={() => archivoInputRef.current?.click()}
+              >
+                <Upload className='mr-1.5 h-3.5 w-3.5' />
+                Elegir PDF
+              </Button>
+            )}
           </div>
 
           {mutation.isError && (

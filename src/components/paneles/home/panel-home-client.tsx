@@ -1,12 +1,17 @@
 'use client'
 
 import { ClipboardList, FileText, UserCheck, Users } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import CardCalendario from '@/components/card-calendario/card-calendario'
 import CardComunicadoGerencia from '@/components/card-comunicado-gerencia/card-comunicado-gerencia'
 import { DatosKpi } from '@/hooks/kpi/dto/datos-kpi'
+import {
+	FiltroEstadoValor,
+	useFiltrarProspectos,
+} from '@/hooks/prospectos/use-filtrar-prospectos'
+import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
 import CardProspectosClient from '../../prospectos/card-prospectos/card-prospectos-client'
 import PanelFooter from '../panel-layout/panel-footer/panel-footer'
@@ -14,6 +19,7 @@ import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelLayout from '../panel-layout/panel-layout'
 import CardKpi from '../ejecutivo-comercial/cards/card-kpi/card-kpi'
 import MetricasEjecutivoComercial from '../ejecutivo-comercial/metricas-ejecutivo-comercial/metricas-ejecutivo-comercial'
+import SheetClientesFiltrados from '../ejecutivo-comercial/sheet-clientes-filtrados'
 
 type PanelHomeClientProps = {
 	prospectosIniciales: ProspectoResumenJson[]
@@ -33,33 +39,60 @@ export default function PanelHomeClient({
 		'EJECUTIVO_EVALUACION_PROYECTOS',
 	)
 
-	const tarjetasResumen: DatosKpi[] = [
-		{
-			key: 'asignados',
-			label: 'Clientes asignados',
-			value: 7,
-			icon: UserCheck,
-			infoAdicional: 2,
-		},
-		{
-			key: 'cotiz',
-			label: 'Cotizaciones solicitadas',
-			value: 3,
-			icon: ClipboardList,
-		},
-		{
-			key: 'estDisp',
-			label: 'Estudios disponibles',
-			value: 2,
-			icon: FileText,
-		},
-		{
-			key: 'activos',
-			label: 'Clientes activos',
-			value: 1,
-			icon: Users,
-		},
-	]
+	const { filtrosContados } = useFiltrosProspectos(prospectos)
+
+	const tarjetasResumen: DatosKpi[] = useMemo(
+		() => [
+			{
+				key: 'asignados',
+				label: 'Clientes asignados',
+				value: prospectos?.length ?? 0,
+				icon: UserCheck,
+			},
+			{
+				key: 'cotiz',
+				label: 'Cotizaciones solicitadas',
+				value: filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
+				icon: ClipboardList,
+			},
+			{
+				key: 'estDisp',
+				label: 'Estudios disponibles',
+				value: filtrosContados.get('ESTUDIO_DISPONIBLE') ?? 0,
+				icon: FileText,
+			},
+			{
+				key: 'activos',
+				label: 'Clientes activos',
+				value: prospectos?.length ?? 0,
+				icon: Users,
+			},
+		],
+		[filtrosContados, prospectos],
+	)
+
+	const { filtrar } = useFiltrarProspectos(prospectos)
+
+	const KPI_FILTRO: Record<string, FiltroEstadoValor> = {
+		asignados: 'todos',
+		activos: 'todos',
+		cotiz: 'COTIZACION_SOLICITADA_COMPANY',
+		estDisp: 'ESTUDIO_DISPONIBLE',
+	}
+
+	const KPI_TITULOS: Record<string, string> = {
+		asignados: 'Clientes asignados',
+		activos: 'Clientes activos',
+		cotiz: 'Cotizaciones solicitadas',
+		estDisp: 'Estudios disponibles',
+	}
+
+	const prospectosSheet = useMemo(
+		() => filtrar(KPI_FILTRO[kpiAbierto ?? '']),
+		[kpiAbierto, filtrar],
+	)
+
+	const tituloSheet = kpiAbierto ? (KPI_TITULOS[kpiAbierto] ?? '') : ''
 
 	return (
 		<PanelLayout>
@@ -93,6 +126,15 @@ export default function PanelHomeClient({
 			<PanelFooter>
 				<CardComunicadoGerencia />
 			</PanelFooter>
+
+			<SheetClientesFiltrados
+				prospectos={prospectosSheet}
+				titulo={tituloSheet}
+				abierto={kpiAbierto != null}
+				onOpenChange={open => {
+					if (!open) setKpiAbierto(null)
+				}}
+			/>
 		</PanelLayout>
 	)
 }

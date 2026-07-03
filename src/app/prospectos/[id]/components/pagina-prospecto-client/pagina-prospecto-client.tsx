@@ -1,5 +1,6 @@
 'use client'
 
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
@@ -51,12 +52,20 @@ export default function PaginaProspectoClient({
 				/>
 			)}
 
-			<CardOportunidadesComerciales
-				idProspecto={prospecto.id}
-				informacionCompleta={prospecto.informacion_completa}
-				nombreCliente={prospecto.nombre_riesgo}
-				lineaNegocioNombre={prospecto.linea_negocio.nombre}
-			/>
+			<AuthGuard
+				allowedRoles={['EJECUTIVO_COMERCIAL', 'EJECUTIVO_EVALUACION_PROYECTOS', 'GERENTE_GENERAL', 'GERENTE_COMERCIAL', 'GERENTE_OPERACIONES']}
+				fallback={null}
+			>
+				<CardOportunidadesComerciales
+					idProspecto={prospecto.id}
+					idCliente={prospecto.id_cliente}
+					informacionCompleta={prospecto.informacion_completa}
+					nombreCliente={prospecto.nombre_riesgo}
+					lineaNegocioNombre={prospecto.linea_negocio.nombre}
+					ejecutivoComercialRut={prospecto.ejecutivo_comercial_asignado?.rut}
+					ejecutivoEvaluacionRut={prospecto.ejecutivo_evaluacion_asignado?.rut}
+				/>
+			</AuthGuard>
 
 			<CardPolizas
 				idCliente={prospecto.id_cliente}

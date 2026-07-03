@@ -9,44 +9,23 @@ import {
 	FiltroEstadoComercialValor,
 	useFiltrosProspectos,
 } from '@/hooks/prospectos/use-filtros-prospectos'
-import {
-	ESTADO_PROSPECTO_LABELS,
-	EstadoComercialProspecto,
-	ESTADOS_PROSPECTO,
-} from '@/types/estados/estado-comercial-cliente'
-import { useMemo } from 'react'
+import { ESTADO_PROSPECTO_LABELS, ESTADOS_PROSPECTO } from '@/types/estados/estado-comercial-cliente'
 
 type FiltrosEstadoProspectoProps = {
 	prospectos?: ProspectoResumenJson[]
 	filtroActivo: FiltroEstadoComercialValor
 	onFiltroChange: (valor: FiltroEstadoComercialValor) => void
-	contarFiltro: (value: FiltroEstadoComercialValor) => number
 }
 
 export function FiltrosEstadoProspecto({
 	prospectos,
 	filtroActivo,
 	onFiltroChange,
-	contarFiltro,
 }: FiltrosEstadoProspectoProps) {
-	const opcionesSelect: {
-		value: EstadoComercialProspecto
-		label: string
-		count: number
-	}[] = useMemo(
-		() => [
-			...ESTADOS_PROSPECTO.map(estado => ({
-				value: estado,
-				label: ESTADO_PROSPECTO_LABELS[estado],
-				count: contarFiltro(estado),
-			})),
-		],
-		[contarFiltro],
-	)
-
 	const labelSelectActivo =
-		opcionesSelect.find(o => o.value === filtroActivo)?.label ??
-		'Estado comercial'
+		filtroActivo === 'todos'
+			? 'Estado comercial'
+			: ESTADO_PROSPECTO_LABELS[filtroActivo]
 
 	const { filtrosContados } = useFiltrosProspectos(prospectos)
 
@@ -74,9 +53,9 @@ export function FiltrosEstadoProspecto({
 						<SelectItem value='todos' className='text-xs'>
 							Todos ({prospectos?.length ?? 0})
 						</SelectItem>
-						{opcionesSelect.map(o => (
-							<SelectItem key={o.value} value={o.value} className='text-xs'>
-								{o.label} ({filtrosContados.get(o.value)})
+						{ESTADOS_PROSPECTO.map(est => (
+							<SelectItem key={est} value={est} className='text-xs'>
+								{ESTADO_PROSPECTO_LABELS[est]} ({filtrosContados.get(est)})
 							</SelectItem>
 						))}
 					</SelectContent>

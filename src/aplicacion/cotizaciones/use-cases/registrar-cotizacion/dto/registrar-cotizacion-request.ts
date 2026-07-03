@@ -7,4 +7,5 @@ export interface RegistrarCotizacionRequest {
   id_company: number
   fecha_emision: string
   fecha_vencimiento: string
+  archivo?: File
 }

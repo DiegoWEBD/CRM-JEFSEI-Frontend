@@ -1,4 +1,4 @@
-import { classname } from '@/lib/class-name'
+import { cn } from '@/lib/utils'
 
 type KpiEstadoPolizaProps = {
 	label: string
@@ -13,17 +13,17 @@ export default function KpiEstadoPoliza({
 }: KpiEstadoPolizaProps) {
 	return (
 		<div
-			className={classname(
-				'flex items-center justify-between gap-1 rounded-md border border-border-80 bg-muted/15 px-2 py-1',
-				className,
+			className={cn(
+				'rounded-md border px-3 py-2',
+				className ?? 'border-border/80 bg-muted/15',
 			)}
 		>
-			<span className='text-[9px] uppercase tracking-wide text-muted-foreground'>
+			<p className='text-[10px] uppercase tracking-wide text-muted-foreground'>
 				{label}
-			</span>
-			<span className='text-sm font-semibold tabular-nums text-foreground'>
+			</p>
+			<p className='mt-0.5 text-lg font-semibold tabular-nums text-foreground'>
 				{kpi}
-			</span>
+			</p>
 		</div>
 	)
 }

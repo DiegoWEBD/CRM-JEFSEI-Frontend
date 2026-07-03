@@ -10,26 +10,33 @@ import { cn } from '@/lib/utils'
 import { ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { useObtenerSolicitudesPorProceso } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-por-proceso'
+import { useUserSession } from '@/hooks/auth/use-user-session'
 import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
 import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/dialog-nueva-solicitud-cotizacion'
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
 
 type OportunidadItemProps = {
   proceso: ProcesoComercial
   idProspecto: number
+  idCliente?: number
   informacionCompleta: boolean
   nombreCliente: string
   lineaNegocioNombre: string
+  ejecutivoComercialRut?: string
+  ejecutivoEvaluacionRut?: string
 }
 
 export default function OportunidadItem({
   proceso,
   idProspecto,
+  idCliente,
   informacionCompleta,
   nombreCliente,
   lineaNegocioNombre,
+  ejecutivoComercialRut,
+  ejecutivoEvaluacionRut,
 }: OportunidadItemProps) {
+  const { usuario } = useUserSession()
   const [expandido, setExpandido] = useState(false)
   const [openNuevaSolicitud, setOpenNuevaSolicitud] = useState(false)
   const [openRegistrarPoliza, setOpenRegistrarPoliza] = useState(false)
@@ -107,6 +114,7 @@ export default function OportunidadItem({
                     idProspecto={idProspecto}
                     nombreCliente={nombreCliente}
                     lineaNegocioNombre={lineaNegocioNombre}
+                    ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
                   />
                 ))}
               </ul>
@@ -116,32 +124,30 @@ export default function OportunidadItem({
               </p>
             )}
 
-            {!proceso.cerrado && (
-              <AuthGuard allowedRoles={['EJECUTIVO_COMERCIAL']}>
-                <div className='mt-2 flex items-center gap-2 border-t border-border/30 pt-2'>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    className='h-7 gap-1 text-xs shadow-none'
-                    onClick={() => setOpenRegistrarPoliza(true)}
-                  >
-                    <Upload className='h-3 w-3' aria-hidden />
-                    Subir póliza
-                  </Button>
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    className='h-7 gap-1 text-xs shadow-none'
-                    onClick={() => setOpenNuevaSolicitud(true)}
-                  >
-                    <Plus className='h-3 w-3' aria-hidden />
-                    Nueva solicitud
-                  </Button>
-                </div>
-              </AuthGuard>
-            )}
+            {!proceso.cerrado && usuario?.rut === ejecutivoComercialRut ? (
+              <div className='mt-2 flex items-center gap-2 border-t border-border/30 pt-2'>
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  className='h-7 gap-1 text-xs shadow-none'
+                  onClick={() => setOpenRegistrarPoliza(true)}
+                >
+                  <Upload className='h-3 w-3' aria-hidden />
+                  Subir póliza
+                </Button>
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  className='h-7 gap-1 text-xs shadow-none'
+                  onClick={() => setOpenNuevaSolicitud(true)}
+                >
+                  <Plus className='h-3 w-3' aria-hidden />
+                  Nueva solicitud
+                </Button>
+              </div>
+            ) : null}
           </div>
         )}
       </div>
@@ -161,6 +167,7 @@ export default function OportunidadItem({
         onOpenChange={setOpenRegistrarPoliza}
         idProceso={proceso.id}
         idProspecto={idProspecto}
+        idCliente={idCliente}
         nombreCliente={nombreCliente}
         producto={proceso.producto}
       />

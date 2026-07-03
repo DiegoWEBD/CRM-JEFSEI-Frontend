@@ -13,13 +13,9 @@ import FiltrosCotizacionesEstudios, {
 } from './filtros-cotizaciones-estudios'
 import TablaCotizacionesEstudios from './tabla-cotizaciones-estudios'
 import DialogVerCotizaciones from './dialog-ver-cotizaciones'
-import DialogGenerarEstudio from './dialog-generar-estudio'
-import DialogVerEstudio from './dialog-ver-estudio'
 
 type DialogState =
 	| { type: 'cotizaciones'; fila: PanelEstudioFila }
-	| { type: 'generar-estudio'; fila: PanelEstudioFila }
-	| { type: 'ver-estudio'; fila: PanelEstudioFila }
 	| null
 
 function buildConteos(filas: PanelEstudioFila[]): Record<string, number> {
@@ -156,32 +152,12 @@ export default function PanelCotizacionesEstudiosClient({
 						onVerCotizaciones={f =>
 							setDialog({ type: 'cotizaciones', fila: f })
 						}
-						onGenerarEstudio={f =>
-							setDialog({ type: 'generar-estudio', fila: f })
-						}
-						onVerEstudio={f => setDialog({ type: 'ver-estudio', fila: f })}
 					/>
 				</div>
 			</section>
 
 			{dialog?.type === 'cotizaciones' && filaActual && (
 				<DialogVerCotizaciones
-					fila={filaActual}
-					open
-					onOpenChange={() => setDialog(null)}
-				/>
-			)}
-
-			{dialog?.type === 'generar-estudio' && filaActual && (
-				<DialogGenerarEstudio
-					fila={filaActual}
-					open
-					onOpenChange={() => setDialog(null)}
-				/>
-			)}
-
-			{dialog?.type === 'ver-estudio' && filaActual && (
-				<DialogVerEstudio
 					fila={filaActual}
 					open
 					onOpenChange={() => setDialog(null)}

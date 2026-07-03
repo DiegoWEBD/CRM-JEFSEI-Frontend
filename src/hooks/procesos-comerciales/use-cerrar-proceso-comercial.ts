@@ -12,6 +12,9 @@ export const useCerrarProcesoComercial = (idProceso: number) => {
       queryClient.invalidateQueries({
         queryKey: ['reportes-procesos-comerciales'],
       })
+      queryClient.invalidateQueries({
+        queryKey: ['historial-estado', idProceso],
+      })
     },
   })
 }

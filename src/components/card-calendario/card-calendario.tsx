@@ -5,7 +5,7 @@ import {
 	SharedReminderType,
 } from '@/types/shared/shared-reminders'
 import { formatearFecha } from '@/utils/formatear-fecha'
-import { Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/button'
 import Calendario from '../calendario/calendario'
@@ -31,16 +31,13 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 	const [openModalCrearRecordatorio, setOpenModalCrearRecordatorio] =
 		useState<boolean>(false)
 
+	const [fechaActual, setFechaActual] = useState(() => new Date())
 	const hoyIso = useMemo(() => formatearFecha(new Date(), 'yyyy-MM-dd'), [])
 
-	const mesActualLabel = formatearFecha(
-		new Date(`${hoyIso}T12:00:00`),
-		'MMMM yyyy',
-	)
-
 	const diasCalendario = useMemo(() => {
-		const hoy = new Date(`${hoyIso}T12:00:00`)
-		const primerDiaMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+		const anio = fechaActual.getFullYear()
+		const mes = fechaActual.getMonth()
+		const primerDiaMes = new Date(anio, mes, 1)
 		const offsetLunes = (primerDiaMes.getDay() + 6) % 7
 		const inicio = new Date(primerDiaMes)
 		inicio.setDate(primerDiaMes.getDate() - offsetLunes)
@@ -52,12 +49,12 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 			return {
 				iso,
 				dia: d.getDate(),
-				esMesActual: d.getMonth() === hoy.getMonth(),
+				esMesActual: d.getMonth() === mes && d.getFullYear() === anio,
 				esHoy: iso === hoyIso,
 				tieneRecordatorio: false,
 			}
 		})
-	}, [hoyIso])
+	}, [fechaActual, hoyIso])
 
 	const [reminderForm, setReminderForm] = useState<{
 		clientId: string
@@ -98,9 +95,94 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 			<CardContent className='grid min-w-0 gap-4 p-3 sm:p-4 lg:grid-cols-2 lg:gap-5'>
 				<div className='min-w-0 space-y-2'>
 					<div className='flex items-center justify-between gap-2'>
-						<p className='text-xs font-medium capitalize text-foreground'>
-							{mesActualLabel}
-						</p>
+						<div className='flex items-center gap-1'>
+							<button
+								type='button'
+								className='flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground'
+								onClick={() =>
+									setFechaActual(
+										prev => new Date(prev.getFullYear(), prev.getMonth() - 1),
+									)
+								}
+							>
+								<ChevronLeft className='h-3.5 w-3.5' aria-hidden />
+							</button>
+							<Select
+								value={fechaActual.getMonth().toString()}
+								onValueChange={value =>
+									setFechaActual(
+										prev =>
+											new Date(prev.getFullYear(), Number(value)),
+									)
+								}
+							>
+								<SelectTrigger className='h-6 w-[110px] border-none px-1 text-xs font-medium capitalize text-foreground shadow-none hover:bg-muted'>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									{[
+										'Enero',
+										'Febrero',
+										'Marzo',
+										'Abril',
+										'Mayo',
+										'Junio',
+										'Julio',
+										'Agosto',
+										'Septiembre',
+										'Octubre',
+										'Noviembre',
+										'Diciembre',
+									].map((nombre, idx) => (
+										<SelectItem
+											key={idx}
+											value={idx.toString()}
+											className='text-xs'
+										>
+											{nombre}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<Select
+								value={fechaActual.getFullYear().toString()}
+								onValueChange={value =>
+									setFechaActual(
+										prev =>
+											new Date(Number(value), prev.getMonth()),
+									)
+								}
+							>
+								<SelectTrigger className='h-6 w-[88px] border-none px-1 text-xs font-medium text-foreground shadow-none hover:bg-muted'>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									{Array.from(
+										{ length: 11 },
+										(_, i) => new Date().getFullYear() - 5 + i,
+									).map(anio => (
+										<SelectItem
+											key={anio}
+											value={anio.toString()}
+											className='text-xs'
+										>
+											{anio}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<button
+								type='button'
+								className='flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground'
+								onClick={() =>
+									setFechaActual(
+										prev => new Date(prev.getFullYear(), prev.getMonth() + 1),
+									)
+								}
+							>
+								<ChevronRight className='h-3.5 w-3.5' aria-hidden />
+							</button>
+						</div>
 						<p className='text-[10px] tabular-nums text-muted-foreground'>
 							Hoy: {formatearFecha(new Date(), 'dd/MM/yyyy')}
 						</p>

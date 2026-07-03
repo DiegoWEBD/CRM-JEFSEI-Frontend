@@ -33,7 +33,7 @@ export default function InformacionTecnicaCondominio({
 			<ItemInformacionProspecto
 				label='Porcentaje de depreciación'
 				value={
-					prospecto.porcentaje_depreciacion
+					prospecto.porcentaje_depreciacion != null
 						? `${prospecto.porcentaje_depreciacion * 100}%`
 						: undefined
 				}
@@ -43,7 +43,7 @@ export default function InformacionTecnicaCondominio({
 			<ItemInformacionProspecto
 				label='Porcentaje de espacios comunes'
 				value={
-					prospecto.porcentaje_espacios_comunes
+					prospecto.porcentaje_espacios_comunes != null
 						? `${prospecto.porcentaje_espacios_comunes * 100}%`
 						: undefined
 				}
