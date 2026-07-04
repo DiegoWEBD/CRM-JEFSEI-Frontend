@@ -38,6 +38,12 @@ import { useControlledInput } from '@/hooks/input/use-controlled-input'
 import { RegistrarUsuarioRequest } from '@/aplicacion/usuarios/use-cases/registrar-usuario'
 import { useActualizarUsuario } from '@/hooks/usuarios/use-actualizar-usuario'
 import { useUserSession } from '@/hooks/auth/use-user-session'
+import { classInputRut } from '@/utils/class-input-rut'
+import { formatRut } from '@/utils/format-rut'
+import {
+	rutChilenoEstadoValidacion,
+	rutChilenoEsValido,
+} from '@/utils/validar-rut'
 import { useState, useMemo, useCallback } from 'react'
 import {
 	Search,
@@ -182,8 +188,8 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 			u =>
 				u.nombre.toLowerCase().includes(q) ||
 				u.rut.toLowerCase().includes(q) ||
-				u.correo.toLowerCase().includes(q) ||
-				u.telefono.includes(q) ||
+				(u.correo ?? '').toLowerCase().includes(q) ||
+				(u.telefono ?? '').includes(q) ||
 				u.sucursal.toLowerCase().includes(q) ||
 				u.roles.some(r => r.nombre.toLowerCase().includes(q)),
 		)
@@ -398,6 +404,8 @@ function DialogRegistrarUsuario({
 	const [junior, setJunior] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
+	const estadoRut = useMemo(() => rutChilenoEstadoValidacion(rut), [rut])
+
 	const resetForm = useCallback(() => {
 		setRut('')
 		setNombre('')
@@ -417,14 +425,18 @@ function DialogRegistrarUsuario({
 			setError('Completa los campos obligatorios: Nombre, RUT, Contraseña, Sucursal y al menos un rol.')
 			return
 		}
+		if (estadoRut !== 'valido') {
+			setError('El RUT ingresado no es válido.')
+			return
+		}
 
 		setError(null)
 
 		const request: RegistrarUsuarioRequest = {
-			rut: rut.trim(),
+			rut: rut.replace(/[^0-9kK]/g, '').toUpperCase(),
 			nombre: nombre.trim(),
-			correo: correo.trim(),
-			telefono: telefono.trim(),
+			correo: correo.trim() || null,
+			telefono: telefono.trim() || null,
 			id_sucursal: idSucursal,
 			password,
 			codigo_roles: roles,
@@ -471,7 +483,25 @@ function DialogRegistrarUsuario({
 					<div className='grid gap-4 sm:grid-cols-2'>
 						<div className='space-y-1.5'>
 							<Label htmlFor='rut'>RUT *</Label>
-							<Input id='rut' placeholder='12.345.678-9' value={rut} onChange={e => setRut(e.target.value)} />
+							<Input
+								id='rut'
+								placeholder='12.345.678-9'
+								className={classInputRut(estadoRut)}
+								value={rut}
+								onChange={e => setRut(formatRut(e.target.value))}
+								maxLength={14}
+							/>
+							{estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? (
+								<p className='text-[10px] text-destructive'>
+									{estadoRut === 'dv_invalido'
+										? 'El dígito verificador no corresponde.'
+										: 'Ingrese 8 números y el dígito verificador (0-9 o K).'}
+								</p>
+							) : estadoRut === 'incompleto' ? (
+								<p className='text-[10px] text-muted-foreground'>
+									8 dígitos + verificador (número o K).
+								</p>
+							) : null}
 						</div>
 						<div className='space-y-1.5'>
 							<Label htmlFor='nombre'>Nombre *</Label>
@@ -629,8 +659,8 @@ function DialogEditarUsuario({
 			mutation.mutate({
 				rut: values.rut,
 				nombre: values.nombre,
-				correo: values.correo,
-				telefono: values.telefono,
+				correo: values.correo || null,
+				telefono: values.telefono || null,
 				id_sucursal: values.idSucursal!,
 				meta_mensual_uf: values.metaMensualUf ? Number(values.metaMensualUf) : null,
 				codigo_roles: values.roles,

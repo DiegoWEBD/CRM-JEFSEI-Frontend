@@ -136,7 +136,7 @@ export default function DialogGenerarEstudio({
 						10,
 				) * 10,
 			),
-			cuotas: String(configuracionEstudio?.cantidad_cuotas ?? 6),
+			cuotas: String(configuracionEstudio?.cantidad_cuotas ?? 11),
 			valorUf: '38000',
 		},
 		validationSchema,
@@ -575,7 +575,7 @@ export default function DialogGenerarEstudio({
 						</div>
 					</ScrollArea>
 
-					<DialogFooter className='shrink-0 gap-2 border-t border-border px-4 py-3 sm:gap-0'>
+					<DialogFooter className='shrink-0 gap-2 border-t border-border px-4 py-3'>
 						<Button
 							type='button'
 							variant='outline'

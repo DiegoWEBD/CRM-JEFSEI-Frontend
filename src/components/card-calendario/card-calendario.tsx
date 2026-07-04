@@ -1,9 +1,7 @@
+'use client'
+
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import {
-	SharedReminderPriority,
-	SharedReminderStatus,
-	SharedReminderType,
-} from '@/types/shared/shared-reminders'
+import { useRegistrarRecordatorio } from '@/hooks/recordatorios/use-registrar-recordatorio'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -19,6 +17,8 @@ import SelectTrigger from '../forms/select/select-trigger/select-trigger'
 import SelectValue from '../forms/select/select-value/select-value'
 import Textarea from '../forms/text-area/text-area'
 import RecordatoriosUsuario from './recordatorios-usuario/recordatorios-usuario'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
 type CardCalendarioProps = {
 	prospectos?: ProspectoResumenJson[]
@@ -56,24 +56,52 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 		})
 	}, [fechaActual, hoyIso])
 
-	const [reminderForm, setReminderForm] = useState<{
-		clientId: string
-		title: string
-		date: string
-		time: string
-		type: SharedReminderType
-		detail: string
-		status: SharedReminderStatus
-		prioridad: SharedReminderPriority
-	}>({
-		clientId: '',
-		title: '',
-		date: hoyIso,
-		time: '09:00',
-		type: 'llamada',
-		detail: '',
-		status: 'pendiente',
-		prioridad: 'normal',
+	const mutation = useRegistrarRecordatorio()
+
+	const formik = useFormik({
+		initialValues: {
+			idProspecto: '',
+			titulo: '',
+			fecha: hoyIso,
+			hora: '09:00',
+			prioridad: 'normal',
+			tipoGestion: 'llamada',
+			detalle: '',
+		},
+		validationSchema: Yup.object({
+			titulo: Yup.string().required('El título es obligatorio'),
+			fecha: Yup.string().required('La fecha es obligatoria'),
+			hora: Yup.string().required('La hora es obligatoria'),
+			prioridad: Yup.string()
+				.oneOf(['normal', 'alta'], 'Selecciona una prioridad')
+				.required(),
+			tipoGestion: Yup.string()
+				.oneOf(
+					['llamada', 'correo', 'visita', 'whatsapp', 'reunion', 'otro'],
+					'Selecciona un tipo',
+				)
+				.required(),
+		}),
+		onSubmit: values => {
+			const fechaRecordatorio = `${values.fecha}T${values.hora}:00`
+
+			mutation.mutate(
+				{
+					titulo: values.titulo,
+					detalle: values.detalle || null,
+					prioridad: values.prioridad,
+					tipo_gestion: values.tipoGestion,
+					fecha_recordatorio: fechaRecordatorio,
+					id_prospecto: values.idProspecto ? Number(values.idProspecto) : null,
+				},
+				{
+					onSuccess: () => {
+						setOpenModalCrearRecordatorio(false)
+						formik.resetForm()
+					},
+				},
+			)
+		},
 	})
 
 	return (
@@ -215,126 +243,103 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 							Asocia recordatorios comerciales al calendario del día.
 						</DialogDescription>
 					</DialogHeader>
-					<div className='space-y-3'>
-						<Select
-							value={reminderForm.clientId}
-							onValueChange={value =>
-								setReminderForm(p => ({ ...p, clientId: value }))
-							}
-						>
-							<SelectTrigger className='w-full'>
-								<SelectValue placeholder='Cliente asociado' />
-							</SelectTrigger>
-							<SelectContent>
-								{prospectos?.map(prospecto => (
-									<SelectItem
-										key={prospecto.id}
-										value={prospecto.id.toString()}
-									>
-										{prospecto.nombre_riesgo}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-						<Input
-							placeholder='Título'
-							value={reminderForm.title}
-							onChange={e =>
-								setReminderForm(p => ({ ...p, title: e.target.value }))
-							}
-						/>
-						<div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
+					<form onSubmit={formik.handleSubmit}>
+						<div className='space-y-3'>
+							<Select
+								value={formik.values.idProspecto}
+								onValueChange={v => formik.setFieldValue('idProspecto', v)}
+							>
+								<SelectTrigger className='w-full'>
+									<SelectValue placeholder='Cliente asociado (opcional)' />
+								</SelectTrigger>
+								<SelectContent>
+									{prospectos?.map(prospecto => (
+										<SelectItem
+											key={prospecto.id}
+											value={prospecto.id.toString()}
+										>
+											{prospecto.nombre_riesgo}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 							<Input
-								type='date'
-								value={reminderForm.date}
-								onChange={e =>
-									setReminderForm(p => ({ ...p, date: e.target.value }))
-								}
+								placeholder='Título'
+								name='titulo'
+								value={formik.values.titulo}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
 							/>
-							<Input
-								type='time'
-								value={reminderForm.time}
-								onChange={e =>
-									setReminderForm(p => ({ ...p, time: e.target.value }))
-								}
+							{formik.touched.titulo && formik.errors.titulo && (
+								<p className='text-[10px] text-destructive'>{formik.errors.titulo}</p>
+							)}
+							<div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
+								<Input
+									type='date'
+									name='fecha'
+									value={formik.values.fecha}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+								/>
+								<Input
+									type='time'
+									name='hora'
+									value={formik.values.hora}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+								/>
+							</div>
+							<div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
+								<Select
+									value={formik.values.prioridad}
+									onValueChange={v => formik.setFieldValue('prioridad', v)}
+								>
+									<SelectTrigger className='w-full'>
+										<SelectValue placeholder='Prioridad' />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='normal'>Normal</SelectItem>
+										<SelectItem value='alta'>Alta</SelectItem>
+									</SelectContent>
+								</Select>
+								<Select
+									value={formik.values.tipoGestion}
+									onValueChange={v => formik.setFieldValue('tipoGestion', v)}
+								>
+									<SelectTrigger className='w-full'>
+										<SelectValue placeholder='Tipo' />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='llamada'>Llamada</SelectItem>
+										<SelectItem value='correo'>Correo</SelectItem>
+										<SelectItem value='whatsapp'>Mensaje</SelectItem>
+										<SelectItem value='visita'>Visita</SelectItem>
+										<SelectItem value='reunion'>Reunión</SelectItem>
+										<SelectItem value='otro'>General</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+							<Textarea
+								placeholder='Detalle (opcional)'
+								name='detalle'
+								value={formik.values.detalle}
+								onChange={formik.handleChange}
 							/>
 						</div>
-						<div className='grid grid-cols-1 gap-2 sm:grid-cols-3'>
-							<Select
-								value={reminderForm.prioridad}
-								onValueChange={(value: SharedReminderPriority) =>
-									setReminderForm(p => ({
-										...p,
-										prioridad: value,
-									}))
-								}
+						<DialogFooter>
+							<Button
+								type='button'
+								variant='outline'
+								size='sm'
+								onClick={() => setOpenModalCrearRecordatorio(false)}
 							>
-								<SelectTrigger className='w-full'>
-									<SelectValue placeholder='Prioridad' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='baja'>Baja</SelectItem>
-									<SelectItem value='normal'>Normal</SelectItem>
-									<SelectItem value='alta'>Alta</SelectItem>
-								</SelectContent>
-							</Select>
-							<Select
-								value={reminderForm.type}
-								onValueChange={(value: SharedReminderType) =>
-									setReminderForm(p => ({ ...p, type: value }))
-								}
-							>
-								<SelectTrigger className='w-full'>
-									<SelectValue placeholder='Tipo' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='llamada'>Llamada</SelectItem>
-									<SelectItem value='correo'>Correo</SelectItem>
-									<SelectItem value='whatsapp'>Mensaje</SelectItem>
-									<SelectItem value='visita'>Visita</SelectItem>
-									<SelectItem value='otro'>General</SelectItem>
-								</SelectContent>
-							</Select>
-							<Select
-								value={reminderForm.status}
-								onValueChange={(value: SharedReminderStatus) =>
-									setReminderForm(p => ({
-										...p,
-										status: value,
-									}))
-								}
-							>
-								<SelectTrigger className='w-full'>
-									<SelectValue placeholder='Estado' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value='pendiente'>Pendiente</SelectItem>
-									<SelectItem value='realizado'>Completado</SelectItem>
-									<SelectItem value='atrasado'>Atrasado</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<Textarea
-							placeholder='Detalle'
-							value={reminderForm.detail}
-							onChange={e =>
-								setReminderForm(p => ({ ...p, detail: e.target.value }))
-							}
-						/>
-					</div>
-					<DialogFooter>
-						<Button
-							type='button'
-							variant='outline'
-							size='sm'
-							onClick={() => setOpenModalCrearRecordatorio(false)}
-						>
-							Cancelar
-						</Button>
-						<Button type='button' size='sm'>
-							Guardar
-						</Button>
-					</DialogFooter>
+								Cancelar
+							</Button>
+							<Button type='submit' size='sm'>
+								Guardar
+							</Button>
+						</DialogFooter>
+					</form>
 				</DialogContent>
 			</Dialog>
 		</Card>

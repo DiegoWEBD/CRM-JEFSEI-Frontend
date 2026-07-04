@@ -1,6 +1,7 @@
 'use client'
 
 import { clientAxios } from '@/infraestructura/axios/client-axios'
+import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useUserSession } from './use-user-session'
@@ -11,6 +12,7 @@ export const useAuth = () => {
 
   const router = useRouter()
   const session = useUserSession()
+  const queryClient = useQueryClient()
 
   const login = async (rut: string, password: string) => {
     try {
@@ -22,6 +24,7 @@ export const useAuth = () => {
         password,
       })
 
+      queryClient.clear()
       router.replace('/')
       router.refresh()
     } catch {
@@ -34,6 +37,7 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       await clientAxios.post('/api/auth/logout')
+      queryClient.clear()
       router.replace('/login')
       router.refresh()
     } catch {

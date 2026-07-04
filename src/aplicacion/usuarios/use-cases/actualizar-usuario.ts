@@ -3,8 +3,8 @@ import axios from 'axios'
 export interface ActualizarUsuarioRequest {
   rut: string
   nombre: string
-  correo: string
-  telefono: string
+    correo: string | null
+    telefono: string | null
   id_sucursal: number
   meta_mensual_uf: number | null
   codigo_roles: string[]

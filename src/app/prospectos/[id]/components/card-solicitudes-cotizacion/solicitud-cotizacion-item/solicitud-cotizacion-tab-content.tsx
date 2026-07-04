@@ -11,10 +11,10 @@ import type SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-c
 import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
 import { useListarEstudiosComerciales } from '@/hooks/estudio-comercial/use-listar-estudios-comerciales'
 import {
-  ESTADO_COTIZACION_PERFIL_BADGE,
-  ESTADO_COTIZACION_PERFIL_LABELS,
-  ESTADO_ESTUDIO_PERFIL_BADGE,
-  ESTADO_ESTUDIO_PERFIL_LABELS,
+	ESTADO_COTIZACION_PERFIL_BADGE,
+	ESTADO_COTIZACION_PERFIL_LABELS,
+	ESTADO_ESTUDIO_PERFIL_BADGE,
+	ESTADO_ESTUDIO_PERFIL_LABELS,
 } from '@/lib/estados-cotizaciones'
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatearFecha } from '@/utils/formatear-fecha'
@@ -27,450 +27,526 @@ import DialogGenerarEstudioWrapper from './dialog-generar-estudio-wrapper'
 type TabId = 'solicitud' | 'cotizaciones' | 'estudio' | 'observaciones'
 
 type SolicitudCotizacionTabContentProps = {
-  solicitud: SolicitudCotizacion
-  idProspecto: number
-  tab: TabId
-  nombreCliente: string
-  lineaNegocioNombre: string
-  ejecutivoEvaluacionRut?: string
+	solicitud: SolicitudCotizacion
+	idProspecto: number
+	tab: TabId
+	nombreCliente: string
+	lineaNegocioNombre: string
+	ejecutivoEvaluacionRut?: string
 }
 
 function formatNum(n: number) {
-  return n.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+	return n.toLocaleString('es-CL', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	})
 }
 
 function formatFecha(iso: string) {
-  return new Date(iso).toLocaleDateString('es-CL', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
+	return new Date(iso).toLocaleDateString('es-CL', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+	})
 }
 
 function descargarPDF(base64: string, nombreArchivo: string) {
-  const byteCharacters = atob(base64)
-  const byteNumbers = new Array(byteCharacters.length)
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i)
-  }
-  const byteArray = new Uint8Array(byteNumbers)
-  const blob = new Blob([byteArray], { type: 'application/pdf' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = nombreArchivo
-  a.click()
-  URL.revokeObjectURL(url)
+	const byteCharacters = atob(base64)
+	const byteNumbers = new Array(byteCharacters.length)
+	for (let i = 0; i < byteCharacters.length; i++) {
+		byteNumbers[i] = byteCharacters.charCodeAt(i)
+	}
+	const byteArray = new Uint8Array(byteNumbers)
+	const blob = new Blob([byteArray], { type: 'application/pdf' })
+	const url = URL.createObjectURL(blob)
+	const a = document.createElement('a')
+	a.href = url
+	a.download = nombreArchivo
+	a.click()
+	URL.revokeObjectURL(url)
 }
 
 const ESTADO_VENC_COLORS: Record<string, string> = {
-  vigente: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
-  por_vencer: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20',
-  vencida: 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20',
+	vigente:
+		'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
+	por_vencer: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20',
+	vencida: 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20',
 }
 
 const ESTADO_VENC_LABELS: Record<string, string> = {
-  vigente: 'Vigente',
-  por_vencer: 'Por vencer',
-  vencida: 'Vencida',
+	vigente: 'Vigente',
+	por_vencer: 'Por vencer',
+	vencida: 'Vencida',
 }
 
 function calcularEstadoVenc(fechaStr: string): string {
-  const hoy = new Date()
-  const venc = new Date(fechaStr)
-  const diffDias = (venc.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24)
-  if (diffDias < 0) return 'vencida'
-  if (diffDias <= 30) return 'por_vencer'
-  return 'vigente'
+	const hoy = new Date()
+	const venc = new Date(fechaStr)
+	const diffDias = (venc.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24)
+	if (diffDias < 0) return 'vencida'
+	if (diffDias <= 30) return 'por_vencer'
+	return 'vigente'
 }
 
 export default function SolicitudCotizacionTabContent({
-  solicitud,
-  idProspecto,
-  tab,
-  nombreCliente,
-  lineaNegocioNombre,
-  ejecutivoEvaluacionRut,
+	solicitud,
+	idProspecto,
+	tab,
+	nombreCliente,
+	lineaNegocioNombre,
+	ejecutivoEvaluacionRut,
 }: SolicitudCotizacionTabContentProps) {
-  const { usuario } = useUserSession()
-  const { data: cotizaciones, isLoading: loadingCotizaciones } = useCotizaciones(solicitud.id)
-  const { data: estudios, isLoading: loadingEstudios } = useListarEstudiosComerciales(idProspecto)
+	const { usuario } = useUserSession()
+	const { data: cotizaciones, isLoading: loadingCotizaciones } =
+		useCotizaciones(solicitud.id)
+	const { data: estudios, isLoading: loadingEstudios } =
+		useListarEstudiosComerciales(idProspecto)
 
-  const [openRegistrarCotizacion, setOpenRegistrarCotizacion] = useState(false)
-  const [openVerCotizaciones, setOpenVerCotizaciones] = useState(false)
-  const [openGenerarEstudio, setOpenGenerarEstudio] = useState(false)
+	const [openRegistrarCotizacion, setOpenRegistrarCotizacion] = useState(false)
+	const [openVerCotizaciones, setOpenVerCotizaciones] = useState(false)
+	const [openGenerarEstudio, setOpenGenerarEstudio] = useState(false)
 
-  const [infraseguro1, setInfraseguro1] = useState(0.3)
-  const [infraseguro2, setInfraseguro2] = useState(0.5)
-  const [cuotas, setCuotas] = useState(6)
+	const [infraseguro1, setInfraseguro1] = useState(0.3)
+	const [infraseguro2, setInfraseguro2] = useState(0.5)
+	const [cuotas, setCuotas] = useState(11)
 
-  const estudio = estudios && estudios.length > 0 ? estudios[0] : null
-  const nombreEjecutivo = solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
+	const estudio = estudios && estudios.length > 0 ? estudios[0] : null
+	const nombreEjecutivo =
+		solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
 
-  if (tab === 'solicitud') {
-    return (
-      <dl className='space-y-2.5 pt-3 text-sm'>
-        <div>
-          <dt className='text-xs text-muted-foreground'>Producto</dt>
-          <dd className='font-medium text-foreground'>
-            {solicitud.producto || TIPO_LINEA_LABELS[solicitud.tipo as keyof typeof TIPO_LINEA_LABELS] || solicitud.tipo}
-          </dd>
-        </div>
+	if (tab === 'solicitud') {
+		return (
+			<dl className='space-y-2.5 pt-3 text-sm'>
+				<div>
+					<dt className='text-xs text-muted-foreground'>Producto</dt>
+					<dd className='font-medium text-foreground'>
+						{solicitud.producto ||
+							TIPO_LINEA_LABELS[
+								solicitud.tipo as keyof typeof TIPO_LINEA_LABELS
+							] ||
+							solicitud.tipo}
+					</dd>
+				</div>
 
-        {solicitud.rut_ejecutivo_comercial || nombreEjecutivo ? (
-          <div>
-            <dt className='text-xs text-muted-foreground'>Ejecutivo comercial</dt>
-            <dd className='font-medium text-foreground'>
-              {nombreEjecutivo}
-              {solicitud.rut_ejecutivo_comercial ? ` (${solicitud.rut_ejecutivo_comercial})` : null}
-            </dd>
-          </div>
-        ) : null}
+				{solicitud.rut_ejecutivo_comercial || nombreEjecutivo ? (
+					<div>
+						<dt className='text-xs text-muted-foreground'>
+							Ejecutivo comercial
+						</dt>
+						<dd className='font-medium text-foreground'>
+							{nombreEjecutivo}
+							{solicitud.rut_ejecutivo_comercial
+								? ` (${solicitud.rut_ejecutivo_comercial})`
+								: null}
+						</dd>
+					</div>
+				) : null}
 
-        {solicitud.tipo === 'vida_guardia' && solicitud.numero_guardias != null ? (
-          <div>
-            <dt className='text-xs text-muted-foreground'>Número de guardias</dt>
-            <dd className='font-medium text-foreground'>{solicitud.numero_guardias}</dd>
-          </div>
-        ) : null}
+				{solicitud.tipo === 'vida_guardia' &&
+				solicitud.numero_guardias != null ? (
+					<div>
+						<dt className='text-xs text-muted-foreground'>
+							Número de guardias
+						</dt>
+						<dd className='font-medium text-foreground'>
+							{solicitud.numero_guardias}
+						</dd>
+					</div>
+				) : null}
 
-        {solicitud.tipo === 'unidades' && solicitud.monto_asegurado_total != null ? (
-          <div>
-            <dt className='text-xs text-muted-foreground'>Monto asegurado total</dt>
-            <dd className='font-medium text-foreground'>{solicitud.monto_asegurado_total.toLocaleString('es-CL')}</dd>
-          </div>
-        ) : null}
+				{solicitud.tipo === 'unidades' &&
+				solicitud.monto_asegurado_total != null ? (
+					<div>
+						<dt className='text-xs text-muted-foreground'>
+							Monto asegurado total
+						</dt>
+						<dd className='font-medium text-foreground'>
+							{solicitud.monto_asegurado_total.toLocaleString('es-CL')}
+						</dd>
+					</div>
+				) : null}
 
-        {solicitud.tipo === 'unidades' && solicitud.nombre_excel ? (
-          <div>
-            <dt className='text-xs text-muted-foreground'>Archivo Excel</dt>
-            <dd className='font-medium text-foreground'>{solicitud.nombre_excel}</dd>
-          </div>
-        ) : null}
+				{solicitud.tipo === 'unidades' && solicitud.nombre_excel ? (
+					<div>
+						<dt className='text-xs text-muted-foreground'>Archivo Excel</dt>
+						<dd className='font-medium text-foreground'>
+							{solicitud.nombre_excel}
+						</dd>
+					</div>
+				) : null}
 
-        {solicitud.tipo === 'accidentes_personales' && solicitud.actividades && solicitud.actividades.length > 0 ? (
-          <div>
-            <dt className='mb-1 text-xs text-muted-foreground'>Actividades aseguradas</dt>
-            <dd className='space-y-1'>
-              {solicitud.actividades.map((act, i) => (
-                <div key={i} className='flex items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'>
-                  <span className='text-sm text-foreground'>{act.actividad}</span>
-                  <Badge variant='outline' className='shrink-0 text-xs'>
-                    {act.numero_asegurados} asegurado{act.numero_asegurados !== 1 ? 's' : ''}
-                  </Badge>
-                </div>
-              ))}
-            </dd>
-          </div>
-        ) : null}
+				{solicitud.tipo === 'accidentes_personales' &&
+				solicitud.actividades &&
+				solicitud.actividades.length > 0 ? (
+					<div>
+						<dt className='mb-1 text-xs text-muted-foreground'>
+							Actividades aseguradas
+						</dt>
+						<dd className='space-y-1'>
+							{solicitud.actividades.map((act, i) => (
+								<div
+									key={i}
+									className='flex items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'
+								>
+									<span className='text-sm text-foreground'>
+										{act.actividad}
+									</span>
+									<Badge variant='outline' className='shrink-0 text-xs'>
+										{act.numero_asegurados} asegurado
+										{act.numero_asegurados !== 1 ? 's' : ''}
+									</Badge>
+								</div>
+							))}
+						</dd>
+					</div>
+				) : null}
 
-        {solicitud.tipo === 'rc_condominio' ? (
-          <>
-            {solicitud.actividad_del_condominio ? (
-              <div>
-                <dt className='text-xs text-muted-foreground'>Actividad del condominio</dt>
-                <dd className='font-medium text-foreground'>{solicitud.actividad_del_condominio}</dd>
-              </div>
-            ) : null}
-            {solicitud.limite != null ? (
-              <div>
-                <dt className='text-xs text-muted-foreground'>Límite RC</dt>
-                <dd className='font-medium text-foreground'>{solicitud.limite.toLocaleString('es-CL')}</dd>
-              </div>
-            ) : null}
-          </>
-        ) : null}
+				{solicitud.tipo === 'rc_condominio' ? (
+					<>
+						{solicitud.actividad_del_condominio ? (
+							<div>
+								<dt className='text-xs text-muted-foreground'>
+									Actividad del condominio
+								</dt>
+								<dd className='font-medium text-foreground'>
+									{solicitud.actividad_del_condominio}
+								</dd>
+							</div>
+						) : null}
+						{solicitud.limite != null ? (
+							<div>
+								<dt className='text-xs text-muted-foreground'>Límite RC</dt>
+								<dd className='font-medium text-foreground'>
+									{solicitud.limite.toLocaleString('es-CL')}
+								</dd>
+							</div>
+						) : null}
+					</>
+				) : null}
 
-        <div>
-          <dt className='text-xs text-muted-foreground'>Estado de cotización</dt>
-          <dd className='mt-1'>
-            <Badge className={ESTADO_COTIZACION_PERFIL_BADGE['nueva_solicitud']}>
-              {ESTADO_COTIZACION_PERFIL_LABELS['nueva_solicitud']}
-            </Badge>
-          </dd>
-        </div>
+				<div>
+					<dt className='text-xs text-muted-foreground'>
+						Estado de cotización
+					</dt>
+					<dd className='mt-1'>
+						<Badge
+							className={ESTADO_COTIZACION_PERFIL_BADGE['nueva_solicitud']}
+						>
+							{ESTADO_COTIZACION_PERFIL_LABELS['nueva_solicitud']}
+						</Badge>
+					</dd>
+				</div>
 
-        <div>
-          <dt className='text-xs text-muted-foreground'>Estado de estudio</dt>
-          <dd className='mt-1'>
-            <Badge className={estudio ? ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible'] : ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']}>
-              {estudio ? ESTADO_ESTUDIO_PERFIL_LABELS['estudio_disponible'] : 'Pendiente'}
-            </Badge>
-          </dd>
-        </div>
+				<div>
+					<dt className='text-xs text-muted-foreground'>Estado de estudio</dt>
+					<dd className='mt-1'>
+						<Badge
+							className={
+								estudio
+									? ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']
+									: ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']
+							}
+						>
+							{estudio
+								? ESTADO_ESTUDIO_PERFIL_LABELS['estudio_disponible']
+								: 'Pendiente'}
+						</Badge>
+					</dd>
+				</div>
 
-        <div>
-          <dt className='text-xs text-muted-foreground'>Fecha de solicitud</dt>
-          <dd className='font-medium text-foreground'>
-            {formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy')}
-          </dd>
-        </div>
+				<div>
+					<dt className='text-xs text-muted-foreground'>Fecha de solicitud</dt>
+					<dd className='font-medium text-foreground'>
+						{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy')}
+					</dd>
+				</div>
 
-        {solicitud.observaciones ? (
-          <div>
-            <dt className='text-xs text-muted-foreground'>Observación</dt>
-            <dd className='whitespace-pre-wrap text-foreground'>{solicitud.observaciones}</dd>
-          </div>
-        ) : null}
-      </dl>
-    )
-  }
+				{solicitud.observaciones ? (
+					<div>
+						<dt className='text-xs text-muted-foreground'>Observación</dt>
+						<dd className='whitespace-pre-wrap text-foreground'>
+							{solicitud.observaciones}
+						</dd>
+					</div>
+				) : null}
+			</dl>
+		)
+	}
 
-  if (tab === 'cotizaciones') {
-    return (
-      <div className='space-y-3 pt-3'>
-        <div className='flex flex-wrap items-center justify-between gap-2'>
-          <p className='text-xs text-muted-foreground'>
-            {solicitud.cantidad_cotizaciones} cotización{cotizaciones && cotizaciones.length !== 1 ? 'es' : ''} recibida{cotizaciones && cotizaciones.length !== 1 ? 's' : ''}.
-          </p>
-          <div className='flex flex-wrap gap-1.5'>
-            {solicitud.cantidad_cotizaciones > 0 ? (
-              <Button
-                type='button'
-                variant='outline'
-                size='sm'
-                className='h-7 text-xs shadow-none'
-                onClick={() => setOpenVerCotizaciones(true)}
-              >
-                Ver cotizaciones detallado
-              </Button>
-            ) : null}
-            {usuario?.rut === ejecutivoEvaluacionRut ? (
-              <Button
-                type='button'
-                size='sm'
-                className='h-7 text-xs shadow-none'
-                onClick={() => setOpenRegistrarCotizacion(true)}
-              >
-                Agregar cotización
-              </Button>
-            ) : null}
-          </div>
-        </div>
+	if (tab === 'cotizaciones') {
+		return (
+			<div className='space-y-3 pt-3'>
+				<div className='flex flex-wrap items-center justify-between gap-2'>
+					<p className='text-xs text-muted-foreground'>
+						{solicitud.cantidad_cotizaciones} cotización
+						{cotizaciones && cotizaciones.length !== 1 ? 'es' : ''} recibida
+						{cotizaciones && cotizaciones.length !== 1 ? 's' : ''}.
+					</p>
+					<div className='flex flex-wrap gap-1.5'>
+						{solicitud.cantidad_cotizaciones > 0 ? (
+							<Button
+								type='button'
+								variant='outline'
+								size='sm'
+								className='h-7 text-xs shadow-none'
+								onClick={() => setOpenVerCotizaciones(true)}
+							>
+								Ver cotizaciones detallado
+							</Button>
+						) : null}
+						{usuario?.rut === ejecutivoEvaluacionRut ? (
+							<Button
+								type='button'
+								size='sm'
+								className='h-7 text-xs shadow-none'
+								onClick={() => setOpenRegistrarCotizacion(true)}
+							>
+								Agregar cotización
+							</Button>
+						) : null}
+					</div>
+				</div>
 
-        {loadingCotizaciones ? (
-          <div className='space-y-2'>
-            {Array.from({ length: 2 }).map((_, i) => (
-              <Skeleton key={i} className='h-12 w-full' />
-            ))}
-          </div>
-        ) : cotizaciones && cotizaciones.length > 0 ? (
-          <div className='space-y-2'>
-            {cotizaciones.map((c) => {
-              const ev = calcularEstadoVenc(c.fecha_vencimiento)
-              return (
-                <div
-                  key={c.id}
-                  className='rounded-md border border-border/70 bg-card p-2.5 text-xs'
-                >
-                  <div className='flex items-start justify-between gap-2'>
-                    <span className='font-medium text-foreground'>{c.company}</span>
-                    <span className={cn('inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[9px] font-semibold leading-none', ESTADO_VENC_COLORS[ev])}>
-                      {ESTADO_VENC_LABELS[ev]}
-                    </span>
-                  </div>
-                  <div className='mt-1 grid grid-cols-2 gap-x-3 gap-y-1 text-muted-foreground sm:grid-cols-4'>
-                    <span>Monto: {formatNum(c.monto_total_asegurado)} UF</span>
-                    <span>Tasa afecta: {formatNum(c.tasa_afecta)}</span>
-                    <span>Tasa excenta: {formatNum(c.tasa_excenta)}</span>
-                    <span>Tasa política: {formatNum(c.tasa_politica)}</span>
-                    <span>Prima adicional: {formatNum(c.prima_adicional_asistencia)} UF</span>
-                    <span>Emisión: {formatFecha(c.fecha_emision)}</span>
-                    <span>Vence: {formatFecha(c.fecha_vencimiento)}</span>
-                  </div>
-                  {c.nombre_archivo && c.archivo_base64 && (
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='sm'
-                      className='mt-2 h-7 text-[10px]'
-                      onClick={() => descargarPDF(c.archivo_base64!, c.nombre_archivo!)}
-                    >
-                      <Download className='mr-1 h-3 w-3' />
-                      Descargar PDF
-                    </Button>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        ) : (
-          <p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
-            Aún no hay cotizaciones registradas.
-          </p>
-        )}
+				{loadingCotizaciones ? (
+					<div className='space-y-2'>
+						{Array.from({ length: 2 }).map((_, i) => (
+							<Skeleton key={i} className='h-12 w-full' />
+						))}
+					</div>
+				) : cotizaciones && cotizaciones.length > 0 ? (
+					<div className='space-y-2'>
+						{cotizaciones.map(c => {
+							const ev = calcularEstadoVenc(c.fecha_vencimiento)
+							return (
+								<div
+									key={c.id}
+									className='rounded-md border border-border/70 bg-card p-2.5 text-xs'
+								>
+									<div className='flex items-start justify-between gap-2'>
+										<span className='font-medium text-foreground'>
+											{c.company}
+										</span>
+										<span
+											className={cn(
+												'inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[9px] font-semibold leading-none',
+												ESTADO_VENC_COLORS[ev],
+											)}
+										>
+											{ESTADO_VENC_LABELS[ev]}
+										</span>
+									</div>
+									<div className='mt-1 grid grid-cols-2 gap-x-3 gap-y-1 text-muted-foreground sm:grid-cols-4'>
+										<span>Monto: {formatNum(c.monto_total_asegurado)} UF</span>
+										<span>Tasa afecta: {formatNum(c.tasa_afecta)}</span>
+										<span>Tasa excenta: {formatNum(c.tasa_excenta)}</span>
+										<span>Tasa política: {formatNum(c.tasa_politica)}</span>
+										<span>
+											Prima adicional: {formatNum(c.prima_adicional_asistencia)}{' '}
+											UF
+										</span>
+										<span>Emisión: {formatFecha(c.fecha_emision)}</span>
+										<span>Vence: {formatFecha(c.fecha_vencimiento)}</span>
+									</div>
+									{c.nombre_archivo && c.archivo_base64 && (
+										<Button
+											type='button'
+											variant='outline'
+											size='sm'
+											className='mt-2 h-7 text-[10px]'
+											onClick={() =>
+												descargarPDF(c.archivo_base64!, c.nombre_archivo!)
+											}
+										>
+											<Download className='mr-1 h-3 w-3' />
+											Descargar PDF
+										</Button>
+									)}
+								</div>
+							)
+						})}
+					</div>
+				) : (
+					<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
+						Aún no hay cotizaciones registradas.
+					</p>
+				)}
 
-        <DialogRegistrarCotizacion
-          solicitudId={solicitud.id}
-          idProspecto={idProspecto}
-          open={openRegistrarCotizacion}
-          onOpenChange={setOpenRegistrarCotizacion}
-        />
+				<DialogRegistrarCotizacion
+					solicitudId={solicitud.id}
+					idProspecto={idProspecto}
+					open={openRegistrarCotizacion}
+					onOpenChange={setOpenRegistrarCotizacion}
+				/>
 
-        <DialogVerCotizacionesWrapper
-          solicitud={solicitud}
-          nombreCliente={nombreCliente}
-          lineaNegocioNombre={lineaNegocioNombre}
-          nombreEjecutivo={nombreEjecutivo}
-          open={openVerCotizaciones}
-          onOpenChange={setOpenVerCotizaciones}
-        />
-      </div>
-    )
-  }
+				<DialogVerCotizacionesWrapper
+					solicitud={solicitud}
+					nombreCliente={nombreCliente}
+					lineaNegocioNombre={lineaNegocioNombre}
+					nombreEjecutivo={nombreEjecutivo}
+					open={openVerCotizaciones}
+					onOpenChange={setOpenVerCotizaciones}
+				/>
+			</div>
+		)
+	}
 
-  if (tab === 'estudio') {
-    return (
-      <div className='space-y-3 pt-3'>
-        {loadingEstudios ? (
-          <div className='space-y-2'>
-            <Skeleton className='h-16 w-full' />
-            <Skeleton className='h-8 w-32' />
-          </div>
-        ) : estudio ? (
-          <div className='space-y-2 rounded-md border border-emerald-500/25 bg-emerald-500/[0.05] p-2.5'>
-            <div className='flex flex-wrap items-center gap-2'>
-              <Badge
-                variant='outline'
-                className='border-emerald-600/40 bg-emerald-600/10 text-[11px] font-medium text-emerald-950'
-              >
-                Estudio emitido
-              </Badge>
-              {estudio.fecha_emision ? (
-                <span className='text-xs text-muted-foreground'>
-                  {formatFecha(estudio.fecha_emision)}
-                </span>
-              ) : null}
-            </div>
-            <dl className='grid gap-2 text-xs sm:grid-cols-2'>
-              <div>
-                <dt className='text-muted-foreground'>Cuotas</dt>
-                <dd className='font-medium text-foreground'>{estudio.cantidad_cuotas}</dd>
-              </div>
-              <div>
-                <dt className='text-muted-foreground'>Valor UF</dt>
-                <dd className='font-medium text-foreground'>{formatNum(estudio.valor_uf)}</dd>
-              </div>
-              {estudio.ruta_archivo ? (
-                <div className='sm:col-span-2'>
-                  <dt className='text-muted-foreground'>Archivo</dt>
-                  <dd className='font-medium text-foreground'>
-                    <a
-                      href={estudio.ruta_archivo}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='underline underline-offset-2 hover:text-primary'
-                    >
-                      Descargar estudio
-                    </a>
-                  </dd>
-                </div>
-              ) : null}
-            </dl>
-          </div>
-        ) : (
-          <div className='space-y-3'>
-            {solicitud.cantidad_cotizaciones === 0 ? (
-              <p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
-                Debe registrar al menos una cotización para generar el estudio.
-              </p>
-            ) : (
-              <>
-                <p className='text-xs text-muted-foreground'>
-                  Cotizaciones disponibles. Seleccione las opciones y configure el estudio.
-                </p>
+	if (tab === 'estudio') {
+		return (
+			<div className='space-y-3 pt-3'>
+				{loadingEstudios ? (
+					<div className='space-y-2'>
+						<Skeleton className='h-16 w-full' />
+						<Skeleton className='h-8 w-32' />
+					</div>
+				) : estudio ? (
+					<div className='space-y-2 rounded-md border border-emerald-500/25 bg-emerald-500/[0.05] p-2.5'>
+						<div className='flex flex-wrap items-center gap-2'>
+							<Badge
+								variant='outline'
+								className='border-emerald-600/40 bg-emerald-600/10 text-[11px] font-medium text-emerald-950'
+							>
+								Estudio emitido
+							</Badge>
+							{estudio.fecha_emision ? (
+								<span className='text-xs text-muted-foreground'>
+									{formatFecha(estudio.fecha_emision)}
+								</span>
+							) : null}
+						</div>
+						<dl className='grid gap-2 text-xs sm:grid-cols-2'>
+							<div>
+								<dt className='text-muted-foreground'>Cuotas</dt>
+								<dd className='font-medium text-foreground'>
+									{estudio.cantidad_cuotas}
+								</dd>
+							</div>
+							<div>
+								<dt className='text-muted-foreground'>Valor UF</dt>
+								<dd className='font-medium text-foreground'>
+									{formatNum(estudio.valor_uf)}
+								</dd>
+							</div>
+							{estudio.ruta_archivo ? (
+								<div className='sm:col-span-2'>
+									<dt className='text-muted-foreground'>Archivo</dt>
+									<dd className='font-medium text-foreground'>
+										<a
+											href={estudio.ruta_archivo}
+											target='_blank'
+											rel='noopener noreferrer'
+											className='underline underline-offset-2 hover:text-primary'
+										>
+											Descargar estudio
+										</a>
+									</dd>
+								</div>
+							) : null}
+						</dl>
+					</div>
+				) : (
+					<div className='space-y-3'>
+						{solicitud.cantidad_cotizaciones === 0 ? (
+							<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
+								Debe registrar al menos una cotización para generar el estudio.
+							</p>
+						) : (
+							<>
+								<p className='text-xs text-muted-foreground'>
+									Cotizaciones disponibles. Seleccione las opciones y configure
+									el estudio.
+								</p>
 
-                <div className='space-y-2 rounded-md border border-border/80 bg-muted/20 p-3'>
-                  <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
-                    Configuración del estudio
-                  </p>
-                  <div className='grid gap-3 sm:grid-cols-3'>
-                    <div className='space-y-1.5'>
-                      <Label className='text-xs'>Infraseguro ej. 1</Label>
-                      <Input
-                        type='number'
-                        step='0.01'
-                        min='0'
-                        max='1'
-                        className='h-8 text-xs'
-                        value={infraseguro1}
-                        onChange={(e) => setInfraseguro1(Number(e.target.value))}
-                      />
-                    </div>
-                    <div className='space-y-1.5'>
-                      <Label className='text-xs'>Infraseguro ej. 2</Label>
-                      <Input
-                        type='number'
-                        step='0.01'
-                        min='0'
-                        max='1'
-                        className='h-8 text-xs'
-                        value={infraseguro2}
-                        onChange={(e) => setInfraseguro2(Number(e.target.value))}
-                      />
-                    </div>
-                    <div className='space-y-1.5'>
-                      <Label className='text-xs'>Cant. cuotas</Label>
-                      <Input
-                        type='number'
-                        min='1'
-                        className='h-8 text-xs'
-                        value={cuotas}
-                        onChange={(e) => setCuotas(Number(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                </div>
+								<div className='space-y-2 rounded-md border border-border/80 bg-muted/20 p-3'>
+									<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+										Configuración del estudio
+									</p>
+									<div className='grid gap-3 sm:grid-cols-3'>
+										<div className='space-y-1.5'>
+											<Label className='text-xs'>Infraseguro ej. 1</Label>
+											<Input
+												type='number'
+												step='0.01'
+												min='0'
+												max='1'
+												className='h-8 text-xs'
+												value={infraseguro1}
+												onChange={e => setInfraseguro1(Number(e.target.value))}
+											/>
+										</div>
+										<div className='space-y-1.5'>
+											<Label className='text-xs'>Infraseguro ej. 2</Label>
+											<Input
+												type='number'
+												step='0.01'
+												min='0'
+												max='1'
+												className='h-8 text-xs'
+												value={infraseguro2}
+												onChange={e => setInfraseguro2(Number(e.target.value))}
+											/>
+										</div>
+										<div className='space-y-1.5'>
+											<Label className='text-xs'>Cant. cuotas</Label>
+											<Input
+												type='number'
+												min='1'
+												className='h-8 text-xs'
+												value={cuotas}
+												onChange={e => setCuotas(Number(e.target.value))}
+											/>
+										</div>
+									</div>
+								</div>
 
-                {usuario?.rut === ejecutivoEvaluacionRut ? (
-                  <Button
-                    type='button'
-                    size='sm'
-                    className='h-8 text-xs'
-                    disabled={solicitud.cantidad_cotizaciones === 0}
-                    onClick={() => setOpenGenerarEstudio(true)}
-                  >
-                    Generar estudio
-                  </Button>
-                ) : null}
-              </>
-            )}
-          </div>
-        )}
+								{usuario?.rut === ejecutivoEvaluacionRut ? (
+									<Button
+										type='button'
+										size='sm'
+										className='h-8 text-xs'
+										disabled={solicitud.cantidad_cotizaciones === 0}
+										onClick={() => setOpenGenerarEstudio(true)}
+									>
+										Generar estudio
+									</Button>
+								) : null}
+							</>
+						)}
+					</div>
+				)}
 
-        <DialogGenerarEstudioWrapper
-          solicitud={solicitud}
-          idProspecto={idProspecto}
-          nombreCliente={nombreCliente}
-          lineaNegocioNombre={lineaNegocioNombre}
-          nombreEjecutivo={nombreEjecutivo}
-          configuracion={{
-            infraseguro_primer_ejemplo: infraseguro1,
-            infraseguro_segundo_ejemplo: infraseguro2,
-            cantidad_cuotas: cuotas,
-          }}
-          open={openGenerarEstudio}
-          onOpenChange={setOpenGenerarEstudio}
-        />
-      </div>
-    )
-  }
+				<DialogGenerarEstudioWrapper
+					solicitud={solicitud}
+					idProspecto={idProspecto}
+					nombreCliente={nombreCliente}
+					lineaNegocioNombre={lineaNegocioNombre}
+					nombreEjecutivo={nombreEjecutivo}
+					configuracion={{
+						infraseguro_primer_ejemplo: infraseguro1,
+						infraseguro_segundo_ejemplo: infraseguro2,
+						cantidad_cuotas: cuotas,
+					}}
+					open={openGenerarEstudio}
+					onOpenChange={setOpenGenerarEstudio}
+				/>
+			</div>
+		)
+	}
 
-  if (tab === 'observaciones') {
-    return (
-      <div className='pt-3'>
-        {solicitud.observaciones?.trim() ? (
-          <p className='whitespace-pre-wrap rounded-md border border-border/70 bg-muted/20 p-3 text-sm text-foreground'>
-            {solicitud.observaciones.trim()}
-          </p>
-        ) : (
-          <p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
-            Sin observaciones.
-          </p>
-        )}
-      </div>
-    )
-  }
+	if (tab === 'observaciones') {
+		return (
+			<div className='pt-3'>
+				{solicitud.observaciones?.trim() ? (
+					<p className='whitespace-pre-wrap rounded-md border border-border/70 bg-muted/20 p-3 text-sm text-foreground'>
+						{solicitud.observaciones.trim()}
+					</p>
+				) : (
+					<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
+						Sin observaciones.
+					</p>
+				)}
+			</div>
+		)
+	}
 
-  return null
+	return null
 }

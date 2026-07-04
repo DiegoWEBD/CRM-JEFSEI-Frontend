@@ -7,7 +7,12 @@ import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { Dialog, DialogContent, DialogTitle } from '@/components/dialog'
 import { Input } from '@/components/input'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/sheet'
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+} from '@/components/sheet'
 import FormularioRegistrarProspecto from '@/components/formulario-registrar-prospecto/formulario-registrar-prospecto'
 import { cn } from '@/lib/utils'
 import { useControlledInput } from '@/hooks/input/use-controlled-input'
@@ -43,8 +48,7 @@ export default function CardProspectosClient({
 		return prospectosFiltrados.filter(p => {
 			const enNombre = p.nombre_riesgo.toLowerCase().includes(q)
 			const enLinea = p.linea_negocio.toLowerCase().includes(q)
-			const enAdmin =
-				p.nombre_administrador?.toLowerCase().includes(q) ?? false
+			const enAdmin = p.nombre_administrador?.toLowerCase().includes(q) ?? false
 			const enEjecutivo =
 				p.ejecutivo_comercial?.toLowerCase().includes(q) ?? false
 			const enEstado = (p.procesos_comerciales ?? []).some(
@@ -56,8 +60,7 @@ export default function CardProspectosClient({
 		})
 	}, [busqueda, prospectosFiltrados])
 
-	const [sheetTodosAbierto, setSheetTodosAbierto] =
-		useState<boolean>(false)
+	const [sheetTodosAbierto, setSheetTodosAbierto] = useState<boolean>(false)
 
 	const onProspectoRegistrado = () => {
 		queryClient.invalidateQueries({ queryKey: ['prospectos'] })
@@ -68,10 +71,6 @@ export default function CardProspectosClient({
 			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
 				<CardTitle primary>Búsqueda de prospectos</CardTitle>
 				<div className='flex shrink-0 flex-wrap gap-1.5'>
-					<Button size='sm' variant='outline' className='h-9 text-xs'>
-						<Plus className='mr-1.5 h-3.5 w-3.5' aria-hidden />
-						Prospecto
-					</Button>
 					<Button
 						size='sm'
 						className='h-9 text-xs'
@@ -104,14 +103,15 @@ export default function CardProspectosClient({
 
 				<div className='space-y-2'>
 					<p className='text-[11px] text-muted-foreground'>
-						{filtro === 'todos'
-							? `Total de prospectos: ${prospectos?.length ?? 0}`
-							: <>
-									{prospectosConBusqueda.length} cliente
-									{prospectosConBusqueda.length !== 1 ? 's' : ''}
-									{' '}· <span className='text-foreground'>{filtro}</span>
-								</>
-						}
+						{filtro === 'todos' ? (
+							`Total de prospectos: ${prospectos?.length ?? 0}`
+						) : (
+							<>
+								{prospectosConBusqueda.length} cliente
+								{prospectosConBusqueda.length !== 1 ? 's' : ''} ·{' '}
+								<span className='text-foreground'>{filtro}</span>
+							</>
+						)}
 						{busqueda.trim() && prospectosConBusqueda.length > 0
 							? ` · ${prospectosConBusqueda.length} prospecto${prospectosConBusqueda.length !== 1 ? 's' : ''} en búsqueda`
 							: ''}
@@ -161,7 +161,9 @@ export default function CardProspectosClient({
 			>
 				<DialogContent className='max-h-[90vh] sm:max-w-5xl overflow-y-auto p-0'>
 					<div className='border-b border-border px-6 py-4'>
-						<DialogTitle className='text-lg font-semibold'>Registrar prospecto</DialogTitle>
+						<DialogTitle className='text-lg font-semibold'>
+							Registrar prospecto
+						</DialogTitle>
 						<p className='text-sm text-muted-foreground'>
 							Completa los datos del prospecto para crear un nuevo registro.
 						</p>
@@ -175,10 +177,7 @@ export default function CardProspectosClient({
 				</DialogContent>
 			</Dialog>
 
-			<Sheet
-				open={sheetTodosAbierto}
-				onOpenChange={setSheetTodosAbierto}
-			>
+			<Sheet open={sheetTodosAbierto} onOpenChange={setSheetTodosAbierto}>
 				<SheetContent className='flex w-full flex-col gap-0 p-0 sm:max-w-2xl'>
 					<SheetHeader className='border-b border-border px-4 py-3 text-left'>
 						<SheetTitle className='text-base leading-snug'>
@@ -187,8 +186,7 @@ export default function CardProspectosClient({
 					</SheetHeader>
 					<div className='flex-1 space-y-2 overflow-y-auto p-4'>
 						{prospectos?.map(prospecto => {
-							const primerEstado =
-								prospecto.procesos_comerciales[0]
+							const primerEstado = prospecto.procesos_comerciales[0]
 							return (
 								<div
 									key={prospecto.id}

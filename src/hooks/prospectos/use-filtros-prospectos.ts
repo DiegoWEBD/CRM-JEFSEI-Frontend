@@ -12,10 +12,7 @@ export const useFiltrosProspectos = (prospectos?: ProspectoResumenJson[]) => {
 
 	const { filtrar } = useFiltrarProspectos(prospectos)
 
-	const prospectosFiltrados = useMemo(
-		() => filtrar(filtro),
-		[filtro, filtrar],
-	)
+	const prospectosFiltrados = useMemo(() => filtrar(filtro), [filtro, filtrar])
 
 	const filtrosContados = useMemo<Map<EstadoComercialProspecto, number>>(() => {
 		const contados = new Map<EstadoComercialProspecto, number>([

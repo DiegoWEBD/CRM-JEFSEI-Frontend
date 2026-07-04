@@ -3,8 +3,8 @@ import axios from 'axios'
 export interface RegistrarUsuarioRequest {
 	rut: string
 	nombre: string
-	correo: string
-	telefono: string
+    correo: string | null
+    telefono: string | null
 	id_sucursal: number
 	password: string
 	meta_mensual_uf: number | null

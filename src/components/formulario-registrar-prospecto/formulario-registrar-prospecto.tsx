@@ -18,6 +18,7 @@ import {
   CHILE_REGIONES_NOMBRES,
   obtenerComunasDeRegion,
 } from '@/lib/chile-regiones-comunas'
+import { classInputRut } from '@/utils/class-input-rut'
 import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
 import { Building2, LoaderCircle, User } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -33,17 +34,6 @@ type TipoCliente = 'condominio' | 'linea_personal'
 function inp(_pendiente: boolean, extra?: string) {
   const base = 'h-9 text-sm shadow-none'
   return `${base}${extra ? ` ${extra}` : ''}`
-}
-
-function classInputRut(estado: string) {
-  const base = 'h-9 text-sm shadow-none'
-  if (estado === 'vacio' || estado === 'incompleto') {
-    return `${base} border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25`
-  }
-  if (estado === 'formato_invalido' || estado === 'dv_invalido') {
-    return `${base} border-destructive/60 bg-destructive/[0.07] dark:border-destructive/55 dark:bg-destructive/15`
-  }
-  return base
 }
 
 export default function FormularioRegistrarProspecto({

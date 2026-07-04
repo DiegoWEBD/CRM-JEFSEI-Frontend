@@ -9,17 +9,9 @@ import LoginFormHeader from './login-form-header'
 import FormError from '@/components/forms/form-error/form-error'
 import { Card, CardContent, CardFooter } from '@/components/card'
 import Label from '@/components/forms/label/label'
+import { formatRut } from '@/utils/format-rut'
 import { Eye, EyeOff, Loader2, User, Lock, AlertCircle } from 'lucide-react'
 import { useState } from 'react'
-
-function formatRut(value: string): string {
-	const clean = value.replace(/[^0-9kK]/g, '').toUpperCase()
-	if (clean.length <= 1) return clean
-	const dv = clean.slice(-1)
-	const body = clean.slice(0, -1)
-	const formatted = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-	return `${formatted}-${dv}`
-}
 
 const LoginForm = () => {
 	const { cargando, error, login } = useAuth()

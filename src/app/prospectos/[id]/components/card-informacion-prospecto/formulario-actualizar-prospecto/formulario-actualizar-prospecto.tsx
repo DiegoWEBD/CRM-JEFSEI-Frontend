@@ -14,9 +14,9 @@ import {
 	obtenerComunasDeRegion,
 } from '@/lib/chile-regiones-comunas'
 import { classname } from '@/lib/class-name'
+import { classInputRut } from '@/utils/class-input-rut'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import {
-	EstadoValidacionRutChileno,
 	rutChilenoEstadoValidacion,
 } from '@/utils/validar-rut'
 import { useMemo } from 'react'
@@ -27,16 +27,6 @@ export function inp(pendiente: boolean, extra?: string) {
 		pendiente &&
 			'border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25',
 		extra,
-	)
-}
-
-function classInputRut(estado: EstadoValidacionRutChileno) {
-	return classname(
-		'h-9 text-sm shadow-none',
-		(estado === 'vacio' || estado === 'incompleto') &&
-			'border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25',
-		(estado === 'formato_invalido' || estado === 'dv_invalido') &&
-			'border-destructive/60 bg-destructive/[0.07] dark:border-destructive/55 dark:bg-destructive/15',
 	)
 }
 

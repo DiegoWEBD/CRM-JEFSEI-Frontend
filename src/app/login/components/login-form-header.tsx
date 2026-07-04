@@ -7,7 +7,7 @@ const LoginFormHeader = () => {
 			<div className='bg-blue-100 h-12 w-12 flex items-center justify-center rounded-full mb-5'>
 				<Shield size='1.5rem' />
 			</div>
-			<h1 className='text-xl font-bold'>JEFSEI Operaciones</h1>
+			<h1 className='text-xl font-bold'>CRM JEFSEI</h1>
 			<p className='text-subtitle'>Inicia sesión para continuar</p>
 		</CardHeader>
 	)

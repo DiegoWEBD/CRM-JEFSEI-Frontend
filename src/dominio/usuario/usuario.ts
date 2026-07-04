@@ -4,8 +4,8 @@ export default class Usuario {
 	constructor(
 		public rut: string,
 		public nombre: string,
-		public correo: string,
-		public telefono: string,
+		public correo: string | null,
+		public telefono: string | null,
 		public sucursal: string,
 		public roles: Rol[],
 		public meta_mensual_uf: number | null = null,

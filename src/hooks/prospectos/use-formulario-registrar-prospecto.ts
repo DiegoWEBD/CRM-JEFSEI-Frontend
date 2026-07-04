@@ -4,6 +4,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
+function n2(value: unknown): number | null {
+	if (value === '' || value == null) return null
+	return Number(value)
+}
+
 type UseFormularioRegistrarProspecto = {
   onProspectoRegistrado?: () => void
   onClose?: () => void
@@ -29,12 +34,14 @@ export const useFormularioRegistrarProspecto = ({
         observaciones: values.observaciones || null,
         id_linea_negocio: values.id_linea_negocio,
         uf_por_metro_cuadrado: values.uf_por_metro_cuadrado ?? null,
-        porcentaje_depreciacion: values.porcentaje_depreciacion == null
-          ? null
-          : values.porcentaje_depreciacion / 100,
-        porcentaje_espacios_comunes: values.porcentaje_espacios_comunes == null
-          ? null
-          : values.porcentaje_espacios_comunes / 100,
+        porcentaje_depreciacion: (() => {
+          const n = n2(values.porcentaje_depreciacion)
+          return n == null ? null : n / 100
+        })(),
+        porcentaje_espacios_comunes: (() => {
+          const n = n2(values.porcentaje_espacios_comunes)
+          return n == null ? null : n / 100
+        })(),
         tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
         uso_del_condominio: values.uso_del_condominio || null,
         materialidad: values.materialidad || null,
