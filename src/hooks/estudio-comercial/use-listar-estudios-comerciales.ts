@@ -2,15 +2,15 @@ import { EstudioComercialCondominioResumen } from '@/aplicacion/estudio-comercia
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
-export const useListarEstudiosComerciales = (prospectoId: number) => {
+export const useListarEstudiosComerciales = (solicitudId: number) => {
   return useQuery<EstudioComercialCondominioResumen[]>({
-    queryKey: ['estudios-comerciales', prospectoId],
+    queryKey: ['estudios-comerciales', solicitudId],
     queryFn: async () => {
       const response = await axios.get(
-        `/api/estudio-comercial?prospecto_id=${prospectoId}`,
+        `/api/solicitudes-cotizacion/${solicitudId}/estudios-comerciales`,
       )
       return response.data
     },
-    enabled: !!prospectoId,
+    enabled: !!solicitudId,
   })
 }

@@ -39,7 +39,11 @@ const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 				{icono}
 			</span>
 
-			{open && <span className='truncate'>{titulo}</span>}
+			{open && (
+				<span className='min-w-0 wrap-break-words whitespace-normal'>
+					{titulo}
+				</span>
+			)}
 		</Link>
 	)
 }

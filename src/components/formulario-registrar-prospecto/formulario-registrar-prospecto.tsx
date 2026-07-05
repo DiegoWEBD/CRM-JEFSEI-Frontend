@@ -12,6 +12,7 @@ import {
 } from '@/components/select'
 import { Textarea } from '@/components/textarea'
 import { useAdministradores } from '@/hooks/administradores/use-administradores'
+import { SelectorAdministrador } from '@/components/selector-administrador'
 import { useLineasNegocio } from '@/hooks/lineas-negocio/use-lineas-negocio'
 import { useFormularioRegistrarProspecto } from '@/hooks/prospectos/use-formulario-registrar-prospecto'
 import {
@@ -321,26 +322,16 @@ export default function FormularioRegistrarProspecto({
             </div>
           )}
 
-          <div className='space-y-1.5'>
-            <label className='text-xs'>Administrador</label>
-            <Select
-              value={formik.values.id_administrador ? String(formik.values.id_administrador) : ''}
-              onValueChange={(value) =>
-                formik.setFieldValue('id_administrador', value ? Number(value) : undefined)
-              }
-            >
-              <SelectTrigger className={inp(formik.values.id_administrador === undefined)}>
-                <SelectValue placeholder='Selecciona un administrador' />
-              </SelectTrigger>
-              <SelectContent className='max-h-70'>
-                {administradores?.map((admin) => (
-                  <SelectItem key={admin.id} value={String(admin.id)} className='text-xs'>
-                    {admin.nombre_administrador}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {tipoActual === 'condominio' && (
+            <div className='space-y-1.5'>
+              <label className='text-xs'>Administrador</label>
+              <SelectorAdministrador
+                value={formik.values.id_administrador}
+                onChange={(id) => formik.setFieldValue('id_administrador', id)}
+                administradores={administradores ?? []}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 

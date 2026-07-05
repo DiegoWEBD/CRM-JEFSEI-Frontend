@@ -2,10 +2,12 @@ import { SeccionEstudioComercialRequest } from './seccion-estudio-comercial-requ
 
 export interface ArmarEstudioComercialRequest {
   id_prospecto: number
-  infraseguro_primer_ejemplo: number
-  infraseguro_segundo_ejemplo: number
+  monto_asegurado_actual: number | null
+  con_monto_sugerido: boolean
+  infraseguro_primer_ejemplo: number | null
+  infraseguro_segundo_ejemplo: number | null
   cantidad_cuotas: number
   ids_cotizacion: number[]
   valor_uf: number
-  secciones: SeccionEstudioComercialRequest[]
+  secciones: SeccionEstudioComercialRequest[] | null
 }

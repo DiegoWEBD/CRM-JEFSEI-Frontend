@@ -3,12 +3,12 @@ import { cookies } from 'next/headers'
 import { EstudioComercialCondominioResumen } from './dto/estudio-comercial-condominio-resumen'
 
 export const listarEstudiosComerciales = async (
-  prospectoId: number,
+  solicitudId: number,
 ): Promise<EstudioComercialCondominioResumen[]> => {
   const cookieStore = await cookies()
 
   const response = await axiosClient.get(
-    `/estudio-comercial?prospecto_id=${prospectoId}`,
+    `/solicitudes-cotizacion/${solicitudId}/estudios-comerciales`,
     {
       headers: {
         Cookie: cookieStore.toString(),

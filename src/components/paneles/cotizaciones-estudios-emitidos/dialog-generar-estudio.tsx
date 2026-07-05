@@ -57,6 +57,8 @@ export type ConfiguracionEstudio = {
 	infraseguro_primer_ejemplo: number
 	infraseguro_segundo_ejemplo: number
 	cantidad_cuotas: number
+	monto_asegurado_actual?: number | null
+	con_monto_sugerido?: boolean
 }
 
 type DialogGenerarEstudioProps = {
@@ -78,6 +80,8 @@ interface FormValues {
 	infraseguro2: string
 	cuotas: string
 	valorUf: string
+	montoAseguradoActual: string
+	conMontoSugerido: string
 }
 
 export default function DialogGenerarEstudio({
@@ -99,16 +103,8 @@ export default function DialogGenerarEstudio({
 
 	const validationSchema = Yup.object({
 		observaciones: Yup.string(),
-		infraseguro1: Yup.number()
-			.typeError('Debe ser un número')
-			.min(0, 'Mínimo 0')
-			.max(100, 'Máximo 100')
-			.required('Requerido'),
-		infraseguro2: Yup.number()
-			.typeError('Debe ser un número')
-			.min(0, 'Mínimo 0')
-			.max(100, 'Máximo 100')
-			.required('Requerido'),
+		infraseguro1: Yup.string(),
+		infraseguro2: Yup.string(),
 		cuotas: Yup.number()
 			.typeError('Debe ser un número')
 			.min(1, 'Mínimo 1')
@@ -119,25 +115,35 @@ export default function DialogGenerarEstudio({
 			.typeError('Debe ser un número')
 			.min(0, 'Mínimo 0')
 			.required('Requerido'),
+		montoAseguradoActual: Yup.string(),
+		conMontoSugerido: Yup.string(),
 	})
 
 	const formik = useFormik<FormValues>({
 		initialValues: {
 			observaciones: '',
-			infraseguro1: String(
-				Math.round(
-					((configuracionEstudio?.infraseguro_primer_ejemplo ?? 0.3) * 100) /
-						10,
-				) * 10,
-			),
-			infraseguro2: String(
-				Math.round(
-					((configuracionEstudio?.infraseguro_segundo_ejemplo ?? 0.5) * 100) /
-						10,
-				) * 10,
-			),
+			infraseguro1: configuracionEstudio?.infraseguro_primer_ejemplo != null
+				? String(
+						Math.round(
+							(configuracionEstudio.infraseguro_primer_ejemplo * 100) / 10,
+						) * 10,
+					)
+				: 'no',
+			infraseguro2: configuracionEstudio?.infraseguro_segundo_ejemplo != null
+				? String(
+						Math.round(
+							(configuracionEstudio.infraseguro_segundo_ejemplo * 100) / 10,
+						) * 10,
+					)
+				: 'no',
 			cuotas: String(configuracionEstudio?.cantidad_cuotas ?? 11),
 			valorUf: '38000',
+			montoAseguradoActual: configuracionEstudio?.monto_asegurado_actual != null
+				? String(configuracionEstudio.monto_asegurado_actual)
+				: '',
+			conMontoSugerido: configuracionEstudio?.con_monto_sugerido
+				? 'true'
+				: 'false',
 		},
 		validationSchema,
 		onSubmit: async values => {
@@ -145,18 +151,28 @@ export default function DialogGenerarEstudio({
 
 			const response = await armarMutation.mutateAsync({
 				id_prospecto: fila.id_prospecto,
-				infraseguro_primer_ejemplo: Number(values.infraseguro1) / 100,
-				infraseguro_segundo_ejemplo: Number(values.infraseguro2) / 100,
+				monto_asegurado_actual: values.montoAseguradoActual
+					? Number(values.montoAseguradoActual)
+					: null,
+				con_monto_sugerido: values.conMontoSugerido === 'true',
+				infraseguro_primer_ejemplo: values.infraseguro1 && values.infraseguro1 !== 'no'
+					? Number(values.infraseguro1) / 100
+					: null,
+				infraseguro_segundo_ejemplo: values.infraseguro2 && values.infraseguro2 !== 'no'
+					? Number(values.infraseguro2) / 100
+					: null,
 				cantidad_cuotas: Number(values.cuotas),
 				ids_cotizacion: idsSeleccionados,
 				valor_uf: Number(values.valorUf),
-				secciones: secciones.map(s => ({
-					titulo: s.titulo,
-					monto_asegurado: Number(s.montoAsegurado),
-					numero_propietarios: s.numeroPropietarios
-						? Number(s.numeroPropietarios)
-						: null,
-				})),
+				secciones: secciones.length > 0
+					? secciones.map(s => ({
+							titulo: s.titulo,
+							monto_asegurado: Number(s.montoAsegurado),
+							numero_propietarios: s.numeroPropietarios
+								? Number(s.numeroPropietarios)
+								: null,
+						}))
+					: null,
 			})
 
 			if (response.archivo_base64) {
@@ -206,10 +222,12 @@ export default function DialogGenerarEstudio({
 		formik.resetForm({
 			values: {
 				observaciones: '',
-				infraseguro1: '',
-				infraseguro2: '',
+				infraseguro1: 'no',
+				infraseguro2: 'no',
 				cuotas: '',
 				valorUf: '',
+				montoAseguradoActual: '',
+				conMontoSugerido: 'false',
 			},
 		})
 		setIdsSeleccionados([])
@@ -326,7 +344,7 @@ export default function DialogGenerarEstudio({
 									Configuración del estudio
 								</p>
 								<div className='grid gap-3 sm:grid-cols-3'>
-									<Campo label='Infraseguro ej. 1'>
+									<Campo label='Infraseguro ej. 1 (opcional)'>
 										<Select
 											value={formik.values.infraseguro1}
 											onValueChange={v =>
@@ -338,6 +356,7 @@ export default function DialogGenerarEstudio({
 											</SelectTrigger>
 											<SelectContent>
 												{[
+													'no',
 													'0',
 													'10',
 													'20',
@@ -351,19 +370,13 @@ export default function DialogGenerarEstudio({
 													'100',
 												].map(v => (
 													<SelectItem key={v} value={v}>
-														{v}%
+														{v === 'no' ? 'No aplicar' : `${v}%`}
 													</SelectItem>
 												))}
 											</SelectContent>
 										</Select>
-										{formik.touched.infraseguro1 &&
-											formik.errors.infraseguro1 && (
-												<p className='text-[10px] text-destructive'>
-													{formik.errors.infraseguro1}
-												</p>
-											)}
 									</Campo>
-									<Campo label='Infraseguro ej. 2'>
+									<Campo label='Infraseguro ej. 2 (opcional)'>
 										<Select
 											value={formik.values.infraseguro2}
 											onValueChange={v =>
@@ -375,6 +388,7 @@ export default function DialogGenerarEstudio({
 											</SelectTrigger>
 											<SelectContent>
 												{[
+													'no',
 													'0',
 													'10',
 													'20',
@@ -388,17 +402,11 @@ export default function DialogGenerarEstudio({
 													'100',
 												].map(v => (
 													<SelectItem key={v} value={v}>
-														{v}%
+														{v === 'no' ? 'No aplicar' : `${v}%`}
 													</SelectItem>
 												))}
 											</SelectContent>
 										</Select>
-										{formik.touched.infraseguro2 &&
-											formik.errors.infraseguro2 && (
-												<p className='text-[10px] text-destructive'>
-													{formik.errors.infraseguro2}
-												</p>
-											)}
 									</Campo>
 									<Campo label='Cant. cuotas'>
 										<Select
@@ -468,6 +476,33 @@ export default function DialogGenerarEstudio({
 										</p>
 									)}
 								</Campo>
+
+								<Campo label='Monto asegurado actual (UF)'>
+									<Input
+										type='number'
+										step='0.01'
+										min='0'
+										className='h-8 w-full text-xs'
+										name='montoAseguradoActual'
+										value={formik.values.montoAseguradoActual}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+										placeholder='Opcional'
+									/>
+								</Campo>
+
+								<label className='flex items-center gap-2 rounded-md border border-border/70 bg-card px-3 py-2 text-xs'>
+									<Checkbox
+										checked={formik.values.conMontoSugerido === 'true'}
+										onCheckedChange={checked =>
+											formik.setFieldValue(
+												'conMontoSugerido',
+												checked ? 'true' : 'false',
+											)
+										}
+									/>
+									<span>Usar monto sugerido</span>
+								</label>
 
 								<div className='space-y-2'>
 									<p className='text-xs font-medium text-foreground'>

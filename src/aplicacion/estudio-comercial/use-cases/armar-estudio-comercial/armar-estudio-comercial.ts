@@ -1,9 +1,7 @@
 import axios from 'axios'
 import { ArmarEstudioComercialRequest } from './dto/armar-estudio-comercial-request'
-import { EstudioComercialCondominioJson } from './dto/estudio-comercial-condominio-json'
 
 export interface ArmarEstudioResponse {
-  estudio_comercial: EstudioComercialCondominioJson
   archivo_base64: string
   nombre_archivo: string
 }

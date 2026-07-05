@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
-import { Input } from '@/components/input'
-import { Label } from '@/components/label'
 import { Skeleton } from '@/components/skeleton'
 import { useUserSession } from '@/hooks/auth/use-user-session'
 import type SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
@@ -19,10 +17,11 @@ import {
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { cn } from '@/lib/utils'
-import { Download } from 'lucide-react'
+import { Download, FileText } from 'lucide-react'
 import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-registrar-cotizacion'
 import DialogVerCotizacionesWrapper from './dialog-ver-cotizaciones-wrapper'
 import DialogGenerarEstudioWrapper from './dialog-generar-estudio-wrapper'
+import DialogSubirEstudio from './dialog-subir-estudio/dialog-subir-estudio'
 
 type TabId = 'solicitud' | 'cotizaciones' | 'estudio' | 'observaciones'
 
@@ -100,23 +99,33 @@ export default function SolicitudCotizacionTabContent({
 	const { data: cotizaciones, isLoading: loadingCotizaciones } =
 		useCotizaciones(solicitud.id)
 	const { data: estudios, isLoading: loadingEstudios } =
-		useListarEstudiosComerciales(idProspecto)
+		useListarEstudiosComerciales(solicitud.id)
 
 	const [openRegistrarCotizacion, setOpenRegistrarCotizacion] = useState(false)
 	const [openVerCotizaciones, setOpenVerCotizaciones] = useState(false)
 	const [openGenerarEstudio, setOpenGenerarEstudio] = useState(false)
+	const [openSubirEstudio, setOpenSubirEstudio] = useState(false)
 
-	const [infraseguro1, setInfraseguro1] = useState(0.3)
-	const [infraseguro2, setInfraseguro2] = useState(0.5)
-	const [cuotas, setCuotas] = useState(11)
-
-	const estudio = estudios && estudios.length > 0 ? estudios[0] : null
 	const nombreEjecutivo =
 		solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
+
+	const tieneCotizaciones = solicitud.cantidad_cotizaciones > 0
+
+	const hasDetalles =
+		(solicitud.tipo === 'vida_guardia' && solicitud.numero_guardias != null) ||
+		(solicitud.tipo === 'unidades' && (solicitud.monto_asegurado_total != null || solicitud.nombre_excel != null)) ||
+		(solicitud.tipo === 'accidentes_personales' && solicitud.actividades && solicitud.actividades.length > 0) ||
+		(solicitud.tipo === 'rc_condominio' && (solicitud.actividad_del_condominio || solicitud.limite != null))
 
 	if (tab === 'solicitud') {
 		return (
 			<dl className='space-y-2.5 pt-3 text-sm'>
+				<div>
+					<dt className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+						Información general
+					</dt>
+				</div>
+
 				<div>
 					<dt className='text-xs text-muted-foreground'>Producto</dt>
 					<dd className='font-medium text-foreground'>
@@ -142,124 +151,140 @@ export default function SolicitudCotizacionTabContent({
 					</div>
 				) : null}
 
-				{solicitud.tipo === 'vida_guardia' &&
-				solicitud.numero_guardias != null ? (
-					<div>
-						<dt className='text-xs text-muted-foreground'>
-							Número de guardias
-						</dt>
-						<dd className='font-medium text-foreground'>
-							{solicitud.numero_guardias}
-						</dd>
-					</div>
-				) : null}
-
-				{solicitud.tipo === 'unidades' &&
-				solicitud.monto_asegurado_total != null ? (
-					<div>
-						<dt className='text-xs text-muted-foreground'>
-							Monto asegurado total
-						</dt>
-						<dd className='font-medium text-foreground'>
-							{solicitud.monto_asegurado_total.toLocaleString('es-CL')}
-						</dd>
-					</div>
-				) : null}
-
-				{solicitud.tipo === 'unidades' && solicitud.nombre_excel ? (
-					<div>
-						<dt className='text-xs text-muted-foreground'>Archivo Excel</dt>
-						<dd className='font-medium text-foreground'>
-							{solicitud.nombre_excel}
-						</dd>
-					</div>
-				) : null}
-
-				{solicitud.tipo === 'accidentes_personales' &&
-				solicitud.actividades &&
-				solicitud.actividades.length > 0 ? (
-					<div>
-						<dt className='mb-1 text-xs text-muted-foreground'>
-							Actividades aseguradas
-						</dt>
-						<dd className='space-y-1'>
-							{solicitud.actividades.map((act, i) => (
-								<div
-									key={i}
-									className='flex items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'
-								>
-									<span className='text-sm text-foreground'>
-										{act.actividad}
-									</span>
-									<Badge variant='outline' className='shrink-0 text-xs'>
-										{act.numero_asegurados} asegurado
-										{act.numero_asegurados !== 1 ? 's' : ''}
-									</Badge>
-								</div>
-							))}
-						</dd>
-					</div>
-				) : null}
-
-				{solicitud.tipo === 'rc_condominio' ? (
-					<>
-						{solicitud.actividad_del_condominio ? (
-							<div>
-								<dt className='text-xs text-muted-foreground'>
-									Actividad del condominio
-								</dt>
-								<dd className='font-medium text-foreground'>
-									{solicitud.actividad_del_condominio}
-								</dd>
-							</div>
-						) : null}
-						{solicitud.limite != null ? (
-							<div>
-								<dt className='text-xs text-muted-foreground'>Límite RC</dt>
-								<dd className='font-medium text-foreground'>
-									{solicitud.limite.toLocaleString('es-CL')}
-								</dd>
-							</div>
-						) : null}
-					</>
-				) : null}
-
-				<div>
-					<dt className='text-xs text-muted-foreground'>
-						Estado de cotización
-					</dt>
-					<dd className='mt-1'>
-						<Badge
-							className={ESTADO_COTIZACION_PERFIL_BADGE['nueva_solicitud']}
-						>
-							{ESTADO_COTIZACION_PERFIL_LABELS['nueva_solicitud']}
-						</Badge>
-					</dd>
-				</div>
-
-				<div>
-					<dt className='text-xs text-muted-foreground'>Estado de estudio</dt>
-					<dd className='mt-1'>
-						<Badge
-							className={
-								estudio
-									? ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']
-									: ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']
-							}
-						>
-							{estudio
-								? ESTADO_ESTUDIO_PERFIL_LABELS['estudio_disponible']
-								: 'Pendiente'}
-						</Badge>
-					</dd>
-				</div>
-
 				<div>
 					<dt className='text-xs text-muted-foreground'>Fecha de solicitud</dt>
 					<dd className='font-medium text-foreground'>
 						{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy')}
 					</dd>
 				</div>
+
+				{hasDetalles ? (
+					<>
+						<div className='pt-1'>
+							<dt className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+								Detalles del seguro
+							</dt>
+						</div>
+
+						{solicitud.tipo === 'vida_guardia' &&
+						solicitud.numero_guardias != null ? (
+							<div>
+								<dt className='text-xs text-muted-foreground'>
+									Número de guardias
+								</dt>
+								<dd className='font-medium text-foreground'>
+									{solicitud.numero_guardias}
+								</dd>
+							</div>
+						) : null}
+
+						{solicitud.tipo === 'unidades' &&
+						solicitud.monto_asegurado_total != null ? (
+							<div>
+								<dt className='text-xs text-muted-foreground'>
+									Monto asegurado total
+								</dt>
+								<dd className='font-medium text-foreground'>
+									{solicitud.monto_asegurado_total.toLocaleString('es-CL')}
+								</dd>
+							</div>
+						) : null}
+
+						{solicitud.tipo === 'unidades' && solicitud.nombre_excel ? (
+							<div>
+								<dt className='text-xs text-muted-foreground'>Archivo Excel</dt>
+								<dd className='font-medium text-foreground'>
+									{solicitud.nombre_excel}
+								</dd>
+							</div>
+						) : null}
+
+						{solicitud.tipo === 'accidentes_personales' &&
+						solicitud.actividades &&
+						solicitud.actividades.length > 0 ? (
+							<div>
+								<dt className='mb-1 text-xs text-muted-foreground'>
+									Actividades aseguradas
+								</dt>
+								<dd className='space-y-1'>
+									{solicitud.actividades.map((act, i) => (
+										<div
+											key={i}
+											className='flex items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'
+										>
+											<span className='text-sm text-foreground'>
+												{act.actividad}
+											</span>
+											<Badge variant='outline' className='shrink-0 text-xs'>
+												{act.numero_asegurados} asegurado
+												{act.numero_asegurados !== 1 ? 's' : ''}
+											</Badge>
+										</div>
+									))}
+								</dd>
+							</div>
+						) : null}
+
+						{solicitud.tipo === 'rc_condominio' ? (
+							<>
+								{solicitud.actividad_del_condominio ? (
+									<div>
+										<dt className='text-xs text-muted-foreground'>
+											Actividad del condominio
+										</dt>
+										<dd className='font-medium text-foreground'>
+											{solicitud.actividad_del_condominio}
+										</dd>
+									</div>
+								) : null}
+								{solicitud.limite != null ? (
+									<div>
+										<dt className='text-xs text-muted-foreground'>Límite RC</dt>
+										<dd className='font-medium text-foreground'>
+											{solicitud.limite.toLocaleString('es-CL')}
+										</dd>
+									</div>
+								) : null}
+							</>
+						) : null}
+					</>
+				) : null}
+
+				{tieneCotizaciones || (estudios && estudios.length > 0) ? (
+					<>
+						<div className='pt-1'>
+							<dt className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+								Estado
+							</dt>
+						</div>
+
+						{tieneCotizaciones ? (
+							<div>
+								<dt className='text-xs text-muted-foreground'>Cotización</dt>
+								<dd className='mt-1'>
+									<Badge
+										className={ESTADO_COTIZACION_PERFIL_BADGE['cotizacion_generada']}
+									>
+										{ESTADO_COTIZACION_PERFIL_LABELS['cotizacion_generada']}
+									</Badge>
+								</dd>
+							</div>
+						) : null}
+
+						{estudios && estudios.length > 0 ? (
+							<div>
+								<dt className='text-xs text-muted-foreground'>Estudio</dt>
+								<dd className='mt-1'>
+									<Badge
+										className={ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']}
+									>
+										{ESTADO_ESTUDIO_PERFIL_LABELS['estudio_disponible']}
+									</Badge>
+								</dd>
+							</div>
+						) : null}
+					</>
+				) : null}
 
 				{solicitud.observaciones ? (
 					<div>
@@ -393,126 +418,70 @@ export default function SolicitudCotizacionTabContent({
 	if (tab === 'estudio') {
 		return (
 			<div className='space-y-3 pt-3'>
+				<div className='flex flex-wrap gap-2'>
+					<Button
+						type='button'
+						variant='outline'
+						size='sm'
+						className='h-8 text-xs'
+						onClick={() => setOpenSubirEstudio(true)}
+					>
+						Subir estudio
+					</Button>
+					{usuario?.rut === ejecutivoEvaluacionRut ? (
+						<Button
+							type='button'
+							size='sm'
+							className='h-8 text-xs'
+							disabled={solicitud.cantidad_cotizaciones === 0}
+							onClick={() => setOpenGenerarEstudio(true)}
+						>
+							Generar estudio
+						</Button>
+					) : null}
+				</div>
+
 				{loadingEstudios ? (
 					<div className='space-y-2'>
-						<Skeleton className='h-16 w-full' />
-						<Skeleton className='h-8 w-32' />
+						<Skeleton className='h-12 w-full' />
+						<Skeleton className='h-12 w-full' />
 					</div>
-				) : estudio ? (
-					<div className='space-y-2 rounded-md border border-emerald-500/25 bg-emerald-500/[0.05] p-2.5'>
-						<div className='flex flex-wrap items-center gap-2'>
-							<Badge
-								variant='outline'
-								className='border-emerald-600/40 bg-emerald-600/10 text-[11px] font-medium text-emerald-950'
+				) : estudios && estudios.length > 0 ? (
+					<div className='space-y-2'>
+						{estudios.map(e => (
+							<div
+								key={e.id}
+								className='flex items-center justify-between gap-2 rounded-md border border-border/70 bg-card p-2.5'
 							>
-								Estudio emitido
-							</Badge>
-							{estudio.fecha_emision ? (
-								<span className='text-xs text-muted-foreground'>
-									{formatFecha(estudio.fecha_emision)}
-								</span>
-							) : null}
-						</div>
-						<dl className='grid gap-2 text-xs sm:grid-cols-2'>
-							<div>
-								<dt className='text-muted-foreground'>Cuotas</dt>
-								<dd className='font-medium text-foreground'>
-									{estudio.cantidad_cuotas}
-								</dd>
-							</div>
-							<div>
-								<dt className='text-muted-foreground'>Valor UF</dt>
-								<dd className='font-medium text-foreground'>
-									{formatNum(estudio.valor_uf)}
-								</dd>
-							</div>
-							{estudio.ruta_archivo ? (
-								<div className='sm:col-span-2'>
-									<dt className='text-muted-foreground'>Archivo</dt>
-									<dd className='font-medium text-foreground'>
-										<a
-											href={estudio.ruta_archivo}
-											target='_blank'
-											rel='noopener noreferrer'
-											className='underline underline-offset-2 hover:text-primary'
-										>
-											Descargar estudio
-										</a>
-									</dd>
+								<div className='flex min-w-0 items-center gap-2'>
+									<FileText className='size-4 shrink-0 text-red-500' />
+									<span className='truncate text-xs text-foreground'>
+										{e.nombre_archivo}
+									</span>
 								</div>
-							) : null}
-						</dl>
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									className='h-7 shrink-0 text-xs'
+									onClick={() => {
+										window.open(
+											`/api/solicitudes-cotizacion/${solicitud.id}/estudios-comerciales/${e.id}/archivo`,
+											'_blank',
+										)
+									}}
+								>
+									<Download className='mr-1 size-3' />
+									Descargar PDF
+								</Button>
+							</div>
+						))}
 					</div>
-				) : (
-					<div className='space-y-3'>
-						{solicitud.cantidad_cotizaciones === 0 ? (
-							<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
-								Debe registrar al menos una cotización para generar el estudio.
-							</p>
-						) : (
-							<>
-								<p className='text-xs text-muted-foreground'>
-									Cotizaciones disponibles. Seleccione las opciones y configure
-									el estudio.
-								</p>
-
-								<div className='space-y-2 rounded-md border border-border/80 bg-muted/20 p-3'>
-									<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
-										Configuración del estudio
-									</p>
-									<div className='grid gap-3 sm:grid-cols-3'>
-										<div className='space-y-1.5'>
-											<Label className='text-xs'>Infraseguro ej. 1</Label>
-											<Input
-												type='number'
-												step='0.01'
-												min='0'
-												max='1'
-												className='h-8 text-xs'
-												value={infraseguro1}
-												onChange={e => setInfraseguro1(Number(e.target.value))}
-											/>
-										</div>
-										<div className='space-y-1.5'>
-											<Label className='text-xs'>Infraseguro ej. 2</Label>
-											<Input
-												type='number'
-												step='0.01'
-												min='0'
-												max='1'
-												className='h-8 text-xs'
-												value={infraseguro2}
-												onChange={e => setInfraseguro2(Number(e.target.value))}
-											/>
-										</div>
-										<div className='space-y-1.5'>
-											<Label className='text-xs'>Cant. cuotas</Label>
-											<Input
-												type='number'
-												min='1'
-												className='h-8 text-xs'
-												value={cuotas}
-												onChange={e => setCuotas(Number(e.target.value))}
-											/>
-										</div>
-									</div>
-								</div>
-
-								{usuario?.rut === ejecutivoEvaluacionRut ? (
-									<Button
-										type='button'
-										size='sm'
-										className='h-8 text-xs'
-										disabled={solicitud.cantidad_cotizaciones === 0}
-										onClick={() => setOpenGenerarEstudio(true)}
-									>
-										Generar estudio
-									</Button>
-								) : null}
-							</>
-						)}
-					</div>
-				)}
+				) : solicitud.cantidad_cotizaciones === 0 ? (
+					<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
+						Debe registrar al menos una cotización para generar el estudio.
+					</p>
+				) : null}
 
 				<DialogGenerarEstudioWrapper
 					solicitud={solicitud}
@@ -520,13 +489,14 @@ export default function SolicitudCotizacionTabContent({
 					nombreCliente={nombreCliente}
 					lineaNegocioNombre={lineaNegocioNombre}
 					nombreEjecutivo={nombreEjecutivo}
-					configuracion={{
-						infraseguro_primer_ejemplo: infraseguro1,
-						infraseguro_segundo_ejemplo: infraseguro2,
-						cantidad_cuotas: cuotas,
-					}}
 					open={openGenerarEstudio}
 					onOpenChange={setOpenGenerarEstudio}
+				/>
+
+				<DialogSubirEstudio
+					solicitudId={solicitud.id}
+					open={openSubirEstudio}
+					onOpenChange={setOpenSubirEstudio}
 				/>
 			</div>
 		)

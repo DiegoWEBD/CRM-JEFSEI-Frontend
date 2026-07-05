@@ -10,9 +10,10 @@ import { useAdministrador } from '@/hooks/administradores/use-administrador'
 import { useProspectosPorAdministrador } from '@/hooks/administradores/use-prospectos-por-administrador'
 import { useControlledInput } from '@/hooks/input/use-controlled-input'
 import { Button } from '@/components/button'
-import { Building, ExternalLink, Mail, Phone, Search, User } from 'lucide-react'
+import { Building, ExternalLink, Mail, Pencil, Phone, Search, User } from 'lucide-react'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { DialogoActualizarAdministrador } from '@/components/dialogo-actualizar-administrador'
 
 type AdministradorClientProps = {
 	administradorInicial: AdministradorCondominio
@@ -24,6 +25,7 @@ export default function AdministradorClient({
 	const { data: administrador } = useAdministrador(administradorInicial)
 	const { data: condominios, isLoading: condominiosLoading } =
 		useProspectosPorAdministrador(administrador.id, true)
+	const [dialogoAbierto, setDialogoAbierto] = useState(false)
 	const { value: busqueda, handleChange } = useControlledInput()
 
 	const condominiosFiltrados = useMemo(() => {
@@ -47,8 +49,17 @@ export default function AdministradorClient({
 			</PanelHeader>
 
 			<Card>
-				<CardHeader>
+				<CardHeader className='flex flex-row items-center justify-between'>
 					<CardTitle>Información del administrador</CardTitle>
+					<Button
+						variant='outline'
+						size='sm'
+						className='h-8 gap-1.5 text-xs'
+						onClick={() => setDialogoAbierto(true)}
+					>
+						<Pencil className='size-3' />
+						Editar
+					</Button>
 				</CardHeader>
 				<CardContent className='grid gap-4 sm:grid-cols-2'>
 					<div className='space-y-1'>
@@ -157,6 +168,12 @@ export default function AdministradorClient({
 					)}
 				</CardContent>
 			</Card>
+			<DialogoActualizarAdministrador
+				open={dialogoAbierto}
+				onOpenChange={setDialogoAbierto}
+				administrador={administrador}
+				onAdministradorActualizado={() => setDialogoAbierto(false)}
+			/>
 		</PanelLayout>
 	)
 }

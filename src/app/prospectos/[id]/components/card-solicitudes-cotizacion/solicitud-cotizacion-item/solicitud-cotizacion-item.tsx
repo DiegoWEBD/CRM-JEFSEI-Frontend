@@ -19,6 +19,8 @@ type SolicitudCotizacionItemProps = {
 	nombreCliente: string
 	lineaNegocioNombre: string
 	ejecutivoEvaluacionRut?: string
+	gestionesAbiertasPorDefecto?: boolean
+	ocultarToggle?: boolean
 }
 
 const TAB_LABELS: Record<TabId, string> = {
@@ -37,8 +39,10 @@ export default function SolicitudCotizacionItem({
 	nombreCliente,
 	lineaNegocioNombre,
 	ejecutivoEvaluacionRut,
+	gestionesAbiertasPorDefecto,
+	ocultarToggle,
 }: SolicitudCotizacionItemProps) {
-	const [gestionesAbiertas, setGestionesAbiertas] = useState(false)
+	const [gestionesAbiertas, setGestionesAbiertas] = useState(gestionesAbiertasPorDefecto ?? false)
 	const [tabActiva, setTabActiva] = useState<TabId>('solicitud')
 	const nombreEjecutivo = solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
 
@@ -83,6 +87,14 @@ export default function SolicitudCotizacionItem({
 							{nombreEjecutivo ? `${nombreEjecutivo} · ` : null}
 							{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy · HH:mm')}
 						</p>
+						{gestionesAbiertasPorDefecto && solicitud.cantidad_cotizaciones > 0 ? (
+							<p className='mt-1 flex flex-wrap items-center gap-1.5'>
+								<span className='inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground'>
+									{solicitud.cantidad_cotizaciones} cotización
+									{solicitud.cantidad_cotizaciones !== 1 ? 'es' : ''}
+								</span>
+							</p>
+						) : null}
 						{solicitud.observaciones?.trim() ? (
 							<p className='mt-1 line-clamp-2 text-xs text-muted-foreground'>
 								{solicitud.observaciones.trim()}
@@ -90,6 +102,7 @@ export default function SolicitudCotizacionItem({
 						) : null}
 					</div>
 
+					{!ocultarToggle ? (
 					<div className='flex shrink-0 justify-end'>
 						<Button
 							type='button'
@@ -104,6 +117,7 @@ export default function SolicitudCotizacionItem({
 							{gestionesAbiertas ? 'Ocultar gestiones' : 'Ver gestiones'}
 						</Button>
 					</div>
+				) : null}
 				</div>
 
 				{gestionesAbiertas ? (

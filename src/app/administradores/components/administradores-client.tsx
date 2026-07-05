@@ -7,9 +7,10 @@ import { Skeleton } from '@/components/skeleton'
 import AdministradorCondominio from '@/dominio/administrador-condominio/administrador-condominio'
 import { useAdministradores } from '@/hooks/administradores/use-administradores'
 import { useControlledInput } from '@/hooks/input/use-controlled-input'
-import { Building2, ExternalLink, Mail, Phone, Search, User } from 'lucide-react'
+import { Building2, ExternalLink, Mail, Phone, Plus, Search, User } from 'lucide-react'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { DialogoRegistrarAdministrador } from '@/components/dialogo-registrar-administrador'
 
 type AdministradoresClientProps = {
 	administradoresIniciales: AdministradorCondominio[]
@@ -94,6 +95,7 @@ export default function AdministradoresClient({
 	const { data: administradores, isLoading } = useAdministradores(
 		administradoresIniciales,
 	)
+	const [dialogoAbierto, setDialogoAbierto] = useState(false)
 	const { value: busqueda, handleChange } = useControlledInput()
 
 	const administradoresFiltrados = useMemo(() => {
@@ -135,7 +137,7 @@ export default function AdministradoresClient({
 
 	return (
 		<div className='space-y-6'>
-			<div className='flex items-center justify-end'>
+			<div className='flex items-center justify-between gap-3'>
 				<div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
 					<Building2 className='size-4' />
 					<span>
@@ -143,6 +145,14 @@ export default function AdministradoresClient({
 						{administradoresFiltrados.length !== 1 ? 'es' : ''}
 					</span>
 				</div>
+				<Button
+					size='sm'
+					className='h-9 text-xs'
+					onClick={() => setDialogoAbierto(true)}
+				>
+					<Plus className='mr-1.5 size-3.5' />
+					Registrar administrador
+				</Button>
 			</div>
 
 			<div className='relative'>
@@ -176,6 +186,11 @@ export default function AdministradoresClient({
 					))}
 				</div>
 			)}
+
+			<DialogoRegistrarAdministrador
+				open={dialogoAbierto}
+				onOpenChange={setDialogoAbierto}
+			/>
 		</div>
 	)
 }
