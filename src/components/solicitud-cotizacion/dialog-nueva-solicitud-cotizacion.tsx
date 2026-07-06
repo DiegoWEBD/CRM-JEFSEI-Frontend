@@ -80,7 +80,7 @@ export default function DialogNuevaSolicitudCotizacion({
 }: DialogNuevaSolicitudCotizacionProps) {
   const tipoCliente = inferirTipoClienteSolicitud(lineaNegocioNombre)
   const mutation = useSolicitarCotizacion(idProspecto)
-  const mutationProceso = useSolicitarCotizacionProceso(idProceso ?? 0)
+  const mutationProceso = useSolicitarCotizacionProceso(idProceso ?? 0, idProspecto)
 
   const lineasOpciones = lineasSolicitudParaTipo(tipoCliente)
 

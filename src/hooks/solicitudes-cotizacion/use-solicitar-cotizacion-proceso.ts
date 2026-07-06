@@ -2,7 +2,7 @@ import { SolicitudCotizacionUnionRequest } from '@/aplicacion/solicitudes-cotiza
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
-export const useSolicitarCotizacionProceso = (idProceso: number) => {
+export const useSolicitarCotizacionProceso = (idProceso: number, idProspecto: number) => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -16,6 +16,9 @@ export const useSolicitarCotizacionProceso = (idProceso: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['solicitudes-proceso', idProceso],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['procesos-comerciales', idProspecto],
       })
     },
   })
