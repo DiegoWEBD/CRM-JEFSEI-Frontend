@@ -56,7 +56,7 @@ export default function Providers({ children, initialPayload }: ProvidersProps) 
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider initialPayload={initialPayload}>
+      <AuthProvider key={initialPayload?.rut ?? 'anonymous'} initialPayload={initialPayload}>
         {children}
       </AuthProvider>
       <Toaster />

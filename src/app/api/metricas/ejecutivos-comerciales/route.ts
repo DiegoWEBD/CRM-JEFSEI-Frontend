@@ -5,7 +5,6 @@ import { NextResponse } from 'next/server'
 export async function GET() {
 	try {
 		const metricas = await obtenerMetricasEjecutivoComercial()
-		console.log(metricas)
 		return NextResponse.json(metricas)
 	} catch (error) {
 		if (axios.isAxiosError(error)) {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { colorDonut, colorSegmento } from '@/lib/paleta-dashboard'
 import { cn } from '@/lib/utils'
@@ -112,8 +112,9 @@ export default function ComunaAnalysisCard({
             ) : (
               <div className='relative mx-auto w-full max-w-[220px] flex-1'>
                 <div className='aspect-square h-[min(52vw,180px)] w-full min-h-[150px]'>
-                  <PieChart width={220} height={180}>
-                    <Pie
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <PieChart>
+                      <Pie
                       data={sexoData}
                       dataKey='value'
                       nameKey='name'
@@ -134,6 +135,7 @@ export default function ComunaAnalysisCard({
                       ))}
                     </Pie>
                   </PieChart>
+                  </ResponsiveContainer>
                 </div>
                 <div className='mt-1 flex flex-wrap justify-center gap-1'>
                   {sexoData.map((entry, index) => (
@@ -164,14 +166,13 @@ export default function ComunaAnalysisCard({
               </p>
             ) : (
               <div className='min-h-0 flex-1'>
-                <div className='h-[220px] w-full'>
-                  <BarChart
-                    data={ramoData}
-                    width={500}
-                    height={220}
-                    margin={{ top: 6, right: 8, left: 2, bottom: 2 }}
-                    barCategoryGap='22%'
-                    barGap={2}
+                <div className='h-[180px] w-full sm:h-[200px] lg:h-[220px]'>
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <BarChart
+                      data={ramoData}
+                      margin={{ top: 6, right: 8, left: 2, bottom: 2 }}
+                      barCategoryGap='22%'
+                      barGap={2}
                   >
                     <CartesianGrid vertical={false} strokeDasharray='3 3' className='stroke-border/60' />
                     <XAxis
@@ -202,6 +203,7 @@ export default function ComunaAnalysisCard({
                       ))}
                     </Bar>
                   </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             )}

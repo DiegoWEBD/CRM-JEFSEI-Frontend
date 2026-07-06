@@ -9,7 +9,6 @@ export async function GET(
 	try {
 		const { id } = await params
 		const solicitud = await obtenerDetalleSolicitudCotizacion(Number(id))
-		console.log(solicitud)
 		return NextResponse.json(solicitud)
 	} catch (error) {
 		if (axios.isAxiosError(error)) {

@@ -98,7 +98,6 @@ export default function DialogDetalleSolicitud({
 	const cerrarPrincipal = () => onOpenChange(false)
 
 	const confirmarRecotizacion = async () => {
-		console.log('CONFIRMAR RECOTIZACIÓN')
 		/*if (!solicitud || !motivoRecotizacion || !onSolicitarRecotizacion) return
 		setProcesando(true)
 		try {
@@ -310,58 +309,28 @@ export default function DialogDetalleSolicitud({
 					) : null}
 
 					<DialogFooter className='flex-col gap-2 sm:flex-col sm:items-stretch'>
-						{mostrarMarcarEnviado ? (
-							<Button
-								type='button'
-								size='sm'
-								className='h-8 w-full text-xs shadow-none'
-								onClick={() => console.log('Marcar enviado')}
-							>
-								Marcar estudio enviado al cliente
-							</Button>
-						) : null}
+						<Button
+							type='button'
+							size='sm'
+							className='h-8 w-full text-xs shadow-none'
+							onClick={() => console.log('Marcar enviado')}
+						>
+							Marcar estudio enviado al cliente
+						</Button>
 
-						{mostrarAccionesEnviado ? (
-							<div className='flex flex-col gap-2'>
-								{onSolicitarRecotizacion ? (
-									<Button
-										type='button'
-										variant='outline'
-										size='sm'
-										className='h-8 w-full text-xs shadow-none'
-										onClick={() => setSubModal('recotizacion')}
-									>
-										Solicitar recotización
-									</Button>
-								) : null}
-								{onAbrirSubirPoliza ? (
-									<Button
-										type='button'
-										variant='outline'
-										size='sm'
-										className='h-8 w-full text-xs shadow-none'
-										onClick={() => {
-											console.log('abrir subir poliza')
-											//onAbrirSubirPoliza(solicitud!.id)
-											cerrarPrincipal()
-										}}
-									>
-										Subir póliza
-									</Button>
-								) : null}
-								{onCerrarPerdido ? (
-									<Button
-										type='button'
-										variant='outline'
-										size='sm'
-										className='h-8 w-full text-xs text-destructive shadow-none hover:text-destructive'
-										onClick={() => setSubModal('perdido')}
-									>
-										Cerrar como perdido
-									</Button>
-								) : null}
-							</div>
-						) : null}
+						<div className='flex flex-col gap-2'>
+							{onSolicitarRecotizacion ? (
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									className='h-8 w-full text-xs shadow-none'
+									onClick={() => setSubModal('recotizacion')}
+								>
+									Solicitar recotización
+								</Button>
+							) : null}
+						</div>
 
 						<Button
 							type='button'
