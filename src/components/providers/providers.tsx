@@ -3,6 +3,8 @@
 import { QueryCache, MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode, useState } from 'react'
 import { Toaster } from '@/components/sonner'
+import { AuthProvider } from '@/contexts/auth-context'
+import type { TokenPayload } from '@/dtos/token-payload'
 import axios from 'axios'
 import { toast } from 'sonner'
 
@@ -31,9 +33,10 @@ function notificarError(error: Error) {
 
 type ProvidersProps = {
   children: ReactNode
+  initialPayload: TokenPayload | null
 }
 
-export default function Providers({ children }: ProvidersProps) {
+export default function Providers({ children, initialPayload }: ProvidersProps) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -53,7 +56,9 @@ export default function Providers({ children }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <AuthProvider initialPayload={initialPayload}>
+        {children}
+      </AuthProvider>
       <Toaster />
     </QueryClientProvider>
   )

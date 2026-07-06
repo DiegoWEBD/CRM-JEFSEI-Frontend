@@ -4,15 +4,23 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const cookieStore = await cookies()
+    const { searchParams } = new URL(request.url)
+    const abiertos = searchParams.get('abiertos')
+
+    const queryParams = new URLSearchParams()
+    if (abiertos !== null) {
+      queryParams.set('abiertos', abiertos)
+    }
+    const queryString = queryParams.toString()
 
     const response = await axiosClient.get(
-      `/prospectos/${id}/procesos-comerciales`,
+      `/prospectos/${id}/procesos-comerciales${queryString ? `?${queryString}` : ''}`,
       { headers: { Cookie: cookieStore.toString() } },
     )
 

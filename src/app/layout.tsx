@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import AppLayout from '@/components/layouts/app-layout'
 import Providers from '@/components/providers/providers'
+import { getSession } from '@/lib/auth'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -19,18 +20,20 @@ export const metadata: Metadata = {
 	description: 'Desarrollado por equipo JEFSEI',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode
 }>) {
+	const session = await getSession()
+
 	return (
 		<html
 			lang='en'
 			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
 			<body className='h-screen flex overflow-hidden'>
-				<Providers>
+				<Providers initialPayload={session}>
 					<AppLayout>{children}</AppLayout>
 				</Providers>
 			</body>

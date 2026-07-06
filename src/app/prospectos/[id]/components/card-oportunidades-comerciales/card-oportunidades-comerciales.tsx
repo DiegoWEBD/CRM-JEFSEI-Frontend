@@ -2,6 +2,14 @@
 
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import { Label } from '@/components/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/select'
 import { Skeleton } from '@/components/skeleton'
 import { useObtenerProcesosComerciales } from '@/hooks/procesos-comerciales/use-obtener-procesos-comerciales'
 import { useUserSession } from '@/hooks/auth/use-user-session'
@@ -9,6 +17,8 @@ import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import DialogNuevaOportunidad from './dialog-nueva-oportunidad/dialog-nueva-oportunidad'
 import OportunidadItem from './oportunidad-item/oportunidad-item'
+
+type FiltroAbiertos = 'abiertos' | 'cerrados' | 'todos'
 
 type CardOportunidadesComercialesProps = {
   idProspecto: number
@@ -29,9 +39,12 @@ export default function CardOportunidadesComerciales({
   ejecutivoComercialRut,
   ejecutivoEvaluacionRut,
 }: CardOportunidadesComercialesProps) {
-  const { data: procesos, isLoading } = useObtenerProcesosComerciales(idProspecto)
+  const [filtro, setFiltro] = useState<FiltroAbiertos>('abiertos')
   const { usuario } = useUserSession()
   const [openNuevaOportunidad, setOpenNuevaOportunidad] = useState(false)
+
+  const abiertosParam = filtro === 'abiertos' ? true : filtro === 'cerrados' ? false : undefined
+  const { data: procesos, isLoading } = useObtenerProcesosComerciales(idProspecto, abiertosParam)
 
   return (
     <>
@@ -54,6 +67,22 @@ export default function CardOportunidadesComerciales({
         </CardHeader>
 
         <CardContent className='p-3 sm:p-4'>
+          <div className='mb-3 w-full sm:w-auto sm:min-w-[8.5rem] sm:max-w-[9.5rem]'>
+            <Label className='mb-1 block text-[10px] text-muted-foreground'>
+              Estado
+            </Label>
+            <Select value={filtro} onValueChange={(v) => setFiltro(v as FiltroAbiertos)}>
+              <SelectTrigger className='h-8 w-full text-xs shadow-none'>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='abiertos' className='text-xs'>Abiertos</SelectItem>
+                <SelectItem value='cerrados' className='text-xs'>Cerrados</SelectItem>
+                <SelectItem value='todos' className='text-xs'>Todos</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {isLoading ? (
             <div className='space-y-2'>
               <Skeleton className='h-11 w-full' />
