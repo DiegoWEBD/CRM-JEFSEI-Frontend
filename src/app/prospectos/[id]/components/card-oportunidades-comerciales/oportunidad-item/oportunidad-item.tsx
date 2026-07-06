@@ -58,7 +58,7 @@ export default function OportunidadItem({
 				<button
 					type='button'
 					onClick={() => setExpandido(!expandido)}
-					className='flex w-full items-center gap-3 px-3 py-2.5 text-left'
+					className='flex w-full flex-wrap items-start gap-1.5 px-3 py-2.5 text-left sm:flex-nowrap sm:items-center sm:gap-3'
 				>
 					{expandido ? (
 						<ChevronDown className='h-4 w-4 shrink-0 text-muted-foreground' />
@@ -152,7 +152,7 @@ export default function OportunidadItem({
 						)}
 
 						{!proceso.cerrado && usuario?.rut === ejecutivoComercialRut ? (
-							<div className='mt-2 flex items-center gap-2 border-t border-border/30 pt-2'>
+							<div className='mt-2 flex flex-col gap-2 border-t border-border/30 pt-2 sm:flex-row sm:items-center'>
 								<Button
 									type='button'
 									variant='outline'

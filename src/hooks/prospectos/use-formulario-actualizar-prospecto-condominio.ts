@@ -15,6 +15,11 @@ function n2(value: unknown): number | null {
 	return Number(value)
 }
 
+const LINEA_TO_ID: Record<string, number> = {
+	condominio: 10,
+	lineas_personales: 11,
+}
+
 export const useFormularioActualizarProspectoCondominio = ({
 	prospecto,
 	onComplete,
@@ -32,7 +37,7 @@ export const useFormularioActualizarProspectoCondominio = ({
 				region: values.region ?? null,
 				comuna: values.comuna ?? null,
 				observaciones: values.observaciones ?? null,
-				id_linea_negocio: values.id_linea_negocio,
+				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? prospecto.linea_negocio.id,
 				uf_por_metro_cuadrado: n2(values.uf_por_metro_cuadrado),
 			porcentaje_depreciacion: (() => {
 				const n = n2(values.porcentaje_depreciacion)
@@ -95,7 +100,7 @@ export const useFormularioActualizarProspectoCondominio = ({
 			region: prospecto.region,
 			comuna: prospecto.comuna,
 			observaciones: prospecto.observaciones,
-			id_linea_negocio: prospecto.linea_negocio.id,
+			linea_negocio: prospecto.linea_negocio.nombre?.toLowerCase() || 'condominio',
 			tiene_locales_comerciales: prospecto.tiene_locales_comerciales,
 			uso_del_condominio: prospecto.uso_del_condominio,
 			materialidad: prospecto.materialidad,

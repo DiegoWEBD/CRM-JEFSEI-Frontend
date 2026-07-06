@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-	title: 'Operaciones JEFSEI',
+	title: 'CRM JEFSEI',
 	description: 'Desarrollado por equipo JEFSEI',
 }
 

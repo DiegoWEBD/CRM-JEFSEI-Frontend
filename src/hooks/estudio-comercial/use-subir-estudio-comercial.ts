@@ -4,7 +4,7 @@ import {
   type SubirEstudioComercialResponse,
 } from '@/aplicacion/estudio-comercial/use-cases/subir-estudio-comercial/subir-estudio-comercial'
 
-export const useSubirEstudioComercial = (solicitudId: number) => {
+export const useSubirEstudioComercial = (solicitudId: number, idProspecto?: number) => {
   const queryClient = useQueryClient()
 
   return useMutation<
@@ -18,6 +18,11 @@ export const useSubirEstudioComercial = (solicitudId: number) => {
       queryClient.invalidateQueries({
         queryKey: ['estudios-comerciales', solicitudId],
       })
+      if (idProspecto) {
+        queryClient.invalidateQueries({
+          queryKey: ['procesos-comerciales', idProspecto],
+        })
+      }
     },
   })
 }

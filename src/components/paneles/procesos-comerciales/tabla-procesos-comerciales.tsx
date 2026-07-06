@@ -157,7 +157,7 @@ export default function TablaProcesosComerciales({
         ))}
       </div>
 
-      <div className='max-h-[65vh] overflow-y-auto'>
+      <div className='hidden max-h-[65vh] overflow-y-auto lg:block'>
         <Table className='min-w-[1200px] w-full border-separate border-spacing-0'>
           <TableHeader className='sticky top-0 z-10 bg-background'>
             <TableRow className='border-0 hover:bg-transparent'>

@@ -17,18 +17,20 @@ import { useRef, useState } from 'react'
 
 type DialogSubirEstudioProps = {
   solicitudId: number
+  idProspecto: number
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
 export default function DialogSubirEstudio({
   solicitudId,
+  idProspecto,
   open,
   onOpenChange,
 }: DialogSubirEstudioProps) {
   const [archivo, setArchivo] = useState<File | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const subirMutation = useSubirEstudioComercial(solicitudId)
+  const subirMutation = useSubirEstudioComercial(solicitudId, idProspecto)
 
   const handleOpenChange = (next: boolean) => {
     if (!next) {

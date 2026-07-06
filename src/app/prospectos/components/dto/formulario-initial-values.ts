@@ -7,7 +7,7 @@ export interface FormularioInitialValues {
   region?: string
   comuna?: string
   observaciones?: string
-  id_linea_negocio: number
+  linea_negocio: string
   id_administrador?: number
   tiene_locales_comerciales?: boolean
   uso_del_condominio?: string

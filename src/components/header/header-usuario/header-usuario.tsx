@@ -4,7 +4,7 @@ import InicialesUsuario from '@/app/personal/components/iniciales-usuario'
 import { Button } from '@/components/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/dropdown-menu'
 import { useAuth } from '@/hooks/auth/use-auth'
-import { ChevronDown, LogOut, Settings, User } from 'lucide-react'
+import { ChevronDown, Loader2, LogOut, Settings, User } from 'lucide-react'
 
 type Props = {
 	nombre: string
@@ -12,7 +12,7 @@ type Props = {
 }
 
 const HeaderUsuario = ({ nombre, nombreRoles }: Props) => {
-	const { logout } = useAuth()
+	const { logout, cargando } = useAuth()
 
 	return (
 		<DropdownMenu>
@@ -40,10 +40,11 @@ const HeaderUsuario = ({ nombre, nombreRoles }: Props) => {
 					Configuracion
 				</DropdownMenuItem>
 				<DropdownMenuItem
-					onClick={logout}
+					onClick={cargando ? undefined : logout}
+					disabled={cargando}
 					className='text-destructive hover:cursor-pointer'
 				>
-					<LogOut className='h-4 w-4 mr-2' />
+					{cargando ? <Loader2 className='h-4 w-4 mr-2 animate-spin' /> : <LogOut className='h-4 w-4 mr-2' />}
 					Cerrar sesion
 				</DropdownMenuItem>
 			</DropdownMenuContent>

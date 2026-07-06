@@ -8,7 +8,7 @@ import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
-import { useFormularioActualizarProspectoCondominio } from '@/hooks/prospectos/use-formulario-actualizar-prospecto-condominio'
+import { useFormularioActualizarProspecto } from '@/hooks/prospectos/use-formulario-actualizar-prospecto'
 import {
 	CHILE_REGIONES_NOMBRES,
 	obtenerComunasDeRegion,
@@ -39,7 +39,7 @@ export default function FormularioActualizarProspecto({
 	prospecto,
 	cancelarEdicionInformacion,
 }: FormularioActualizarProspectoProps) {
-	const { formik } = useFormularioActualizarProspectoCondominio({
+	const { formik } = useFormularioActualizarProspecto({
 		prospecto,
 		onComplete: cancelarEdicionInformacion,
 	})

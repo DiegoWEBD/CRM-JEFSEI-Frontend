@@ -418,28 +418,28 @@ export default function SolicitudCotizacionTabContent({
 	if (tab === 'estudio') {
 		return (
 			<div className='space-y-3 pt-3'>
-				<div className='flex flex-wrap gap-2'>
-					<Button
-						type='button'
-						variant='outline'
-						size='sm'
-						className='h-8 text-xs'
-						onClick={() => setOpenSubirEstudio(true)}
-					>
-						Subir estudio
-					</Button>
-					{usuario?.rut === ejecutivoEvaluacionRut ? (
+				{usuario?.rut === ejecutivoEvaluacionRut ? (
+					<div className='flex flex-wrap gap-2'>
+						<Button
+							type='button'
+							variant='outline'
+							size='sm'
+							className='h-8 text-xs'
+							onClick={() => setOpenSubirEstudio(true)}
+						>
+							Subir estudio
+						</Button>
 						<Button
 							type='button'
 							size='sm'
 							className='h-8 text-xs'
-							disabled={solicitud.cantidad_cotizaciones === 0}
+							disabled={!cotizaciones || cotizaciones.length === 0}
 							onClick={() => setOpenGenerarEstudio(true)}
 						>
 							Generar estudio
 						</Button>
-					) : null}
-				</div>
+					</div>
+				) : null}
 
 				{loadingEstudios ? (
 					<div className='space-y-2'>
@@ -477,11 +477,15 @@ export default function SolicitudCotizacionTabContent({
 							</div>
 						))}
 					</div>
-				) : solicitud.cantidad_cotizaciones === 0 ? (
+				) : !cotizaciones || cotizaciones.length === 0 ? (
 					<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
 						Debe registrar al menos una cotización para generar el estudio.
 					</p>
-				) : null}
+				) : (
+					<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
+						Sin estudios disponibles.
+					</p>
+				)}
 
 				<DialogGenerarEstudioWrapper
 					solicitud={solicitud}
@@ -495,6 +499,7 @@ export default function SolicitudCotizacionTabContent({
 
 				<DialogSubirEstudio
 					solicitudId={solicitud.id}
+					idProspecto={idProspecto}
 					open={openSubirEstudio}
 					onOpenChange={setOpenSubirEstudio}
 				/>

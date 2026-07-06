@@ -30,7 +30,8 @@ const TAB_LABELS: Record<TabId, string> = {
 	observaciones: 'Observaciones',
 }
 
-const TABS: TabId[] = ['solicitud', 'cotizaciones', 'estudio', 'observaciones']
+const ALL_TABS: TabId[] = ['solicitud', 'cotizaciones', 'estudio', 'observaciones']
+const TIPOS_CON_ESTUDIO = ['unidades', 'espacios_comunes']
 
 export default function SolicitudCotizacionItem({
 	solicitud,
@@ -44,6 +45,7 @@ export default function SolicitudCotizacionItem({
 }: SolicitudCotizacionItemProps) {
 	const [gestionesAbiertas, setGestionesAbiertas] = useState(gestionesAbiertasPorDefecto ?? false)
 	const [tabActiva, setTabActiva] = useState<TabId>('solicitud')
+	const tabs = ALL_TABS.filter(t => t !== 'estudio' || TIPOS_CON_ESTUDIO.includes(solicitud.tipo.toLowerCase()))
 	const nombreEjecutivo = solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
 
 	return (
@@ -123,7 +125,7 @@ export default function SolicitudCotizacionItem({
 				{gestionesAbiertas ? (
 					<div className='mt-3 min-w-0'>
 						<div className='flex border-b border-border'>
-							{TABS.map((t) => (
+							{tabs.map((t) => (
 								<button
 									key={t}
 									type='button'

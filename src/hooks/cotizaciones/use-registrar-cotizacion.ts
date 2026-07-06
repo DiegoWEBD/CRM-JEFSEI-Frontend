@@ -16,6 +16,9 @@ export const useRegistrarCotizacion = (idSolicitud: number, idProspecto?: number
         queryClient.invalidateQueries({
           queryKey: ['solicitudes-cotizacion', idProspecto],
         })
+        queryClient.invalidateQueries({
+          queryKey: ['procesos-comerciales', idProspecto],
+        })
       }
     },
   })

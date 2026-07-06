@@ -36,12 +36,17 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
+      setCargando(true)
+      setError(null)
+
       await clientAxios.post('/api/auth/logout')
       queryClient.clear()
       router.replace('/login')
       router.refresh()
     } catch {
       console.error('Error al cerrar sesión')
+    } finally {
+      setCargando(false)
     }
   }
 
