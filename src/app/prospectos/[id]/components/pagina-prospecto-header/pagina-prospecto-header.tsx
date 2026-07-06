@@ -32,9 +32,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								className='h-5 w-5 shrink-0 text-muted-foreground'
 								aria-hidden
 							/>
-							<h1 className='text-lg font-semibold leading-tight text-foreground sm:text-xl'>
-								{prospecto.nombre_riesgo}
-							</h1>
+<h1 className='truncate text-base font-semibold leading-tight text-foreground sm:text-lg lg:text-xl'>
+  {prospecto.nombre_riesgo}
+</h1>
 						</div>
 						{prospecto.linea_negocio.nombre.toLowerCase() == 'condominio' && (
 							<AdministradorAsociado

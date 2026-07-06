@@ -1,0 +1,37 @@
+import { axiosClient } from '@/infraestructura/axios/axios-client'
+import axios from 'axios'
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
+
+export async function GET(request: Request) {
+  try {
+    const cookieStore = await cookies()
+    const { searchParams } = new URL(request.url)
+    const idProspecto = searchParams.get('id_prospecto')
+
+    if (!idProspecto) {
+      return NextResponse.json(
+        { error: 'id_prospecto es requerido' },
+        { status: 400 },
+      )
+    }
+
+    const response = await axiosClient.get(
+      `/gestiones-comerciales/final?id_prospecto=${idProspecto}`,
+      { headers: { Cookie: cookieStore.toString() } },
+    )
+
+    return NextResponse.json(response.data)
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return NextResponse.json(
+        { error: error.response?.data?.error || error.response?.data?.detail || error.message },
+        { status: error.response?.status ?? 500 },
+      )
+    }
+    return NextResponse.json(
+      { error: 'Error obteniendo la última gestión comercial' },
+      { status: 500 },
+    )
+  }
+}
