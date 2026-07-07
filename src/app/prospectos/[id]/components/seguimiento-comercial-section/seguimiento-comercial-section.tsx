@@ -35,6 +35,7 @@ import { useAuthContext } from '@/contexts/auth-context'
 import { useObtenerGestionesComerciales } from '@/hooks/gestion-comercial/use-obtener-gestiones-comerciales'
 import { useObtenerUltimaGestionComercial } from '@/hooks/gestion-comercial/use-obtener-ultima-gestion-comercial'
 import { useRegistrarGestionComercial } from '@/hooks/gestion-comercial/use-registrar-gestion-comercial'
+import { useProximoContacto } from '@/hooks/recordatorios/use-proximo-contacto'
 import { useRegistrarRecordatorio } from '@/hooks/recordatorios/use-registrar-recordatorio'
 import type { RegistrarGestionComercialRequest } from '@/aplicacion/gestion-comercial/use-cases/registrar-gestion-comercial/dto/registrar-gestion-comercial-request'
 import { cn } from '@/lib/utils'
@@ -170,6 +171,8 @@ export default function SeguimientoComercialSection({
     useObtenerGestionesComerciales(idProspecto)
   const { data: ultimaGestion } =
     useObtenerUltimaGestionComercial(idProspecto)
+  const { data: proximoContacto, isLoading: loadingProximo } =
+    useProximoContacto(usuario?.rut ?? '', idProspecto)
 
   const mutationGestion = useRegistrarGestionComercial()
   const mutationRecordatorio = useRegistrarRecordatorio()
@@ -206,7 +209,7 @@ export default function SeguimientoComercialSection({
         .required(),
     }),
     onSubmit: async (values, { resetForm }) => {
-      const fechaGestion = `${values.fecha}T${values.hora}:00`
+      const fechaGestion = new Date(`${values.fecha}T${values.hora}:00`).toISOString()
       const request: RegistrarGestionComercialRequest = {
         tipo: values.tipo as RegistrarGestionComercialRequest['tipo'],
         id_prospecto: idProspecto,
@@ -246,7 +249,7 @@ export default function SeguimientoComercialSection({
         .required(),
     }),
     onSubmit: async (values, { resetForm }) => {
-      const fechaRecordatorio = `${values.fecha}T${values.hora}:00`
+      const fechaRecordatorio = new Date(`${values.fecha}T${values.hora}:00`).toISOString()
       try {
         await mutationRecordatorio.mutateAsync({
           titulo: values.titulo,
@@ -341,9 +344,13 @@ export default function SeguimientoComercialSection({
                     : '—'}
                 </ResumenItem>
                 <ResumenItem label='Próxima fecha de contacto'>
-                  {ultimaGestion
-                    ? fechaGestionText(ultimaGestion.fecha_gestion)
-                    : '—'}
+                  {loadingProximo ? (
+                    <span className='text-xs text-muted-foreground'>Cargando…</span>
+                  ) : proximoContacto ? (
+                    fechaGestionText(proximoContacto.fecha_recordatorio)
+                  ) : (
+                    '—'
+                  )}
                 </ResumenItem>
               </div>
 

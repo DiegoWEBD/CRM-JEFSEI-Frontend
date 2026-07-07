@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import Recordatorio from '@/dominio/recordatorio/recordatorio'
@@ -9,20 +11,26 @@ import {
 	reminderStatusStyles,
 } from '@/types/shared/shared-reminders'
 import { formatearFecha } from '@/utils/formatear-fecha'
+import DialogCrearRecordatorio from '@/components/dialog-crear-recordatorio/dialog-crear-recordatorio'
 
 type RecordatoriosUsuarioProps = {
 	recordatorio: Recordatorio
 	onComplete: () => void
-	onEdit: () => void
 	onDelete: () => void
+	prospectos?: ProspectoResumenJson[]
+	isCompletando?: boolean
+	isEliminando?: boolean
 }
 
 export default function CardRecordatorio({
 	recordatorio,
 	onComplete,
-	onEdit,
 	onDelete,
+	prospectos,
+	isCompletando,
+	isEliminando,
 }: RecordatoriosUsuarioProps) {
+	const [editando, setEditando] = useState(false)
 	const esRenovacion = Boolean(recordatorio.numero_poliza)
 	const asociado = !esRenovacion && recordatorio.id_prospecto != null
 	const prio = recordatorio.prioridad
@@ -34,6 +42,7 @@ export default function CardRecordatorio({
 			: { label: 'General', className: 'h-5 border-muted-foreground/30 bg-muted/50 px-1.5 text-[9px] font-normal text-muted-foreground' }
 
 	return (
+		<>
 		<div className='rounded-md border border-border bg-secondary/25 px-2.5 py-2'>
 			<div className='flex items-start justify-between gap-1.5'>
 				<p className='text-xs font-medium leading-snug text-foreground'>
@@ -81,28 +90,38 @@ export default function CardRecordatorio({
 					variant='outline'
 					className='h-6 px-2 text-[10px]'
 					onClick={onComplete}
+					disabled={isCompletando}
 				>
-					Completar
+					{isCompletando ? 'Completando…' : 'Completar'}
 				</Button>
 				<>
-					<Button
-						size='sm'
-						variant='outline'
-						className='h-6 px-2 text-[10px]'
-						onClick={onEdit}
-					>
-						Editar
-					</Button>
+				<Button
+					size='sm'
+					variant='outline'
+					className='h-6 px-2 text-[10px]'
+					onClick={() => setEditando(true)}
+				>
+					Editar
+				</Button>
 					<Button
 						size='sm'
 						variant='ghost'
 						className='h-6 px-2 text-[10px] text-destructive hover:text-destructive'
 						onClick={onDelete}
+						disabled={isEliminando}
 					>
-						Eliminar
+						{isEliminando ? 'Eliminando…' : 'Eliminar'}
 					</Button>
 				</>
 			</div>
 		</div>
+
+		<DialogCrearRecordatorio
+			open={editando}
+			onOpenChange={setEditando}
+			editarRecordatorio={editando ? recordatorio : null}
+			prospectos={prospectos}
+		/>
+		</>
 	)
 }

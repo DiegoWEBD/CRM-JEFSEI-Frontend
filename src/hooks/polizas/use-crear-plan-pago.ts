@@ -10,6 +10,7 @@ export const useCrearPlanPago = (numeroPoliza: string) => {
 			axios.post(`/api/polizas/${numeroPoliza}/plan-pago`, request),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['plan-pago', numeroPoliza] })
+			queryClient.invalidateQueries({ queryKey: ['historial-estado'] })
 		},
 	})
 }

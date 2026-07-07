@@ -22,14 +22,17 @@ import SelectTrigger from '@/components/forms/select/select-trigger/select-trigg
 import SelectValue from '@/components/forms/select/select-value/select-value'
 import Textarea from '@/components/forms/text-area/text-area'
 import { useRegistrarRecordatorio } from '@/hooks/recordatorios/use-registrar-recordatorio'
+import { useActualizarRecordatorio } from '@/hooks/recordatorios/use-actualizar-recordatorio'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import type { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
+import type Recordatorio from '@/dominio/recordatorio/recordatorio'
 
 type DialogCrearRecordatorioProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   prospectos?: ProspectoResumenJson[]
   idProspectoInicial?: number
+  editarRecordatorio?: Recordatorio | null
 }
 
 export default function DialogCrearRecordatorio({
@@ -37,12 +40,34 @@ export default function DialogCrearRecordatorio({
   onOpenChange,
   prospectos,
   idProspectoInicial,
+  editarRecordatorio,
 }: DialogCrearRecordatorioProps) {
-  const mutation = useRegistrarRecordatorio()
+  const esEdicion = !!editarRecordatorio
+  const crearMutation = useRegistrarRecordatorio()
+  const actualizarMutation = useActualizarRecordatorio(editarRecordatorio?.id ?? 0)
   const hoyIso = useMemo(() => formatearFecha(new Date(), 'yyyy-MM-dd'), [])
 
-  const formik = useFormik({
-    initialValues: {
+  function parsearInitialValues() {
+    if (editarRecordatorio) {
+      const fecha = formatearFecha(
+        new Date(editarRecordatorio.fecha_recordatorio),
+        'yyyy-MM-dd',
+      )
+      const hora = formatearFecha(
+        new Date(editarRecordatorio.fecha_recordatorio),
+        'HH:mm',
+      )
+      return {
+        idProspecto: editarRecordatorio.id_prospecto?.toString() ?? '',
+        titulo: editarRecordatorio.titulo,
+        fecha,
+        hora,
+        prioridad: editarRecordatorio.prioridad,
+        tipoGestion: editarRecordatorio.tipo_gestion,
+        detalle: editarRecordatorio.detalle ?? '',
+      }
+    }
+    return {
       idProspecto: idProspectoInicial?.toString() ?? '',
       titulo: '',
       fecha: hoyIso,
@@ -50,7 +75,12 @@ export default function DialogCrearRecordatorio({
       prioridad: 'normal',
       tipoGestion: 'llamada',
       detalle: '',
-    },
+    }
+  }
+
+  const formik = useFormik({
+    initialValues: parsearInitialValues(),
+    enableReinitialize: true,
     validationSchema: Yup.object({
       titulo: Yup.string().required('El título es obligatorio'),
       fecha: Yup.string().required('La fecha es obligatoria'),
@@ -66,59 +96,77 @@ export default function DialogCrearRecordatorio({
         .required(),
     }),
     onSubmit: (values) => {
-      const fechaRecordatorio = `${values.fecha}T${values.hora}:00`
+      const fechaRecordatorio = new Date(`${values.fecha}T${values.hora}:00`).toISOString()
 
-      mutation.mutate(
-        {
-          titulo: values.titulo,
-          detalle: values.detalle || null,
-          prioridad: values.prioridad,
-          tipo_gestion: values.tipoGestion,
-          fecha_recordatorio: fechaRecordatorio,
-          id_prospecto: values.idProspecto
-            ? Number(values.idProspecto)
-            : null,
-        },
-        {
-          onSuccess: () => {
-            onOpenChange(false)
-            formik.resetForm()
-            toast.success('Recordatorio creado')
+      if (esEdicion) {
+        actualizarMutation.mutate(
+          {
+            titulo: values.titulo,
+            detalle: values.detalle || null,
+            prioridad: values.prioridad,
+            tipo_gestion: values.tipoGestion,
+            fecha_recordatorio: fechaRecordatorio,
+            id_prospecto: values.idProspecto
+              ? Number(values.idProspecto)
+              : null,
           },
-        },
-      )
+          {
+            onSuccess: () => {
+              onOpenChange(false)
+              toast.success('Recordatorio actualizado')
+            },
+          },
+        )
+      } else {
+        crearMutation.mutate(
+          {
+            titulo: values.titulo,
+            detalle: values.detalle || null,
+            prioridad: values.prioridad,
+            tipo_gestion: values.tipoGestion,
+            fecha_recordatorio: fechaRecordatorio,
+            id_prospecto: values.idProspecto
+              ? Number(values.idProspecto)
+              : null,
+          },
+          {
+            onSuccess: () => {
+              onOpenChange(false)
+              toast.success('Recordatorio creado')
+            },
+          },
+        )
+      }
     },
   })
 
   function handleOpenChange(open: boolean) {
     if (open) {
-      formik.resetForm({
-        values: {
-          idProspecto: idProspectoInicial?.toString() ?? '',
-          titulo: '',
-          fecha: hoyIso,
-          hora: '09:00',
-          prioridad: 'normal',
-          tipoGestion: 'llamada',
-          detalle: '',
-        },
-      })
+      formik.resetForm({ values: parsearInitialValues() })
     }
     onOpenChange(open)
+  }
+
+  if (!open && editarRecordatorio) {
+    return null
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className='max-w-md'>
         <DialogHeader>
-          <DialogTitle>Crear recordatorio</DialogTitle>
+          <DialogTitle>
+            {esEdicion ? 'Editar recordatorio' : 'Crear recordatorio'}
+          </DialogTitle>
           <DialogDescription>
-            Asocia recordatorios comerciales al calendario del día.
+            {esEdicion
+              ? 'Modifica los datos del recordatorio.'
+              : 'Asocia recordatorios comerciales al calendario del día.'}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={formik.handleSubmit}>
           <div className='space-y-3'>
-            {!idProspectoInicial && prospectos ? (
+            {prospectos ? (
               <Select
                 value={formik.values.idProspecto}
                 onValueChange={(v) =>
@@ -224,8 +272,12 @@ export default function DialogCrearRecordatorio({
             >
               Cancelar
             </Button>
-            <Button type='submit' size='sm'>
-              Guardar
+            <Button type='submit' size='sm' disabled={crearMutation.isPending || actualizarMutation.isPending}>
+              {crearMutation.isPending || actualizarMutation.isPending
+                ? 'Guardando…'
+                : esEdicion
+                  ? 'Actualizar'
+                  : 'Guardar'}
             </Button>
           </DialogFooter>
         </form>

@@ -8,15 +8,19 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { Checkbox } from '@/components/checkbox'
+import { ConfirmDialog } from '@/components/confirm-dialog'
 import { Input } from '@/components/input'
 import DialogCrearRecordatorio from '@/components/dialog-crear-recordatorio/dialog-crear-recordatorio'
 import { useAuthContext } from '@/contexts/auth-context'
 import { useRecordatorios } from '@/hooks/recordatorios/use-recordatorios'
+import { useCompletarRecordatorio } from '@/hooks/recordatorios/use-completar-recordatorio'
+import { useEliminarRecordatorio } from '@/hooks/recordatorios/use-eliminar-recordatorio'
 import {
   prioridadReminderLabel,
   prioridadReminderStyles,
 } from '@/types/shared/shared-reminders'
 import { formatearFecha } from '@/utils/formatear-fecha'
+import type Recordatorio from '@/dominio/recordatorio/recordatorio'
 import { cn } from '@/lib/utils'
 
 const SECTION_TITLE =
@@ -54,17 +58,52 @@ export default function RecordatoriosClienteSection({
 
   const puedeEditar = usuario?.rut === ejecutivoComercialRut
 
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(
-    () => formatearFecha(new Date(), 'yyyy-MM-dd'),
-  )
+  const hoyStr = useMemo(() => formatearFecha(new Date(), 'yyyy-MM-dd'), [])
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(hoyStr)
+  const [fechaQuery, setFechaQuery] = useState(hoyStr)
   const [openModal, setOpenModal] = useState(false)
+  const [editandoRecordatorio, setEditandoRecordatorio] = useState<number | null>(null)
   const [verCompletados, setVerCompletados] = useState(false)
   const [verTodosPendientes, setVerTodosPendientes] = useState(false)
 
   const { data: recordatorios } = useRecordatorios({
-    fecha: fechaSeleccionada,
+    fecha: fechaQuery,
     id_prospecto: idProspecto,
   })
+
+  const completarMutation = useCompletarRecordatorio()
+  const eliminarMutation = useEliminarRecordatorio()
+  const [confirmAction, setConfirmAction] = useState<{ type: 'completar' | 'eliminar'; id: number } | null>(null)
+
+  function onConfirm() {
+    if (!confirmAction) return
+    const { type, id } = confirmAction
+    if (type === 'completar') {
+      completarMutation.mutate(id, {
+        onSuccess: () => {
+          toast.success('Recordatorio completado')
+          setConfirmAction(null)
+        },
+      })
+    } else {
+      eliminarMutation.mutate(id, {
+        onSuccess: () => {
+          toast.success('Recordatorio eliminado')
+          setConfirmAction(null)
+        },
+      })
+    }
+  }
+
+  const recordatorioEnEdicion = useMemo(
+    () => (editandoRecordatorio ? recordatorios?.find((r) => r.id === editandoRecordatorio) ?? null : null),
+    [editandoRecordatorio, recordatorios],
+  )
+
+  const prospectosSinteticos = useMemo(
+    () => [{ id: idProspecto, nombre_riesgo: nombreCliente, linea_negocio: '', procesos_comerciales: [] }],
+    [idProspecto, nombreCliente],
+  )
 
   const todosOrdenados = useMemo(() => {
     if (!recordatorios) return []
@@ -133,13 +172,25 @@ export default function RecordatoriosClienteSection({
         </CardHeader>
 
         <CardContent className='space-y-3 p-3 sm:p-4'>
-          <div className='w-full sm:w-auto'>
+          <div className='flex w-full gap-2 sm:w-auto'>
             <Input
               type='date'
               className='h-8 text-xs'
               value={fechaSeleccionada}
               onChange={(e) => setFechaSeleccionada(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') setFechaQuery(fechaSeleccionada)
+              }}
             />
+            <Button
+              type='button'
+              variant='outline'
+              size='sm'
+              className='h-8 shrink-0 text-xs'
+              onClick={() => setFechaQuery(fechaSeleccionada)}
+            >
+              Buscar
+            </Button>
           </div>
 
           {!recordatorios || todosOrdenados.length === 0 ? (
@@ -158,15 +209,9 @@ export default function RecordatoriosClienteSection({
                     <RecordatorioClienteFila
                       key={r.id}
                       recordatorio={r}
-                      onToggleCompletado={() =>
-                        toast.info('Próximamente disponible')
-                      }
-                      onEditar={() =>
-                        toast.info('Próximamente disponible')
-                      }
-                      onEliminar={() =>
-                        toast.info('Próximamente disponible')
-                      }
+                      onToggleCompletado={() => setConfirmAction({ type: 'completar', id: r.id })}
+                      onEditar={() => setEditandoRecordatorio(r.id)}
+                      onEliminar={() => setConfirmAction({ type: 'eliminar', id: r.id })}
                     />
                   ))}
                 </ul>
@@ -193,15 +238,9 @@ export default function RecordatoriosClienteSection({
                     <RecordatorioClienteFila
                       key={r.id}
                       recordatorio={r}
-                      onToggleCompletado={() =>
-                        toast.info('Próximamente disponible')
-                      }
-                      onEditar={() =>
-                        toast.info('Próximamente disponible')
-                      }
-                      onEliminar={() =>
-                        toast.info('Próximamente disponible')
-                      }
+                      onToggleCompletado={() => setConfirmAction({ type: 'completar', id: r.id })}
+                      onEditar={() => setEditandoRecordatorio(r.id)}
+                      onEliminar={() => setConfirmAction({ type: 'eliminar', id: r.id })}
                     />
                   ))}
                 </ul>
@@ -251,6 +290,30 @@ export default function RecordatoriosClienteSection({
         open={openModal}
         onOpenChange={setOpenModal}
         idProspectoInicial={idProspecto}
+        prospectos={prospectosSinteticos}
+      />
+
+      <DialogCrearRecordatorio
+        open={editandoRecordatorio !== null}
+        onOpenChange={(open) => { if (!open) setEditandoRecordatorio(null) }}
+        editarRecordatorio={recordatorioEnEdicion}
+        prospectos={prospectosSinteticos}
+      />
+
+      <ConfirmDialog
+        open={confirmAction !== null}
+        onOpenChange={() => setConfirmAction(null)}
+        title={
+          confirmAction?.type === 'completar'
+            ? '¿Completar recordatorio?'
+            : '¿Eliminar recordatorio?'
+        }
+        onConfirm={onConfirm}
+        isPending={
+          confirmAction?.type === 'completar'
+            ? completarMutation.isPending
+            : eliminarMutation.isPending
+        }
       />
     </>
   )

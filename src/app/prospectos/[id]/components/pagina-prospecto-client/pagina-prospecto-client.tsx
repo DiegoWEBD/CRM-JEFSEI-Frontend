@@ -55,7 +55,13 @@ export default function PaginaProspectoClient({
 			)}
 
 			<AuthGuard
-				allowedRoles={['EJECUTIVO_COMERCIAL', 'EJECUTIVO_EVALUACION_PROYECTOS', 'GERENTE_GENERAL', 'GERENTE_COMERCIAL', 'GERENTE_OPERACIONES']}
+				allowedRoles={[
+					'EJECUTIVO_COMERCIAL',
+					'EJECUTIVO_EVALUACION_PROYECTOS',
+					'GERENTE_GENERAL',
+					'GERENTE_COMERCIAL',
+					'GERENTE_OPERACIONES',
+				]}
 				fallback={null}
 			>
 				<CardOportunidadesComerciales
@@ -69,6 +75,11 @@ export default function PaginaProspectoClient({
 				/>
 			</AuthGuard>
 
+			<CardPolizas
+				idCliente={prospecto.id_cliente}
+				nombreCliente={prospecto.nombre_riesgo}
+			/>
+
 			<SeguimientoComercialSection
 				idProspecto={prospecto.id}
 				nombreCliente={prospecto.nombre_riesgo}
@@ -79,11 +90,6 @@ export default function PaginaProspectoClient({
 				idProspecto={prospecto.id}
 				nombreCliente={prospecto.nombre_riesgo}
 				ejecutivoComercialRut={prospecto.ejecutivo_comercial_asignado?.rut}
-			/>
-
-			<CardPolizas
-				idCliente={prospecto.id_cliente}
-				nombreCliente={prospecto.nombre_riesgo}
 			/>
 		</PanelLayout>
 	)

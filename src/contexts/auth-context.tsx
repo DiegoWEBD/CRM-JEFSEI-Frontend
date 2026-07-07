@@ -29,6 +29,14 @@ export function AuthProvider({ children, initialPayload }: AuthProviderProps) {
 			.finally(() => setCargando(false))
 	}, [])
 
+	useEffect(() => {
+		function onSessionExpired() {
+			setUsuario(null)
+		}
+		window.addEventListener('session-expired', onSessionExpired)
+		return () => window.removeEventListener('session-expired', onSessionExpired)
+	}, [])
+
 	const tieneRol = useCallback(
 		(rol: string) => usuario?.codigo_roles.includes(rol) ?? false,
 		[usuario],

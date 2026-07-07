@@ -176,7 +176,7 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 					</p>
 				</div>
 
-				<RecordatoriosUsuario fecha={diaSeleccionado} />
+				<RecordatoriosUsuario fecha={diaSeleccionado} prospectos={prospectos} />
 			</CardContent>
 
 			<DialogCrearRecordatorio
