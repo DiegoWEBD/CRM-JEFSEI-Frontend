@@ -17,6 +17,8 @@ export interface Prospecto {
 	registrado_por: UsuarioResumenJson
 	ejecutivo_comercial_asignado?: UsuarioResumenJson
 	ejecutivo_evaluacion_asignado?: UsuarioResumenJson
+	ejecutivo_cobranza_asignado?: UsuarioResumenJson
+	ejecutivo_renovacion_asignado?: UsuarioResumenJson
 	planificacion_prospecto?: PlanificacionProspectoJson
 	ultima_actualizacion: string
 	informacion_completa: boolean

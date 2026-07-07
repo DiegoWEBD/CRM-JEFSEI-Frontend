@@ -12,6 +12,7 @@ import CardInformacionProspecto from '../card-informacion-prospecto/card-informa
 import CardInformacionTecnicaCondominio from '../card-informacion-tecnica-condominio/card-informacion-tecnica-condominio'
 import CardPolizas from '../card-polizas/card-polizas'
 import CardOportunidadesComerciales from '../card-oportunidades-comerciales/card-oportunidades-comerciales'
+import ObservacionesComercialesSection from '../observaciones-comerciales-section'
 import SeguimientoComercialSection from '../seguimiento-comercial-section/seguimiento-comercial-section'
 import RecordatoriosClienteSection from '../recordatorios-cliente-section/recordatorios-cliente-section'
 import PaginaProspectoHeader from '../pagina-prospecto-header/pagina-prospecto-header'
@@ -90,6 +91,10 @@ export default function PaginaProspectoClient({
 				idProspecto={prospecto.id}
 				nombreCliente={prospecto.nombre_riesgo}
 				ejecutivoComercialRut={prospecto.ejecutivo_comercial_asignado?.rut}
+			/>
+
+			<ObservacionesComercialesSection
+				observaciones={prospecto.observaciones}
 			/>
 		</PanelLayout>
 	)

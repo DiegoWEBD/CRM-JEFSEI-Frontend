@@ -16,10 +16,13 @@ import { formatUF } from '@/lib/uf'
 import CardPlanPago from '@/app/polizas/[numeroPoliza]/card-plan-pago/card-plan-pago'
 import { PolizaPageSkeleton } from '@/app/polizas/[numeroPoliza]/poliza-page-skeleton'
 import CardHistorial from '@/app/polizas/[numeroPoliza]/card-historial/card-historial'
+import { useCancelarPoliza } from '@/hooks/polizas/use-cancelar-poliza'
+import { useReactivarPoliza } from '@/hooks/polizas/use-reactivar-poliza'
 import {
 	Building2,
 	CalendarDays,
 	FileText,
+	Loader2,
 	Package,
 	Percent,
 	User,
@@ -32,6 +35,9 @@ type PolizaPageClientProps = {
 export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 	const { data: poliza, isLoading: polizaCargando } =
 		useObtenerPoliza(numeroPoliza)
+	const cancelarPoliza = useCancelarPoliza(numeroPoliza)
+	const reactivarPoliza = useReactivarPoliza(numeroPoliza)
+	const isLoadingMutation = cancelarPoliza.isPending || reactivarPoliza.isPending
 
 	return (
 		<PanelLayout>
@@ -147,29 +153,56 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 						</CardContent>
 					</Card>
 
-					<Card className='border-border shadow-none'>
-						<CardHeader className='border-b border-border pb-1 pt-2'>
-							<CardTitle className='text-sm font-semibold'>Acciones</CardTitle>
-						</CardHeader>
-						<CardContent className='p-4'>
-							<div className='flex flex-wrap gap-2'>
-								<Button variant='outline' disabled size='sm'>
-									Cancelar póliza
-								</Button>
-								<Button variant='outline' disabled size='sm'>
-									Reactivar póliza
-								</Button>
-							</div>
-						</CardContent>
-					</Card>
+					<AuthGuard
+						allowedRoles={[
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'GERENTE_OPERACIONES',
+						]}
+						fallback={null}
+					>
+						<Card className='border-border shadow-none'>
+							<CardHeader className='border-b border-border pb-1 pt-2'>
+								<CardTitle className='text-sm font-semibold'>Acciones</CardTitle>
+							</CardHeader>
+							<CardContent className='p-4'>
+								<div className='flex flex-wrap gap-2'>
+									{poliza.estado === 'CANCELADA' ? (
+										<Button
+											variant='outline'
+											size='sm'
+											disabled={isLoadingMutation}
+											onClick={() => reactivarPoliza.mutateAsync()}
+										>
+											{reactivarPoliza.isPending ? (
+												<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
+											) : null}
+											Reactivar póliza
+										</Button>
+									) : (
+										<Button
+											variant='outline'
+											size='sm'
+											disabled={isLoadingMutation}
+											onClick={() => cancelarPoliza.mutateAsync()}
+										>
+											{cancelarPoliza.isPending ? (
+												<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
+											) : null}
+											Cancelar póliza
+										</Button>
+									)}
+								</div>
+							</CardContent>
+						</Card>
+					</AuthGuard>
 
 					<AuthGuard
 						allowedRoles={[
 							'GERENTE_GENERAL',
 							'GERENTE_COMERCIAL',
 							'GERENTE_OPERACIONES',
-							'EJECUTIVO_COBRANZA_CONDOMINIOS',
-							'EJECUTIVO_COBRANZA_LINEAS_PERSONALES',
+							'EJECUTIVO_COBRANZA',
 							'EJECUTIVO_COMERCIAL',
 						]}
 						fallback={null}

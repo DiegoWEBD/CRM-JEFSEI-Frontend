@@ -1,39 +1,41 @@
 'use client'
 
-import { CheckIcon, XIcon } from 'lucide-react'
+import { CheckIcon, XIcon, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Checkbox } from '@/components/checkbox'
+import { Button } from '@/components/button'
+import { ConfirmDialog } from '@/components/confirm-dialog'
+import { formatearFecha } from '@/utils/formatear-fecha'
 import CuotaPlanPago from '@/dominio/plan-pago/cuota-plan-pago'
+import { useState } from 'react'
 
 type CuotasPlanPagoTableProps = {
 	cuotas: CuotaPlanPago[]
-}
-
-function formatearFecha(fecha: string): string {
-	return new Date(fecha).toLocaleDateString('es-CL', {
-		day: 'numeric',
-		month: 'short',
-		year: 'numeric',
-		timeZone: 'UTC',
-	})
-}
-
-function formatearFechaHora(fecha: string): string {
-	return new Date(fecha).toLocaleDateString('es-CL', {
-		day: 'numeric',
-		month: 'short',
-		year: 'numeric',
-		hour: '2-digit',
-		minute: '2-digit',
-		hour12: false,
-		timeZone: 'UTC',
-	})
+	onMarcarPago?: (idCuota: number) => Promise<void>
 }
 
 const TH = 'border border-border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wide'
 const TD = 'border border-border px-2 py-1.5 text-center align-middle text-[11px] leading-snug'
 
-export function CuotasPlanPagoTable({ cuotas }: CuotasPlanPagoTableProps) {
+export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTableProps) {
+	const [pagandoId, setPagandoId] = useState<number | null>(null)
+	const [confirmarCuotaId, setConfirmarCuotaId] = useState<number | null>(null)
+
+	const handlePagar = (idCuota: number) => {
+		if (!onMarcarPago || pagandoId !== null) return
+		setConfirmarCuotaId(idCuota)
+	}
+
+	const handleConfirmarPago = async () => {
+		if (confirmarCuotaId === null) return
+		setPagandoId(confirmarCuotaId)
+		setConfirmarCuotaId(null)
+		try {
+			await onMarcarPago!(confirmarCuotaId)
+		} finally {
+			setPagandoId(null)
+		}
+	}
+
 	return (
 		<>
 			<div className='divide-y divide-border sm:hidden'>
@@ -56,20 +58,30 @@ export function CuotasPlanPagoTable({ cuotas }: CuotasPlanPagoTableProps) {
 							)}
 						</div>
 						<div className='flex items-center justify-between text-muted-foreground'>
-							<span>Vence: {formatearFecha(cuota.fecha_vencimiento)}</span>
+							<span>Vence: {formatearFecha(new Date(cuota.fecha_vencimiento.slice(0, 10) + 'T12:00:00'), 'd MMM yyyy')}</span>
 							<span>
 								{cuota.fecha_pago
-									? `Pagado: ${formatearFechaHora(cuota.fecha_pago)}`
+									? `Pagado: ${formatearFecha(new Date(cuota.fecha_pago), "d MMM yyyy, HH:mm")}`
 									: '—'}
 							</span>
 						</div>
 						<div className='flex justify-end'>
-							<Checkbox
-								checked={cuota.pagado}
-								disabled
-								className='cursor-not-allowed opacity-50'
-								aria-label={`Marcar cuota ${cuota.numero_cuota} como pagada`}
-							/>
+							{cuota.pagado ? (
+								<span className='text-[10px] text-emerald-600'>Pagado</span>
+							) : (
+								<Button
+									variant='outline'
+									size='sm'
+									className='h-7 text-[10px]'
+									disabled={!onMarcarPago || pagandoId === cuota.id}
+									onClick={() => handlePagar(cuota.id)}
+								>
+									{pagandoId === cuota.id ? (
+										<Loader2 className='mr-1 h-3 w-3 animate-spin' />
+									) : null}
+									Pagar
+								</Button>
+							)}
 						</div>
 					</div>
 				))}
@@ -107,7 +119,7 @@ export function CuotasPlanPagoTable({ cuotas }: CuotasPlanPagoTableProps) {
 								{cuota.numero_cuota}
 							</td>
 							<td className={cn(TD, 'whitespace-nowrap text-muted-foreground')}>
-								{formatearFecha(cuota.fecha_vencimiento)}
+								{formatearFecha(new Date(cuota.fecha_vencimiento.slice(0, 10) + 'T12:00:00'), 'd MMM yyyy')}
 							</td>
 							<td className={TD}>
 								<div className='flex items-center justify-center'>
@@ -119,16 +131,26 @@ export function CuotasPlanPagoTable({ cuotas }: CuotasPlanPagoTableProps) {
 								</div>
 							</td>
 							<td className={cn(TD, 'whitespace-nowrap tabular-nums text-muted-foreground')}>
-								{cuota.fecha_pago ? formatearFechaHora(cuota.fecha_pago) : '—'}
+								{cuota.fecha_pago ? formatearFecha(new Date(cuota.fecha_pago), "d MMM yyyy, HH:mm") : '—'}
 							</td>
 							<td className={TD}>
 								<div className='flex items-center justify-center'>
-									<Checkbox
-										checked={cuota.pagado}
-										disabled
-										className='cursor-not-allowed opacity-50'
-										aria-label={`Marcar cuota ${cuota.numero_cuota} como pagada`}
-									/>
+									{cuota.pagado ? (
+										<span className='text-[10px] text-emerald-600'>Pagado</span>
+									) : (
+										<Button
+											variant='outline'
+											size='sm'
+											className='h-7 text-[10px]'
+											disabled={!onMarcarPago || pagandoId === cuota.id}
+											onClick={() => handlePagar(cuota.id)}
+										>
+											{pagandoId === cuota.id ? (
+												<Loader2 className='mr-1 h-3 w-3 animate-spin' />
+											) : null}
+											Pagar
+										</Button>
+									)}
 								</div>
 							</td>
 						</tr>
@@ -142,6 +164,16 @@ export function CuotasPlanPagoTable({ cuotas }: CuotasPlanPagoTableProps) {
 					)}
 				</tbody>
 			</table>
-		</>
-	)
+
+			<ConfirmDialog
+				open={confirmarCuotaId !== null}
+				onOpenChange={() => setConfirmarCuotaId(null)}
+				title='Marcar cuota como pagada'
+				description='¿Estás seguro de marcar esta cuota como pagada? Esta acción es irreversible.'
+				confirmText='Sí, pagar'
+				onConfirm={handleConfirmarPago}
+				variant='destructive'
+				isPending={pagandoId !== null}
+			/>
+		</>)
 }

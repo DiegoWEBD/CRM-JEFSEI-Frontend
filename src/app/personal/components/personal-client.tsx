@@ -38,6 +38,7 @@ import { useControlledInput } from '@/hooks/input/use-controlled-input'
 import { RegistrarUsuarioRequest } from '@/aplicacion/usuarios/use-cases/registrar-usuario'
 import { useActualizarUsuario } from '@/hooks/usuarios/use-actualizar-usuario'
 import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useObtenerRoles, type RolJson } from '@/hooks/roles/use-obtener-roles'
 import { classInputRut } from '@/utils/class-input-rut'
 import { formatRut } from '@/utils/format-rut'
 import {
@@ -53,25 +54,6 @@ import {
 	Phone,
 	Building2,
 } from 'lucide-react'
-
-const ROLES_DISPONIBLES = [
-	{ codigo: 'GERENTE_GENERAL', nombre: 'Gerente General' },
-	{ codigo: 'GERENTE_COMERCIAL', nombre: 'Gerente Comercial' },
-	{ codigo: 'GERENTE_OPERACIONES', nombre: 'Gerente Operaciones' },
-	{ codigo: 'EJECUTIVO_COMERCIAL', nombre: 'Ejecutivo Comercial' },
-	{
-		codigo: 'EJECUTIVO_EVALUACION_PROYECTOS',
-		nombre: 'Ejecutivo Evaluación Proyectos',
-	},
-	{
-		codigo: 'EJECUTIVO_COBRANZA_CONDOMINIOS',
-		nombre: 'Ejecutivo Cobranza Condominios',
-	},
-	{
-		codigo: 'EJECUTIVO_COBRANZA_LINEAS_PERSONALES',
-		nombre: 'Ejecutivo Cobranza Líneas Personales',
-	},
-]
 
 function InicialesUsuario({ nombre }: { nombre: string }) {
 	const iniciales = nombre
@@ -173,6 +155,8 @@ type Props = {
 export default function PersonalClient({ usuariosIniciales }: Props) {
 	const { data: usuarios, isLoading } = useUsuarios(usuariosIniciales)
 	const { value: busqueda, handleChange } = useControlledInput()
+	const { data: roles } = useObtenerRoles()
+	const rolesList = roles ?? []
 
 	const [usuarioDetalle, setUsuarioDetalle] = useState<Usuario | null>(null)
 	const [registrarAbierto, setRegistrarAbierto] = useState(false)
@@ -372,11 +356,13 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 			<DialogEditarUsuario
 				usuario={usuarioDetalle}
 				onOpenChange={open => { if (!open) setUsuarioDetalle(null) }}
+				rolesList={rolesList}
 			/>
 
 			<DialogRegistrarUsuario
 				abierto={registrarAbierto}
 				onOpenChange={setRegistrarAbierto}
+				rolesList={rolesList}
 			/>
 		</div>
 	)
@@ -385,9 +371,11 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 function DialogRegistrarUsuario({
 	abierto,
 	onOpenChange,
+	rolesList,
 }: {
 	abierto: boolean
 	onOpenChange: (open: boolean) => void
+	rolesList: RolJson[]
 }) {
 	const { data: sucursales } = useSucursales()
 	const mutation = useRegistrarUsuario()
@@ -542,7 +530,7 @@ function DialogRegistrarUsuario({
 					<div className='space-y-1.5'>
 						<Label>Roles</Label>
 						<div className='grid gap-1.5 sm:grid-cols-2'>
-							{ROLES_DISPONIBLES.map(rol => (
+							{rolesList.map(rol => (
 								<label
 									key={rol.codigo}
 									className='flex cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-xs hover:bg-muted/40'
@@ -621,9 +609,11 @@ type EditarUsuarioFormValues = {
 function DialogEditarUsuario({
 	usuario,
 	onOpenChange,
+	rolesList,
 }: {
 	usuario: Usuario | null
 	onOpenChange: (open: boolean) => void
+	rolesList: RolJson[]
 }) {
 	const { data: sucursales } = useSucursales()
 	const mutation = useActualizarUsuario()
@@ -785,8 +775,8 @@ function DialogEditarUsuario({
 							<CardContent className='space-y-3 pb-4'>
 								<div className='space-y-1.5'>
 									<Label className='text-xs'>Roles</Label>
-									<div className='grid gap-1.5 sm:grid-cols-2'>
-										{ROLES_DISPONIBLES.map(rol => (
+								<div className='grid gap-1.5 sm:grid-cols-2'>
+									{rolesList.map(rol => (
 											<label
 												key={rol.codigo}
 												className='flex cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-xs hover:bg-muted/40'

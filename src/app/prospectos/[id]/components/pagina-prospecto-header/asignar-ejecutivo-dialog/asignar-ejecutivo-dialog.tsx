@@ -16,8 +16,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/select'
+import { useAsignarEjecutivoCobranza } from '@/hooks/prospectos/use-asignar-ejecutivo-cobranza'
 import { useAsignarEjecutivoComercial } from '@/hooks/prospectos/use-asignar-ejecutivo-comercial'
 import { useAsignarEjecutivoEvaluacion } from '@/hooks/prospectos/use-asignar-ejecutivo-evaluacion'
+import { useAsignarEjecutivoRenovacion } from '@/hooks/prospectos/use-asignar-ejecutivo-renovacion'
 import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
@@ -27,57 +29,86 @@ type AsignarEjecutivoDialogProps = {
 	open: boolean
 	onOpenChange: (open: boolean) => void
 	idProspecto: number
-	tipo: 'comercial' | 'evaluacion'
+	idCliente?: number
+	tipo: 'comercial' | 'evaluacion' | 'cobranza' | 'renovacion'
 	ejecutivoActual?: string
+}
+
+const ROLE_MAP: Record<string, string> = {
+	comercial: 'EJECUTIVO_COMERCIAL',
+	evaluacion: 'EJECUTIVO_EVALUACION_PROYECTOS',
+	cobranza: 'EJECUTIVO_COBRANZA',
+	renovacion: 'EJECUTIVO_RENOVACION',
+}
+
+const TITLES: Record<string, string> = {
+	comercial: 'Asignar ejecutivo comercial',
+	evaluacion: 'Asignar ejecutivo de evaluación',
+	cobranza: 'Asignar ejecutivo de cobranza',
+	renovacion: 'Asignar ejecutivo de renovación',
+}
+
+const SUCCESS_MESSAGES: Record<string, string> = {
+	comercial: 'Ejecutivo comercial asignado',
+	evaluacion: 'Ejecutivo de evaluación asignado',
+	cobranza: 'Ejecutivo de cobranza asignado',
+	renovacion: 'Ejecutivo de renovación asignado',
+}
+
+const ERROR_MESSAGES: Record<string, string> = {
+	comercial: 'Error al asignar ejecutivo comercial',
+	evaluacion: 'Error al asignar ejecutivo de evaluación',
+	cobranza: 'Error al asignar ejecutivo de cobranza',
+	renovacion: 'Error al asignar ejecutivo de renovación',
 }
 
 export default function AsignarEjecutivoDialog({
 	open,
 	onOpenChange,
 	idProspecto,
+	idCliente,
 	tipo,
 	ejecutivoActual,
 }: AsignarEjecutivoDialogProps) {
 	const { data: usuarios, isLoading } = useUsuarios()
+
 	const mutationComercial = useAsignarEjecutivoComercial(idProspecto)
 	const mutationEvaluacion = useAsignarEjecutivoEvaluacion(idProspecto)
+	const mutationCobranza = useAsignarEjecutivoCobranza(idProspecto, idCliente ?? 0)
+	const mutationRenovacion = useAsignarEjecutivoRenovacion(idProspecto, idCliente ?? 0)
+
 	const [rutSeleccionado, setRutSeleccionado] = useState(ejecutivoActual ?? '')
 
-	const mutation = tipo === 'comercial' ? mutationComercial : mutationEvaluacion
+	const mutation =
+		tipo === 'comercial'
+			? mutationComercial
+			: tipo === 'evaluacion'
+				? mutationEvaluacion
+				: tipo === 'cobranza'
+					? mutationCobranza
+					: mutationRenovacion
+
+	const rolFiltro = ROLE_MAP[tipo]
 	const usuariosFiltrados = (usuarios ?? []).filter(u =>
-		u.roles.some(
-			r =>
-				r.codigo === 'EJECUTIVO_COMERCIAL' ||
-				r.codigo === 'EJECUTIVO_EVALUACION_PROYECTOS',
-		),
+		u.roles.some(r => r.codigo === rolFiltro),
 	)
 
 	async function handleSubmit() {
 		try {
 			const rut = rutSeleccionado === '__none__' ? null : rutSeleccionado
 			if (tipo === 'comercial') {
-				await mutationComercial.mutateAsync({
-					rut_ej_comercial: rut,
-				})
+				await mutationComercial.mutateAsync({ rut_ej_comercial: rut })
+			} else if (tipo === 'evaluacion') {
+				await mutationEvaluacion.mutateAsync({ rut_ej_evaluacion: rut })
+			} else if (tipo === 'cobranza') {
+				await mutationCobranza.mutateAsync({ rut_ej_cobranza: rut })
 			} else {
-				await mutationEvaluacion.mutateAsync({
-					rut_ej_evaluacion: rut,
-				})
+				await mutationRenovacion.mutateAsync({ rut_ej_renovacion: rut })
 			}
-			toast.success(
-				!rut
-					? 'Ejecutivo removido'
-					: tipo === 'comercial'
-						? 'Ejecutivo comercial asignado'
-						: 'Ejecutivo de evaluación asignado',
-			)
+			toast.success(!rut ? 'Ejecutivo removido' : SUCCESS_MESSAGES[tipo])
 			onOpenChange(false)
 		} catch {
-			toast.error(
-				tipo === 'comercial'
-					? 'Error al asignar ejecutivo comercial'
-					: 'Error al asignar ejecutivo de evaluación',
-			)
+			toast.error(ERROR_MESSAGES[tipo])
 		}
 	}
 
@@ -92,11 +123,7 @@ export default function AsignarEjecutivoDialog({
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent className='max-w-sm gap-4'>
 				<DialogHeader>
-					<DialogTitle>
-						{tipo === 'comercial'
-							? 'Asignar ejecutivo comercial'
-							: 'Asignar ejecutivo de evaluación'}
-					</DialogTitle>
+					<DialogTitle>{TITLES[tipo]}</DialogTitle>
 				</DialogHeader>
 
 				<div className='space-y-1.5'>

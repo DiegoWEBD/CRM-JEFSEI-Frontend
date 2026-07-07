@@ -21,6 +21,8 @@ type PaginaProspectoHeaderProps = {
 const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 	const [openAsignarComercial, setOpenAsignarComercial] = useState(false)
 	const [openAsignarEvaluacion, setOpenAsignarEvaluacion] = useState(false)
+	const [openAsignarCobranza, setOpenAsignarCobranza] = useState(false)
+	const [openAsignarRenovacion, setOpenAsignarRenovacion] = useState(false)
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
@@ -101,6 +103,70 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								</Button>
 							</AuthGuard>
 						</div>
+						{prospecto.id_cliente && (
+							<>
+								<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+									<span>
+										<span className='text-muted-foreground'>
+											Cobranza:
+										</span>{' '}
+										<span className='font-medium text-foreground'>
+											{prospecto.ejecutivo_cobranza_asignado?.nombre ?? '—'}
+										</span>
+									</span>
+									<AuthGuard
+										allowedRoles={[
+											'GERENTE_GENERAL',
+											'GERENTE_COMERCIAL',
+											'GERENTE_OPERACIONES',
+										]}
+										fallback={null}
+									>
+										<Button
+											type='button'
+											variant='ghost'
+											size='sm'
+											className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+											onClick={() => setOpenAsignarCobranza(true)}
+										>
+											{prospecto.ejecutivo_cobranza_asignado
+												? 'Reasignar'
+												: 'Asignar'}
+										</Button>
+									</AuthGuard>
+								</div>
+								<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+									<span>
+										<span className='text-muted-foreground'>
+											Renovación:
+										</span>{' '}
+										<span className='font-medium text-foreground'>
+											{prospecto.ejecutivo_renovacion_asignado?.nombre ?? '—'}
+										</span>
+									</span>
+									<AuthGuard
+										allowedRoles={[
+											'GERENTE_GENERAL',
+											'GERENTE_COMERCIAL',
+											'GERENTE_OPERACIONES',
+										]}
+										fallback={null}
+									>
+										<Button
+											type='button'
+											variant='ghost'
+											size='sm'
+											className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+											onClick={() => setOpenAsignarRenovacion(true)}
+										>
+											{prospecto.ejecutivo_renovacion_asignado
+												? 'Reasignar'
+												: 'Asignar'}
+										</Button>
+									</AuthGuard>
+								</div>
+							</>
+						)}
 					</div>
 					<div className='flex flex-col gap-3 sm:flex-row sm:gap-6 lg:flex-col lg:items-end lg:gap-3 lg:pt-0.5'>
 						<div className='flex flex-col items-start gap-1.5 lg:items-end'>
@@ -160,6 +226,46 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 					ejecutivoActual={prospecto.ejecutivo_evaluacion_asignado?.rut}
 				/>
 			</AuthGuard>
+
+			{prospecto.id_cliente && (
+				<>
+					<AuthGuard
+						allowedRoles={[
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'GERENTE_OPERACIONES',
+						]}
+						fallback={null}
+					>
+						<AsignarEjecutivoDialog
+							open={openAsignarCobranza}
+							onOpenChange={setOpenAsignarCobranza}
+							idProspecto={prospecto.id}
+							idCliente={prospecto.id_cliente}
+							tipo='cobranza'
+							ejecutivoActual={prospecto.ejecutivo_cobranza_asignado?.rut}
+						/>
+					</AuthGuard>
+
+					<AuthGuard
+						allowedRoles={[
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'GERENTE_OPERACIONES',
+						]}
+						fallback={null}
+					>
+						<AsignarEjecutivoDialog
+							open={openAsignarRenovacion}
+							onOpenChange={setOpenAsignarRenovacion}
+							idProspecto={prospecto.id}
+							idCliente={prospecto.id_cliente}
+							tipo='renovacion'
+							ejecutivoActual={prospecto.ejecutivo_renovacion_asignado?.rut}
+						/>
+					</AuthGuard>
+				</>
+			)}
 		</Card>
 	)
 }
