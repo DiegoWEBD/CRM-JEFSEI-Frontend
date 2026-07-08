@@ -10,7 +10,6 @@ export interface RegistrarUsuarioRequest {
 	meta_mensual_uf: number | null
 	codigo_roles: string[]
 	porcentaje_comision: number | null
-	junior: boolean
 }
 
 export const registrarUsuario = async (request: RegistrarUsuarioRequest) => {

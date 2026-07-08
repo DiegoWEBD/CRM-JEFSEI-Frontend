@@ -12,7 +12,7 @@ export default function SessionWatcher({ autenticado }: SessionWatcherProps) {
 
   useEffect(() => {
     if (!cargando && !usuario && autenticado) {
-      window.location.href = '/login'
+      window.location.reload()
     }
   }, [cargando, usuario, autenticado])
 

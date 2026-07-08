@@ -18,6 +18,8 @@ import { PolizaPageSkeleton } from '@/app/polizas/[numeroPoliza]/poliza-page-ske
 import CardHistorial from '@/app/polizas/[numeroPoliza]/card-historial/card-historial'
 import { useCancelarPoliza } from '@/hooks/polizas/use-cancelar-poliza'
 import { useReactivarPoliza } from '@/hooks/polizas/use-reactivar-poliza'
+import { useState } from 'react'
+import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
 import {
 	Building2,
 	CalendarDays,
@@ -38,6 +40,8 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 	const cancelarPoliza = useCancelarPoliza(numeroPoliza)
 	const reactivarPoliza = useReactivarPoliza(numeroPoliza)
 	const isLoadingMutation = cancelarPoliza.isPending || reactivarPoliza.isPending
+	const [confirmarCancelar, setConfirmarCancelar] = useState(false)
+	const [confirmarReactivar, setConfirmarReactivar] = useState(false)
 
 	return (
 		<PanelLayout>
@@ -168,29 +172,59 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 							<CardContent className='p-4'>
 								<div className='flex flex-wrap gap-2'>
 									{poliza.estado === 'CANCELADA' ? (
-										<Button
-											variant='outline'
-											size='sm'
-											disabled={isLoadingMutation}
-											onClick={() => reactivarPoliza.mutateAsync()}
-										>
-											{reactivarPoliza.isPending ? (
-												<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
-											) : null}
-											Reactivar póliza
-										</Button>
+										<>
+											<Button
+												variant='outline'
+												size='sm'
+												disabled={isLoadingMutation}
+												onClick={() => setConfirmarReactivar(true)}
+											>
+												{reactivarPoliza.isPending ? (
+													<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
+												) : null}
+												Reactivar póliza
+											</Button>
+											<ConfirmDialog
+												open={confirmarReactivar}
+												onOpenChange={setConfirmarReactivar}
+												title='¿Reactivar póliza?'
+												description={`Se reactivará la póliza ${numeroPoliza}.`}
+												confirmText='Reactivar'
+												variant='default'
+												isPending={reactivarPoliza.isPending}
+												onConfirm={() => {
+													setConfirmarReactivar(false)
+													reactivarPoliza.mutateAsync()
+												}}
+											/>
+										</>
 									) : (
-										<Button
-											variant='outline'
-											size='sm'
-											disabled={isLoadingMutation}
-											onClick={() => cancelarPoliza.mutateAsync()}
-										>
-											{cancelarPoliza.isPending ? (
-												<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
-											) : null}
-											Cancelar póliza
-										</Button>
+										<>
+											<Button
+												variant='outline'
+												size='sm'
+												disabled={isLoadingMutation}
+												onClick={() => setConfirmarCancelar(true)}
+											>
+												{cancelarPoliza.isPending ? (
+													<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
+												) : null}
+												Cancelar póliza
+											</Button>
+											<ConfirmDialog
+												open={confirmarCancelar}
+												onOpenChange={setConfirmarCancelar}
+												title='¿Cancelar póliza?'
+												description={`Se cancelará la póliza ${numeroPoliza}. Esta acción puede revertirse posteriormente.`}
+												confirmText='Cancelar'
+												variant='destructive'
+												isPending={cancelarPoliza.isPending}
+												onConfirm={() => {
+													setConfirmarCancelar(false)
+													cancelarPoliza.mutateAsync()
+												}}
+											/>
+										</>
 									)}
 								</div>
 							</CardContent>

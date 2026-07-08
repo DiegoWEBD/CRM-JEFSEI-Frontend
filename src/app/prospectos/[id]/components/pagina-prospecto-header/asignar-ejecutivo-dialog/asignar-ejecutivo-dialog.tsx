@@ -88,9 +88,12 @@ export default function AsignarEjecutivoDialog({
 					? mutationCobranza
 					: mutationRenovacion
 
-	const rolFiltro = ROLE_MAP[tipo]
+	const rolesFiltro = tipo === 'evaluacion'
+		? ['EJECUTIVO_COMERCIAL', 'EJECUTIVO_EVALUACION_PROYECTOS']
+		: [ROLE_MAP[tipo]]
+
 	const usuariosFiltrados = (usuarios ?? []).filter(u =>
-		u.roles.some(r => r.codigo === rolFiltro),
+		u.roles.some(r => rolesFiltro.includes(r.codigo)),
 	)
 
 	async function handleSubmit() {

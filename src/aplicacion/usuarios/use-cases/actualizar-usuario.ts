@@ -9,7 +9,6 @@ export interface ActualizarUsuarioRequest {
   meta_mensual_uf: number | null
   codigo_roles: string[]
   porcentaje_comision: number | null
-  junior: boolean
   habilitado: boolean
 }
 
