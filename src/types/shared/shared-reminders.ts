@@ -8,6 +8,7 @@ export type SharedReminderType =
 	| 'whatsapp'
 	| 'reunion'
 	| 'otro'
+	| 'cobranza_anticipada'
 export type SharedReminderStatus = 'atrasado' | 'pendiente' | 'realizado'
 export type SharedReminderPriority = 'normal' | 'alta'
 export type SharedReminderCategoria =
@@ -73,6 +74,7 @@ export const REMINDER_TYPE_LABELS: Record<SharedReminderType, string> = {
 	visita: 'Visita',
 	reunion: 'Visita',
 	otro: 'Otro',
+	cobranza_anticipada: 'Cobranza',
 }
 
 export function etiquetaTipoRecordatorio(type: SharedReminderType): string {

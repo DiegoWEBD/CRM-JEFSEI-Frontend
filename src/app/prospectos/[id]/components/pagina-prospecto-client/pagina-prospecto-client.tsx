@@ -84,13 +84,11 @@ export default function PaginaProspectoClient({
 			<SeguimientoComercialSection
 				idProspecto={prospecto.id}
 				nombreCliente={prospecto.nombre_riesgo}
-				ejecutivoComercialRut={prospecto.ejecutivo_comercial_asignado?.rut}
 			/>
 
 			<RecordatoriosClienteSection
 				idProspecto={prospecto.id}
 				nombreCliente={prospecto.nombre_riesgo}
-				ejecutivoComercialRut={prospecto.ejecutivo_comercial_asignado?.rut}
 			/>
 
 			<ObservacionesComercialesSection

@@ -39,6 +39,8 @@ import { RegistrarUsuarioRequest } from '@/aplicacion/usuarios/use-cases/registr
 import { useActualizarUsuario } from '@/hooks/usuarios/use-actualizar-usuario'
 import { useUserSession } from '@/hooks/auth/use-user-session'
 import { useObtenerRoles, type RolJson } from '@/hooks/roles/use-obtener-roles'
+import { useEliminarUsuario } from '@/hooks/usuarios/use-eliminar-usuario'
+import { ConfirmDialog } from '@/components/confirm-dialog'
 import { classInputRut } from '@/utils/class-input-rut'
 import { formatRut } from '@/utils/format-rut'
 import {
@@ -72,9 +74,11 @@ function InicialesUsuario({ nombre }: { nombre: string }) {
 function CardUsuario({
 	usuario,
 	onVerDetalle,
+	onEliminar,
 }: {
 	usuario: Usuario
 	onVerDetalle: (usuario: Usuario) => void
+	onEliminar?: (usuario: Usuario) => void
 }) {
 	return (
 		<Card className='overflow-hidden transition-shadow hover:shadow-md'>
@@ -142,6 +146,16 @@ function CardUsuario({
 						<ExternalLink className='size-3' />
 						<span className='hidden sm:inline'>Ver detalle</span>
 					</Button>
+					{onEliminar && (
+						<Button
+							variant='destructive'
+							size='sm'
+							className='mt-0.5 shrink-0 gap-1 text-xs'
+							onClick={() => onEliminar(usuario)}
+						>
+							Eliminar
+						</Button>
+					)}
 				</div>
 			</CardContent>
 		</Card>
@@ -157,8 +171,11 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 	const { value: busqueda, handleChange } = useControlledInput()
 	const { data: roles } = useObtenerRoles()
 	const rolesList = roles ?? []
+	const { tieneRol } = useUserSession()
+	const eliminarMutation = useEliminarUsuario()
 
 	const [usuarioDetalle, setUsuarioDetalle] = useState<Usuario | null>(null)
+	const [usuarioAEliminar, setUsuarioAEliminar] = useState<Usuario | null>(null)
 	const [registrarAbierto, setRegistrarAbierto] = useState(false)
 
 	const lista = usuarios ?? usuariosIniciales
@@ -253,6 +270,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 								key={usuario.rut}
 								usuario={usuario}
 								onVerDetalle={setUsuarioDetalle}
+								onEliminar={tieneRol('GERENTE_GENERAL') ? setUsuarioAEliminar : undefined}
 							/>
 						))}
 					</div>
@@ -334,14 +352,26 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 											</Badge>
 										</TableCell>
 										<TableCell className='text-right'>
-											<Button
-												size='sm'
-												variant='outline'
-												className='h-7 text-[10px]'
-												onClick={() => setUsuarioDetalle(usuario)}
-											>
-												Ver detalle
-											</Button>
+											<div className='flex items-center justify-end gap-1'>
+												<Button
+													size='sm'
+													variant='outline'
+													className='h-7 text-[10px]'
+													onClick={() => setUsuarioDetalle(usuario)}
+												>
+													Ver detalle
+												</Button>
+												{tieneRol('GERENTE_GENERAL') && (
+													<Button
+														size='sm'
+														variant='destructive'
+														className='h-7 text-[10px]'
+														onClick={() => setUsuarioAEliminar(usuario)}
+													>
+														Eliminar
+													</Button>
+												)}
+											</div>
 										</TableCell>
 									</TableRow>
 								))}
@@ -363,6 +393,21 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 				abierto={registrarAbierto}
 				onOpenChange={setRegistrarAbierto}
 				rolesList={rolesList}
+			/>
+
+			<ConfirmDialog
+				open={usuarioAEliminar !== null}
+				onOpenChange={() => setUsuarioAEliminar(null)}
+				title='¿Eliminar usuario?'
+				description={`${usuarioAEliminar?.nombre ?? ''} no podrá iniciar sesión.`}
+				confirmText='Eliminar'
+				onConfirm={() => {
+					if (usuarioAEliminar) {
+						eliminarMutation.mutate(usuarioAEliminar.rut)
+						setUsuarioAEliminar(null)
+					}
+				}}
+				isPending={eliminarMutation.isPending}
 			/>
 		</div>
 	)

@@ -11,6 +11,7 @@ import {
 	reminderStatusStyles,
 } from '@/types/shared/shared-reminders'
 import { formatearFecha } from '@/utils/formatear-fecha'
+import Link from 'next/link'
 import DialogCrearRecordatorio from '@/components/dialog-crear-recordatorio/dialog-crear-recordatorio'
 
 type RecordatoriosUsuarioProps = {
@@ -31,15 +32,18 @@ export default function CardRecordatorio({
 	isEliminando,
 }: RecordatoriosUsuarioProps) {
 	const [editando, setEditando] = useState(false)
-	const esRenovacion = Boolean(recordatorio.numero_poliza)
-	const asociado = !esRenovacion && recordatorio.id_prospecto != null
+	const esCobranza = recordatorio.tipo_gestion === 'cobranza_anticipada'
+	const esRenovacion = Boolean(recordatorio.numero_poliza) && !esCobranza
+	const asociado = !esRenovacion && !esCobranza && recordatorio.id_prospecto != null
 	const prio = recordatorio.prioridad
 
 	const badgePrincipal = esRenovacion
 		? { label: `Póliza ${recordatorio.numero_poliza}`, className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal border-sky-500/25 bg-sky-500/10 text-sky-950 dark:text-sky-100' }
-		: asociado
-			? { label: recordatorio.nombre_prospecto?.trim() ?? '—', className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal' }
-			: { label: 'General', className: 'h-5 border-muted-foreground/30 bg-muted/50 px-1.5 text-[9px] font-normal text-muted-foreground' }
+		: esCobranza
+			? { label: `Cobranza — Póliza ${recordatorio.numero_poliza}`, href: `/polizas/${recordatorio.numero_poliza}`, className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal border-amber-500/25 bg-amber-500/10 text-amber-950 dark:text-amber-100' }
+			: asociado
+				? { label: recordatorio.nombre_prospecto?.trim() ?? '—', href: `/prospectos/${recordatorio.id_prospecto}`, className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal' }
+				: { label: 'General', className: 'h-5 border-muted-foreground/30 bg-muted/50 px-1.5 text-[9px] font-normal text-muted-foreground' }
 
 	return (
 		<>
@@ -58,12 +62,23 @@ export default function CardRecordatorio({
 				</Badge>
 			</div>
 			<div className='mt-1 flex flex-wrap items-center gap-1'>
+				{badgePrincipal.href ? (
+					<Link href={badgePrincipal.href}>
+						<Badge
+							variant='outline'
+							className={badgePrincipal.className}
+						>
+							{badgePrincipal.label}
+						</Badge>
+					</Link>
+				) : (
 				<Badge
 					variant='outline'
 					className={badgePrincipal.className}
 				>
 					{badgePrincipal.label}
 				</Badge>
+				)}
 				<Badge
 					variant='outline'
 					className={classname(
