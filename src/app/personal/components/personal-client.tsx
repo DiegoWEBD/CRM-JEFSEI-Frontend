@@ -330,9 +330,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 														: 'border-destructive/35 bg-destructive/10 text-destructive',
 												)}
 											>
-												{usuario.habilitado
-													? 'Habilitado'
-													: 'Deshabilitado'}
+												{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
 											</Badge>
 										</TableCell>
 										<TableCell className='text-right'>
@@ -355,7 +353,9 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 
 			<DialogEditarUsuario
 				usuario={usuarioDetalle}
-				onOpenChange={open => { if (!open) setUsuarioDetalle(null) }}
+				onOpenChange={open => {
+					if (!open) setUsuarioDetalle(null)
+				}}
 				rolesList={rolesList}
 			/>
 
@@ -397,13 +397,13 @@ function InputTelefono({
 type RegistrarFormValues = {
 	rut: string
 	nombre: string
-	correo: string
-	telefono: string
+	correo: string | null
+	telefono: string | null
 	idSucursal: number | null
 	password: string
 	roles: string[]
-	metaMensualUf: string
-	porcentajeComision: string
+	metaMensualUf: number | null
+	porcentajeComision: number | null
 }
 
 function DialogRegistrarUsuario({
@@ -422,17 +422,19 @@ function DialogRegistrarUsuario({
 		nombre: Yup.string().required('El nombre es obligatorio'),
 		rut: Yup.string()
 			.required('El RUT es obligatorio')
-			.test('rut-valido', 'El RUT ingresado no es válido', v => !v || rutChilenoEsValido(v)),
-		telefono: Yup.string()
-			.matches(/^\d{8}$/, 'Debe tener exactamente 8 dígitos'),
+			.test(
+				'rut-valido',
+				'El RUT ingresado no es válido',
+				v => !v || rutChilenoEsValido(v),
+			),
+		telefono: Yup.string().matches(/^\d{8}$/, 'Debe tener 8 dígitos'),
 		idSucursal: Yup.number()
 			.typeError('Debe seleccionar una sucursal')
 			.required('Debe seleccionar una sucursal'),
 		password: Yup.string()
 			.required('La contraseña es obligatoria')
 			.min(6, 'Mínimo 6 caracteres'),
-		roles: Yup.array()
-			.min(1, 'Debe seleccionar al menos un rol'),
+		roles: Yup.array().min(1, 'Debe seleccionar al menos un rol'),
 	})
 
 	const formik = useFormik<RegistrarFormValues>({
@@ -445,21 +447,27 @@ function DialogRegistrarUsuario({
 			idSucursal: null,
 			password: '',
 			roles: [],
-			metaMensualUf: '',
-			porcentajeComision: '',
+			metaMensualUf: null,
+			porcentajeComision: null,
 		},
 		validationSchema,
-		onSubmit: async (values) => {
+		onSubmit: async values => {
+			console.log(values)
 			const request: RegistrarUsuarioRequest = {
 				rut: values.rut.replace(/[^0-9kK]/g, '').toUpperCase(),
 				nombre: values.nombre.trim(),
-				correo: values.correo.trim() || null,
-				telefono: values.telefono.length === 8 ? '+569' + values.telefono : null,
+				correo: values.correo?.trim() || null,
+				telefono:
+					values.telefono?.length === 8 ? '+569' + values.telefono : null,
 				id_sucursal: values.idSucursal!,
 				password: values.password,
 				codigo_roles: values.roles,
-				meta_mensual_uf: values.metaMensualUf.trim() ? Number(values.metaMensualUf.trim()) : null,
-				porcentaje_comision: values.porcentajeComision.trim() ? Number(values.porcentajeComision.trim()) / 100 : null,
+				meta_mensual_uf: values.metaMensualUf
+					? Number(values.metaMensualUf)
+					: null,
+				porcentaje_comision: values.porcentajeComision
+					? Number(values.porcentajeComision) / 100
+					: null,
 			}
 			await mutation.mutateAsync(request)
 			onOpenChange(false)
@@ -497,12 +505,16 @@ function DialogRegistrarUsuario({
 											: rutChilenoEstadoValidacion(formik.values.rut),
 									)}
 									value={formik.values.rut}
-									onChange={e => formik.setFieldValue('rut', formatRut(e.target.value))}
+									onChange={e =>
+										formik.setFieldValue('rut', formatRut(e.target.value))
+									}
 									onBlur={formik.handleBlur}
 									maxLength={14}
 								/>
 								{formik.touched.rut && formik.errors.rut && (
-									<p className='text-[10px] text-destructive'>{formik.errors.rut}</p>
+									<p className='text-[10px] text-destructive'>
+										{formik.errors.rut}
+									</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
@@ -516,7 +528,9 @@ function DialogRegistrarUsuario({
 									onBlur={formik.handleBlur}
 								/>
 								{formik.touched.nombre && formik.errors.nombre && (
-									<p className='text-[10px] text-destructive'>{formik.errors.nombre}</p>
+									<p className='text-[10px] text-destructive'>
+										{formik.errors.nombre}
+									</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
@@ -526,7 +540,7 @@ function DialogRegistrarUsuario({
 									type='email'
 									placeholder='correo@ejemplo.cl'
 									name='correo'
-									value={formik.values.correo}
+									value={formik.values.correo || ''}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
 								/>
@@ -534,20 +548,31 @@ function DialogRegistrarUsuario({
 							<div className='space-y-1.5'>
 								<Label htmlFor='telefono-crear'>Teléfono</Label>
 								<InputTelefono
-									value={formik.values.telefono}
+									value={formik.values.telefono || ''}
 									onChange={v => formik.setFieldValue('telefono', v)}
 								/>
 								{formik.touched.telefono && formik.errors.telefono && (
-									<p className='text-[10px] text-destructive'>{formik.errors.telefono}</p>
+									<p className='text-[10px] text-destructive'>
+										{formik.errors.telefono}
+									</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
 								<Label htmlFor='sucursal-crear'>Sucursal *</Label>
 								<Select
-									value={formik.values.idSucursal != null ? String(formik.values.idSucursal) : ''}
-									onValueChange={(v: string) => formik.setFieldValue('idSucursal', Number(v))}
+									value={
+										formik.values.idSucursal != null
+											? String(formik.values.idSucursal)
+											: ''
+									}
+									onValueChange={(v: string) =>
+										formik.setFieldValue('idSucursal', Number(v))
+									}
 								>
-									<SelectTrigger id='sucursal-crear' className='h-9 text-sm shadow-none'>
+									<SelectTrigger
+										id='sucursal-crear'
+										className='h-9 text-sm shadow-none'
+									>
 										<SelectValue placeholder='Seleccionar sucursal' />
 									</SelectTrigger>
 									<SelectContent>
@@ -559,7 +584,9 @@ function DialogRegistrarUsuario({
 									</SelectContent>
 								</Select>
 								{formik.touched.idSucursal && formik.errors.idSucursal && (
-									<p className='text-[10px] text-destructive'>{formik.errors.idSucursal}</p>
+									<p className='text-[10px] text-destructive'>
+										{formik.errors.idSucursal}
+									</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
@@ -574,7 +601,9 @@ function DialogRegistrarUsuario({
 									onBlur={formik.handleBlur}
 								/>
 								{formik.touched.password && formik.errors.password && (
-									<p className='text-[10px] text-destructive'>{formik.errors.password}</p>
+									<p className='text-[10px] text-destructive'>
+										{formik.errors.password}
+									</p>
 								)}
 							</div>
 						</div>
@@ -601,7 +630,9 @@ function DialogRegistrarUsuario({
 								))}
 							</div>
 							{formik.touched.roles && formik.errors.roles && (
-								<p className='text-[10px] text-destructive'>{formik.errors.roles}</p>
+								<p className='text-[10px] text-destructive'>
+									{formik.errors.roles}
+								</p>
 							)}
 						</div>
 
@@ -614,7 +645,7 @@ function DialogRegistrarUsuario({
 									min='0'
 									placeholder='0'
 									name='metaMensualUf'
-									value={formik.values.metaMensualUf}
+									value={formik.values.metaMensualUf || undefined}
 									onChange={formik.handleChange}
 								/>
 							</div>
@@ -628,13 +659,16 @@ function DialogRegistrarUsuario({
 									step='0.01'
 									placeholder='0'
 									name='porcentajeComision'
-									value={formik.values.porcentajeComision}
+									value={formik.values.porcentajeComision || undefined}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
 								/>
-								{formik.touched.porcentajeComision && formik.errors.porcentajeComision && (
-									<p className='text-[10px] text-destructive'>{formik.errors.porcentajeComision}</p>
-								)}
+								{formik.touched.porcentajeComision &&
+									formik.errors.porcentajeComision && (
+										<p className='text-[10px] text-destructive'>
+											{formik.errors.porcentajeComision}
+										</p>
+									)}
 							</div>
 						</div>
 					</div>
@@ -693,13 +727,11 @@ function DialogEditarUsuario({
 	const validationSchema = Yup.object({
 		nombre: Yup.string().required('El nombre es obligatorio'),
 		correo: Yup.string().email('Correo inválido').nullable(),
-		telefono: Yup.string()
-			.matches(/^\d{0,8}$/, 'Debe tener hasta 8 dígitos'),
+		telefono: Yup.string().matches(/^\d{0,8}$/, 'Debe tener hasta 8 dígitos'),
 		idSucursal: Yup.number()
 			.typeError('Debe seleccionar una sucursal')
 			.required('Debe seleccionar una sucursal'),
-		roles: Yup.array()
-			.min(1, 'Debe seleccionar al menos un rol'),
+		roles: Yup.array().min(1, 'Debe seleccionar al menos un rol'),
 		porcentajeComision: Yup.string().test(
 			'max',
 			'El porcentaje no puede superar 100',
@@ -713,17 +745,22 @@ function DialogEditarUsuario({
 			nombre: usuario?.nombre ?? '',
 			rut: usuario?.rut ?? '',
 			correo: usuario?.correo ?? '',
-			telefono: usuario?.telefono && usuario.telefono.startsWith('+569')
-				? usuario.telefono.slice(4)
-				: '',
+			telefono:
+				usuario?.telefono && usuario.telefono.startsWith('+569')
+					? usuario.telefono.slice(4)
+					: '',
 			idSucursal: (() => {
 				if (!usuario?.sucursal) return null
 				const found = sucursales?.find(s => s.nombre === usuario.sucursal)
 				return found?.id ?? null
 			})(),
 			roles: usuario?.roles.map(r => r.codigo) ?? [],
-			metaMensualUf: usuario?.meta_mensual_uf != null ? String(usuario.meta_mensual_uf) : '',
-			porcentajeComision: usuario?.porcentaje_comision != null ? String(usuario.porcentaje_comision * 100) : '',
+			metaMensualUf:
+				usuario?.meta_mensual_uf != null ? String(usuario.meta_mensual_uf) : '',
+			porcentajeComision:
+				usuario?.porcentaje_comision != null
+					? String(usuario.porcentaje_comision * 100)
+					: '',
 			habilitado: usuario?.habilitado ?? true,
 		},
 		validationSchema,
@@ -732,12 +769,17 @@ function DialogEditarUsuario({
 				rut: values.rut,
 				nombre: values.nombre,
 				correo: values.correo || null,
-				telefono: values.telefono.length === 8 ? '+569' + values.telefono : null,
+				telefono:
+					values.telefono.length === 8 ? '+569' + values.telefono : null,
 				id_sucursal: values.idSucursal!,
-				meta_mensual_uf: values.metaMensualUf ? Number(values.metaMensualUf) : null,
+				meta_mensual_uf: values.metaMensualUf
+					? Number(values.metaMensualUf)
+					: null,
 				codigo_roles: values.roles,
-				porcentaje_comision: values.porcentajeComision ? Number(values.porcentajeComision) / 100 : null,
-			habilitado: values.habilitado,
+				porcentaje_comision: values.porcentajeComision
+					? Number(values.porcentajeComision) / 100
+					: null,
+				habilitado: values.habilitado,
 			})
 			onOpenChange(false)
 		},
@@ -758,7 +800,9 @@ function DialogEditarUsuario({
 						{puedeEditar ? 'Editar usuario' : 'Detalle del usuario'}
 					</DialogTitle>
 					<DialogDescription className='text-sm text-muted-foreground'>
-						{puedeEditar ? 'Modifica los datos del usuario.' : 'Información del usuario.'}
+						{puedeEditar
+							? 'Modifica los datos del usuario.'
+							: 'Información del usuario.'}
 					</DialogDescription>
 				</div>
 
@@ -781,17 +825,19 @@ function DialogEditarUsuario({
 								</CardTitle>
 							</CardHeader>
 							<CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
-							<Campo label='Nombre'>
-								<Input
-									name='nombre'
-									value={formik.values.nombre}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-									disabled={!puedeEditar}
-									className='h-9 text-sm shadow-none'
-								/>
+								<Campo label='Nombre'>
+									<Input
+										name='nombre'
+										value={formik.values.nombre}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+										disabled={!puedeEditar}
+										className='h-9 text-sm shadow-none'
+									/>
 									{formik.touched.nombre && formik.errors.nombre && (
-										<p className='text-[10px] text-destructive'>{formik.errors.nombre}</p>
+										<p className='text-[10px] text-destructive'>
+											{formik.errors.nombre}
+										</p>
 									)}
 								</Campo>
 								<Campo label='RUT'>
@@ -802,36 +848,46 @@ function DialogEditarUsuario({
 										className='h-9 text-sm shadow-none'
 									/>
 								</Campo>
-							<Campo label='Correo'>
-								<Input
-									name='correo'
-									type='email'
-									value={formik.values.correo}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-									disabled={!puedeEditar}
-									className='h-9 text-sm shadow-none'
-								/>
+								<Campo label='Correo'>
+									<Input
+										name='correo'
+										type='email'
+										value={formik.values.correo}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+										disabled={!puedeEditar}
+										className='h-9 text-sm shadow-none'
+									/>
 									{formik.touched.correo && formik.errors.correo && (
-										<p className='text-[10px] text-destructive'>{formik.errors.correo}</p>
+										<p className='text-[10px] text-destructive'>
+											{formik.errors.correo}
+										</p>
 									)}
 								</Campo>
-							<Campo label='Teléfono'>
-								<InputTelefono
-									value={formik.values.telefono}
-									onChange={v => formik.setFieldValue('telefono', v)}
-									disabled={!puedeEditar}
-								/>
+								<Campo label='Teléfono'>
+									<InputTelefono
+										value={formik.values.telefono}
+										onChange={v => formik.setFieldValue('telefono', v)}
+										disabled={!puedeEditar}
+									/>
 									{formik.touched.telefono && formik.errors.telefono && (
-										<p className='text-[10px] text-destructive'>{formik.errors.telefono}</p>
+										<p className='text-[10px] text-destructive'>
+											{formik.errors.telefono}
+										</p>
 									)}
 								</Campo>
-							<Campo label='Sucursal' className='sm:col-span-2'>
-								<Select
-									disabled={!puedeEditar}
-									value={formik.values.idSucursal != null ? String(formik.values.idSucursal) : ''}
-									onValueChange={(v: string) => formik.setFieldValue('idSucursal', Number(v))}
-								>
+								<Campo label='Sucursal' className='sm:col-span-2'>
+									<Select
+										disabled={!puedeEditar}
+										value={
+											formik.values.idSucursal != null
+												? String(formik.values.idSucursal)
+												: ''
+										}
+										onValueChange={(v: string) =>
+											formik.setFieldValue('idSucursal', Number(v))
+										}
+									>
 										<SelectTrigger className='h-9 text-sm shadow-none'>
 											<SelectValue placeholder='Seleccionar sucursal' />
 										</SelectTrigger>
@@ -844,7 +900,9 @@ function DialogEditarUsuario({
 										</SelectContent>
 									</Select>
 									{formik.touched.idSucursal && formik.errors.idSucursal && (
-										<p className='text-[10px] text-destructive'>{formik.errors.idSucursal}</p>
+										<p className='text-[10px] text-destructive'>
+											{formik.errors.idSucursal}
+										</p>
 									)}
 								</Campo>
 							</CardContent>
@@ -859,69 +917,78 @@ function DialogEditarUsuario({
 							<CardContent className='space-y-3 pb-4'>
 								<div className='space-y-1.5'>
 									<Label className='text-xs'>Roles</Label>
-								<div className='grid gap-1.5 sm:grid-cols-2'>
-									{rolesList.map(rol => (
+									<div className='grid gap-1.5 sm:grid-cols-2'>
+										{rolesList.map(rol => (
 											<label
 												key={rol.codigo}
 												className='flex cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-xs hover:bg-muted/40'
 											>
-											<Checkbox
-												checked={formik.values.roles.includes(rol.codigo)}
-												onCheckedChange={() => toggleRol(rol.codigo)}
-												disabled={!puedeEditar}
-											/>
+												<Checkbox
+													checked={formik.values.roles.includes(rol.codigo)}
+													onCheckedChange={() => toggleRol(rol.codigo)}
+													disabled={!puedeEditar}
+												/>
 												{rol.nombre}
 											</label>
 										))}
 									</div>
 									{formik.touched.roles && formik.errors.roles && (
-										<p className='text-[10px] text-destructive'>{formik.errors.roles}</p>
+										<p className='text-[10px] text-destructive'>
+											{formik.errors.roles}
+										</p>
 									)}
 								</div>
 
 								<div className='grid gap-4 sm:grid-cols-3'>
 									<Campo label='Meta mensual UF'>
-								<Input
-									name='metaMensualUf'
-									type='number'
-									min='0'
-									placeholder='0'
-									value={formik.values.metaMensualUf}
-									onChange={formik.handleChange}
-									disabled={!puedeEditar}
-									className='h-9 text-sm shadow-none'
-								/>
+										<Input
+											name='metaMensualUf'
+											type='number'
+											min='0'
+											placeholder='0'
+											value={formik.values.metaMensualUf}
+											onChange={formik.handleChange}
+											disabled={!puedeEditar}
+											className='h-9 text-sm shadow-none'
+										/>
 									</Campo>
 									<Campo label='Comisión %'>
-								<Input
-									name='porcentajeComision'
-									type='number'
-									min='0'
-									max='100'
-									step='0.01'
-									placeholder='0'
-									value={formik.values.porcentajeComision}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-									disabled={!puedeEditar}
-									className='h-9 text-sm shadow-none'
-								/>
-									{formik.touched.porcentajeComision && formik.errors.porcentajeComision && (
-										<p className='text-[10px] text-destructive'>{formik.errors.porcentajeComision}</p>
-									)}
+										<Input
+											name='porcentajeComision'
+											type='number'
+											min='0'
+											max='100'
+											step='0.01'
+											placeholder='0'
+											value={formik.values.porcentajeComision}
+											onChange={formik.handleChange}
+											onBlur={formik.handleBlur}
+											disabled={!puedeEditar}
+											className='h-9 text-sm shadow-none'
+										/>
+										{formik.touched.porcentajeComision &&
+											formik.errors.porcentajeComision && (
+												<p className='text-[10px] text-destructive'>
+													{formik.errors.porcentajeComision}
+												</p>
+											)}
 									</Campo>
-									<div className='flex items-end pb-2.5'>
-							</div>
+									<div className='flex items-end pb-2.5'></div>
 								</div>
 
 								<div className='flex items-center gap-2'>
-								<Checkbox
-									id='habilitado'
-									checked={formik.values.habilitado}
-									onCheckedChange={v => formik.setFieldValue('habilitado', v === true)}
-									disabled={!puedeEditar}
-								/>
-									<Label htmlFor='habilitado' className='text-xs cursor-pointer'>
+									<Checkbox
+										id='habilitado'
+										checked={formik.values.habilitado}
+										onCheckedChange={v =>
+											formik.setFieldValue('habilitado', v === true)
+										}
+										disabled={!puedeEditar}
+									/>
+									<Label
+										htmlFor='habilitado'
+										className='text-xs cursor-pointer'
+									>
 										Habilitado
 									</Label>
 								</div>
@@ -935,37 +1002,33 @@ function DialogEditarUsuario({
 						)}
 					</div>
 
-				<div className='flex items-center justify-end gap-2 border-t border-border px-6 py-4'>
-					{puedeEditar ? (
-						<>
+					<div className='flex items-center justify-end gap-2 border-t border-border px-6 py-4'>
+						{puedeEditar ? (
+							<>
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									className='h-9 text-xs'
+									onClick={() => onOpenChange(false)}
+								>
+									Cancelar
+								</Button>
+								<Button type='submit' size='sm' className='h-9 text-xs'>
+									Guardar cambios
+								</Button>
+							</>
+						) : (
 							<Button
 								type='button'
-								variant='outline'
 								size='sm'
 								className='h-9 text-xs'
 								onClick={() => onOpenChange(false)}
 							>
-								Cancelar
+								Cerrar
 							</Button>
-							<Button
-								type='submit'
-								size='sm'
-								className='h-9 text-xs'
-							>
-								Guardar cambios
-							</Button>
-						</>
-					) : (
-						<Button
-							type='button'
-							size='sm'
-							className='h-9 text-xs'
-							onClick={() => onOpenChange(false)}
-						>
-							Cerrar
-						</Button>
-					)}
-				</div>
+						)}
+					</div>
 				</form>
 			</DialogContent>
 		</Dialog>
