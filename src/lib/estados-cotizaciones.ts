@@ -1,5 +1,23 @@
 import { EstadoComercialProspecto } from '@/types/estados/estado-comercial-cliente'
 
+/** Estado general del prospecto/cliente devuelto por el backend. */
+export type EstadoGeneralCliente = 'prospecto' | 'cliente_activo' | 'cliente_inactivo'
+
+export const ESTADO_GENERAL_CLIENTE_LABELS: Record<EstadoGeneralCliente, string> = {
+	prospecto: 'Prospecto',
+	cliente_activo: 'Cliente activo',
+	cliente_inactivo: 'Cliente inactivo',
+}
+
+export const ESTADO_GENERAL_CLIENTE_BADGE: Record<EstadoGeneralCliente, string> = {
+	prospecto:
+		'border-slate-500/35 bg-slate-500/10 text-slate-900 dark:text-slate-100',
+	cliente_activo:
+		'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
+	cliente_inactivo:
+		'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
+}
+
 /** Estado general visible en el encabezado del perfil comercial. */
 export type EstadoGeneralClientePerfil =
 	| 'nuevo'

@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/table'
+import { Badge } from '@/components/badge'
 import { Card, CardContent } from '@/components/card'
 import { SkeletonTabla } from './skeleton-tabla'
 import { cn } from '@/lib/utils'
@@ -111,34 +112,36 @@ export default function TablaProcesosComerciales({
                     </p>
                   </div>
                 </div>
-                <span
+                <Badge
+                  variant='outline'
                   className={cn(
-                    'inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
+                    'text-[10px] font-medium',
                     f.estado_semaforo === 'ROJO'
-                      ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'
+                      ? 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100'
                       : f.estado_semaforo === 'AMARILLO'
-                        ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20'
+                        ? 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100'
                         : f.estado_semaforo === 'VERDE'
-                          ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20'
-                          : 'bg-muted text-muted-foreground ring-1 ring-inset ring-border',
+                          ? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100'
+                          : 'border-border bg-muted/50 text-muted-foreground',
                   )}
                 >
                   {PRIORIDAD_LABELS[f.estado_semaforo]}
-                </span>
+                </Badge>
               </div>
 
               <div className='mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-muted-foreground'>
                 <span>Etapa: {f.proceso.etapa_actual.nombre}</span>
                 <span>
                   Estado:{' '}
-                  <span
+                  <Badge
+                    variant='outline'
                     className={cn(
-                      'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
+                      'text-[10px] font-medium',
                       ESTADO_COMERCIAL_BADGE[f.proceso.estado_actual.codigo as keyof typeof ESTADO_COMERCIAL_BADGE] ?? 'border-border bg-muted/50 text-muted-foreground',
                     )}
                   >
                     {ESTADO_PROSPECTO_LABELS[f.proceso.estado_actual.codigo as keyof typeof ESTADO_PROSPECTO_LABELS] ?? f.proceso.estado_actual.nombre}
-                  </span>
+                  </Badge>
                 </span>
                 {esAbierto(f) && (
                   <>
@@ -216,14 +219,15 @@ export default function TablaProcesosComerciales({
                   {f.proceso.etapa_actual.nombre}
                 </TableCell>
                 <TableCell className={cn(cellClass, 'p-1.5')}>
-                  <span
+                  <Badge
+                    variant='outline'
                     className={cn(
-                      'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
+                      'text-[10px] font-medium',
                       ESTADO_COMERCIAL_BADGE[f.proceso.estado_actual.codigo as keyof typeof ESTADO_COMERCIAL_BADGE] ?? 'border-border bg-muted/50 text-muted-foreground',
                     )}
                   >
                     {ESTADO_PROSPECTO_LABELS[f.proceso.estado_actual.codigo as keyof typeof ESTADO_PROSPECTO_LABELS] ?? f.proceso.estado_actual.nombre}
-                  </span>
+                  </Badge>
                 </TableCell>
                 <TableCell className={cn(cellClass, 'text-[11px] tabular-nums text-muted-foreground')}>
                   {esAbierto(f) ? `${f.dias_transcurridos} días` : '—'}

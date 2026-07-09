@@ -1,13 +1,12 @@
 'use client'
 
-import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
+import { ESTADO_GENERAL_CLIENTE_BADGE, ESTADO_GENERAL_CLIENTE_LABELS, type EstadoGeneralCliente } from '@/lib/estados-cotizaciones'
 import { Building2 } from 'lucide-react'
 import { useState } from 'react'
 import AdministradorAsociado from './administrador-asociado/administrador-asociado'
@@ -23,6 +22,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 	const [openAsignarEvaluacion, setOpenAsignarEvaluacion] = useState(false)
 	const [openAsignarCobranza, setOpenAsignarCobranza] = useState(false)
 	const [openAsignarRenovacion, setOpenAsignarRenovacion] = useState(false)
+
+	const estadoCliente: EstadoGeneralCliente =
+		(prospecto.estado_general_cliente as EstadoGeneralCliente) || 'prospecto'
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
@@ -176,9 +178,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 							<div className='flex flex-wrap items-center gap-2'>
 								<Badge
 									variant='outline'
-									className={ESTADO_COMERCIAL_BADGE['OPORTUNIDAD_CREADA']}
+									className={ESTADO_GENERAL_CLIENTE_BADGE[estadoCliente]}
 								>
-									{ESTADO_PROSPECTO_LABELS['OPORTUNIDAD_CREADA']}
+									{ESTADO_GENERAL_CLIENTE_LABELS[estadoCliente]}
 								</Badge>
 							</div>
 						</div>

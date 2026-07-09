@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/button'
+import { Badge } from '@/components/badge'
 import {
   Popover,
   PopoverContent,
@@ -44,11 +45,11 @@ function formatFechaCelda(iso: string) {
 
 const ESTADO_VENCIMIENTO_COLORS: Record<string, string> = {
   vigente:
-    'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-950/30 dark:text-emerald-400 dark:ring-emerald-400/20',
+    'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
   por_vencer:
-    'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20 dark:bg-amber-950/30 dark:text-amber-400 dark:ring-amber-400/20',
+    'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
   vencida:
-    'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20 dark:bg-red-950/30 dark:text-red-400 dark:ring-red-400/20',
+    'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
 }
 
 type VencimientoCellProps = {
@@ -164,16 +165,17 @@ export default function VencimientoCell({
                     </p>
                     <div className='shrink-0'>
                       {estadoVencimiento && (
-                        <span
+                        <Badge
+                          variant='outline'
                           className={cn(
-                            'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
+                            'text-[10px] font-medium',
                             ESTADO_VENCIMIENTO_COLORS[estadoVencimiento],
                           )}
                         >
                           {estadoVencimiento === 'vigente' && 'Vigente'}
                           {estadoVencimiento === 'por_vencer' && 'Por vencer'}
                           {estadoVencimiento === 'vencida' && 'Vencida'}
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   </div>

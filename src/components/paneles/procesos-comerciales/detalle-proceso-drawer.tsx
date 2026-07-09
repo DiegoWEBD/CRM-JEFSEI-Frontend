@@ -12,6 +12,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from '@/components/sheet'
+import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import {
 	Select,
@@ -48,10 +49,10 @@ function esAbierto(
 }
 
 const PRIORIDAD_BADGE: Record<string, string> = {
-	ROJO: 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20',
-	AMARILLO: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20',
-	VERDE: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
-	NO_APLICA: 'bg-muted text-muted-foreground ring-1 ring-inset ring-border',
+	ROJO: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
+	AMARILLO: 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
+	VERDE: 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
+	NO_APLICA: 'border-border bg-muted/50 text-muted-foreground',
 }
 
 const PRIORIDAD_LABELS: Record<string, string> = {
@@ -128,14 +129,15 @@ export default function DetalleProcesoDrawer({
 						<div className='flex items-center justify-between'>
 							<dt className='text-xs text-muted-foreground'>Prioridad</dt>
 							<dd>
-								<span
+								<Badge
+									variant='outline'
 									className={cn(
-										'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold leading-none',
+										'text-[11px] font-medium',
 										PRIORIDAD_BADGE[reporte.estado_semaforo],
 									)}
 								>
 									{PRIORIDAD_LABELS[reporte.estado_semaforo]}
-								</span>
+								</Badge>
 							</dd>
 						</div>
 
@@ -149,9 +151,10 @@ export default function DetalleProcesoDrawer({
 						<div className='flex items-center justify-between'>
 							<dt className='text-xs text-muted-foreground'>Estado</dt>
 							<dd>
-								<span
+								<Badge
+									variant='outline'
 									className={cn(
-										'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold leading-none',
+										'text-[11px] font-medium',
 										ESTADO_COMERCIAL_BADGE[
 											proceso.estado_actual
 												.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
@@ -162,7 +165,7 @@ export default function DetalleProcesoDrawer({
 										proceso.estado_actual
 											.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
 									] ?? proceso.estado_actual.nombre}
-								</span>
+								</Badge>
 							</dd>
 						</div>
 
@@ -233,18 +236,19 @@ export default function DetalleProcesoDrawer({
 										% SLA consumido
 									</dt>
 									<dd>
-										<span
+										<Badge
+											variant='outline'
 											className={cn(
-												'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold leading-none',
+												'text-[11px] font-medium',
 												reporte.porentaje_sla_consumido >= 1
-													? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'
+													? 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100'
 													: reporte.porentaje_sla_consumido >= 0.7
-														? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20'
-														: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
+														? 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100'
+														: 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
 											)}
 										>
 											{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
-										</span>
+										</Badge>
 									</dd>
 								</div>
 

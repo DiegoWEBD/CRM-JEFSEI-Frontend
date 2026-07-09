@@ -1,6 +1,7 @@
 'use client'
 
 import { PanelEstudioFila } from '@/aplicacion/cotizaciones-estudios/dto/panel-estudio-fila'
+import { Badge } from '@/components/badge'
 import {
   Table,
   TableBody,
@@ -32,11 +33,11 @@ const ESTADO_VENCIMIENTO_LABELS: Record<string, string> = {
 
 const ESTADO_VENCIMIENTO_COLORS: Record<string, string> = {
   vigente:
-    'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-950/30 dark:text-emerald-400 dark:ring-emerald-400/20',
+    'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
   por_vencer:
-    'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20 dark:bg-amber-950/30 dark:text-amber-400 dark:ring-amber-400/20',
+    'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
   vencida:
-    'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20 dark:bg-red-950/30 dark:text-red-400 dark:ring-red-400/20',
+    'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
 }
 
 type TablaCotizacionesEstudiosProps = {
@@ -86,14 +87,15 @@ export default function TablaCotizacionesEstudios({
                 <BadgeEstadoEstudio tieneEstudio={f.tiene_estudio} />
                 <BadgePrioridad prioridad={f.prioridad} />
                 {f.estado_vencimiento && (
-                  <span
+                  <Badge
+                    variant='outline'
                     className={cn(
-                      'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
+                      'text-[10px] font-medium',
                       ESTADO_VENCIMIENTO_COLORS[f.estado_vencimiento],
                     )}
                   >
                     {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}
-                  </span>
+                  </Badge>
                 )}
               </div>
 

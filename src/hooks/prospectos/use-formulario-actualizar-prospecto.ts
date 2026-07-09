@@ -1,4 +1,5 @@
 import { actualizarProspecto } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto/actualizar-prospecto'
+import { ActualizarProspectoRequest } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto/dto/requests/actualizar-prospecto-request'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -16,17 +17,8 @@ export const useFormularioActualizarProspecto = ({
 	const queryClient = useQueryClient()
 
 	const mutation = useMutation({
-		mutationFn: async (values: FormularioInitialValues) => {
-			await actualizarProspecto(prospecto.id, {
-				rut_riesgo: values.rut_riesgo ?? null,
-				nombre_riesgo: values.nombre_riesgo,
-				telefono_contacto: values.telefono_contacto ?? null,
-				correo_contacto: values.correo_contacto ?? null,
-				direccion: values.direccion ?? null,
-				region: values.region ?? null,
-				comuna: values.comuna ?? null,
-				observaciones: values.observaciones ?? null,
-			})
+		mutationFn: async (datos: ActualizarProspectoRequest) => {
+			await actualizarProspecto(prospecto.id, datos)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -52,7 +44,16 @@ export const useFormularioActualizarProspecto = ({
 			linea_negocio: prospecto.linea_negocio.nombre?.toLowerCase() || 'lineas_personales',
 		},
 		onSubmit: async values => {
-			await mutation.mutateAsync(values)
+			await mutation.mutateAsync({
+				rut_riesgo: values.rut_riesgo === '' ? null : (values.rut_riesgo ?? null),
+				nombre_riesgo: values.nombre_riesgo,
+				telefono_contacto: values.telefono_contacto === '' ? null : (values.telefono_contacto ?? null),
+				correo_contacto: values.correo_contacto === '' ? null : (values.correo_contacto ?? null),
+				direccion: values.direccion === '' ? null : (values.direccion ?? null),
+				region: values.region === '' ? null : (values.region ?? null),
+				comuna: values.comuna === '' ? null : (values.comuna ?? null),
+				observaciones: values.observaciones === '' ? null : (values.observaciones ?? null),
+			})
 			onComplete?.()
 		},
 	})

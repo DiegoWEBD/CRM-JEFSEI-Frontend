@@ -25,11 +25,11 @@ export function esRecordatorioAsociadoACliente(
 }
 
 export const reminderStatusStyles: Record<SharedReminderStatus, string> = {
-	atrasado: 'bg-destructive/15 text-destructive border-destructive/30',
+	atrasado: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
 	pendiente:
-		'bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700',
+		'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
 	realizado:
-		'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700',
+		'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
 }
 
 export const reminderStatusLabel: Record<SharedReminderStatus, string> = {

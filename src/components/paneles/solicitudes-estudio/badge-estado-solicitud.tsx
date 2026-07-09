@@ -11,11 +11,11 @@ export const ESTADO_BANDEJA_LABELS: Record<EstadoSolicitudBandeja, string> = {
 
 const BADGE_CLASSES: Record<EstadoSolicitudBandeja, string> = {
   informacion_incompleta:
-    'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200',
+    'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
   lista_para_cotizar:
-    'border-blue-300 bg-blue-50 text-blue-800 dark:border-blue-700 dark:bg-blue-950 dark:text-blue-200',
+    'border-blue-500/35 bg-blue-500/10 text-blue-950 dark:text-blue-100',
   con_cotizaciones:
-    'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-200',
+    'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
 }
 
 import { Badge } from '@/components/badge'
