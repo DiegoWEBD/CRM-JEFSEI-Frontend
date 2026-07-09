@@ -3,6 +3,8 @@ import { EstadoPoliza } from '@/lib/estados-cotizaciones'
 export default class Poliza {
 	constructor(
 		public numero_poliza: string,
+		public id_prospecto: string,
+		public nombre_cliente: string,
 		public id_proceso_comercial: number,
 		public tipo: string,
 		public nombre_producto: string,

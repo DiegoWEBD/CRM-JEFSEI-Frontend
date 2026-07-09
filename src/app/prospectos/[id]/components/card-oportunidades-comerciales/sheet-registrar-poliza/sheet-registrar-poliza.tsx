@@ -1,255 +1,274 @@
 'use client'
 
-import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/button'
 import { Label } from '@/components/label'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
 } from '@/components/select'
 import { Input } from '@/components/input'
 import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
+	Sheet,
+	SheetContent,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
 } from '@/components/sheet'
 import { useCompaniesSeguros } from '@/hooks/companies-seguros/use-companies-seguros'
-import { toast } from 'sonner'
-import axios from 'axios'
+import { useFormularioRegistrarPoliza } from '@/hooks/polizas/use-formulario-registrar-poliza/use-formulario-registrar-poliza'
+import { Loader2 } from 'lucide-react'
 
 type SheetRegistrarPolizaProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  idProceso: number
-  idProspecto: number
-  idCliente?: number
-  nombreCliente: string
-  producto: string
+	open: boolean
+	onOpenChange: (open: boolean) => void
+	idProceso: number
+	idProspecto: number
+	idCliente?: number
+	nombreCliente: string
+	producto: string
 }
 
 export default function SheetRegistrarPoliza({
-  open,
-  onOpenChange,
-  idProceso,
-  idProspecto,
-  idCliente,
-  nombreCliente,
-  producto,
+	open,
+	onOpenChange,
+	idProceso,
+	idProspecto,
+	idCliente,
+	nombreCliente,
+	producto,
 }: SheetRegistrarPolizaProps) {
-  const queryClient = useQueryClient()
-  const { data: companies, isLoading: cargandoCompanies } = useCompaniesSeguros()
+	const { data: companies, isLoading: cargandoCompanies } =
+		useCompaniesSeguros()
 
-  const [idCompany, setIdCompany] = useState('')
-  const [numeroPoliza, setNumeroPoliza] = useState('')
-  const [tipo, setTipo] = useState<'nueva' | 'renovacion'>('nueva')
-  const [primaNeta, setPrimaNeta] = useState('')
-  const [comisionPct, setComisionPct] = useState('')
-  const [fechaEmision, setFechaEmision] = useState('')
-  const [inicioVigencia, setInicioVigencia] = useState('')
-  const [finVigencia, setFinVigencia] = useState('')
-  const [guardando, setGuardando] = useState(false)
+	const { formik, cargando } = useFormularioRegistrarPoliza({
+		idProceso,
+		idProspecto,
+		idCliente,
+		onClose: () => {
+			formik.resetForm()
+			onOpenChange(false)
+		},
+	})
 
-  const resetForm = () => {
-    setIdCompany('')
-    setNumeroPoliza('')
-    setTipo('nueva')
-    setPrimaNeta('')
-    setComisionPct('')
-    setFechaEmision('')
-    setInicioVigencia('')
-    setFinVigencia('')
-  }
+	function handleOpenChange(open: boolean) {
+		if (!open) {
+			formik.resetForm()
+		}
+		onOpenChange(open)
+	}
 
-  const camposCompletos =
-    idCompany &&
-    numeroPoliza.trim() &&
-    primaNeta.trim() &&
-    comisionPct.trim() &&
-    fechaEmision &&
-    inicioVigencia &&
-    finVigencia
+	return (
+		<Sheet open={open} onOpenChange={handleOpenChange}>
+			<SheetContent className='flex w-full flex-col sm:max-w-md overflow-hidden'>
+				<SheetHeader className='border-b border-border px-4 py-3'>
+					<SheetTitle className='text-sm font-semibold'>
+						Subir póliza
+					</SheetTitle>
+				</SheetHeader>
 
-  const handleGuardar = async () => {
-    if (!camposCompletos) return
+				<form
+					id='form-registrar-poliza'
+					onSubmit={formik.handleSubmit}
+					className='flex-1 overflow-y-auto px-4 py-3'
+				>
+					<div className='space-y-4'>
+						<p className='text-xs leading-relaxed'>
+							<span className='text-muted-foreground'>Cliente: </span>
+							<span className='font-medium text-foreground'>
+								{nombreCliente || '—'}
+							</span>
+						</p>
+						<p className='text-xs leading-relaxed'>
+							<span className='text-muted-foreground'>Oportunidad: </span>
+							<span className='font-medium text-foreground'>
+								{producto || '—'}
+							</span>
+						</p>
 
-    setGuardando(true)
-    try {
-      await axios.post(`/api/procesos-comerciales/${idProceso}/polizas`, {
-        numero_poliza: numeroPoliza.trim(),
-        tipo,
-        id_company: Number(idCompany),
-        prima_neta: Number(primaNeta),
-        comision_corredora_pct: Number(comisionPct) / 100,
-        fecha_emision: fechaEmision,
-        inicio_vigencia: inicioVigencia,
-        fin_vigencia: finVigencia,
-      })
+						<div className='space-y-1.5'>
+							<Label className='text-xs'>Compañía aseguradora</Label>
+							<Select
+								value={
+									formik.values.id_company
+										? String(formik.values.id_company)
+										: ''
+								}
+								onValueChange={v =>
+									formik.setFieldValue('id_company', Number(v))
+								}
+								disabled={cargandoCompanies}
+							>
+								<SelectTrigger className='h-9 text-sm shadow-none'>
+									<SelectValue placeholder='Seleccionar compañía' />
+								</SelectTrigger>
+								<SelectContent>
+									{companies?.map(c => (
+										<SelectItem
+											key={c.id}
+											value={String(c.id)}
+											className='text-xs'
+										>
+											{c.nombre}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							{formik.touched.id_company && formik.errors.id_company && (
+								<p className='text-xs font-medium text-destructive'>
+									{formik.errors.id_company}
+								</p>
+							)}
+						</div>
 
-      toast.success('Póliza registrada exitosamente')
-      queryClient.invalidateQueries({ queryKey: ['procesos-comerciales', idProspecto] })
-      if (idCliente) {
-        queryClient.invalidateQueries({ queryKey: ['polizas', idCliente] })
-      }
-      resetForm()
-      onOpenChange(false)
-    } catch {
-      toast.error('Error al registrar la póliza')
-    } finally {
-      setGuardando(false)
-    }
-  }
+						<div className='space-y-1.5'>
+							<Label className='text-xs'>Número de póliza</Label>
+							<Input
+								className='h-9 text-sm shadow-none'
+								{...formik.getFieldProps('numero_poliza')}
+								placeholder='Ej. POL-2026-001'
+							/>
+							{formik.touched.numero_poliza && formik.errors.numero_poliza && (
+								<p className='text-xs font-medium text-destructive'>
+									{formik.errors.numero_poliza}
+								</p>
+							)}
+						</div>
 
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className='flex w-full flex-col sm:max-w-md overflow-hidden'>
-        <SheetHeader className='border-b border-border px-4 py-3'>
-          <SheetTitle className='text-sm font-semibold'>Subir póliza</SheetTitle>
-        </SheetHeader>
+						<div className='space-y-1.5'>
+							<Label className='text-xs'>Tipo</Label>
+							<Select
+								value={formik.values.tipo}
+								onValueChange={v => formik.setFieldValue('tipo', v)}
+							>
+								<SelectTrigger className='h-9 text-sm shadow-none'>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value='nueva' className='text-xs'>
+										Nueva
+									</SelectItem>
+									<SelectItem value='renovacion' className='text-xs'>
+										Renovación
+									</SelectItem>
+								</SelectContent>
+							</Select>
+							{formik.touched.tipo && formik.errors.tipo && (
+								<p className='text-xs font-medium text-destructive'>
+									{formik.errors.tipo}
+								</p>
+							)}
+						</div>
 
-        <div className='flex-1 overflow-y-auto px-4 py-3'>
-          <div className='space-y-4'>
-            <p className='text-xs leading-relaxed'>
-              <span className='text-muted-foreground'>Cliente: </span>
-              <span className='font-medium text-foreground'>{nombreCliente || '—'}</span>
-            </p>
-            <p className='text-xs leading-relaxed'>
-              <span className='text-muted-foreground'>Oportunidad: </span>
-              <span className='font-medium text-foreground'>{producto || '—'}</span>
-            </p>
+						<div className='grid gap-3 sm:grid-cols-2'>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>Prima neta</Label>
+								<Input
+									className='h-9 text-sm shadow-none'
+									type='number'
+									inputMode='decimal'
+									{...formik.getFieldProps('prima_neta')}
+									placeholder='0'
+								/>
+								{formik.touched.prima_neta && formik.errors.prima_neta && (
+									<p className='text-xs font-medium text-destructive'>
+										{formik.errors.prima_neta}
+									</p>
+								)}
+							</div>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>% Comisión corredora</Label>
+								<Input
+									className='h-9 text-sm shadow-none'
+									type='number'
+									inputMode='decimal'
+									{...formik.getFieldProps('comision_corredora_pct')}
+									placeholder='0'
+								/>
+								{formik.touched.comision_corredora_pct &&
+									formik.errors.comision_corredora_pct && (
+										<p className='text-xs font-medium text-destructive'>
+											{formik.errors.comision_corredora_pct}
+										</p>
+									)}
+							</div>
+						</div>
 
-            <div className='space-y-1.5'>
-              <Label className='text-xs'>Compañía aseguradora</Label>
-              <Select
-                value={idCompany}
-                onValueChange={setIdCompany}
-                disabled={cargandoCompanies}
-              >
-                <SelectTrigger className='h-9 text-sm shadow-none'>
-                  <SelectValue placeholder='Seleccionar compañía' />
-                </SelectTrigger>
-                <SelectContent>
-                  {companies?.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)} className='text-xs'>
-                      {c.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+						<div className='space-y-1.5'>
+							<Label className='text-xs'>Fecha de emisión</Label>
+							<Input
+								className='h-9 text-sm shadow-none'
+								type='date'
+								{...formik.getFieldProps('fecha_emision')}
+							/>
+							{formik.touched.fecha_emision && formik.errors.fecha_emision && (
+								<p className='text-xs font-medium text-destructive'>
+									{formik.errors.fecha_emision}
+								</p>
+							)}
+						</div>
 
-            <div className='space-y-1.5'>
-              <Label className='text-xs'>Número de póliza</Label>
-              <Input
-                className='h-9 text-sm shadow-none'
-                value={numeroPoliza}
-                onChange={(e) => setNumeroPoliza(e.target.value)}
-                placeholder='Ej. POL-2026-001'
-              />
-            </div>
+						<div className='grid gap-3 sm:grid-cols-2'>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>Inicio de vigencia</Label>
+								<Input
+									className='h-9 text-sm shadow-none'
+									type='date'
+									{...formik.getFieldProps('inicio_vigencia')}
+								/>
+								{formik.touched.inicio_vigencia &&
+									formik.errors.inicio_vigencia && (
+										<p className='text-xs font-medium text-destructive'>
+											{formik.errors.inicio_vigencia}
+										</p>
+									)}
+							</div>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>Término de vigencia</Label>
+								<Input
+									className='h-9 text-sm shadow-none'
+									type='date'
+									{...formik.getFieldProps('fin_vigencia')}
+								/>
+								{formik.touched.fin_vigencia && formik.errors.fin_vigencia && (
+									<p className='text-xs font-medium text-destructive'>
+										{formik.errors.fin_vigencia}
+									</p>
+								)}
+							</div>
+						</div>
+					</div>
+				</form>
 
-            <div className='space-y-1.5'>
-              <Label className='text-xs'>Tipo</Label>
-              <Select value={tipo} onValueChange={(v) => setTipo(v as 'nueva' | 'renovacion')}>
-                <SelectTrigger className='h-9 text-sm shadow-none'>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='nueva' className='text-xs'>Nueva</SelectItem>
-                  <SelectItem value='renovacion' className='text-xs'>Renovación</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className='grid gap-3 sm:grid-cols-2'>
-              <div className='space-y-1.5'>
-                <Label className='text-xs'>Prima neta</Label>
-                <Input
-                  className='h-9 text-sm shadow-none'
-                  type='number'
-                  inputMode='decimal'
-                  value={primaNeta}
-                  onChange={(e) => setPrimaNeta(e.target.value)}
-                  placeholder='0'
-                />
-              </div>
-              <div className='space-y-1.5'>
-                <Label className='text-xs'>% Comisión corredora</Label>
-                <Input
-                  className='h-9 text-sm shadow-none'
-                  type='number'
-                  inputMode='decimal'
-                  value={comisionPct}
-                  onChange={(e) => setComisionPct(e.target.value)}
-                  placeholder='0'
-                />
-              </div>
-            </div>
-
-            <div className='space-y-1.5'>
-              <Label className='text-xs'>Fecha de emisión</Label>
-              <Input
-                className='h-9 text-sm shadow-none'
-                type='date'
-                value={fechaEmision}
-                onChange={(e) => setFechaEmision(e.target.value)}
-              />
-            </div>
-
-            <div className='grid gap-3 sm:grid-cols-2'>
-              <div className='space-y-1.5'>
-                <Label className='text-xs'>Inicio de vigencia</Label>
-                <Input
-                  className='h-9 text-sm shadow-none'
-                  type='date'
-                  value={inicioVigencia}
-                  onChange={(e) => setInicioVigencia(e.target.value)}
-                />
-              </div>
-              <div className='space-y-1.5'>
-                <Label className='text-xs'>Término de vigencia</Label>
-                <Input
-                  className='h-9 text-sm shadow-none'
-                  type='date'
-                  value={finVigencia}
-                  onChange={(e) => setFinVigencia(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <SheetFooter className='border-t border-border px-4 py-3'>
-          <div className='flex w-full flex-col gap-2'>
-            <Button
-              type='button'
-              variant='outline'
-              size='sm'
-              className='w-full text-xs shadow-none'
-              onClick={() => {
-                resetForm()
-                onOpenChange(false)
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type='button'
-              size='sm'
-              className='w-full text-xs shadow-none'
-              disabled={!camposCompletos || guardando}
-              onClick={handleGuardar}
-            >
-              {guardando ? 'Guardando...' : 'Guardar póliza'}
-            </Button>
-          </div>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-  )
+				<SheetFooter className='border-t border-border px-4 py-3'>
+					<div className='flex w-full flex-col gap-2'>
+						<Button
+							type='button'
+							variant='outline'
+							size='sm'
+							className='w-full text-xs shadow-none'
+							disabled={cargando}
+							onClick={() => handleOpenChange(false)}
+						>
+							Cancelar
+						</Button>
+						<Button
+							type='submit'
+							form='form-registrar-poliza'
+							size='sm'
+							className='w-full text-xs shadow-none'
+							disabled={cargando}
+						>
+							{cargando && (
+								<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
+							)}
+							{cargando ? 'Guardando...' : 'Guardar póliza'}
+						</Button>
+					</div>
+				</SheetFooter>
+			</SheetContent>
+		</Sheet>
+	)
 }

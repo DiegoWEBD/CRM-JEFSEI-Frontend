@@ -23,12 +23,14 @@ import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
 import {
 	Building2,
 	CalendarDays,
+	ExternalLink,
 	FileText,
 	Loader2,
 	Package,
 	Percent,
 	User,
 } from 'lucide-react'
+import Link from 'next/link'
 
 type PolizaPageClientProps = {
 	numeroPoliza: string
@@ -62,11 +64,15 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 									value={poliza.numero_poliza}
 									icon={FileText}
 								/>
-								<ItemInformacionPoliza
-									label='Cliente'
-									value='Los Pinos'
-									icon={User}
-								/>
+<ItemInformacionPoliza label='Cliente' icon={User}>
+								<Link
+									href={`/prospectos/${poliza.id_prospecto}`}
+									className='inline-flex items-center gap-1.5'
+								>
+									{poliza.nombre_cliente}
+									<ExternalLink className='h-3.5 w-3.5 text-muted-foreground' />
+								</Link>
+							</ItemInformacionPoliza>
 								<ItemInformacionPoliza
 									label='Compañía'
 									value={poliza.company?.nombre ?? null}

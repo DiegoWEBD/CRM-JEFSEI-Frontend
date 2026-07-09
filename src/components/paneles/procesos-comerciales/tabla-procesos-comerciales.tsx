@@ -56,7 +56,7 @@ export default function TablaProcesosComerciales({
   isFetching,
   onSeleccionar,
 }: TablaProcesosComercialesProps) {
-  if (isFetching && filas.length === 0) {
+  if (isFetching) {
     return <SkeletonTabla />
   }
 

@@ -14,7 +14,7 @@ export default function VisualizadorComisionEjecutivo({
 }: VisualizadorComisionEjecutivoProps) {
 	return (
 		<MetricaSmall icon={Coins} label='Comisión del mes' className='min-w-37'>
-			CLP{' '}
+			<span>UF </span>
 			{loading ? (
 				<Skeleton className='inline-block h-4 w-20 align-middle' />
 			) : (
