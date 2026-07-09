@@ -263,6 +263,7 @@ export default function SolicitudCotizacionTabContent({
 								<dt className='text-xs text-muted-foreground'>Cotización</dt>
 								<dd className='mt-1'>
 									<Badge
+										variant='outline'
 										className={ESTADO_COTIZACION_PERFIL_BADGE['cotizacion_generada']}
 									>
 										{ESTADO_COTIZACION_PERFIL_LABELS['cotizacion_generada']}
@@ -276,6 +277,7 @@ export default function SolicitudCotizacionTabContent({
 								<dt className='text-xs text-muted-foreground'>Estudio</dt>
 								<dd className='mt-1'>
 									<Badge
+										variant='outline'
 										className={ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']}
 									>
 										{ESTADO_ESTUDIO_PERFIL_LABELS['estudio_disponible']}

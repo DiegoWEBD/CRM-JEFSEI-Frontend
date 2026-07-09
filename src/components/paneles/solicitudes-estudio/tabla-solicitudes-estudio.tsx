@@ -88,7 +88,7 @@ export default function TablaSolicitudesEstudio({
 								<div className='mt-3 flex flex-wrap items-center gap-2'>
 									<BadgeEstadoSolicitud estado={estado} />
 									{s.recotizacion && (
-										<Badge className='border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800 dark:border-fuchsia-700 dark:bg-fuchsia-950 dark:text-fuchsia-200'>
+										<Badge variant='outline' className='border-fuchsia-500/35 bg-fuchsia-500/10 text-fuchsia-950 dark:text-fuchsia-100'>
 											Recotización
 										</Badge>
 									)}
@@ -174,7 +174,7 @@ export default function TablaSolicitudesEstudio({
 										<div className='flex flex-wrap items-center gap-1.5'>
 											<BadgeEstadoSolicitud estado={estado} />
 											{s.recotizacion && (
-												<Badge className='border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800 dark:border-fuchsia-700 dark:bg-fuchsia-950 dark:text-fuchsia-200'>
+												<Badge variant='outline' className='border-fuchsia-500/35 bg-fuchsia-500/10 text-fuchsia-950 dark:text-fuchsia-100'>
 													Recotización
 												</Badge>
 											)}

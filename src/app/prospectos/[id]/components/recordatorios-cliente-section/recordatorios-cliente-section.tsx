@@ -98,6 +98,7 @@ export default function RecordatoriosClienteSection({
 				nombre_riesgo: nombreCliente,
 				linea_negocio: '',
 				procesos_comerciales: [],
+				estado_general_cliente: 'prospecto',
 			},
 		],
 		[idProspecto, nombreCliente],

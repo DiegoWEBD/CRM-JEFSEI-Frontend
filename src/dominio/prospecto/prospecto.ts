@@ -22,4 +22,5 @@ export interface Prospecto {
 	planificacion_prospecto?: PlanificacionProspectoJson
 	ultima_actualizacion: string
 	informacion_completa: boolean
+	estado_general_cliente: string
 }

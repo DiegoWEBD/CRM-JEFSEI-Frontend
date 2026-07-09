@@ -1,4 +1,5 @@
 import { actualizarProspectoCondominio } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto-condominio/actualizar-prospecto-condominio'
+import { ActualizarProspectoCondominioRequest } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto-condominio/dto/requests/actualizar-prospecto-condominio-request'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -27,43 +28,8 @@ export const useFormularioActualizarProspectoCondominio = ({
 	const queryClient = useQueryClient()
 
 	const mutation = useMutation({
-		mutationFn: async (values: FormularioInitialValues) => {
-			await actualizarProspectoCondominio(prospecto.id, {
-				rut_riesgo: values.rut_riesgo ?? null,
-				nombre_riesgo: values.nombre_riesgo,
-				telefono_contacto: values.telefono_contacto ?? null,
-				correo_contacto: values.correo_contacto ?? null,
-				direccion: values.direccion ?? null,
-				region: values.region ?? null,
-				comuna: values.comuna ?? null,
-				observaciones: values.observaciones ?? null,
-				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? prospecto.linea_negocio.id,
-				uf_por_metro_cuadrado: n2(values.uf_por_metro_cuadrado),
-			porcentaje_depreciacion: (() => {
-				const n = n2(values.porcentaje_depreciacion)
-				return n == null ? null : n / 100
-			})(),
-			porcentaje_espacios_comunes: (() => {
-				const n = n2(values.porcentaje_espacios_comunes)
-				return n == null ? null : n / 100
-			})(),
-				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
-				uso_del_condominio: values.uso_del_condominio ?? null,
-				materialidad: values.materialidad ?? null,
-				clasificacion_preliminar_incendio:
-					values.clasificacion_preliminar_incendio ?? null,
-				procesos_productivos: values.procesos_productivos ?? null,
-				numero_pisos: n2(values.numero_pisos),
-				numero_torres: n2(values.numero_torres),
-				cantidad_departamentos: n2(values.cantidad_departamentos),
-				cantidad_subterraneos: n2(values.cantidad_subterraneos),
-				tiene_piscina: values.tiene_piscina ?? null,
-				ubicacion_piscina: values.ubicacion_piscina ?? null,
-				tiene_alarma_incendio: values.tiene_alarma_incendio ?? null,
-				tiene_sprinklers: values.tiene_sprinklers ?? null,
-				year_construccion: n2(values.year_construccion),
-				metros_cuadrados: n2(values.metros_cuadrados),
-			})
+		mutationFn: async (datos: ActualizarProspectoCondominioRequest) => {
+			await actualizarProspectoCondominio(prospecto.id, datos)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -126,7 +92,41 @@ export const useFormularioActualizarProspectoCondominio = ({
 				: prospecto.porcentaje_espacios_comunes * 100,
 		},
 		onSubmit: async values => {
-			await mutation.mutateAsync(values)
+			await mutation.mutateAsync({
+				rut_riesgo: values.rut_riesgo === '' ? null : (values.rut_riesgo ?? null),
+				nombre_riesgo: values.nombre_riesgo,
+				telefono_contacto: values.telefono_contacto === '' ? null : (values.telefono_contacto ?? null),
+				correo_contacto: values.correo_contacto === '' ? null : (values.correo_contacto ?? null),
+				direccion: values.direccion === '' ? null : (values.direccion ?? null),
+				region: values.region === '' ? null : (values.region ?? null),
+				comuna: values.comuna === '' ? null : (values.comuna ?? null),
+				observaciones: values.observaciones === '' ? null : (values.observaciones ?? null),
+				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? prospecto.linea_negocio.id,
+				uf_por_metro_cuadrado: n2(values.uf_por_metro_cuadrado),
+				porcentaje_depreciacion: (() => {
+					const n = n2(values.porcentaje_depreciacion)
+					return n == null ? null : n / 100
+				})(),
+				porcentaje_espacios_comunes: (() => {
+					const n = n2(values.porcentaje_espacios_comunes)
+					return n == null ? null : n / 100
+				})(),
+				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
+				uso_del_condominio: values.uso_del_condominio === '' ? null : (values.uso_del_condominio ?? null),
+				materialidad: values.materialidad === '' ? null : (values.materialidad ?? null),
+				clasificacion_preliminar_incendio: values.clasificacion_preliminar_incendio === '' ? null : (values.clasificacion_preliminar_incendio ?? null),
+				procesos_productivos: values.procesos_productivos ?? null,
+				numero_pisos: n2(values.numero_pisos),
+				numero_torres: n2(values.numero_torres),
+				cantidad_departamentos: n2(values.cantidad_departamentos),
+				cantidad_subterraneos: n2(values.cantidad_subterraneos),
+				tiene_piscina: values.tiene_piscina ?? null,
+				ubicacion_piscina: values.ubicacion_piscina === '' ? null : (values.ubicacion_piscina ?? null),
+				tiene_alarma_incendio: values.tiene_alarma_incendio ?? null,
+				tiene_sprinklers: values.tiene_sprinklers ?? null,
+				year_construccion: n2(values.year_construccion),
+				metros_cuadrados: n2(values.metros_cuadrados),
+			})
 			onComplete?.()
 		},
 		validationSchema,

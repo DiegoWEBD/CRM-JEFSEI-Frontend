@@ -8,4 +8,5 @@ export interface ProspectoResumenJson {
 	linea_negocio: string
 	ejecutivo_comercial?: string
 	procesos_comerciales: ProcesoComercialResumenJson[]
+	estado_general_cliente: string
 }

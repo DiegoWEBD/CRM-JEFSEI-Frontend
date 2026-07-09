@@ -1,6 +1,6 @@
 'use client'
 
-import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
+import { ESTADO_GENERAL_CLIENTE_BADGE, ESTADO_GENERAL_CLIENTE_LABELS, type EstadoGeneralCliente } from '@/lib/estados-cotizaciones'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/sheet'
@@ -29,7 +29,7 @@ export default function SheetClientesFiltrados({
 				</SheetHeader>
 				<div className='flex-1 space-y-2 overflow-y-auto p-4'>
 					{prospectos.map(prospecto => {
-						const primerEstado = prospecto.procesos_comerciales[0]
+						const estado = (prospecto.estado_general_cliente || 'prospecto') as EstadoGeneralCliente
 						return (
 							<div
 								key={prospecto.id}
@@ -46,23 +46,15 @@ export default function SheetClientesFiltrados({
 											</p>
 										)}
 										<div className='flex flex-wrap items-center gap-1.5 pt-0.5'>
-											{primerEstado ? (
-												<Badge
-													variant='outline'
-													className={cn(
-														'text-[10px] font-medium',
-														ESTADO_COMERCIAL_BADGE[
-															primerEstado.codigo_estado
-														],
-													)}
-												>
-													{primerEstado.nombre_estado}
-												</Badge>
-											) : (
-												<span className='text-[10px] text-muted-foreground'>
-													—
-												</span>
-											)}
+											<Badge
+												variant='outline'
+												className={cn(
+													'text-[10px] font-medium',
+													ESTADO_GENERAL_CLIENTE_BADGE[estado],
+												)}
+											>
+												{ESTADO_GENERAL_CLIENTE_LABELS[estado]}
+											</Badge>
 											<span className='text-[11px] text-muted-foreground'>
 												{prospecto.linea_negocio}
 											</span>

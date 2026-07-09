@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/dialog'
+import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { ScrollArea } from '@/components/scroll-area'
 import {
@@ -57,10 +58,10 @@ function FilaResumen({
 
 const ESTADO_COLORS: Record<string, string> = {
   vigente:
-    'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
+    'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
   por_vencer:
-    'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20',
-  vencida: 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20',
+    'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
+  vencida: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
 }
 
 function calcularEstado(fechaStr: string): string {
@@ -162,14 +163,15 @@ export default function DialogVerCotizaciones({
                       <span className='text-sm font-medium text-foreground'>
                         {c.company}
                       </span>
-                      <span
-                        className={cn(
-                          'mt-0.5 inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[9px] font-semibold leading-none',
-                          ESTADO_COLORS[ev],
-                        )}
-                      >
-                        {ESTADO_LABEL[ev]}
-                      </span>
+                      <Badge
+                          variant='outline'
+                          className={cn(
+                            'text-[10px] font-medium',
+                            ESTADO_COLORS[ev],
+                          )}
+                        >
+                          {ESTADO_LABEL[ev]}
+                        </Badge>
                     </div>
                     <div className='grid grid-cols-2 gap-x-3 gap-y-1.5 text-muted-foreground'>
                       <div>
@@ -321,14 +323,15 @@ export default function DialogVerCotizaciones({
                           {formatFecha(c.fecha_vencimiento)}
                         </TableCell>
                         <TableCell className='py-2'>
-                          <span
+                          <Badge
+                            variant='outline'
                             className={cn(
-                              'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
+                              'text-[10px] font-medium',
                               ESTADO_COLORS[ev],
                             )}
                           >
                             {ESTADO_LABEL[ev]}
-                          </span>
+                          </Badge>
                         </TableCell>
                         <TableCell className='py-2'>
                           {c.nombre_archivo && c.archivo_base64 && (

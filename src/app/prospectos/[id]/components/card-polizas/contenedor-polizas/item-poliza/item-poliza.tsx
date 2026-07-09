@@ -47,6 +47,7 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
             {poliza.numero_poliza}
           </Link>
           <Badge
+            variant='outline'
             className={cn(
               ESTADO_POLIZA_PERFIL_BADGE[poliza.estado],
               'shrink-0 text-[10px]',
@@ -91,6 +92,7 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
         </span>
         <div className='min-w-0'>
           <Badge
+            variant='outline'
             className={cn(
               ESTADO_POLIZA_PERFIL_BADGE[poliza.estado],
               'text-[10px] font-medium',
