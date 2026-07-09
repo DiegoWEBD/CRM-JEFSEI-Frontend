@@ -23,6 +23,8 @@ import {
 } from '@/hooks/prospectos/use-filtrar-prospectos'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
+import { DashboardCobranza } from '@/dominio/cobranza/dashboard-cobranza'
+import PanelCobranzaClient from '@/components/paneles/ejecutivo-cobranza/panel-cobranza-client'
 import CardProspectosClient from '../../prospectos/card-prospectos/card-prospectos-client'
 import CardKpi from '../ejecutivo-comercial/cards/card-kpi/card-kpi'
 import MetricasEjecutivoComercial from '../ejecutivo-comercial/metricas-ejecutivo-comercial/metricas-ejecutivo-comercial'
@@ -34,11 +36,13 @@ import PanelLayout from '../panel-layout/panel-layout'
 type PanelHomeClientProps = {
 	prospectosIniciales: ProspectoResumenJson[]
 	codigoRoles: string[]
+	dashboardCobranzaInicial?: DashboardCobranza
 }
 
 export default function PanelHomeClient({
 	prospectosIniciales,
 	codigoRoles,
+	dashboardCobranzaInicial,
 }: PanelHomeClientProps) {
 	const { data: prospectos } = useObtenerProspectos(prospectosIniciales)
 
@@ -48,6 +52,7 @@ export default function PanelHomeClient({
 	const esEjecutivoEvaluacion = codigoRoles.includes(
 		'EJECUTIVO_EVALUACION_PROYECTOS',
 	)
+	const esEjecutivoCobranza = codigoRoles.includes('EJECUTIVO_COBRANZA')
 
 	const { filtrosContados } = useFiltrosProspectos(prospectos)
 
@@ -250,7 +255,11 @@ export default function PanelHomeClient({
 					</>
 				)}
 
-				<CardProspectosClient prospectos={prospectos} />
+				{esEjecutivoCobranza && (
+					<PanelCobranzaClient dashboardInicial={dashboardCobranzaInicial} />
+				)}
+
+				{!esEjecutivoCobranza && <CardProspectosClient prospectos={prospectos} />}
 			</PanelHeader>
 
 			<CardCalendario prospectos={prospectos} />
