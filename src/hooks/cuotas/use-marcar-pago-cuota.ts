@@ -8,6 +8,7 @@ export const useMarcarPagoCuota = () => {
 		mutationFn: (idCuota: number) => marcarPagoCuota(idCuota),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['plan-pago'] })
+			queryClient.invalidateQueries({ queryKey: ['dashboard-cobranza'] })
 		},
 	})
 }
