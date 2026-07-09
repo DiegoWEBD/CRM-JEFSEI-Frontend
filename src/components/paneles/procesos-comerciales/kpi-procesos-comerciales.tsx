@@ -92,18 +92,18 @@ export default function KpiProcesosComerciales({
               }
             }}
             className={cn(
-              'cursor-pointer border-border bg-card shadow-none transition-colors hover:bg-muted/50',
+              'cursor-pointer border-border bg-card transition-all duration-150 hover:bg-muted/20 hover:-translate-y-0.5 hover:shadow-md',
               activa && 'border-primary/35 ring-1 ring-primary/15',
               KPI_COLORS[key],
             )}
           >
             <CardHeader className='pb-1 pt-3'>
-              <CardTitle className='text-xs font-medium leading-snug text-muted-foreground'>
+              <CardTitle className='text-[11px] font-semibold leading-snug text-foreground/70'>
                 {KPI_LABELS[key]}
               </CardTitle>
             </CardHeader>
             <CardContent className='pb-3 pt-0'>
-              <p className='text-2xl font-semibold tabular-nums text-foreground'>
+              <p className='text-3xl font-bold tabular-nums tracking-tight text-foreground'>
                 {value}
               </p>
             </CardContent>

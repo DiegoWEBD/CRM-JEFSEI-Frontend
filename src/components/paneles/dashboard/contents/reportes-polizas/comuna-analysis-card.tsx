@@ -60,7 +60,7 @@ export default function ComunaAnalysisCard({
   const sinDatosGeneral = !comunaActual || totalComuna === 0
 
   return (
-    <Card className='border-border bg-card shadow-none'>
+    <Card className='border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md'>
       <CardHeader className='flex flex-row items-center justify-between gap-2 space-y-0 pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>
           An&aacute;lisis de p&oacute;lizas por comuna y sexo

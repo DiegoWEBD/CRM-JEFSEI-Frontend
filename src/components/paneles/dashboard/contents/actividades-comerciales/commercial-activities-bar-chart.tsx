@@ -54,7 +54,7 @@ export default function CommercialActivitiesBarChart({
 
   if (chartData.length === 0 || chartData.every((d) => d.cantidad === 0)) {
     return (
-      <Card className={cn('border-border bg-card shadow-none', className)}>
+      <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
         <CardContent className='py-12 text-center text-xs text-muted-foreground'>
           Sin gestiones en el per&iacute;odo seleccionado.
         </CardContent>
@@ -63,7 +63,7 @@ export default function CommercialActivitiesBarChart({
   }
 
   return (
-    <Card className={cn('border-border bg-card shadow-none', className)}>
+    <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
       <CardHeader className='space-y-0 pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>Gestiones por tipo</CardTitle>
       </CardHeader>

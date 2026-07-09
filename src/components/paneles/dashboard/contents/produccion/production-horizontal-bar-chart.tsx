@@ -59,7 +59,7 @@ export function ProductionHorizontalBarChart({
 
   if (chartData.length === 0) {
     return (
-      <Card className={cn('border-border bg-card shadow-none', className)}>
+      <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
         <CardContent className='py-12 text-center text-xs text-muted-foreground'>
           No hay datos disponibles para este período
         </CardContent>
@@ -70,7 +70,7 @@ export function ProductionHorizontalBarChart({
   const altura = Math.max(180, chartData.length * 32)
 
   return (
-    <Card className={cn('border-border bg-card shadow-none', className)}>
+    <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
       <CardHeader className='space-y-0 pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>{title}</CardTitle>
         {description ? (

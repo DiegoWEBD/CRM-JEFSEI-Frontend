@@ -25,9 +25,9 @@ const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
 			href={href}
 			onClick={() => setOpen(false)}
 			className={classname(
-				'text-muted-foreground group flex h-11 w-full items-center gap-3 overflow-hidden rounded-md px-3 text-sm transition-all outline-hidden select-none',
+				'text-muted-foreground group relative flex h-11 w-full items-center gap-3 overflow-hidden rounded-md px-3 text-sm transition-all duration-150 outline-hidden select-none',
 				isActive
-					? 'bg-sidebar-primary/15 text-sidebar-primary font-medium'
+					? 'bg-sidebar-primary/10 text-sidebar-primary font-medium before:absolute before:left-0 before:top-1/2 before:h-5 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-sidebar-primary'
 					: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
 			)}
 		>

@@ -48,24 +48,26 @@ export default function KpiSolicitudesEstudio({
               }
             }}
             className={cn(
-              'cursor-pointer border-border bg-card shadow-none transition-colors hover:bg-muted/20',
+              'cursor-pointer border-border bg-card transition-all duration-150 hover:bg-muted/20 hover:-translate-y-0.5 hover:shadow-md',
               activa && 'border-primary/35 ring-1 ring-primary/15',
             )}
           >
-            <CardContent className='flex items-center gap-2.5 px-3 py-2.5'>
+            <CardContent className='flex items-center gap-3 px-3 py-3'>
               <div
                 className={cn(
-                  'flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border/70 bg-muted/25',
-                  activa && 'border-primary/30 bg-primary/[0.06]',
+                  'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
+                  activa
+                    ? 'bg-primary/10 text-primary'
+                    : 'bg-muted/50 text-muted-foreground',
                 )}
               >
-                <Icon className='h-3.5 w-3.5 text-muted-foreground' aria-hidden />
+                <Icon className='h-5 w-5' aria-hidden />
               </div>
               <div className='min-w-0 flex-1'>
-                <p className='line-clamp-2 text-[10px] font-medium leading-snug text-muted-foreground'>
+                <p className='line-clamp-2 text-[11px] font-semibold leading-snug text-foreground/70'>
                   {t.label}
                 </p>
-                <p className='mt-0.5 text-lg font-semibold tabular-nums leading-none text-foreground'>
+                <p className='mt-0.5 text-xl font-bold tabular-nums leading-none text-foreground'>
                   {value}
                 </p>
               </div>

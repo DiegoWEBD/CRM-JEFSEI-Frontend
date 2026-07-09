@@ -34,7 +34,7 @@ export default function PolicyDonutChart({
   const sinDatos = chartData.length === 0
 
   return (
-    <Card className={cn('border-border bg-card shadow-none', className)}>
+    <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
       <CardHeader className='space-y-0 pb-1 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>{title}</CardTitle>
       </CardHeader>

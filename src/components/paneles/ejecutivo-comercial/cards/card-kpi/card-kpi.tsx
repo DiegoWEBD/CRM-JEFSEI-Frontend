@@ -19,7 +19,7 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 			role='button'
 			tabIndex={0}
 			className={cn(
-				'cursor-pointer border-border bg-card shadow-none transition-colors hover:border-primary/40 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+				'cursor-pointer border-border bg-card transition-all duration-150 hover:border-primary/40 hover:bg-muted/20 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 				accentClassName,
 			)}
 			onClick={() => setKpiAbierto(datos.key)}
@@ -30,14 +30,16 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 				}
 			}}
 		>
-			<CardHeader className='flex flex-row items-start justify-between gap-1 space-y-0 pb-1 pt-3'>
-				<CardTitle className='line-clamp-3 min-h-10 text-[10px] font-medium leading-snug text-muted-foreground sm:text-[11px]'>
+			<CardHeader className='flex flex-row items-start justify-between gap-2 space-y-0 pb-1 pt-3'>
+				<CardTitle className='line-clamp-3 min-h-10 text-[11px] font-semibold leading-snug text-foreground/70 sm:text-xs'>
 					{datos.label}
 				</CardTitle>
-				<Icon className={cn('h-4 w-4 shrink-0 text-muted-foreground', iconClassName)} aria-hidden />
+				<div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/[0.08]'>
+					<Icon className={cn('h-4 w-4 text-primary', iconClassName)} aria-hidden />
+				</div>
 			</CardHeader>
 			<CardContent className='space-y-1.5 pb-3 pt-0'>
-				<p className='text-2xl font-semibold tabular-nums text-foreground'>
+				<p className='text-3xl font-bold tabular-nums tracking-tight text-foreground'>
 					{datos.value}
 				</p>
 				{datos.infoAdicional != null && datos.infoAdicional > 0 ? (

@@ -22,7 +22,7 @@ const SideBarClient = ({ children }: Props) => {
 
 			<aside
 				className={classname(
-					'bg-sidebar text-sidebar-foreground z-40 border-r border-border fixed top-0 left-0 h-full w-64 transform transition-transform duration-300',
+					'bg-sidebar text-sidebar-foreground z-40 border-r border-border/60 fixed top-0 left-0 h-full w-64 shadow-sm transform transition-transform duration-300',
 					open ? 'translate-x-0' : '-translate-x-full',
 					'lg:translate-x-0 lg:static lg:h-auto',
 				)}

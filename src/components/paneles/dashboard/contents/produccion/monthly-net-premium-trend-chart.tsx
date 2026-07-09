@@ -69,7 +69,7 @@ export default function MonthlyNetPremiumTrendChart({ data, className }: Monthly
   const tieneAlgunDato = serie.some((p) => p.prima_neta > 0)
 
   return (
-    <Card className={cn('border-border bg-card shadow-none', className)}>
+    <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
       <CardHeader className='pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>
           Evolución mensual de prima neta
