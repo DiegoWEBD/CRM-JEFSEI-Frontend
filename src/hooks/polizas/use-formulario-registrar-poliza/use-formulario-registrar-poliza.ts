@@ -30,7 +30,7 @@ export const useFormularioRegistrarPoliza = ({
           tipo: values.tipo,
           id_company: values.id_company,
           prima_neta: values.prima_neta,
-          comision_corredora_pct: values.comision_corredora_pct,
+          comision_corredora_pct: values.comision_corredora_pct / 100,
           fecha_emision: values.fecha_emision,
           inicio_vigencia: values.inicio_vigencia,
           fin_vigencia: values.fin_vigencia,
@@ -63,6 +63,7 @@ export const useFormularioRegistrarPoliza = ({
     comision_corredora_pct: Yup.number()
       .typeError('Ingresa un valor numérico')
       .min(0, 'No puede ser negativo')
+      .max(100, 'No puede ser mayor a 100')
       .required('El % de comisión es obligatorio'),
     fecha_emision: Yup.string().required('La fecha de emisión es obligatoria'),
     inicio_vigencia: Yup.string().required('La fecha de inicio es obligatoria'),
