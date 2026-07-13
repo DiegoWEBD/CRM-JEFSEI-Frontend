@@ -13,6 +13,9 @@ export async function getSession() {
 			Buffer.from(token.split('.')[1], 'base64').toString(),
 		)
 
+		const nowInSeconds = Math.floor(Date.now() / 1000)
+		if (payload.exp < nowInSeconds) return null
+
 		return payload
 	} catch {
 		return null

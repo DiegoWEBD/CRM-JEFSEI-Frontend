@@ -1,10 +1,10 @@
 'use client'
 
-import { FileWarning, ClipboardList, ClipboardCheck, type LucideIcon } from 'lucide-react'
+import { FileWarning, ClipboardList, ClipboardCheck, FileCheck, type LucideIcon } from 'lucide-react'
 import { Card, CardContent } from '@/components/card'
 import { cn } from '@/lib/utils'
 
-export type TarjetaActiva = 'todas' | 'informacion_incompleta' | 'lista_para_cotizar' | 'con_cotizaciones'
+export type TarjetaActiva = 'todas' | 'informacion_incompleta' | 'lista_para_cotizar' | 'con_cotizaciones' | 'estudio_emitido'
 
 type TarjetaConfig = {
   key: Exclude<TarjetaActiva, 'todas'>
@@ -16,6 +16,7 @@ const TARJETAS: TarjetaConfig[] = [
   { key: 'informacion_incompleta', label: 'Con información incompleta', icon: FileWarning },
   { key: 'lista_para_cotizar', label: 'Listas para cotizar', icon: ClipboardList },
   { key: 'con_cotizaciones', label: 'Cotizaciones emitidas', icon: ClipboardCheck },
+  { key: 'estudio_emitido', label: 'Estudios emitidos', icon: FileCheck },
 ]
 
 type KpiSolicitudesEstudioProps = {
@@ -30,7 +31,7 @@ export default function KpiSolicitudesEstudio({
   onToggleTarjeta,
 }: KpiSolicitudesEstudioProps) {
   return (
-    <div className='grid grid-cols-2 gap-2 lg:grid-cols-3'>
+    <div className='grid grid-cols-2 gap-2 lg:grid-cols-4'>
       {TARJETAS.map((t) => {
         const Icon = t.icon
         const value = conteos[t.key] ?? 0

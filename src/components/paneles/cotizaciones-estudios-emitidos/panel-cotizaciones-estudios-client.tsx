@@ -14,9 +14,7 @@ import FiltrosCotizacionesEstudios, {
 import TablaCotizacionesEstudios from './tabla-cotizaciones-estudios'
 import DialogVerCotizaciones from './dialog-ver-cotizaciones'
 
-type DialogState =
-	| { type: 'cotizaciones'; fila: PanelEstudioFila }
-	| null
+type DialogState = { type: 'cotizaciones'; fila: PanelEstudioFila } | null
 
 function buildConteos(filas: PanelEstudioFila[]): Record<string, number> {
 	const conteos: Record<string, number> = {
@@ -24,13 +22,13 @@ function buildConteos(filas: PanelEstudioFila[]): Record<string, number> {
 		por_vencer: 0,
 		vencidas: 0,
 		estudios_pendientes: 0,
-		estudios_finales: 0,
+		estudios_finales_emitidos: 0,
 	}
 	for (const f of filas) {
 		if (f.estado_vencimiento === 'vigente') conteos.vigentes++
 		else if (f.estado_vencimiento === 'por_vencer') conteos.por_vencer++
 		else if (f.estado_vencimiento === 'vencida') conteos.vencidas++
-		if (f.tiene_estudio) conteos.estudios_finales++
+		if (f.tiene_estudio) conteos.estudios_finales_emitidos++
 		else conteos.estudios_pendientes++
 	}
 	return conteos

@@ -33,7 +33,7 @@ type FiltrosSolicitudesEstudioProps = {
   filtrados: number
 }
 
-const ESTADOS = ['informacion_incompleta', 'lista_para_cotizar', 'con_cotizaciones'] as const
+const ESTADOS = ['informacion_incompleta', 'lista_para_cotizar', 'con_cotizaciones', 'estudio_emitido'] as const
 
 const PRIORIDADES: Prioridad[] = ['alta', 'normal']
 

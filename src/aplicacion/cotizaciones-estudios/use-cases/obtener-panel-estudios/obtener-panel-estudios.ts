@@ -4,6 +4,7 @@ import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/s
 import Cotizacion from '@/dominio/cotizacion/cotizacion'
 import { EstudioComercialCondominioResumen } from '@/aplicacion/estudio-comercial/use-cases/listar-estudios-comerciales/dto/estudio-comercial-condominio-resumen'
 import { PanelEstudioFila } from '../../dto/panel-estudio-fila'
+import { listarEstudiosComerciales } from '@/aplicacion/estudio-comercial/use-cases/listar-estudios-comerciales/listar-estudios-comerciales'
 
 function calcularEstadoVencimiento(
 	fechaStr: string | null,
@@ -28,25 +29,21 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 	const solicitudes: SolicitudCotizacionResumen[] =
 		solicitudesResponse.data.solicitudes ?? solicitudesResponse.data
 
-	const prospectoIds = [...new Set(solicitudes.map(s => s.id_prospecto))]
-
-	const estudiosPorProspecto = new Map<
+	const estudiosPorSolicitud = new Map<
 		number,
 		EstudioComercialCondominioResumen | null
 	>()
+
 	await Promise.all(
-		prospectoIds.map(async pid => {
+		solicitudes.map(async solicitud => {
 			try {
-				const res = await axiosClient.get(
-					`/estudio-comercial?prospecto_id=${pid}`,
-					{
-						headers: { Cookie: cookie },
-					},
+				const estudios = await listarEstudiosComerciales(solicitud.id)
+				estudiosPorSolicitud.set(
+					solicitud.id,
+					estudios.length > 0 ? estudios[0] : null,
 				)
-				const estudios: EstudioComercialCondominioResumen[] = res.data
-				estudiosPorProspecto.set(pid, estudios.length > 0 ? estudios[0] : null)
 			} catch {
-				estudiosPorProspecto.set(pid, null)
+				estudiosPorSolicitud.set(solicitud.id, null)
 			}
 		}),
 	)
@@ -81,7 +78,7 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 				? fechasVencimiento.reduce((a, b) => (a < b ? a : b))
 				: null
 
-		const estudio = estudiosPorProspecto.get(s.id_prospecto) ?? null
+		const estudio = estudiosPorSolicitud.get(s.id) ?? null
 
 		return {
 			id: s.id,
@@ -94,7 +91,7 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 			fecha: s.fecha,
 			vencimiento_mas_proximo: vencimientoMasProximo,
 			estado_vencimiento: calcularEstadoVencimiento(vencimientoMasProximo),
-			tiene_estudio: estudio !== null,
+			tiene_estudio: s.estudio_disponible,
 			id_estudio: estudio?.id ?? null,
 		}
 	})

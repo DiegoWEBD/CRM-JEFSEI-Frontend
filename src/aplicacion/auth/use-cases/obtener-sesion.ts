@@ -1,10 +1,10 @@
 import { TokenPayload } from '@/dtos/token-payload'
-import axios from 'axios'
 
 export const obtenerSesion = async (): Promise<TokenPayload | null> => {
 	try {
-		const response = await axios.get('/api/auth/get-session')
-		const data: TokenPayload = response.data
+		const response = await fetch('/api/auth/get-session')
+		if (!response.ok) return null
+		const data: TokenPayload = await response.json()
 
 		return data
 	} catch {

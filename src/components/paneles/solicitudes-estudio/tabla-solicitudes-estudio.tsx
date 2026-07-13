@@ -26,6 +26,7 @@ function resolverEstadoBandeja(
 	s: SolicitudCotizacionResumen,
 ): EstadoSolicitudBandeja {
 	if (!s.informacion_completa) return 'informacion_incompleta'
+	if (s.estudio_disponible) return 'estudio_emitido'
 	if (s.cantidad_cotizaciones > 0) return 'con_cotizaciones'
 	return 'lista_para_cotizar'
 }

@@ -21,6 +21,7 @@ function extraerMensaje(data: unknown): string {
 
 function notificarError(error: Error) {
   if (axios.isAxiosError(error)) {
+    if (error.response?.status === 401) return
     const detail = error.response?.data?.detail
     const mensaje = Array.isArray(detail)
       ? extraerMensaje(detail)
