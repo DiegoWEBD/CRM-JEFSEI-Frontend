@@ -24,6 +24,7 @@ type OportunidadItemProps = {
 	lineaNegocioNombre: string
 	ejecutivoComercialRut?: string
 	ejecutivoEvaluacionRut?: string
+	ejecutivoRenovacionRut?: string
 }
 
 export default function OportunidadItem({
@@ -35,6 +36,7 @@ export default function OportunidadItem({
 	lineaNegocioNombre,
 	ejecutivoComercialRut,
 	ejecutivoEvaluacionRut,
+	ejecutivoRenovacionRut,
 }: OportunidadItemProps) {
 	const { usuario } = useUserSession()
 	const [expandido, setExpandido] = useState(false)
@@ -71,13 +73,15 @@ export default function OportunidadItem({
 							{proceso.producto}
 						</span>
 
-					<Badge
-						variant={ESTADO_COMERCIAL_BADGE[
-							proceso.estado_actual
-								.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-						] ?? 'outline'}
-						className='shrink-0 px-2 py-0.5 text-[10px] font-semibold leading-none'
-					>
+						<Badge
+							variant={
+								ESTADO_COMERCIAL_BADGE[
+									proceso.estado_actual
+										.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
+								] ?? 'outline'
+							}
+							className='shrink-0 px-2 py-0.5 text-[10px] font-semibold leading-none'
+						>
 							{ESTADO_PROSPECTO_LABELS[
 								proceso.estado_actual
 									.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
@@ -148,7 +152,8 @@ export default function OportunidadItem({
 							</p>
 						)}
 
-						{!proceso.cerrado && usuario?.rut === ejecutivoComercialRut ? (
+						{(!proceso.cerrado && usuario?.rut === ejecutivoComercialRut) ||
+						usuario?.rut === ejecutivoRenovacionRut ? (
 							<div className='mt-2 flex flex-col gap-2 border-t border-border/30 pt-2 sm:flex-row sm:items-center'>
 								<Button
 									type='button'

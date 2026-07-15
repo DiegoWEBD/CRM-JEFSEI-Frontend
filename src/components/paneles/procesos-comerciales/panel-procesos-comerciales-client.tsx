@@ -73,7 +73,7 @@ export default function PanelProcesosComercialesClient({
     etapa: TODOS,
   })
 
-  const data = reportes
+  const data = reportes ?? []
 
   const conteos = useMemo(() => buildConteos(data), [data])
 

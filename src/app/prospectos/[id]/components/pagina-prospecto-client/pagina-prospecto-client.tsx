@@ -59,6 +59,7 @@ export default function PaginaProspectoClient({
 				allowedRoles={[
 					'EJECUTIVO_COMERCIAL',
 					'EJECUTIVO_EVALUACION_PROYECTOS',
+					'EJECUTIVO_RENOVACION',
 					'GERENTE_GENERAL',
 					'GERENTE_COMERCIAL',
 					'GERENTE_OPERACIONES',
@@ -73,6 +74,7 @@ export default function PaginaProspectoClient({
 					lineaNegocioNombre={prospecto.linea_negocio.nombre}
 					ejecutivoComercialRut={prospecto.ejecutivo_comercial_asignado?.rut}
 					ejecutivoEvaluacionRut={prospecto.ejecutivo_evaluacion_asignado?.rut}
+					ejecutivoRenovacionRut={prospecto.ejecutivo_renovacion_asignado?.rut}
 				/>
 			</AuthGuard>
 
