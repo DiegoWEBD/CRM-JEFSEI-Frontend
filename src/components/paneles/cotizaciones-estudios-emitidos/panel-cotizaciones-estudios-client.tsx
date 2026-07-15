@@ -119,12 +119,6 @@ export default function PanelCotizacionesEstudiosClient({
 
 	return (
 		<PanelLayout>
-			{isFetching && (
-				<div className='mb-2 text-xs text-muted-foreground'>
-					Actualizando...
-				</div>
-			)}
-
 			<KpiCotizacionesEstudios
 				conteos={conteos}
 				tarjetaActiva={tarjetaActiva}

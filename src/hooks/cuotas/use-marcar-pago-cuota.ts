@@ -9,6 +9,7 @@ export const useMarcarPagoCuota = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['plan-pago'] })
 			queryClient.invalidateQueries({ queryKey: ['dashboard-cobranza'] })
+			queryClient.invalidateQueries({ queryKey: ['recordatorios'] })
 		},
 	})
 }

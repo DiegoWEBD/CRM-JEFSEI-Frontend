@@ -84,12 +84,12 @@ const ESTADO_CONTACTO_LABELS: Record<string, string> = {
 }
 
 const ESTADO_CONTACTO_PROXIMA_ACCION: Record<string, string> = {
-	no_contesta: 'Se intentará contactar nuevamente en 2 horas.',
-	pide_contacto_despues: 'Se agendará contacto según lo solicitado.',
-	'pendiente de respuesta': 'Se esperará respuesta del cliente.',
+	no_contesta: 'Se agendará una llamada cada 3 días por 5 semanas.',
+	pide_contacto_despues: 'Se agendará una llamada cada 4 días por 5 semanas.',
+	'pendiente de respuesta': 'Se agendará una llamada cada 3 días por 5 semanas.',
 	'no interesado por ahora':
-		'Se registrará como frío y se contactará en 30 días.',
-	'sin respuesta tras seguimiento': 'Se archiva en base de datos fría.',
+		'Se agendará una llamada dentro de 2 meses.',
+	'sin respuesta tras seguimiento': 'Se agendará una llamada dentro de 2 meses.',
 }
 
 const ESTADO_BADGE: Record<string, string> = {

@@ -60,7 +60,7 @@ type PanelProcesosComercialesClientProps = {
 export default function PanelProcesosComercialesClient({
   initialData,
 }: PanelProcesosComercialesClientProps) {
-  const { data: reportes, isFetching } = useReportesProcesosComerciales({})
+  const { data: reportes, isFetching } = useReportesProcesosComerciales({}, initialData)
 
   const [drawerAbierto, setDrawerAbierto] = useState(false)
   const [filaSeleccionada, setFilaSeleccionada] =
@@ -73,7 +73,7 @@ export default function PanelProcesosComercialesClient({
     etapa: TODOS,
   })
 
-  const data = reportes ?? initialData
+  const data = reportes
 
   const conteos = useMemo(() => buildConteos(data), [data])
 
@@ -122,12 +122,6 @@ export default function PanelProcesosComercialesClient({
 
   return (
     <PanelLayout>
-      {isFetching && (
-        <div className='mb-2 text-xs text-muted-foreground'>
-          Actualizando...
-        </div>
-      )}
-
       <KpiProcesosComerciales
         conteos={conteos}
         tarjetaActiva={tarjetaActiva}

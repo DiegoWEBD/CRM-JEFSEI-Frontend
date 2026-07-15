@@ -7,6 +7,7 @@ import axios from 'axios'
 
 export const useReportesProcesosComerciales = (
 	filtros: FiltrosProcesosComerciales,
+	initialData?: ReporteProcesoComercial[],
 ) => {
 	return useQuery<ReporteProcesoComercial[]>({
 		queryKey: ['reportes-procesos-comerciales', filtros],
@@ -17,5 +18,7 @@ export const useReportesProcesosComerciales = (
 			)
 			return response.data
 		},
+		initialData,
+		staleTime: 60000,
 	})
 }

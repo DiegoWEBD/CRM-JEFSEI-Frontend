@@ -11,6 +11,7 @@ export const useRegistrarGestionComercial = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['gestiones-comerciales'] })
       queryClient.invalidateQueries({ queryKey: ['gestion-comercial-final'] })
+      queryClient.invalidateQueries({ queryKey: ['proximo-contacto'] })
     },
   })
 }

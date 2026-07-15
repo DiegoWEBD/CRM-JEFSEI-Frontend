@@ -56,6 +56,7 @@ import {
 	Phone,
 	Building2,
 } from 'lucide-react'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 
 function InicialesUsuario({ nombre }: { nombre: string }) {
 	const iniciales = nombre
@@ -230,14 +231,16 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 					</span>
 				</div>
 
-				<Button
-					size='sm'
-					className='h-9 text-xs'
-					onClick={() => setRegistrarAbierto(true)}
-				>
-					<UserPlus className='mr-1.5 size-3.5' />
-					Registrar usuario
-				</Button>
+				<AuthGuard allowedRoles={['GERENTE_GENERAL']}>
+					<Button
+						size='sm'
+						className='h-9 text-xs'
+						onClick={() => setRegistrarAbierto(true)}
+					>
+						<UserPlus className='mr-1.5 size-3.5' />
+						Registrar usuario
+					</Button>
+				</AuthGuard>
 			</div>
 
 			<div className='relative'>
@@ -270,7 +273,9 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 								key={usuario.rut}
 								usuario={usuario}
 								onVerDetalle={setUsuarioDetalle}
-								onEliminar={tieneRol('GERENTE_GENERAL') ? setUsuarioAEliminar : undefined}
+								onEliminar={
+									tieneRol('GERENTE_GENERAL') ? setUsuarioAEliminar : undefined
+								}
 							/>
 						))}
 					</div>
