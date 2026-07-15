@@ -3,7 +3,7 @@ import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import Recordatorio from '@/dominio/recordatorio/recordatorio'
-import { classname } from '@/lib/class-name'
+
 import {
 	etiquetaTipoRecordatorio,
 	prioridadReminderStyles,
@@ -52,12 +52,10 @@ export default function CardRecordatorio({
 				<p className='text-xs font-medium leading-snug text-foreground'>
 					{recordatorio.titulo}
 				</p>
-				<Badge
-					className={classname(
-						'shrink-0 px-1 py-0 text-[9px]',
-						reminderStatusStyles[recordatorio.estado],
-					)}
-				>
+			<Badge
+				variant={reminderStatusStyles[recordatorio.estado]}
+				className='shrink-0 px-1 py-0 text-[9px]'
+			>
 					{reminderStatusLabel[recordatorio.estado]}
 				</Badge>
 			</div>
@@ -79,13 +77,10 @@ export default function CardRecordatorio({
 					{badgePrincipal.label}
 				</Badge>
 				)}
-				<Badge
-					variant='outline'
-					className={classname(
-						'h-5 px-1.5 text-[9px]',
-						prioridadReminderStyles[prio],
-					)}
-				>
+			<Badge
+				variant={prioridadReminderStyles[prio]}
+				className='h-5 px-1.5 text-[9px]'
+			>
 					{prio}
 				</Badge>
 			</div>

@@ -24,13 +24,7 @@ export function esRecordatorioAsociadoACliente(
 	return Boolean(reminder.clientId?.trim())
 }
 
-export const reminderStatusStyles: Record<SharedReminderStatus, string> = {
-	atrasado: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
-	pendiente:
-		'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-	realizado:
-		'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-}
+export { REMINDER_STATUS_VARIANT as reminderStatusStyles } from '@/lib/badge-variants'
 
 export const reminderStatusLabel: Record<SharedReminderStatus, string> = {
 	atrasado: 'Vencido',
@@ -86,10 +80,7 @@ export const prioridadReminderLabel: Record<SharedReminderPriority, string> = {
 	alta: 'Alta',
 }
 
-export const prioridadReminderStyles: Record<SharedReminderPriority, string> = {
-	normal: 'border-blue-500/35 bg-blue-500/10 text-blue-950 dark:text-blue-100',
-	alta: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
-}
+export { REMINDER_PRIORITY_VARIANT as prioridadReminderStyles } from '@/lib/badge-variants'
 
 /** Normaliza un recordatorio persistido (compatibilidad con versiones anteriores). */
 export function normalizarRecordatorio(

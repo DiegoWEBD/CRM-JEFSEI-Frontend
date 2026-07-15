@@ -71,16 +71,13 @@ export default function OportunidadItem({
 							{proceso.producto}
 						</span>
 
-						<Badge
-							variant='outline'
-							className={cn(
-								'shrink-0 px-2 py-0.5 text-[10px] font-semibold leading-none',
-								ESTADO_COMERCIAL_BADGE[
-									proceso.estado_actual
-										.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-								] ?? 'border-border bg-muted/50 text-muted-foreground',
-							)}
-						>
+					<Badge
+						variant={ESTADO_COMERCIAL_BADGE[
+							proceso.estado_actual
+								.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
+						] ?? 'outline'}
+						className='shrink-0 px-2 py-0.5 text-[10px] font-semibold leading-none'
+					>
 							{ESTADO_PROSPECTO_LABELS[
 								proceso.estado_actual
 									.codigo as keyof typeof ESTADO_PROSPECTO_LABELS

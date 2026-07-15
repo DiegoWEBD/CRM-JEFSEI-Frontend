@@ -25,6 +25,7 @@ import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
 import { useArmarEstudioComercial } from '@/hooks/estudio-comercial/use-armar-estudio-comercial'
 import { useUfValue } from '@/hooks/uf/use-uf-value'
 import { cn } from '@/lib/utils'
+import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
 import { useFormik } from 'formik'
 import { Loader2, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -36,13 +37,6 @@ function formatFecha(iso: string) {
 		month: 'short',
 		year: 'numeric',
 	})
-}
-
-const ESTADO_VENC_COLORS: Record<string, string> = {
-	vigente:
-		'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-	por_vencer: 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-	vencida: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
 }
 
 function calcularEstadoVenc(fechaStr: string): string {
@@ -320,11 +314,8 @@ export default function DialogGenerarEstudio({
 															Vence: {formatFecha(op.fecha_vencimiento)}
 														</p>
 														<Badge
-															variant='outline'
-															className={cn(
-																'text-[10px] font-medium',
-																ESTADO_VENC_COLORS[ev],
-															)}
+															variant={VENCIMIENTO_VARIANT[ev]}
+															className='text-[10px] font-medium'
 														>
 															{ev === 'vigente' && 'Vigente'}
 															{ev === 'por_vencer' && 'Por vencer'}

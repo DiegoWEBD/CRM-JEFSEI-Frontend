@@ -12,14 +12,8 @@ export default function BadgeEstadoEstudio({
 }: BadgeEstadoEstudioProps) {
   return (
     <Badge
-      variant='outline'
-      className={cn(
-        'text-[10px] font-medium',
-        tieneEstudio
-          ? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100'
-          : 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-        className,
-      )}
+      variant={tieneEstudio ? 'pastel-emerald' : 'pastel-amber'}
+      className={cn('text-[10px] font-medium', className)}
     >
       {tieneEstudio ? 'Disponible' : 'Pendiente'}
     </Badge>

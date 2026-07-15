@@ -22,7 +22,7 @@ import { useAsignarEjecutivoEvaluacion } from '@/hooks/prospectos/use-asignar-ej
 import { useAsignarEjecutivoRenovacion } from '@/hooks/prospectos/use-asignar-ejecutivo-renovacion'
 import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 type AsignarEjecutivoDialogProps = {
@@ -42,22 +42,22 @@ const ROLE_MAP: Record<string, string> = {
 }
 
 const TITLES: Record<string, string> = {
-	comercial: 'Asignar ejecutivo comercial',
-	evaluacion: 'Asignar ejecutivo de evaluación',
+	comercial: 'Asignar gestión comercial',
+	evaluacion: 'Asignar evaluación técnica',
 	cobranza: 'Asignar ejecutivo de cobranza',
 	renovacion: 'Asignar ejecutivo de renovación',
 }
 
 const SUCCESS_MESSAGES: Record<string, string> = {
-	comercial: 'Ejecutivo comercial asignado',
-	evaluacion: 'Ejecutivo de evaluación asignado',
+	comercial: 'Gestión comercial asignada',
+	evaluacion: 'Evaluación técnica asignada',
 	cobranza: 'Ejecutivo de cobranza asignado',
 	renovacion: 'Ejecutivo de renovación asignado',
 }
 
 const ERROR_MESSAGES: Record<string, string> = {
-	comercial: 'Error al asignar ejecutivo comercial',
-	evaluacion: 'Error al asignar ejecutivo de evaluación',
+	comercial: 'Error al asignar gestión comercial',
+	evaluacion: 'Error al asignar evaluación técnica',
 	cobranza: 'Error al asignar ejecutivo de cobranza',
 	renovacion: 'Error al asignar ejecutivo de renovación',
 }
@@ -74,8 +74,14 @@ export default function AsignarEjecutivoDialog({
 
 	const mutationComercial = useAsignarEjecutivoComercial(idProspecto)
 	const mutationEvaluacion = useAsignarEjecutivoEvaluacion(idProspecto)
-	const mutationCobranza = useAsignarEjecutivoCobranza(idProspecto, idCliente ?? 0)
-	const mutationRenovacion = useAsignarEjecutivoRenovacion(idProspecto, idCliente ?? 0)
+	const mutationCobranza = useAsignarEjecutivoCobranza(
+		idProspecto,
+		idCliente ?? 0,
+	)
+	const mutationRenovacion = useAsignarEjecutivoRenovacion(
+		idProspecto,
+		idCliente ?? 0,
+	)
 
 	const [rutSeleccionado, setRutSeleccionado] = useState(ejecutivoActual ?? '')
 
@@ -88,9 +94,16 @@ export default function AsignarEjecutivoDialog({
 					? mutationCobranza
 					: mutationRenovacion
 
-	const rolesFiltro = tipo === 'evaluacion'
-		? ['EJECUTIVO_COMERCIAL', 'EJECUTIVO_EVALUACION_PROYECTOS']
-		: [ROLE_MAP[tipo]]
+	const rolesFiltro = useMemo(() => {
+		if (tipo === 'comercial' || tipo === 'evaluacion')
+			return [
+				'EJECUTIVO_COMERCIAL',
+				'EJECUTIVO_EVALUACION_PROYECTOS',
+				'GERENTE_GENERAL',
+				'GERENTE_COMERCIAL',
+			]
+		return [ROLE_MAP[tipo]]
+	}, [tipo])
 
 	const usuariosFiltrados = (usuarios ?? []).filter(u =>
 		u.roles.some(r => rolesFiltro.includes(r.codigo)),
@@ -142,7 +155,10 @@ export default function AsignarEjecutivoDialog({
 								<SelectValue placeholder='Seleccione ejecutivo' />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value='__none__' className='text-sm text-muted-foreground'>
+								<SelectItem
+									value='__none__'
+									className='text-sm text-muted-foreground'
+								>
 									Sin ejecutivo
 								</SelectItem>
 								{usuariosFiltrados.map(u => (

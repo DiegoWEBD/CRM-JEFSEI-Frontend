@@ -67,9 +67,9 @@ function descargarPDF(base64: string, nombreArchivo: string) {
 
 const ESTADO_VENC_COLORS: Record<string, string> = {
 	vigente:
-		'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
-	por_vencer: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20',
-	vencida: 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20',
+		'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
+	por_vencer: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
+	vencida: 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300',
 }
 
 const ESTADO_VENC_LABELS: Record<string, string> = {
@@ -262,10 +262,9 @@ export default function SolicitudCotizacionTabContent({
 							<div>
 								<dt className='text-xs text-muted-foreground'>Cotización</dt>
 								<dd className='mt-1'>
-									<Badge
-										variant='outline'
-										className={ESTADO_COTIZACION_PERFIL_BADGE['cotizacion_generada']}
-									>
+								<Badge
+									variant={ESTADO_COTIZACION_PERFIL_BADGE['cotizacion_generada']}
+								>
 										{ESTADO_COTIZACION_PERFIL_LABELS['cotizacion_generada']}
 									</Badge>
 								</dd>
@@ -276,10 +275,9 @@ export default function SolicitudCotizacionTabContent({
 							<div>
 								<dt className='text-xs text-muted-foreground'>Estudio</dt>
 								<dd className='mt-1'>
-									<Badge
-										variant='outline'
-										className={ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']}
-									>
+								<Badge
+									variant={ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']}
+								>
 										{ESTADO_ESTUDIO_PERFIL_LABELS['estudio_disponible']}
 									</Badge>
 								</dd>

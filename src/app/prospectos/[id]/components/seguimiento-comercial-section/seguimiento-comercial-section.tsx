@@ -38,7 +38,7 @@ import { useObtenerUltimaGestionComercial } from '@/hooks/gestion-comercial/use-
 import { useRegistrarGestionComercial } from '@/hooks/gestion-comercial/use-registrar-gestion-comercial'
 import { useProximoContacto } from '@/hooks/recordatorios/use-proximo-contacto'
 import { useRegistrarRecordatorio } from '@/hooks/recordatorios/use-registrar-recordatorio'
-import { cn } from '@/lib/utils'
+import { SEGUIMIENTO_VARIANT } from '@/lib/badge-variants'
 
 const SECTION_TITLE =
 	'text-sm font-semibold leading-tight tracking-tight text-foreground'
@@ -90,13 +90,6 @@ const ESTADO_CONTACTO_PROXIMA_ACCION: Record<string, string> = {
 	'no interesado por ahora':
 		'Se agendará una llamada dentro de 2 meses.',
 	'sin respuesta tras seguimiento': 'Se agendará una llamada dentro de 2 meses.',
-}
-
-const ESTADO_BADGE: Record<string, string> = {
-	sin_iniciado:
-		'border-slate-500/35 bg-slate-500/10 text-slate-900 dark:text-slate-100',
-	en_seguimiento:
-		'border-blue-500/35 bg-blue-500/10 text-blue-950 dark:text-blue-100',
 }
 
 const ESTADO_SEGUIMIENTO_LABELS: Record<string, string> = {
@@ -305,15 +298,12 @@ export default function SeguimientoComercialSection({
 						<div className='space-y-4'>
 							<div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
 								<ResumenItem label='Estado del seguimiento'>
-									<Badge
-										variant='outline'
-										className={cn(
-											'text-[10px] font-medium',
-											ESTADO_BADGE[estadoSeguimiento],
-										)}
-									>
-										{ESTADO_SEGUIMIENTO_LABELS[estadoSeguimiento]}
-									</Badge>
+								<Badge
+									variant={SEGUIMIENTO_VARIANT[estadoSeguimiento]}
+									className='text-[10px] font-medium'
+								>
+									{ESTADO_SEGUIMIENTO_LABELS[estadoSeguimiento]}
+								</Badge>
 								</ResumenItem>
 								<ResumenItem label='Última gestión realizada'>
 									{ultimaGestionTexto}

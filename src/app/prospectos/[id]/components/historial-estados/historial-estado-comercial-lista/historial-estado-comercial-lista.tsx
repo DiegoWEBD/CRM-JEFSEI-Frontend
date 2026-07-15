@@ -1,7 +1,7 @@
 import { HistorialEstadoJson } from '@/aplicacion/estados/dto/historial-estado-json'
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { Badge } from '@/components/badge'
-import { classname } from '@/lib/class-name'
+
 import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { formatearFecha } from '@/utils/formatear-fecha'
 
@@ -36,13 +36,10 @@ export function HistorialEstadoComercialLista({
 							<span className='text-muted-foreground'>—</span>
 						)}
 						<span className='text-muted-foreground'>→</span>
-						<Badge
-							variant='outline'
-							className={classname(
-								'text-[10px] font-medium',
-								ESTADO_COMERCIAL_BADGE[item.estado_actual],
-							)}
-						>
+					<Badge
+						variant={ESTADO_COMERCIAL_BADGE[item.estado_actual]}
+						className='text-[10px] font-medium'
+					>
 							{ESTADO_PROSPECTO_LABELS[item.estado_actual]}
 						</Badge>
 						<span className='text-[10px] text-muted-foreground'>

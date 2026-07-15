@@ -15,6 +15,7 @@ import { SkeletonTabla } from './skeleton-tabla'
 import { cn } from '@/lib/utils'
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
+import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
 
 const PRIORIDAD_ORDER: Record<string, number> = {
   ROJO: 0,
@@ -113,17 +114,8 @@ export default function TablaProcesosComerciales({
                   </div>
                 </div>
                 <Badge
-                  variant='outline'
-                  className={cn(
-                    'text-[10px] font-medium',
-                    f.estado_semaforo === 'ROJO'
-                      ? 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100'
-                      : f.estado_semaforo === 'AMARILLO'
-                        ? 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100'
-                        : f.estado_semaforo === 'VERDE'
-                          ? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100'
-                          : 'border-border bg-muted/50 text-muted-foreground',
-                  )}
+                  variant={SEMAFORO_VARIANT[f.estado_semaforo]}
+                  className='text-[10px] font-medium'
                 >
                   {PRIORIDAD_LABELS[f.estado_semaforo]}
                 </Badge>
@@ -243,10 +235,10 @@ export default function TablaProcesosComerciales({
                       className={cn(
                         'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
                         f.porentaje_sla_consumido >= 1
-                          ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20'
+                          ? 'bg-red-100 text-red-700 ring-1 ring-inset ring-red-600/20 dark:bg-red-950/40 dark:text-red-300'
                           : f.porentaje_sla_consumido >= 0.7
-                            ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20'
-                            : 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20',
+                            ? 'bg-amber-100 text-amber-700 ring-1 ring-inset ring-amber-600/20 dark:bg-amber-950/40 dark:text-amber-200'
+                            : 'bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-950/40 dark:text-emerald-300',
                       )}
                     >
                       {(f.porentaje_sla_consumido * 100).toFixed(0)}%

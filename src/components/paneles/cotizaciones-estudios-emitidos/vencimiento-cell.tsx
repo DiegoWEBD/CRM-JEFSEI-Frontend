@@ -43,14 +43,7 @@ function formatFechaCelda(iso: string) {
   })
 }
 
-const ESTADO_VENCIMIENTO_COLORS: Record<string, string> = {
-  vigente:
-    'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-  por_vencer:
-    'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-  vencida:
-    'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
-}
+import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
 
 type VencimientoCellProps = {
   idSolicitud: number
@@ -166,11 +159,8 @@ export default function VencimientoCell({
                     <div className='shrink-0'>
                       {estadoVencimiento && (
                         <Badge
-                          variant='outline'
-                          className={cn(
-                            'text-[10px] font-medium',
-                            ESTADO_VENCIMIENTO_COLORS[estadoVencimiento],
-                          )}
+                          variant={VENCIMIENTO_VARIANT[estadoVencimiento]}
+                          className='text-[10px] font-medium'
                         >
                           {estadoVencimiento === 'vigente' && 'Vigente'}
                           {estadoVencimiento === 'por_vencer' && 'Por vencer'}

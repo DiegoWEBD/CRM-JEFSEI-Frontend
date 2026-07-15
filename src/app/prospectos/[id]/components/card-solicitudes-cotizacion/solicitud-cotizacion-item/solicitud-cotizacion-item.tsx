@@ -3,7 +3,7 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
-import { classname } from '@/lib/class-name'
+
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { normalizarTexto } from '@/utils/normalizar-texto'
 import { cn } from '@/lib/utils'
@@ -64,11 +64,8 @@ export default function SolicitudCotizacionItem({
 						</p>
 						<div className='mt-1 flex flex-wrap items-center gap-1.5'>
 							<Badge
-								variant='outline'
-								className={classname(
-									'text-[10px] font-medium capitalize',
-									PRIORIDAD_BADGE[solicitud.prioridad],
-								)}
+								variant={PRIORIDAD_BADGE[solicitud.prioridad]}
+								className='text-[10px] font-medium capitalize'
 							>
 								{normalizarTexto(solicitud.prioridad, true)}
 							</Badge>

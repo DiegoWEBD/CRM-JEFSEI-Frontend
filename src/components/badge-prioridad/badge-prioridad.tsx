@@ -1,5 +1,5 @@
 import { Badge } from '@/components/badge'
-import { PRIORIDAD_BADGE } from '@/app/styles/estados/prioridad-badge'
+import { PRIORIDAD_VARIANT } from '@/lib/badge-variants'
 import type { Prioridad } from '@/types/prioridad/prioridad'
 
 type BadgePrioridadProps = {
@@ -13,7 +13,7 @@ const ETIQUETAS: Record<Prioridad, string> = {
 
 export default function BadgePrioridad({ prioridad }: BadgePrioridadProps) {
   return (
-    <Badge variant='outline' className={PRIORIDAD_BADGE[prioridad]}>
+    <Badge variant={PRIORIDAD_VARIANT[prioridad]}>
       {ETIQUETAS[prioridad]}
     </Badge>
   )

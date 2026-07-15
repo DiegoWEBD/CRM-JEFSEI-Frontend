@@ -21,8 +21,8 @@ import {
 } from '@/components/table'
 import { Skeleton } from '@/components/skeleton'
 import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
-import { cn } from '@/lib/utils'
 import { Download } from 'lucide-react'
+import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
 
 function formatFecha(iso: string) {
   return new Date(iso).toLocaleDateString('es-CL', {
@@ -54,14 +54,6 @@ function FilaResumen({
       <dd className='mt-0.5 text-sm text-foreground'>{children}</dd>
     </div>
   )
-}
-
-const ESTADO_COLORS: Record<string, string> = {
-  vigente:
-    'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-  por_vencer:
-    'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-  vencida: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
 }
 
 function calcularEstado(fechaStr: string): string {
@@ -164,14 +156,11 @@ export default function DialogVerCotizaciones({
                         {c.company}
                       </span>
                       <Badge
-                          variant='outline'
-                          className={cn(
-                            'text-[10px] font-medium',
-                            ESTADO_COLORS[ev],
-                          )}
-                        >
-                          {ESTADO_LABEL[ev]}
-                        </Badge>
+                        variant={VENCIMIENTO_VARIANT[ev]}
+                        className='text-[10px] font-medium'
+                      >
+                        {ESTADO_LABEL[ev]}
+                      </Badge>
                     </div>
                     <div className='grid grid-cols-2 gap-x-3 gap-y-1.5 text-muted-foreground'>
                       <div>
@@ -324,11 +313,8 @@ export default function DialogVerCotizaciones({
                         </TableCell>
                         <TableCell className='py-2'>
                           <Badge
-                            variant='outline'
-                            className={cn(
-                              'text-[10px] font-medium',
-                              ESTADO_COLORS[ev],
-                            )}
+                            variant={VENCIMIENTO_VARIANT[ev]}
+                            className='text-[10px] font-medium'
                           >
                             {ESTADO_LABEL[ev]}
                           </Badge>

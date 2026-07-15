@@ -176,10 +176,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								Estado general del prospecto
 							</span>
 							<div className='flex flex-wrap items-center gap-2'>
-								<Badge
-									variant='outline'
-									className={ESTADO_GENERAL_CLIENTE_BADGE[estadoCliente]}
-								>
+							<Badge
+								variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoCliente]}
+							>
 									{ESTADO_GENERAL_CLIENTE_LABELS[estadoCliente]}
 								</Badge>
 							</div>

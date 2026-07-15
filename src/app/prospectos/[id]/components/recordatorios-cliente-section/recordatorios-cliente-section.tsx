@@ -388,11 +388,8 @@ function RecordatorioClienteFila({
 				</div>
 
 				<Badge
-					variant='outline'
-					className={cn(
-						'h-5 shrink-0 px-1.5 text-[9px] sm:hidden',
-						prioridadReminderStyles[prio],
-					)}
+					variant={prioridadReminderStyles[prio]}
+					className='h-5 shrink-0 px-1.5 text-[9px] sm:hidden'
 				>
 					{prioridadReminderLabel[prio]}
 				</Badge>
@@ -400,11 +397,8 @@ function RecordatorioClienteFila({
 
 			<div className='flex flex-wrap items-center gap-1 border-t border-border/50 pt-2 sm:shrink-0 sm:border-0 sm:pt-0'>
 				<Badge
-					variant='outline'
-					className={cn(
-						'hidden h-5 px-1.5 text-[9px] sm:inline-flex',
-						prioridadReminderStyles[prio],
-					)}
+					variant={prioridadReminderStyles[prio]}
+					className='hidden h-5 px-1.5 text-[9px] sm:inline-flex'
 				>
 					{prioridadReminderLabel[prio]}
 				</Badge>

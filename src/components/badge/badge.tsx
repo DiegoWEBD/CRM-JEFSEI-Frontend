@@ -25,6 +25,32 @@ const badgeVariants = cva(
           'border-transparent bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400',
         purple:
           'border-transparent bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400',
+        'pastel-emerald':
+          'border-transparent bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
+        'pastel-amber':
+          'border-transparent bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
+        'pastel-red':
+          'border-transparent bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300',
+        'pastel-blue':
+          'border-transparent bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300',
+        'pastel-sky':
+          'border-transparent bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300',
+        'pastel-indigo':
+          'border-transparent bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300',
+        'pastel-violet':
+          'border-transparent bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300',
+        'pastel-fuchsia':
+          'border-transparent bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-950/40 dark:text-fuchsia-300',
+        'pastel-cyan':
+          'border-transparent bg-cyan-100 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-300',
+        'pastel-teal':
+          'border-transparent bg-teal-100 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300',
+        'pastel-orange':
+          'border-transparent bg-orange-100 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300',
+        'pastel-slate':
+          'border-transparent bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
+        'pastel-muted':
+          'border-transparent bg-muted text-muted-foreground',
       },
     },
     defaultVariants: {

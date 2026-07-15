@@ -19,6 +19,7 @@ import BadgePrioridad from '@/components/badge-prioridad/badge-prioridad'
 import VencimientoCell from './vencimiento-cell'
 import { SkeletonTabla } from './skeleton-tabla'
 import { cn } from '@/lib/utils'
+import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
 
 const headClass =
   'h-9 border-b border-border/50 bg-muted/20 px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'
@@ -29,15 +30,6 @@ const ESTADO_VENCIMIENTO_LABELS: Record<string, string> = {
   vigente: 'Vigente',
   por_vencer: 'Por vencer',
   vencida: 'Vencida',
-}
-
-const ESTADO_VENCIMIENTO_COLORS: Record<string, string> = {
-  vigente:
-    'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-  por_vencer:
-    'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-  vencida:
-    'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
 }
 
 type TablaCotizacionesEstudiosProps = {
@@ -88,11 +80,8 @@ export default function TablaCotizacionesEstudios({
                 <BadgePrioridad prioridad={f.prioridad} />
                 {f.estado_vencimiento && (
                   <Badge
-                    variant='outline'
-                    className={cn(
-                      'text-[10px] font-medium',
-                      ESTADO_VENCIMIENTO_COLORS[f.estado_vencimiento],
-                    )}
+                    variant={VENCIMIENTO_VARIANT[f.estado_vencimiento]}
+                    className='text-[10px] font-medium'
                   >
                     {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}
                   </Badge>
@@ -205,7 +194,11 @@ export default function TablaCotizacionesEstudios({
                     <span
                       className={cn(
                         'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
-                        ESTADO_VENCIMIENTO_COLORS[f.estado_vencimiento],
+                        f.estado_vencimiento === 'vigente'
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
+                          : f.estado_vencimiento === 'por_vencer'
+                            ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-200'
+                            : 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300',
                       )}
                     >
                       {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}

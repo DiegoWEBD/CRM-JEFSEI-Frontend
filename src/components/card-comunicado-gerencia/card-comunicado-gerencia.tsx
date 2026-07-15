@@ -26,10 +26,10 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useState } from 'react'
 
-const PRIORIDAD_STYLES: Record<string, string> = {
-	media: 'border-blue-500/35 bg-blue-500/10 text-blue-950 dark:text-blue-100',
-	alta: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
-}
+const PRIORIDAD_VARIANT = {
+	media: 'pastel-blue',
+	alta: 'pastel-red',
+} as const
 
 export default function CardComunicadoGerencia() {
 	const { data: comunicados } = useComunicadosGerencia()
@@ -111,8 +111,8 @@ export default function CardComunicadoGerencia() {
 							<div className='flex items-start justify-between gap-2'>
 								<p className='font-medium text-foreground'>{aviso.titulo}</p>
 								<Badge
-									variant='outline'
-									className={`h-5 shrink-0 text-[9px] ${PRIORIDAD_STYLES[aviso.prioridad] ?? ''}`}
+									variant={(PRIORIDAD_VARIANT[aviso.prioridad as keyof typeof PRIORIDAD_VARIANT] ?? 'outline')}
+									className='h-5 shrink-0 text-[9px]'
 								>
 									{aviso.prioridad}
 								</Badge>

@@ -15,13 +15,8 @@ export default function EstadoCompletitudInformacion({
 }: EstadoCompletitudInformacionProps) {
 	return (
 		<Badge
-			variant='outline'
-			className={classname(
-				className,
-				completa
-					? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100'
-					: 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-			)}
+			variant={completa ? 'pastel-emerald' : 'pastel-amber'}
+			className={className}
 		>
 			{children ?? null}
 			{!children && `Información ${completa ? 'completa' : 'incompleta'}`}

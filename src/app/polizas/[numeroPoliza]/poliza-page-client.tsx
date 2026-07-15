@@ -9,7 +9,7 @@ import {
 	ESTADO_POLIZA_PERFIL_LABELS,
 	ESTADO_POLIZA_PERFIL_BADGE,
 } from '@/lib/estados-cotizaciones'
-import { cn } from '@/lib/utils'
+
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import { formatUF } from '@/lib/uf'
@@ -84,13 +84,10 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 									icon={Package}
 								/>
 								<ItemInformacionPoliza label='Estado'>
-									<Badge
-										variant='outline'
-										className={cn(
-											'text-[10px] font-medium',
-											ESTADO_POLIZA_PERFIL_BADGE[poliza.estado],
-										)}
-									>
+								<Badge
+									variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
+									className='text-[10px] font-medium'
+								>
 										{ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
 									</Badge>
 								</ItemInformacionPoliza>

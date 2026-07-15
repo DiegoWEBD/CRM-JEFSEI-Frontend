@@ -41,18 +41,12 @@ import { useCerrarProcesoComercial } from '@/hooks/procesos-comerciales/use-cerr
 import { useAceptarProcesoComercial } from '@/hooks/procesos-comerciales/use-aceptar-proceso-comercial'
 import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
 import HistorialEstadosTimeline from '@/components/historial-estados-timeline/historial-estados-timeline'
+import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
 
 function esAbierto(
 	r: ReporteProcesoComercial,
 ): r is ReporteProcesoComercialAbierto {
 	return 'dias_transcurridos' in r
-}
-
-const PRIORIDAD_BADGE: Record<string, string> = {
-	ROJO: 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
-	AMARILLO: 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-	VERDE: 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-	NO_APLICA: 'border-border bg-muted/50 text-muted-foreground',
 }
 
 const PRIORIDAD_LABELS: Record<string, string> = {
@@ -130,11 +124,8 @@ export default function DetalleProcesoDrawer({
 							<dt className='text-xs text-muted-foreground'>Prioridad</dt>
 							<dd>
 								<Badge
-									variant='outline'
-									className={cn(
-										'text-[11px] font-medium',
-										PRIORIDAD_BADGE[reporte.estado_semaforo],
-									)}
+									variant={SEMAFORO_VARIANT[reporte.estado_semaforo]}
+									className='text-[11px] font-medium'
 								>
 									{PRIORIDAD_LABELS[reporte.estado_semaforo]}
 								</Badge>
@@ -237,15 +228,8 @@ export default function DetalleProcesoDrawer({
 									</dt>
 									<dd>
 										<Badge
-											variant='outline'
-											className={cn(
-												'text-[11px] font-medium',
-												reporte.porentaje_sla_consumido >= 1
-													? 'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100'
-													: reporte.porentaje_sla_consumido >= 0.7
-														? 'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100'
-														: 'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-											)}
+											variant={reporte.porentaje_sla_consumido >= 1 ? 'pastel-red' : reporte.porentaje_sla_consumido >= 0.7 ? 'pastel-amber' : 'pastel-emerald'}
+											className='text-[11px] font-medium'
 										>
 											{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
 										</Badge>

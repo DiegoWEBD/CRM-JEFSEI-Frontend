@@ -9,14 +9,8 @@ export const ESTADO_GENERAL_CLIENTE_LABELS: Record<EstadoGeneralCliente, string>
 	cliente_inactivo: 'Cliente inactivo',
 }
 
-export const ESTADO_GENERAL_CLIENTE_BADGE: Record<EstadoGeneralCliente, string> = {
-	prospecto:
-		'border-slate-500/35 bg-slate-500/10 text-slate-900 dark:text-slate-100',
-	cliente_activo:
-		'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-	cliente_inactivo:
-		'border-red-500/40 bg-red-500/10 text-red-900 dark:text-red-100',
-}
+export { ESTADO_GENERAL_CLIENTE_VARIANT as ESTADO_GENERAL_CLIENTE_BADGE } from '@/lib/badge-variants'
+export type { BadgeVariant } from '@/lib/badge-variants'
 
 /** Estado general visible en el encabezado del perfil comercial. */
 export type EstadoGeneralClientePerfil =
@@ -37,20 +31,7 @@ export const ESTADO_GENERAL_CLIENTE_PERFIL_LABELS: Record<
 	perdido: 'Cerrado perdido',
 }
 
-export const ESTADO_GENERAL_CLIENTE_PERFIL_BADGE: Record<
-	EstadoGeneralClientePerfil,
-	string
-> = {
-	nuevo:
-		'border-slate-500/35 bg-slate-500/10 text-slate-900 dark:text-slate-100',
-	en_seguimiento:
-		'border-sky-500/35 bg-sky-500/10 text-sky-950 dark:text-sky-100',
-	en_proceso_comercial:
-		'border-indigo-500/35 bg-indigo-500/10 text-indigo-950 dark:text-indigo-100',
-	cliente_activo:
-		'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-	perdido: 'border-border bg-muted/50 text-muted-foreground',
-}
+export { ESTADO_GENERAL_CLIENTE_PERFIL_VARIANT as ESTADO_GENERAL_CLIENTE_PERFIL_BADGE } from '@/lib/badge-variants'
 
 export function estadoGeneralClientePerfilDesdeComercial(
 	estado: EstadoComercialProspecto,
@@ -93,15 +74,7 @@ export const ESTADO_COTIZACION_PERFIL_LABELS: Record<
 	cotizacion_generada: 'Cotización generada',
 }
 
-export const ESTADO_COTIZACION_PERFIL_BADGE: Record<
-	EstadoCotizacionPerfilVisual,
-	string
-> = {
-	nueva_solicitud:
-		'border-violet-500/35 bg-violet-500/10 text-violet-950 dark:text-violet-100',
-	cotizacion_generada:
-		'border-blue-600/35 bg-blue-600/10 text-blue-950 dark:text-blue-100',
-}
+export { ESTADO_COTIZACION_PERFIL_VARIANT as ESTADO_COTIZACION_PERFIL_BADGE } from '@/lib/badge-variants'
 
 /** Estados visibles en la sección y modal «Ver solicitud» del perfil comercial. */
 export type EstadoSolicitudCotizacionPerfil =
@@ -156,18 +129,7 @@ export const ESTADO_ESTUDIO_PERFIL_LABELS: Record<
 	perdido: 'Cerrado perdido',
 }
 
-export const ESTADO_ESTUDIO_PERFIL_BADGE: Record<
-	EstadoEstudioPerfilVisual,
-	string
-> = {
-	estudio_disponible:
-		'border-blue-600/35 bg-blue-600/10 text-blue-950 dark:text-blue-100',
-	estudio_enviado_cliente:
-		'border-violet-500/35 bg-violet-500/10 text-violet-950 dark:text-violet-100',
-	recotizacion_solicitada:
-		'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-	perdido: 'border-border bg-muted/50 text-muted-foreground',
-}
+export { ESTADO_ESTUDIO_PERFIL_VARIANT as ESTADO_ESTUDIO_PERFIL_BADGE } from '@/lib/badge-variants'
 
 /*export function estadoEstudioPerfilDesdeLinea(
 	line: LineaSeguroClienteMock,
@@ -204,15 +166,7 @@ export const ESTADO_POLIZA_PERFIL_LABELS: Record<EstadoPoliza, string> = {
 	CANCELADA: 'Cancelada',
 }
 
-export const ESTADO_POLIZA_PERFIL_BADGE: Record<EstadoPoliza, string> = {
-	REGISTRADA: 'border-sky-500/45 bg-sky-500/10 text-sky-950 dark:text-sky-100',
-	VIGENTE:
-		'border-emerald-500/45 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100',
-	POR_VENCER:
-		'border-amber-500/45 bg-amber-500/10 text-amber-950 dark:text-amber-100',
-	VENCIDA: 'border-muted-foreground/35 bg-muted/50 text-muted-foreground',
-	CANCELADA: 'border-destructive/35 bg-destructive/10 text-destructive',
-}
+export { ESTADO_POLIZA_PERFIL_VARIANT as ESTADO_POLIZA_PERFIL_BADGE } from '@/lib/badge-variants'
 
 /*export function estadoPolizaPerfilDesdeMostrado(
 	estado: EstadoPolizaCliente,

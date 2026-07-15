@@ -203,13 +203,10 @@ export default function CardProspectosClient({
 												</p>
 											)}
 											<div className='flex flex-wrap items-center gap-1.5 pt-0.5'>
-												<Badge
-													variant='outline'
-													className={cn(
-														'text-[10px] font-medium',
-														ESTADO_GENERAL_CLIENTE_BADGE[estado],
-													)}
-												>
+											<Badge
+												variant={ESTADO_GENERAL_CLIENTE_BADGE[estado]}
+												className='text-[10px] font-medium'
+											>
 													{ESTADO_GENERAL_CLIENTE_LABELS[estado]}
 												</Badge>
 												<span className='text-[11px] text-muted-foreground'>
