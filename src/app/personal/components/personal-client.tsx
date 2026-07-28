@@ -55,6 +55,8 @@ import {
 	Mail,
 	Phone,
 	Building2,
+	Eye,
+	EyeOff,
 } from 'lucide-react'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 
@@ -467,6 +469,7 @@ function DialogRegistrarUsuario({
 }) {
 	const { data: sucursales } = useSucursales()
 	const mutation = useRegistrarUsuario()
+	const [showPassword, setShowPassword] = useState(false)
 
 	const validationSchema = Yup.object({
 		nombre: Yup.string().required('El nombre es obligatorio'),
@@ -641,15 +644,30 @@ function DialogRegistrarUsuario({
 							</div>
 							<div className='space-y-1.5'>
 								<Label htmlFor='password-crear'>Contraseña *</Label>
-								<Input
-									id='password-crear'
-									type='password'
-									placeholder='••••••••'
-									name='password'
-									value={formik.values.password}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-								/>
+								<div className='relative'>
+									<Input
+										id='password-crear'
+										type={showPassword ? 'text' : 'password'}
+										className='pr-9'
+										placeholder='••••••••'
+										name='password'
+										value={formik.values.password}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+									/>
+									<button
+										type='button'
+										className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
+										onClick={() => setShowPassword(!showPassword)}
+										tabIndex={-1}
+									>
+										{showPassword ? (
+											<EyeOff className='size-4' />
+										) : (
+											<Eye className='size-4' />
+										)}
+									</button>
+								</div>
 								{formik.touched.password && formik.errors.password && (
 									<p className='text-[10px] text-destructive'>
 										{formik.errors.password}
@@ -755,6 +773,7 @@ type EditarUsuarioFormValues = {
 	telefono: string
 	idSucursal: number | null
 	roles: string[]
+	password: string
 	metaMensualUf: string
 	porcentajeComision: string
 	habilitado: boolean
@@ -773,6 +792,7 @@ function DialogEditarUsuario({
 	const mutation = useActualizarUsuario()
 	const { tieneRol } = useUserSession()
 	const puedeEditar = tieneRol('GERENTE_GENERAL')
+	const [showPassword, setShowPassword] = useState(false)
 
 	const validationSchema = Yup.object({
 		nombre: Yup.string().required('El nombre es obligatorio'),
@@ -782,6 +802,11 @@ function DialogEditarUsuario({
 			.typeError('Debe seleccionar una sucursal')
 			.required('Debe seleccionar una sucursal'),
 		roles: Yup.array().min(1, 'Debe seleccionar al menos un rol'),
+		password: Yup.string().test(
+			'min',
+			'Mínimo 6 caracteres',
+			v => !v || v.length >= 6,
+		),
 		porcentajeComision: Yup.string().test(
 			'max',
 			'El porcentaje no puede superar 100',
@@ -805,6 +830,7 @@ function DialogEditarUsuario({
 				return found?.id ?? null
 			})(),
 			roles: usuario?.roles.map(r => r.codigo) ?? [],
+			password: '',
 			metaMensualUf:
 				usuario?.meta_mensual_uf != null ? String(usuario.meta_mensual_uf) : '',
 			porcentajeComision:
@@ -822,6 +848,7 @@ function DialogEditarUsuario({
 				telefono:
 					values.telefono.length === 8 ? '+569' + values.telefono : null,
 				id_sucursal: values.idSucursal!,
+				password: values.password || undefined,
 				meta_mensual_uf: values.metaMensualUf
 					? Number(values.metaMensualUf)
 					: null,
@@ -923,6 +950,37 @@ function DialogEditarUsuario({
 									{formik.touched.telefono && formik.errors.telefono && (
 										<p className='text-[10px] text-destructive'>
 											{formik.errors.telefono}
+										</p>
+									)}
+								</Campo>
+								<Campo label='Contraseña'>
+									<div className='relative'>
+										<Input
+											name='password'
+											type={showPassword ? 'text' : 'password'}
+											className='h-9 pr-9 text-sm shadow-none'
+											placeholder='••••••••'
+											value={formik.values.password}
+											onChange={formik.handleChange}
+											onBlur={formik.handleBlur}
+											disabled={!puedeEditar}
+										/>
+										<button
+											type='button'
+											className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
+											onClick={() => setShowPassword(!showPassword)}
+											tabIndex={-1}
+										>
+											{showPassword ? (
+												<EyeOff className='size-4' />
+											) : (
+												<Eye className='size-4' />
+											)}
+										</button>
+									</div>
+									{formik.touched.password && formik.errors.password && (
+										<p className='text-[10px] text-destructive'>
+											{formik.errors.password}
 										</p>
 									)}
 								</Campo>

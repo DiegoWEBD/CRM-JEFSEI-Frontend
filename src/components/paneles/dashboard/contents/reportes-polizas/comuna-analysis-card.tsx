@@ -110,8 +110,8 @@ export default function ComunaAnalysisCard({
                 No hay datos disponibles para este per&iacute;odo.
               </p>
             ) : (
-              <div className='relative mx-auto w-full max-w-[220px] flex-1'>
-                <div className='aspect-square h-[min(52vw,180px)] w-full min-h-[150px]'>
+              <div className='relative mx-auto w-full max-w-[200px] flex-1'>
+                <div className='aspect-square w-full'>
                   <ResponsiveContainer width='100%' height='100%'>
                     <PieChart>
                       <Pie
