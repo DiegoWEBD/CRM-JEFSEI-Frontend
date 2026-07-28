@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Cell, Pie, PieChart } from 'recharts'
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { colorDonut } from '@/lib/paleta-dashboard'
 import { cn } from '@/lib/utils'
@@ -43,9 +43,10 @@ export default function PolicyDonutChart({
           <p className='py-8 text-center text-xs text-muted-foreground'>{SIN_DATOS}</p>
         ) : (
           <div className='flex flex-col items-center -mt-1'>
-            <div className='relative mx-auto w-full max-w-[min(100%,340px)]'>
-              <div className='aspect-square h-[min(72vw,260px)] w-full min-h-[220px]'>
-                <PieChart width={340} height={260}>
+            <div className='relative mx-auto w-full max-w-[280px]'>
+              <div className='aspect-square w-full'>
+                <ResponsiveContainer width='100%' height='100%'>
+                  <PieChart>
                   <Pie
                     data={chartData}
                     dataKey='value'
@@ -79,7 +80,8 @@ export default function PolicyDonutChart({
                       )
                     })}
                   </Pie>
-                </PieChart>
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
               <div
                 className='pointer-events-none absolute inset-0 flex items-center justify-center'

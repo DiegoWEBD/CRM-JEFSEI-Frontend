@@ -6,6 +6,7 @@ export interface ActualizarUsuarioRequest {
     correo: string | null
     telefono: string | null
   id_sucursal: number
+  password?: string | null
   meta_mensual_uf: number | null
   codigo_roles: string[]
   porcentaje_comision: number | null

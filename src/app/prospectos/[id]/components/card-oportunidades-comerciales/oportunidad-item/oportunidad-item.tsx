@@ -165,6 +165,11 @@ export default function OportunidadItem({
 									<Upload className='h-3 w-3' aria-hidden />
 									Subir póliza
 								</Button>
+							</div>
+						) : null}
+
+						{!proceso.cerrado && usuario?.rut === ejecutivoComercialRut ? (
+							<div className='mt-2 flex flex-col gap-2 border-t border-border/30 pt-2 sm:flex-row sm:items-center'>
 								<Button
 									type='button'
 									variant='outline'
