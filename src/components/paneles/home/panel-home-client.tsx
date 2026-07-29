@@ -135,7 +135,11 @@ export default function PanelHomeClient({
 								datos={{
 									key: 'activos',
 									label: 'Clientes activos',
-									value: prospectos?.length ?? 0,
+									value:
+										prospectos?.filter(
+											prospecto =>
+												prospecto.estado_general_cliente == 'cliente_activo',
+										).length ?? 0,
 									icon: Users,
 								}}
 								setKpiAbierto={setKpiAbierto}
@@ -259,7 +263,9 @@ export default function PanelHomeClient({
 					<PanelCobranzaClient dashboardInicial={dashboardCobranzaInicial} />
 				)}
 
-				{!esEjecutivoCobranza && <CardProspectosClient prospectos={prospectos} />}
+				{!esEjecutivoCobranza && (
+					<CardProspectosClient prospectos={prospectos} />
+				)}
 			</PanelHeader>
 
 			<CardCalendario prospectos={prospectos} />

@@ -1,6 +1,9 @@
 import type { EstadoComercialProspecto } from '@/types/estados/estado-comercial-cliente'
 import type { Prioridad } from '@/types/prioridad/prioridad'
-import type { SharedReminderStatus, SharedReminderPriority } from '@/types/shared/shared-reminders'
+import type {
+	SharedReminderStatus,
+	SharedReminderPriority,
+} from '@/types/shared/shared-reminders'
 import type {
 	EstadoGeneralCliente,
 	EstadoGeneralClientePerfil,
@@ -25,7 +28,10 @@ export type BadgeVariant =
 	| 'pastel-slate'
 	| 'pastel-muted'
 
-export const ESTADO_COMERCIAL_VARIANT: Record<EstadoComercialProspecto, BadgeVariant> = {
+export const ESTADO_COMERCIAL_VARIANT: Record<
+	EstadoComercialProspecto,
+	BadgeVariant
+> = {
 	COTIZACION_DISPONIBLE: 'pastel-orange',
 	CONTACTADO: 'pastel-sky',
 	ESTUDIO_DISPONIBLE: 'pastel-blue',
@@ -47,13 +53,19 @@ export const PRIORIDAD_VARIANT: Record<Prioridad, BadgeVariant> = {
 	alta: 'pastel-red',
 }
 
-export const ESTADO_GENERAL_CLIENTE_VARIANT: Record<EstadoGeneralCliente, BadgeVariant> = {
-	prospecto: 'pastel-slate',
+export const ESTADO_GENERAL_CLIENTE_VARIANT: Record<
+	EstadoGeneralCliente,
+	BadgeVariant
+> = {
+	prospecto: 'pastel-amber',
 	cliente_activo: 'pastel-emerald',
 	cliente_inactivo: 'pastel-red',
 }
 
-export const ESTADO_GENERAL_CLIENTE_PERFIL_VARIANT: Record<EstadoGeneralClientePerfil, BadgeVariant> = {
+export const ESTADO_GENERAL_CLIENTE_PERFIL_VARIANT: Record<
+	EstadoGeneralClientePerfil,
+	BadgeVariant
+> = {
 	nuevo: 'pastel-slate',
 	en_seguimiento: 'pastel-sky',
 	en_proceso_comercial: 'pastel-indigo',
@@ -61,25 +73,32 @@ export const ESTADO_GENERAL_CLIENTE_PERFIL_VARIANT: Record<EstadoGeneralClienteP
 	perdido: 'pastel-muted',
 }
 
-export const ESTADO_COTIZACION_PERFIL_VARIANT: Record<EstadoCotizacionPerfilVisual, BadgeVariant> = {
+export const ESTADO_COTIZACION_PERFIL_VARIANT: Record<
+	EstadoCotizacionPerfilVisual,
+	BadgeVariant
+> = {
 	nueva_solicitud: 'pastel-violet',
 	cotizacion_generada: 'pastel-blue',
 }
 
-export const ESTADO_ESTUDIO_PERFIL_VARIANT: Record<EstadoEstudioPerfilVisual, BadgeVariant> = {
+export const ESTADO_ESTUDIO_PERFIL_VARIANT: Record<
+	EstadoEstudioPerfilVisual,
+	BadgeVariant
+> = {
 	estudio_disponible: 'pastel-blue',
 	estudio_enviado_cliente: 'pastel-violet',
 	recotizacion_solicitada: 'pastel-amber',
 	perdido: 'pastel-muted',
 }
 
-export const ESTADO_POLIZA_PERFIL_VARIANT: Record<EstadoPoliza, BadgeVariant> = {
-	REGISTRADA: 'pastel-sky',
-	VIGENTE: 'pastel-emerald',
-	POR_VENCER: 'pastel-amber',
-	VENCIDA: 'pastel-muted',
-	CANCELADA: 'pastel-red',
-}
+export const ESTADO_POLIZA_PERFIL_VARIANT: Record<EstadoPoliza, BadgeVariant> =
+	{
+		REGISTRADA: 'pastel-sky',
+		VIGENTE: 'pastel-emerald',
+		POR_VENCER: 'pastel-amber',
+		VENCIDA: 'pastel-muted',
+		CANCELADA: 'pastel-red',
+	}
 
 export const VENCIMIENTO_VARIANT: Record<string, BadgeVariant> = {
 	vigente: 'pastel-emerald',
@@ -87,13 +106,19 @@ export const VENCIMIENTO_VARIANT: Record<string, BadgeVariant> = {
 	vencida: 'pastel-red',
 }
 
-export const REMINDER_STATUS_VARIANT: Record<SharedReminderStatus, BadgeVariant> = {
+export const REMINDER_STATUS_VARIANT: Record<
+	SharedReminderStatus,
+	BadgeVariant
+> = {
 	atrasado: 'pastel-red',
 	pendiente: 'pastel-amber',
 	realizado: 'pastel-emerald',
 }
 
-export const REMINDER_PRIORITY_VARIANT: Record<SharedReminderPriority, BadgeVariant> = {
+export const REMINDER_PRIORITY_VARIANT: Record<
+	SharedReminderPriority,
+	BadgeVariant
+> = {
 	normal: 'pastel-blue',
 	alta: 'pastel-red',
 }
@@ -105,7 +130,10 @@ export const SEMAFORO_VARIANT: Record<string, BadgeVariant> = {
 	NO_APLICA: 'pastel-muted',
 }
 
-export const BANDEJA_SOLICITUD_VARIANT: Record<EstadoSolicitudBandeja, BadgeVariant> = {
+export const BANDEJA_SOLICITUD_VARIANT: Record<
+	EstadoSolicitudBandeja,
+	BadgeVariant
+> = {
 	informacion_incompleta: 'pastel-amber',
 	lista_para_cotizar: 'pastel-blue',
 	con_cotizaciones: 'pastel-emerald',
