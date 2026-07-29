@@ -6,7 +6,11 @@ import { Card, CardContent } from '@/components/card'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
-import { ESTADO_GENERAL_CLIENTE_BADGE, ESTADO_GENERAL_CLIENTE_LABELS, type EstadoGeneralCliente } from '@/lib/estados-cotizaciones'
+import {
+	ESTADO_GENERAL_CLIENTE_BADGE,
+	ESTADO_GENERAL_CLIENTE_LABELS,
+	type EstadoGeneralCliente,
+} from '@/lib/estados-cotizaciones'
 import { Building2 } from 'lucide-react'
 import { useState } from 'react'
 import AdministradorAsociado from './administrador-asociado/administrador-asociado'
@@ -36,9 +40,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								className='h-5 w-5 shrink-0 text-muted-foreground'
 								aria-hidden
 							/>
-<h1 className='truncate text-base font-semibold leading-tight text-foreground sm:text-lg lg:text-xl'>
-  {prospecto.nombre_riesgo}
-</h1>
+							<h1 className='truncate text-base font-semibold leading-tight text-foreground sm:text-lg lg:text-xl'>
+								{prospecto.nombre_riesgo}
+							</h1>
 						</div>
 						{prospecto.linea_negocio.nombre.toLowerCase() == 'condominio' && (
 							<AdministradorAsociado
@@ -109,9 +113,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 							<>
 								<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
 									<span>
-										<span className='text-muted-foreground'>
-											Cobranza:
-										</span>{' '}
+										<span className='text-muted-foreground'>Cobranza:</span>{' '}
 										<span className='font-medium text-foreground'>
 											{prospecto.ejecutivo_cobranza_asignado?.nombre ?? '—'}
 										</span>
@@ -139,9 +141,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								</div>
 								<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
 									<span>
-										<span className='text-muted-foreground'>
-											Renovación:
-										</span>{' '}
+										<span className='text-muted-foreground'>Renovación:</span>{' '}
 										<span className='font-medium text-foreground'>
 											{prospecto.ejecutivo_renovacion_asignado?.nombre ?? '—'}
 										</span>
@@ -176,9 +176,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								Estado general del prospecto
 							</span>
 							<div className='flex flex-wrap items-center gap-2'>
-							<Badge
-								variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoCliente]}
-							>
+								<Badge variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoCliente]}>
 									{ESTADO_GENERAL_CLIENTE_LABELS[estadoCliente]}
 								</Badge>
 							</div>
