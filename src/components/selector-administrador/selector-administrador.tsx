@@ -42,11 +42,13 @@ export default function SelectorAdministrador({
 
 	const filtrados = useMemo(
 		() =>
-			administradores.filter(a =>
-				a.nombre_administrador
-					.toLowerCase()
-					.includes(busqueda.toLowerCase()),
-			),
+			busqueda.trim().length === 0
+				? administradores
+				: administradores.filter(a =>
+						a.nombre_administrador
+							.toLowerCase()
+							.includes(busqueda.toLowerCase()),
+					),
 		[administradores, busqueda],
 	)
 
@@ -64,7 +66,7 @@ export default function SelectorAdministrador({
 					>
 						{seleccionado?.nombre_administrador ?? (
 							<span className='text-muted-foreground'>
-								Buscar administrador...
+								Seleccione administrador
 							</span>
 						)}
 						<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
@@ -78,6 +80,23 @@ export default function SelectorAdministrador({
 							onValueChange={setBusqueda}
 						/>
 						<CommandList>
+							<CommandGroup>
+								<CommandItem
+									value='__none__'
+									onSelect={() => {
+										onChange(undefined)
+										setAbierto(false)
+									}}
+								>
+									<Check
+										className={cn(
+											'mr-2 h-4 w-4',
+											value === undefined ? 'opacity-100' : 'opacity-0',
+										)}
+									/>
+									Sin administrador
+								</CommandItem>
+							</CommandGroup>
 							{filtrados.length === 0 && !mostrarCrear && (
 								<CommandEmpty>Sin resultados</CommandEmpty>
 							)}
