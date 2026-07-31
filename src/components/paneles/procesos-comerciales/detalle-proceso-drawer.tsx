@@ -111,8 +111,6 @@ export default function DetalleProcesoDrawer({
 					<Link
 						href={`/prospectos/${proceso.id_prospecto}`}
 						className='mt-1 text-[11px] text-primary underline-offset-2 hover:underline'
-						target='_blank'
-						rel='noopener noreferrer'
 					>
 						Ver prospecto →
 					</Link>
@@ -228,7 +226,13 @@ export default function DetalleProcesoDrawer({
 									</dt>
 									<dd>
 										<Badge
-											variant={reporte.porentaje_sla_consumido >= 1 ? 'pastel-red' : reporte.porentaje_sla_consumido >= 0.7 ? 'pastel-amber' : 'pastel-emerald'}
+											variant={
+												reporte.porentaje_sla_consumido >= 1
+													? 'pastel-red'
+													: reporte.porentaje_sla_consumido >= 0.7
+														? 'pastel-amber'
+														: 'pastel-emerald'
+											}
 											className='text-[11px] font-medium'
 										>
 											{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
