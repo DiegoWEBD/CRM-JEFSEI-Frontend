@@ -340,7 +340,7 @@ export default function DetalleProcesoDrawer({
 													value={observacion}
 													onChange={e => setObservacion(e.target.value)}
 													placeholder='Motivo del cierre...'
-													className='min-h-[5rem] text-xs shadow-none'
+													className='min-h-20 text-xs shadow-none'
 												/>
 											</div>
 											<Button

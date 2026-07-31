@@ -24,6 +24,8 @@ import { inputPendiente } from '@/utils/input/input-pendiente'
 import { FormikProps } from 'formik'
 import { useMemo } from 'react'
 import { inp } from '../formulario-actualizar-prospecto'
+import { useAdministradores } from '@/hooks/administradores/use-administradores'
+import { SelectorAdministrador } from '@/components/selector-administrador'
 
 type CamposAdicionalesProspectoCondominioProps = {
 	formik: FormikProps<FormularioInitialValues>
@@ -43,22 +45,23 @@ export default function CamposAdicionalesProspectoCondominio({
 		else return false
 	}, [formik.values.tiene_piscina, formik.values.ubicacion_piscina])
 
+	const { data: administradores } = useAdministradores()
+
 	return (
 		<>
+			<Campo label='Administrador'>
+				<SelectorAdministrador
+					value={formik.values.id_administrador}
+					onChange={id => formik.setFieldValue('id_administrador', id)}
+					administradores={administradores ?? []}
+				/>
+			</Campo>
+
 			<Campo label='Uso del condominio'>
 				<Input
 					className={inp(inputPendiente(formik.values.uso_del_condominio))}
 					name='uso_del_condominio'
 					value={formik.values.uso_del_condominio}
-					onChange={formik.handleChange}
-				/>
-			</Campo>
-
-			<Campo label='Año de construcción'>
-				<Input
-					className={inp(inputPendiente(formik.values.year_construccion))}
-					name='year_construccion'
-					value={formik.values.year_construccion}
 					onChange={formik.handleChange}
 				/>
 			</Campo>
@@ -146,6 +149,15 @@ export default function CamposAdicionalesProspectoCondominio({
 					Valor preliminar según materialidad. La validación final corresponde a
 					evaluación/proyectos.
 				</p>
+			</Campo>
+
+			<Campo label='Año de construcción'>
+				<Input
+					className={inp(inputPendiente(formik.values.year_construccion))}
+					name='year_construccion'
+					value={formik.values.year_construccion}
+					onChange={formik.handleChange}
+				/>
 			</Campo>
 
 			<SiNoSelect

@@ -67,6 +67,7 @@ export const useFormularioActualizarProspectoCondominio = ({
 			comuna: prospecto.comuna,
 			observaciones: prospecto.observaciones,
 			linea_negocio: prospecto.linea_negocio.nombre?.toLowerCase() || 'condominio',
+			id_administrador: prospecto.administrador?.id,
 			tiene_locales_comerciales: prospecto.tiene_locales_comerciales,
 			uso_del_condominio: prospecto.uso_del_condominio,
 			materialidad: prospecto.materialidad,
@@ -93,6 +94,7 @@ export const useFormularioActualizarProspectoCondominio = ({
 		},
 		onSubmit: async values => {
 			await mutation.mutateAsync({
+				id_administrador: values.id_administrador ?? null,
 				rut_riesgo: values.rut_riesgo === '' ? null : (values.rut_riesgo ?? null),
 				nombre_riesgo: values.nombre_riesgo,
 				telefono_contacto: values.telefono_contacto === '' ? null : (values.telefono_contacto ?? null),

@@ -1,4 +1,5 @@
 export interface ActualizarProspectoCondominioRequest {
+	id_administrador: number | null
 	rut_riesgo: string | null
 	nombre_riesgo: string
 	telefono_contacto: string | null
