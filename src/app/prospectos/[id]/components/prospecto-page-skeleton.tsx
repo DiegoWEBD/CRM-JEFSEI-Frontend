@@ -4,6 +4,7 @@ import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import PaginaProspectoHeaderSkeleton from './pagina-prospecto-header/pagina-prospecto-header-skeleton'
 import InformacionProspectoSkeleton from './card-informacion-prospecto/informacion-prospecto-skeleton'
+import CardContactosSkeleton from './card-contactos/card-contactos-skeleton'
 
 function CardSkeleton({ children }: { children: React.ReactNode }) {
 	return (
@@ -21,6 +22,8 @@ export function ProspectoPageSkeleton() {
 			</PanelHeader>
 
 			<InformacionProspectoSkeleton />
+
+			<CardContactosSkeleton />
 
 			<CardSkeleton>
 				<Skeleton className='h-5 w-48' />

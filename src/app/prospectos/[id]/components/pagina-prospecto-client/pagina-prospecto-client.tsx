@@ -9,6 +9,7 @@ import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { useObtenerProspecto } from '@/hooks/prospectos/use-obtener-prospecto'
 import { AlertTriangle } from 'lucide-react'
 import CardInformacionProspecto from '../card-informacion-prospecto/card-informacion-prospecto'
+import CardContactos from '../card-contactos/card-contactos'
 import CardInformacionTecnicaCondominio from '../card-informacion-tecnica-condominio/card-informacion-tecnica-condominio'
 import CardPolizas from '../card-polizas/card-polizas'
 import CardOportunidadesComerciales from '../card-oportunidades-comerciales/card-oportunidades-comerciales'
@@ -48,6 +49,10 @@ export default function PaginaProspectoClient({
 			)}
 
 			<CardInformacionProspecto prospecto={prospecto} />
+
+			<AuthGuard fallback={null}>
+				<CardContactos idProspecto={prospecto.id} />
+			</AuthGuard>
 
 			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
 				<CardInformacionTecnicaCondominio
