@@ -50,15 +50,23 @@ export default function PaginaProspectoClient({
 
 			<CardInformacionProspecto prospecto={prospecto} />
 
-			<AuthGuard fallback={null}>
-				<CardContactos idProspecto={prospecto.id} />
-			</AuthGuard>
-
 			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
 				<CardInformacionTecnicaCondominio
 					prospecto={prospecto as ProspectoCondominio}
 				/>
 			)}
+
+			<AuthGuard
+				allowedRoles={[
+					'EJECUTIVO_COMERCIAL',
+					'GERENTE_GENERAL',
+					'GERENTE_COMERCIAL',
+					'GERENTE_OPERACIONES',
+				]}
+				fallback={null}
+			>
+				<CardContactos idProspecto={prospecto.id} />
+			</AuthGuard>
 
 			<AuthGuard
 				allowedRoles={[
