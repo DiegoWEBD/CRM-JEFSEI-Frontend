@@ -29,7 +29,6 @@ const HeaderClient = ({ nombreUsuario, nombreRoles }: HeaderClientProps) => {
 
 			{/* Derecha: tema + usuario */}
 			<div className='flex items-center gap-1.5 sm:gap-2'>
-				<ThemeToggle />
 				<div
 					className='hidden h-6 w-px bg-border sm:block'
 					aria-hidden='true'

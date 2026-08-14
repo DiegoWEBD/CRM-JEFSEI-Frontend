@@ -18,22 +18,27 @@ const LoginPage = () => {
 					<div className='grid size-10 place-items-center rounded-xl bg-primary-foreground/15 ring-1 ring-primary-foreground/20'>
 						<span className='text-base font-semibold leading-none'>IB</span>
 					</div>
-					<span className='text-base font-semibold tracking-tight'>CRM JEFSEI</span>
+					<span className='text-base font-semibold tracking-tight'>
+						CRM JEFSEI
+					</span>
 				</div>
 
 				<div className='relative max-w-md space-y-6'>
 					<ShieldCheck className='size-10' strokeWidth={1.5} />
 					<div className='space-y-3'>
 						<h2 className='text-3xl font-semibold leading-tight tracking-tight'>
-							Gestión comercial &amp; seguros, en un solo lugar.
+							Gestión comercial y operacional, en un solo lugar.
 						</h2>
-						<p className='text-[15px] leading-relaxed text-primary-foreground/80'>
-							Cotizaciones, estudios, pólizas y cobranza centralizadas para tu equipo.
+						<p className='text-md leading-relaxed text-primary-foreground/80'>
+							Cotizaciones, estudios, pólizas y cobranza centralizadas para todo
+							el equipo.
 						</p>
 					</div>
 				</div>
 
-				<p className='relative text-xs text-primary-foreground/60'>© 2026 JEFSEI · Seguros &amp; Riesgos</p>
+				<p className='relative text-xs text-primary-foreground/60'>
+					v1.1 © 2026 JEFSEI · Corredora de Seguros
+				</p>
 			</aside>
 
 			{/* Formulario */}

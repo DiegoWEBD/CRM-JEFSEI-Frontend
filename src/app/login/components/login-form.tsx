@@ -72,7 +72,9 @@ const LoginForm = () => {
 								className='absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground'
 								onClick={() => setShowPassword(s => !s)}
 								tabIndex={-1}
-								aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+								aria-label={
+									showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+								}
 							>
 								{showPassword ? (
 									<EyeOff className='size-4' />
@@ -105,9 +107,6 @@ const LoginForm = () => {
 							'Iniciar sesión'
 						)}
 					</Button>
-					<p className='text-[11px] text-muted-foreground'>
-						v1.0.0 · JEFSEI © 2026
-					</p>
 				</CardFooter>
 			</Form>
 		</Card>
