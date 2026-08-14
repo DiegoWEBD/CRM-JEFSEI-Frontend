@@ -70,7 +70,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				label='Materialidad principal de construcción'
 				labelClassName={
 					inputPendiente(formik.values.materialidad)
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 			>
@@ -121,7 +121,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				label='Clasificación preliminar incendio'
 				labelClassName={
 					inputPendiente(formik.values.clasificacion_preliminar_incendio)
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 			>
@@ -165,7 +165,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				value={formik.values.tiene_locales_comerciales}
 				labelClassName={
 					inputPendiente(formik.values.tiene_locales_comerciales)
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 				triggerClassName={inp(
@@ -181,7 +181,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				value={formik.values.procesos_productivos}
 				labelClassName={
 					inputPendiente(formik.values.procesos_productivos)
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 				triggerClassName={inp(
@@ -240,7 +240,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				value={formik.values.tiene_piscina}
 				labelClassName={
 					inputPendiente(formik.values.tiene_piscina)
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 				triggerClassName={inp(inputPendiente(formik.values.tiene_piscina))}
@@ -251,7 +251,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				label='Ubicación de la piscina'
 				labelClassName={
 					ubicacionPiscinaPendiente
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 			>
@@ -308,7 +308,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				value={formik.values.tiene_alarma_incendio}
 				labelClassName={
 					inputPendiente(formik.values.tiene_alarma_incendio)
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 				triggerClassName={inp(
@@ -322,7 +322,7 @@ export default function CamposAdicionalesProspectoCondominio({
 				value={formik.values.tiene_sprinklers}
 				labelClassName={
 					inputPendiente(formik.values.tiene_sprinklers)
-						? 'text-amber-800 dark:text-amber-200'
+						? 'text-warning'
 						: undefined
 				}
 				triggerClassName={inp(inputPendiente(formik.values.tiene_sprinklers))}

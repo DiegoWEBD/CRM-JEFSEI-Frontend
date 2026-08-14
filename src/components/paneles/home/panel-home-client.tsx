@@ -33,15 +33,25 @@ import PanelFooter from '../panel-layout/panel-footer/panel-footer'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelLayout from '../panel-layout/panel-layout'
 
+const Acentos = {
+	info: { card: 'border-info/30 bg-info/[0.06]', icon: 'text-info' },
+	success: { card: 'border-success/30 bg-success/[0.06]', icon: 'text-success' },
+	primary: { card: 'border-primary/30 bg-primary/[0.06]', icon: 'text-primary' },
+	warning: { card: 'border-warning/35 bg-warning/10', icon: 'text-warning-foreground dark:text-warning' },
+	danger: { card: 'border-destructive/30 bg-destructive/[0.06]', icon: 'text-destructive' },
+} as const
+
 type PanelHomeClientProps = {
 	prospectosIniciales: ProspectoResumenJson[]
 	codigoRoles: string[]
+	nombreUsuario: string
 	dashboardCobranzaInicial?: DashboardCobranza
 }
 
 export default function PanelHomeClient({
 	prospectosIniciales,
 	codigoRoles,
+	nombreUsuario,
 	dashboardCobranzaInicial,
 }: PanelHomeClientProps) {
 	const { data: prospectos } = useObtenerProspectos(prospectosIniciales)
@@ -55,7 +65,6 @@ export default function PanelHomeClient({
 	const esEjecutivoCobranza = codigoRoles.includes('EJECUTIVO_COBRANZA')
 
 	const { filtrosContados } = useFiltrosProspectos(prospectos)
-
 	const { filtrar } = useFiltrarProspectos(prospectos)
 
 	const KPI_FILTRO: Record<string, FiltroEstadoValor> = useMemo(
@@ -93,10 +102,20 @@ export default function PanelHomeClient({
 	return (
 		<PanelLayout>
 			<PanelHeader>
+				{/* Encabezado de bienvenida */}
+				<div className='flex flex-col gap-1'>
+					<h1 className='text-xl font-semibold tracking-tight text-foreground sm:text-2xl'>
+						Bienvenido{nombreUsuario ? `, ${nombreUsuario.split(' ')[0]}` : ''}
+					</h1>
+					<p className='text-sm text-muted-foreground'>
+						Resumen de tu actividad comercial.
+					</p>
+				</div>
+
 				{esEjecutivoComercial && (
 					<>
 						<MetricasEjecutivoComercial />
-						<div className='grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4'>
+						<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
 							<CardKpi
 								datos={{
 									key: 'asignados',
@@ -105,8 +124,8 @@ export default function PanelHomeClient({
 									icon: UserCheck,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-sky-500/35 bg-sky-500/[0.06]'
-								iconClassName='text-sky-600 dark:text-sky-400'
+								accentClassName={Acentos.info.card}
+								iconClassName={Acentos.info.icon}
 							/>
 							<CardKpi
 								datos={{
@@ -117,8 +136,8 @@ export default function PanelHomeClient({
 									icon: ClipboardList,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-emerald-500/30 bg-emerald-500/[0.05]'
-								iconClassName='text-emerald-600 dark:text-emerald-400'
+								accentClassName={Acentos.success.card}
+								iconClassName={Acentos.success.icon}
 							/>
 							<CardKpi
 								datos={{
@@ -128,8 +147,8 @@ export default function PanelHomeClient({
 									icon: FileText,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-violet-500/35 bg-violet-500/[0.06]'
-								iconClassName='text-violet-600 dark:text-violet-400'
+								accentClassName={Acentos.primary.card}
+								iconClassName={Acentos.primary.icon}
 							/>
 							<CardKpi
 								datos={{
@@ -143,8 +162,8 @@ export default function PanelHomeClient({
 									icon: Users,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-indigo-500/35 bg-indigo-500/[0.06]'
-								iconClassName='text-indigo-600 dark:text-indigo-400'
+								accentClassName={Acentos.warning.card}
+								iconClassName={Acentos.warning.icon}
 							/>
 						</div>
 					</>
@@ -152,7 +171,7 @@ export default function PanelHomeClient({
 
 				{esEjecutivoEvaluacion && (
 					<>
-						<div className='grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4'>
+						<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
 							<CardKpi
 								datos={{
 									key: 'pendRevision',
@@ -162,8 +181,8 @@ export default function PanelHomeClient({
 									icon: Bell,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-sky-500/35 bg-sky-500/[0.06]'
-								iconClassName='text-sky-600 dark:text-sky-400'
+								accentClassName={Acentos.danger.card}
+								iconClassName={Acentos.danger.icon}
 							/>
 							<CardKpi
 								datos={{
@@ -173,8 +192,8 @@ export default function PanelHomeClient({
 									icon: ClipboardList,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-emerald-500/30 bg-emerald-500/[0.05]'
-								iconClassName='text-emerald-600 dark:text-emerald-400'
+								accentClassName={Acentos.success.card}
+								iconClassName={Acentos.success.icon}
 							/>
 							<CardKpi
 								datos={{
@@ -184,8 +203,8 @@ export default function PanelHomeClient({
 									icon: RefreshCw,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-violet-500/35 bg-violet-500/[0.06]'
-								iconClassName='text-violet-600 dark:text-violet-400'
+								accentClassName={Acentos.warning.card}
+								iconClassName={Acentos.warning.icon}
 							/>
 							<CardKpi
 								datos={{
@@ -195,66 +214,24 @@ export default function PanelHomeClient({
 									icon: Upload,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName='border-indigo-500/35 bg-indigo-500/[0.06]'
-								iconClassName='text-indigo-600 dark:text-indigo-400'
+								accentClassName={Acentos.info.card}
+								iconClassName={Acentos.info.icon}
 							/>
 						</div>
 
-						<div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
-							<Link
+						<div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+							<TarjetaEnlace
 								href='/solicitudes-estudio'
-								className='group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-							>
-								<Card className='border-border bg-card shadow-none transition-colors group-hover:bg-muted/15'>
-									<CardContent className='flex items-center gap-3 p-3.5 sm:p-4'>
-										<span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border/60'>
-											<ClipboardList
-												className='h-5 w-5 text-muted-foreground'
-												aria-hidden
-											/>
-										</span>
-										<div className='min-w-0 flex-1'>
-											<h2 className='text-sm font-semibold leading-snug text-foreground sm:text-base'>
-												Solicitudes de estudio
-											</h2>
-											<p className='mt-0.5 text-xs leading-snug text-muted-foreground'>
-												Revisa y gestiona las solicitudes de cotización
-											</p>
-										</div>
-										<ArrowRight
-											className='h-4 w-4 shrink-0 text-primary opacity-80 transition-transform group-hover:translate-x-0.5 sm:h-5 sm:w-5'
-											aria-hidden
-										/>
-									</CardContent>
-								</Card>
-							</Link>
-							<Link
+								icono={ClipboardList}
+								titulo='Solicitudes de estudio'
+								descripcion='Revisa y gestiona las solicitudes de cotización'
+							/>
+							<TarjetaEnlace
 								href='/cotizaciones-estudios-emitidos'
-								className='group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-							>
-								<Card className='border-border bg-card shadow-none transition-colors group-hover:bg-muted/15'>
-									<CardContent className='flex items-center gap-3 p-3.5 sm:p-4'>
-										<span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border/60'>
-											<FileText
-												className='h-5 w-5 text-muted-foreground'
-												aria-hidden
-											/>
-										</span>
-										<div className='min-w-0 flex-1'>
-											<h2 className='text-sm font-semibold leading-snug text-foreground sm:text-base'>
-												Cotizaciones / estudios emitidos
-											</h2>
-											<p className='mt-0.5 text-xs leading-snug text-muted-foreground'>
-												Historial de cotizaciones y estudios emitidos
-											</p>
-										</div>
-										<ArrowRight
-											className='h-4 w-4 shrink-0 text-primary opacity-80 transition-transform group-hover:translate-x-0.5 sm:h-5 sm:w-5'
-											aria-hidden
-										/>
-									</CardContent>
-								</Card>
-							</Link>
+								icono={FileText}
+								titulo='Cotizaciones / estudios emitidos'
+								descripcion='Historial de cotizaciones y estudios emitidos'
+							/>
 						</div>
 					</>
 				)}
@@ -283,5 +260,44 @@ export default function PanelHomeClient({
 				}}
 			/>
 		</PanelLayout>
+	)
+}
+
+function TarjetaEnlace({
+	href,
+	icono: Icono,
+	titulo,
+	descripcion,
+}: {
+	href: string
+	icono: React.ComponentType<{ className?: string }>
+	titulo: string
+	descripcion: string
+}) {
+	return (
+		<Link
+			href={href}
+			className='group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+		>
+			<Card className='border-border/70 bg-card shadow-none transition-all duration-150 group-hover:-translate-y-0.5 group-hover:border-primary/30 group-hover:shadow-md'>
+				<CardContent className='flex items-center gap-3.5 p-4'>
+					<span className='grid size-11 shrink-0 place-items-center rounded-xl bg-primary/[0.06] text-primary ring-1 ring-primary/15 transition-colors group-hover:bg-primary/10'>
+						<Icono className='size-5' aria-hidden />
+					</span>
+					<div className='min-w-0 flex-1'>
+						<h2 className='text-sm font-semibold leading-snug text-foreground sm:text-[15px]'>
+							{titulo}
+						</h2>
+						<p className='mt-0.5 text-xs leading-snug text-muted-foreground'>
+							{descripcion}
+						</p>
+					</div>
+					<ArrowRight
+						className='size-4 shrink-0 text-primary opacity-70 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 sm:size-5'
+						aria-hidden
+					/>
+				</CardContent>
+			</Card>
+		</Link>
 	)
 }

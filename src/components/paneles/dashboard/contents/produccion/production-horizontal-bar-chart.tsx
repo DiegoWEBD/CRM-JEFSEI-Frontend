@@ -88,7 +88,7 @@ export function ProductionHorizontalBarChart({
               <CartesianGrid
                 horizontal={false}
                 strokeDasharray='3 3'
-                className='stroke-teal-500/10'
+                className='stroke-border'
               />
               <XAxis
                 type='number'
@@ -109,7 +109,7 @@ export function ProductionHorizontalBarChart({
               />
               <Tooltip
                 content={<TooltipBarra />}
-                cursor={{ fill: 'rgba(20, 184, 166, 0.12)' }}
+                cursor={{ fill: 'hsl(var(--primary) / 0.08)' }}
               />
               <Bar dataKey='valorGrafico' radius={[0, 4, 4, 0]} maxBarSize={16}>
                 {chartData.map((entry, index) => (

@@ -1,18 +1,25 @@
 'use client'
 
-import { FaBars } from 'react-icons/fa6'
+import { Menu } from 'lucide-react'
 import { useSidebarStore } from '@/global_states/sidebar-store'
+import { useIsMobile } from '@/components/use-mobile/use-mobile'
+import { Button } from '@/components/button'
 
 const ToggleSidebarButton = () => {
-	const { toggle } = useSidebarStore()
+	const isMobile = useIsMobile()
+	const { toggle, toggleMode } = useSidebarStore()
 
 	return (
-		<button
-			onClick={toggle}
-			className='lg:hidden p-2 rounded hover:bg-gray-100'
+		<Button
+			variant='ghost'
+			size='icon-sm'
+			onClick={isMobile ? toggle : toggleMode}
+			aria-label={isMobile ? 'Abrir menú' : 'Contraer menú'}
+			title={isMobile ? 'Abrir menú' : 'Contraer menú'}
+			className='text-muted-foreground hover:text-foreground'
 		>
-			<FaBars />
-		</button>
+			<Menu className='size-4' />
+		</Button>
 	)
 }
 

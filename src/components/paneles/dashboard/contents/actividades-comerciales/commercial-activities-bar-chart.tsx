@@ -9,25 +9,16 @@ import { colorSegmento } from '@/lib/paleta-dashboard'
 function TooltipGestiones({
   active,
   payload,
-  barColor,
 }: {
   active?: boolean
   payload?: { payload: { label: string; value: number } }[]
-  barColor?: string
 }) {
   if (!active || !payload?.[0]?.payload) return null
   const p = payload[0].payload
-  const accent = barColor ?? '#14b8a6'
   return (
-    <div
-      className='rounded-lg border bg-popover px-3 py-2 text-xs shadow-md'
-      style={{
-        borderColor: `${accent}44`,
-        boxShadow: `0 4px 12px ${accent}18`,
-      }}
-    >
+    <div className='rounded-lg border border-border/60 bg-popover px-3 py-2 text-xs shadow-md'>
       <p className='font-semibold text-foreground'>{p.label}</p>
-      <p className='mt-0.5 tabular-nums' style={{ color: accent }}>
+      <p className='mt-0.5 tabular-nums font-medium text-primary'>
         {p.value.toLocaleString('es-CL')} gestiones
       </p>
     </div>
@@ -74,7 +65,7 @@ export default function CommercialActivitiesBarChart({
               data={chartData}
               margin={{ top: 6, right: 6, left: 0, bottom: 0 }}
             >
-              <CartesianGrid vertical={false} strokeDasharray='3 3' className='stroke-teal-500/10' />
+              <CartesianGrid vertical={false} strokeDasharray='3 3' className='stroke-border' />
               <XAxis
                 dataKey='name'
                 tickLine={false}

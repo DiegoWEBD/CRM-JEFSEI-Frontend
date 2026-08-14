@@ -2,6 +2,7 @@
 
 import { QueryCache, MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode, useState } from 'react'
+import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/sonner'
 import { AuthProvider } from '@/contexts/auth-context'
 import type { TokenPayload } from '@/dtos/token-payload'
@@ -57,9 +58,11 @@ export default function Providers({ children, initialPayload }: ProvidersProps) 
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider key={initialPayload?.rut ?? 'anonymous'} initialPayload={initialPayload}>
-        {children}
-      </AuthProvider>
+      <ThemeProvider attribute='class' defaultTheme='light' enableSystem disableTransitionOnChange>
+        <AuthProvider key={initialPayload?.rut ?? 'anonymous'} initialPayload={initialPayload}>
+          {children}
+        </AuthProvider>
+      </ThemeProvider>
       <Toaster />
     </QueryClientProvider>
   )

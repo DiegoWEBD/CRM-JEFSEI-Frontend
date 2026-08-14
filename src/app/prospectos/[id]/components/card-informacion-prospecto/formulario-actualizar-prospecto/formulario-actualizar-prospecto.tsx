@@ -25,7 +25,7 @@ export function inp(pendiente: boolean, extra?: string) {
 	return classname(
 		'h-9 text-sm shadow-none',
 		pendiente &&
-			'border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25',
+			'border-warning/60 bg-warning/[0.06] dark:bg-warning/10',
 		extra,
 	)
 }
@@ -63,7 +63,7 @@ export default function FormularioActualizarProspecto({
 							className={classname(
 								'text-xs',
 								inputPendiente(formik.values.nombre_riesgo) &&
-									'text-amber-800 dark:text-amber-200',
+									'text-warning',
 							)}
 						>
 							Nombre del prospecto
@@ -80,7 +80,7 @@ export default function FormularioActualizarProspecto({
 							className={classname(
 								'text-xs',
 								(estadoRut === 'vacio' || estadoRut === 'incompleto') &&
-									'text-amber-800 dark:text-amber-200',
+									'text-warning',
 								(estadoRut === 'formato_invalido' ||
 									estadoRut === 'dv_invalido') &&
 									'text-destructive',
@@ -115,7 +115,7 @@ export default function FormularioActualizarProspecto({
 							className={classname(
 								'text-xs',
 								inputPendiente(formik.values.direccion) &&
-									'text-amber-800 dark:text-amber-200',
+									'text-warning',
 							)}
 						>
 							Dirección
@@ -132,7 +132,7 @@ export default function FormularioActualizarProspecto({
 							className={classname(
 								'text-xs',
 								inputPendiente(formik.values.region) &&
-									'text-amber-800 dark:text-amber-200',
+									'text-warning',
 							)}
 						>
 							Región
@@ -166,7 +166,7 @@ export default function FormularioActualizarProspecto({
 							className={classname(
 								'text-xs',
 								inputPendiente(formik.values.comuna) &&
-									'text-amber-800 dark:text-amber-200',
+									'text-warning',
 							)}
 						>
 							Comuna
@@ -221,7 +221,7 @@ export default function FormularioActualizarProspecto({
 								className={classname(
 									'text-xs',
 									inputPendiente(formik.values.telefono_contacto) &&
-										'text-amber-800 dark:text-amber-200',
+										'text-warning',
 								)}
 							>
 								Teléfono de contacto
@@ -240,7 +240,7 @@ export default function FormularioActualizarProspecto({
 							className={classname(
 								'text-xs',
 								inputPendiente(formik.values.correo_contacto) &&
-									'text-amber-800 dark:text-amber-200',
+									'text-warning',
 							)}
 						>
 							Correo prospecto

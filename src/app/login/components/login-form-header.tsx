@@ -1,14 +1,13 @@
 import { CardHeader } from '@/components/card'
-import { Shield } from 'lucide-react'
 
 const LoginFormHeader = () => {
 	return (
-		<CardHeader className='mb-6 justify-items-center'>
-			<div className='bg-blue-100 h-12 w-12 flex items-center justify-center rounded-full mb-5'>
-				<Shield size='1.5rem' />
+		<CardHeader className='items-start gap-1 pb-0 text-left'>
+			<div className='mb-4 grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground'>
+				<span className='text-sm font-semibold leading-none'>IB</span>
 			</div>
-			<h1 className='text-xl font-bold'>CRM JEFSEI</h1>
-			<p className='text-subtitle'>Inicia sesión para continuar</p>
+			<h1 className='text-xl font-semibold tracking-tight text-foreground'>Bienvenido</h1>
+			<p className='text-[13px] text-muted-foreground'>Inicia sesión para acceder al CRM</p>
 		</CardHeader>
 	)
 }

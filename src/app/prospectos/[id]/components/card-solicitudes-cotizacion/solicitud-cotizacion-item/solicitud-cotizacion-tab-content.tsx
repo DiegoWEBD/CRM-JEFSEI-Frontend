@@ -66,10 +66,9 @@ function descargarPDF(base64: string, nombreArchivo: string) {
 }
 
 const ESTADO_VENC_COLORS: Record<string, string> = {
-	vigente:
-		'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300',
-	por_vencer: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300',
-	vencida: 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300',
+	vigente: 'bg-success/12 text-success dark:bg-success/20',
+	por_vencer: 'bg-warning/15 text-warning dark:bg-warning/20',
+	vencida: 'bg-destructive/12 text-destructive dark:bg-destructive/20',
 }
 
 const ESTADO_VENC_LABELS: Record<string, string> = {
@@ -454,7 +453,7 @@ export default function SolicitudCotizacionTabContent({
 								className='flex items-center justify-between gap-2 rounded-md border border-border/70 bg-card p-2.5'
 							>
 								<div className='flex min-w-0 items-center gap-2'>
-									<FileText className='size-4 shrink-0 text-red-500' />
+									<FileText className='size-4 shrink-0 text-destructive' />
 									<span className='truncate text-xs text-foreground'>
 										{e.nombre_archivo}
 									</span>

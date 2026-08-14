@@ -56,10 +56,10 @@ const PRIORIDAD_LABELS: Record<string, string> = {
 	NO_APLICA: '—',
 }
 
-const PRIORIDAD_ICON: Record<string, string> = {
-	ROJO: 'bg-red-500',
-	AMARILLO: 'bg-amber-400',
-	VERDE: 'bg-emerald-500',
+const PRIORIDAD_DOT: Record<string, string> = {
+	ROJO: 'bg-destructive',
+	AMARILLO: 'bg-warning',
+	VERDE: 'bg-success',
 	NO_APLICA: 'bg-muted-foreground/40',
 }
 
@@ -100,7 +100,7 @@ export default function DetalleProcesoDrawer({
 						<span
 							className={cn(
 								'h-3 w-3 shrink-0 rounded-full',
-								PRIORIDAD_ICON[reporte.estado_semaforo],
+								PRIORIDAD_DOT[reporte.estado_semaforo],
 							)}
 						/>
 						<SheetTitle className='text-sm font-semibold'>
@@ -256,7 +256,7 @@ export default function DetalleProcesoDrawer({
 										<dt className='text-xs text-muted-foreground'>
 											Días de atraso
 										</dt>
-										<dd className='font-medium tabular-nums text-red-600'>
+										<dd className='font-medium tabular-nums text-destructive'>
 											{reporte.dias_atraso}
 										</dd>
 									</div>
@@ -366,16 +366,16 @@ export default function DetalleProcesoDrawer({
 								className={cn(
 									'rounded-md border p-2.5',
 									proceso.estado_actual.codigo === 'GANADO'
-										? 'border-emerald-700/30 bg-emerald-700/10'
-										: 'border-red-700/30 bg-red-700/10',
+										? 'border-success/30 bg-success/10'
+										: 'border-destructive/30 bg-destructive/10',
 								)}
 							>
 								<p
 									className={cn(
 										'text-xs font-medium',
 										proceso.estado_actual.codigo === 'GANADO'
-											? 'text-emerald-800 dark:text-emerald-200'
-											: 'text-red-800 dark:text-red-200',
+											? 'text-success'
+											: 'text-destructive',
 									)}
 								>
 									Proceso {proceso.estado_actual.nombre.toLowerCase()}

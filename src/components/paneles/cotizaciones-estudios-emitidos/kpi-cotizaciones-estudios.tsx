@@ -1,8 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
-import { Skeleton } from '@/components/skeleton'
-import { cn } from '@/lib/utils'
+import { PanelKpiCard, PanelKpiSkeleton, type KpiAcento } from '@/components/paneles/shared/panel-kpi-card'
 
 export type TarjetaActiva =
 	| 'todas'
@@ -18,6 +16,14 @@ const KPI_LABELS: Record<string, string> = {
 	vencidas: 'Vencidas',
 	estudios_pendientes: 'Estudios pendientes',
 	estudios_finales_emitidos: 'Estudios finales emitidos',
+}
+
+const KPI_ACENTOS: Record<string, KpiAcento> = {
+	vigentes: 'success',
+	por_vencer: 'warning',
+	vencidas: 'danger',
+	estudios_pendientes: 'info',
+	estudios_finales_emitidos: 'primary',
 }
 
 const TARJETAS: TarjetaActiva[] = [
@@ -42,58 +48,24 @@ export default function KpiCotizacionesEstudios({
 	loading,
 }: KpiCotizacionesEstudiosProps) {
 	if (loading) {
-		return (
-			<div className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5'>
-				{TARJETAS.map(key => (
-					<div
-						key={key}
-						className='rounded-lg border border-border bg-card px-3 py-3'
-					>
-						<Skeleton className='h-3 w-28' />
-						<Skeleton className='mt-2 h-7 w-12' />
-					</div>
-				))}
-			</div>
-		)
+		return <PanelKpiSkeleton count={TARJETAS.length} />
 	}
-
-	console.log(conteos)
 
 	return (
 		<div className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5'>
 			{TARJETAS.map(key => {
-				const value = conteos[key] ?? 0
-				const activa = tarjetaActiva === key
+				const acento = KPI_ACENTOS[key] as KpiAcento
 				return (
-					<Card
+					<PanelKpiCard
 						key={key}
-						role='button'
-						tabIndex={0}
+						label={KPI_LABELS[key]}
+						value={conteos[key] ?? 0}
+						accent={acento}
+						activa={tarjetaActiva === key}
 						onClick={() =>
 							onToggleTarjeta(tarjetaActiva === key ? 'todas' : key)
 						}
-						onKeyDown={e => {
-							if (e.key === 'Enter' || e.key === ' ') {
-								e.preventDefault()
-								onToggleTarjeta(tarjetaActiva === key ? 'todas' : key)
-							}
-						}}
-						className={cn(
-							'cursor-pointer border-border bg-card transition-all duration-150 hover:bg-muted/20 hover:-translate-y-0.5 hover:shadow-md',
-							activa && 'border-primary/35 ring-1 ring-primary/15',
-						)}
-					>
-						<CardHeader className='pb-1 pt-3'>
-							<CardTitle className='text-[11px] font-semibold leading-snug text-foreground/70'>
-								{KPI_LABELS[key]}
-							</CardTitle>
-						</CardHeader>
-						<CardContent className='pb-3 pt-0'>
-							<p className='text-3xl font-bold tabular-nums tracking-tight text-foreground'>
-								{value}
-							</p>
-						</CardContent>
-					</Card>
+					/>
 				)
 			})}
 		</div>

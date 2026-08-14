@@ -87,7 +87,7 @@ export default function MonthlyNetPremiumTrendChart({ data, className }: Monthly
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray='3 3'
-                  className='stroke-teal-500/10'
+                  className='stroke-border'
                 />
                 <XAxis
                   dataKey='monthLabel'

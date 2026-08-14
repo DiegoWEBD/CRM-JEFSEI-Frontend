@@ -22,13 +22,14 @@ export default async function AppLayout({
 			<div className='flex flex-col flex-1 min-w-0'>
 				{autenticado && <Header />}
 
-				<MainContentLayout
-					className={
-						!autenticado ? 'bg-secondary flex items-center justify-center p-0' : ''
-					}
-				>
-					{children}
-				</MainContentLayout>
+<MainContentLayout
+				bare={!autenticado}
+				className={
+					!autenticado ? 'bg-secondary flex items-center justify-center' : ''
+				}
+			>
+				{children}
+			</MainContentLayout>
 			</div>
 		</>
 	)

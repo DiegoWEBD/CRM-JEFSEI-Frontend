@@ -1,14 +1,24 @@
 type MainContentLayoutProps = {
 	children?: React.ReactNode
 	className?: string
+	bare?: boolean
 }
 
 const MainContentLayout = ({
 	children,
 	className = '',
+	bare = false,
 }: MainContentLayoutProps) => {
+	if (bare) {
+		return (
+			<main className={`flex-1 overflow-auto ${className}`}>{children}</main>
+		)
+	}
+
 	return (
-		<main className={`flex-1 p-4 overflow-auto ${className}`}>{children}</main>
+		<main className={`flex-1 overflow-auto ${className}`}>
+			<div className='mx-auto w-full max-w-[1600px] p-6 lg:p-8'>{children}</div>
+		</main>
 	)
 }
 

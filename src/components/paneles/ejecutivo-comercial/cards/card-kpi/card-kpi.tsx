@@ -19,7 +19,7 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 			role='button'
 			tabIndex={0}
 			className={cn(
-				'cursor-pointer border-border bg-card transition-all duration-150 hover:border-primary/40 hover:bg-muted/20 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+				'group cursor-pointer gap-0 overflow-hidden border-border/70 bg-card py-0 transition-all duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 				accentClassName,
 			)}
 			onClick={() => setKpiAbierto(datos.key)}
@@ -30,24 +30,21 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 				}
 			}}
 		>
-			<CardHeader className='flex flex-row items-start justify-between gap-2 space-y-0 pb-1 pt-3'>
-				<CardTitle className='line-clamp-3 min-h-10 text-[11px] font-semibold leading-snug text-foreground/70 sm:text-xs'>
+			<CardHeader className='flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-3 pb-2'>
+				<CardTitle className='line-clamp-2 min-h-8 text-[11px] font-medium uppercase tracking-wide leading-snug text-muted-foreground sm:text-xs'>
 					{datos.label}
 				</CardTitle>
-				<div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/[0.08]'>
-					<Icon className={cn('h-4 w-4 text-primary', iconClassName)} aria-hidden />
+				<div className='grid size-8 shrink-0 place-items-center rounded-lg bg-muted/70 ring-1 ring-border/60 transition-colors group-hover:bg-primary/10 group-hover:ring-primary/20'>
+					<Icon className={cn('size-4', iconClassName ?? 'text-primary')} aria-hidden />
 				</div>
 			</CardHeader>
-			<CardContent className='space-y-1.5 pb-3 pt-0'>
-				<p className='text-3xl font-bold tabular-nums tracking-tight text-foreground'>
+			<CardContent className='space-y-2 px-4 pb-3 pt-0'>
+				<p className='text-2xl font-semibold tabular-nums tracking-tight text-foreground'>
 					{datos.value}
 				</p>
 				{datos.infoAdicional != null && datos.infoAdicional > 0 ? (
-					<div className='flex items-center gap-1.5 rounded-md border border-amber-500/30 bg-amber-500/8 px-2 py-1.5 text-[10px] text-amber-950 dark:text-amber-50'>
-						<Bell
-							className='h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400'
-							aria-hidden
-						/>
+					<div className='inline-flex items-center gap-1.5 rounded-md border border-warning/30 bg-warning/15 px-2 py-1 text-[11px] text-warning-foreground dark:text-warning'>
+						<Bell className='size-3.5 shrink-0' aria-hidden />
 						<span>
 							<span className='font-semibold tabular-nums'>
 								{datos.infoAdicional}

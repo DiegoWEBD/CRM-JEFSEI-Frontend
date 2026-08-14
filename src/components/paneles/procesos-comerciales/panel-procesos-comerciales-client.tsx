@@ -156,13 +156,15 @@ export default function PanelProcesosComercialesClient({
 				onToggleTarjeta={setTarjetaActiva}
 			/>
 
-			<section className='overflow-x-auto rounded-lg border border-border bg-card shadow-none'>
-				<div className='space-y-3 border-b border-border/80 p-3 sm:p-4'>
+			<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
+				<div className='border-b border-border/80 p-3 sm:p-4'>
 					<FiltrosProcesosComerciales
 						filtros={filtros}
 						onChange={setFiltros}
 						opcionesEjecutivo={opcionesEjecutivo}
 						opcionesEtapa={opcionesEtapa}
+						total={data?.length ?? 0}
+						filtrados={listaFiltrada.length}
 					/>
 				</div>
 

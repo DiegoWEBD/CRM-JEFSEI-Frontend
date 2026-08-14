@@ -133,7 +133,7 @@ export default function CardPolizas({
 									(polizasPorEstado.get('VIGENTE') ?? 0) +
 									(polizasPorEstado.get('POR_VENCER') ?? 0)
 								}
-								className='border-emerald-500/25 bg-emerald-500/6'
+								className='border-success/25 bg-success/6'
 							/>
 							<KpiEstadoPoliza
 								label='Canceladas'
@@ -143,7 +143,7 @@ export default function CardPolizas({
 							<KpiEstadoPoliza
 								label='Prima vigente'
 								kpi={`UF ${primaVigente}`}
-								className='border-sky-500/25 bg-sky-500/6'
+								className='border-info/25 bg-info/6'
 							/>
 
 							<KpiEstadoPoliza
@@ -154,7 +154,7 @@ export default function CardPolizas({
 							<KpiEstadoPoliza
 								label='Por vencer'
 								kpi={polizasPorEstado.get('POR_VENCER') ?? 0}
-								className='border-amber-500/25 bg-amber-500/6'
+								className='border-warning/25 bg-warning/6'
 							/>
 
 							<KpiEstadoPoliza

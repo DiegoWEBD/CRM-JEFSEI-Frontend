@@ -1,7 +1,9 @@
 'use client'
 
 import { useSidebarStore } from '@/global_states/sidebar-store'
+import { useIsMobile } from '@/components/use-mobile/use-mobile'
 import { classname } from '@/lib/class-name'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/tooltip'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
@@ -10,42 +12,54 @@ type NavElementProps = {
 	href: string
 	icono: ReactNode
 	titulo: string
-	open?: boolean
 }
 
-const NavElement = ({ href, icono, titulo, open }: NavElementProps) => {
+const NavElement = ({ href, icono, titulo }: NavElementProps) => {
 	const pathname = usePathname()
-
 	const { setOpen } = useSidebarStore()
+	const isMobile = useIsMobile()
+	const mode = useSidebarStore(s => s.mode)
 
 	const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
 
-	return (
+	/** Modo mini-rail desktop: mostrar tooltip con etiqueta. */
+	const collapsed = mode === 'collapsed' && !isMobile
+
+	const link = (
 		<Link
 			href={href}
 			onClick={() => setOpen(false)}
+			aria-current={isActive ? 'page' : undefined}
+			title={collapsed ? titulo : undefined}
 			className={classname(
-				'text-muted-foreground group relative flex h-11 w-full items-center gap-3 overflow-hidden rounded-md px-3 text-sm transition-all duration-150 outline-hidden select-none',
+				'relative flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-[13px] transition-colors duration-150 outline-none select-none',
+				'group-data-[mode=collapsed]/sidebar:justify-center group-data-[mode=collapsed]/sidebar:px-0',
 				isActive
-					? 'bg-sidebar-primary/10 text-sidebar-primary font-medium before:absolute before:left-0 before:top-1/2 before:h-5 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-sidebar-primary'
-					: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+					? 'bg-primary/10 text-primary font-medium before:absolute before:left-0 before:top-1/2 before:h-4 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-primary'
+					: 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
 			)}
 		>
-			<span
-				className={classname(
-					'flex size-4 shrink-0 items-center justify-center',
-				)}
-			>
+			<span className='grid size-4 shrink-0 place-items-center text-current'>
 				{icono}
 			</span>
-
-			{open && (
-				<span className='min-w-0 wrap-break-words whitespace-normal'>
-					{titulo}
-				</span>
-			)}
+			<span className='min-w-0 truncate group-data-[mode=collapsed]/sidebar:hidden'>
+				{titulo}
+			</span>
 		</Link>
 	)
+
+	if (collapsed) {
+		return (
+			<Tooltip delayDuration={200}>
+				<TooltipTrigger asChild>{link}</TooltipTrigger>
+				<TooltipContent side='right' sideOffset={8} className='text-xs'>
+					{titulo}
+				</TooltipContent>
+			</Tooltip>
+		)
+	}
+
+	return link
 }
 
 export default NavElement

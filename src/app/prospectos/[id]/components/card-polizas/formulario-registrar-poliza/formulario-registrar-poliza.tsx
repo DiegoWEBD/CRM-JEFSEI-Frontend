@@ -54,7 +54,7 @@ export default function FormularioRegistrarPoliza({
 								<Label
 									className={classname(
 										'text-xs',
-										true && 'text-amber-800 dark:text-amber-200',
+										true && 'text-warning',
 									)}
 								>
 									Línea de seguro asociada
@@ -83,7 +83,7 @@ export default function FormularioRegistrarPoliza({
 									className={classname(
 										'text-xs',
 										inputPendiente(polNumero) &&
-											'text-amber-800 dark:text-amber-200',
+											'text-warning',
 									)}
 								>
 									Número de póliza
@@ -101,7 +101,7 @@ export default function FormularioRegistrarPoliza({
 									className={classname(
 										'text-xs',
 										inputPendiente(polCompania) &&
-											'text-amber-800 dark:text-amber-200',
+											'text-warning',
 									)}
 								>
 									Compañía aseguradora

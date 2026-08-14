@@ -39,7 +39,7 @@ export default function PaginaProspectoClient({
 					className='px-3 py-2.5 flex gap-2 w-full items-center justify-start'
 				>
 					<AlertTriangle
-						className='mt-0.5 shrink-0 text-amber-600'
+						className='mt-0.5 shrink-0 text-warning'
 						aria-hidden
 					/>
 					<p className='font-medium'>

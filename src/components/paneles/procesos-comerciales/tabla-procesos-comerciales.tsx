@@ -25,9 +25,9 @@ const PRIORIDAD_ORDER: Record<string, number> = {
 }
 
 const PRIORIDAD_COLORS: Record<string, string> = {
-  ROJO: 'bg-red-500',
-  AMARILLO: 'bg-amber-400',
-  VERDE: 'bg-emerald-500',
+  ROJO: 'bg-destructive',
+  AMARILLO: 'bg-warning',
+  VERDE: 'bg-success',
   NO_APLICA: 'bg-muted-foreground/40',
 }
 
@@ -39,9 +39,9 @@ const PRIORIDAD_LABELS: Record<string, string> = {
 }
 
 const headClass =
-  'h-9 border-b border-border/50 bg-muted/20 px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'
+  'h-9 border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wide text-muted-foreground'
 
-const cellClass = 'px-3 py-2.5 align-middle'
+const cellClass = 'px-3 py-2.5 align-middle text-[13px]'
 
 function esAbierto(r: ReporteProcesoComercial): r is ReporteProcesoComercialAbierto {
   return 'dias_transcurridos' in r
@@ -93,7 +93,7 @@ export default function TablaProcesosComerciales({
                 onSeleccionar(f)
               }
             }}
-            className='cursor-pointer border-border bg-card shadow-none transition-colors hover:bg-muted/50'
+            className='cursor-pointer border-border bg-card shadow-none transition-colors hover:border-primary/40 hover:shadow-sm'
           >
             <CardContent className='p-4'>
               <div className='flex items-start justify-between gap-2'>
@@ -184,7 +184,7 @@ export default function TablaProcesosComerciales({
                     onSeleccionar(f)
                   }
                 }}
-                className='cursor-pointer border-0 border-b border-border/40 transition-colors last:border-b-0 hover:bg-muted/[0.35]'
+                className='cursor-pointer border-0 border-b border-border/60 transition-colors last:border-b-0 hover:bg-accent/40'
               >
                 <TableCell className={cn(cellClass, 'p-1.5 text-center')}>
                   <span
@@ -231,18 +231,12 @@ export default function TablaProcesosComerciales({
                 </TableCell>
                 <TableCell className={cn(cellClass, 'p-1.5')}>
                   {esAbierto(f) ? (
-                    <span
-                      className={cn(
-                        'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
-                        f.porentaje_sla_consumido >= 1
-                          ? 'bg-red-100 text-red-700 ring-1 ring-inset ring-red-600/20 dark:bg-red-950/40 dark:text-red-300'
-                          : f.porentaje_sla_consumido >= 0.7
-                            ? 'bg-amber-100 text-amber-700 ring-1 ring-inset ring-amber-600/20 dark:bg-amber-950/40 dark:text-amber-200'
-                            : 'bg-emerald-100 text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-950/40 dark:text-emerald-300',
-                      )}
+                    <Badge
+                      variant={SEMAFORO_VARIANT[f.estado_semaforo]}
+                      className='text-[10px] font-medium tabular-nums'
                     >
                       {(f.porentaje_sla_consumido * 100).toFixed(0)}%
-                    </span>
+                    </Badge>
                   ) : (
                     <span className='text-[10px] text-muted-foreground'>—</span>
                   )}

@@ -24,7 +24,7 @@ export default function ItemInformacionProspecto({
 		<div
 			className={classname(
 				'min-w-0 space-y-0.5',
-				highlightMissing && 'rounded-sm bg-amber-500/6 px-1 -mx-1',
+				highlightMissing && 'rounded-sm bg-warning/6 px-1 -mx-1',
 				className,
 			)}
 		>
@@ -35,7 +35,7 @@ export default function ItemInformacionProspecto({
 					texto === '—' && 'text-muted-foreground',
 					highlightMissing &&
 						texto === '—' &&
-						'text-amber-800/90 dark:text-amber-200/90',
+						'text-warning/90',
 				)}
 			>
 				{texto}

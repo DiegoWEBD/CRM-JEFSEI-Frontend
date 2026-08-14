@@ -22,9 +22,9 @@ import { cn } from '@/lib/utils'
 import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
 
 const headClass =
-  'h-9 border-b border-border/50 bg-muted/20 px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'
+  'h-9 border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wide text-muted-foreground'
 
-const cellClass = 'px-3 py-2.5 align-middle'
+const cellClass = 'px-3 py-2.5 align-middle text-[13px]'
 
 const ESTADO_VENCIMIENTO_LABELS: Record<string, string> = {
   vigente: 'Vigente',
@@ -61,7 +61,7 @@ export default function TablaCotizacionesEstudios({
     <>
       <div className='space-y-3 lg:hidden'>
         {filas.map((f) => (
-          <Card key={f.id} className='border-border bg-card shadow-none'>
+          <Card key={f.id} className='border-border bg-card shadow-none transition-colors hover:border-primary/40 hover:shadow-sm'>
             <CardContent className='p-4'>
               <div className='flex items-start justify-between gap-2'>
                 <div className='min-w-0 flex-1'>
@@ -164,7 +164,7 @@ export default function TablaCotizacionesEstudios({
             {filas.map((f) => (
               <TableRow
                 key={f.id}
-                className='border-0 border-b border-border/40 transition-colors last:border-b-0 hover:bg-muted/[0.35]'
+                className='border-0 border-b border-border/60 transition-colors last:border-b-0 hover:bg-accent/40'
               >
                 <TableCell className={cn(cellClass, 'font-medium text-foreground')}>
                   <span className='line-clamp-2 text-xs leading-snug'>
@@ -191,18 +191,12 @@ export default function TablaCotizacionesEstudios({
                 </TableCell>
                 <TableCell className={cn(cellClass, 'p-1.5')}>
                   {f.estado_vencimiento ? (
-                    <span
-                      className={cn(
-                        'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none',
-                        f.estado_vencimiento === 'vigente'
-                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
-                          : f.estado_vencimiento === 'por_vencer'
-                            ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-200'
-                            : 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300',
-                      )}
+                    <Badge
+                      variant={VENCIMIENTO_VARIANT[f.estado_vencimiento]}
+                      className='text-[10px] font-medium'
                     >
                       {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}
-                    </span>
+                    </Badge>
                   ) : (
                     <span className='text-[10px] text-muted-foreground'>—</span>
                   )}

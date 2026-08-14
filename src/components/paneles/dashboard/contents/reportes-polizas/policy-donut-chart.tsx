@@ -87,7 +87,7 @@ export default function PolicyDonutChart({
                 className='pointer-events-none absolute inset-0 flex items-center justify-center'
                 aria-hidden
               >
-                <div className='rounded-full bg-card/95 px-4 py-2.5 text-center shadow-sm ring-1 ring-teal-500/15 backdrop-blur-[1px]'>
+                <div className='rounded-full bg-card/95 px-4 py-2.5 text-center shadow-sm ring-1 ring-primary/15 backdrop-blur-[1px]'>
                   <p className='text-2xl font-bold tabular-nums leading-none tracking-tight sm:text-[1.75rem]'>
                     {total.toLocaleString('es-CL')}
                   </p>
@@ -111,15 +111,14 @@ export default function PolicyDonutChart({
                     className={cn(
                       'inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] transition-all',
                       isSelected
-                        ? 'font-semibold text-foreground shadow-sm'
-                        : 'border-transparent bg-teal-500/[0.06] text-muted-foreground hover:bg-teal-500/10 hover:text-foreground',
+                        ? 'text-white shadow-sm'
+                        : 'border-transparent bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground',
                     )}
                     style={
                       isSelected
                         ? {
-                            backgroundColor: `${fill}18`,
-                            borderColor: `${fill}55`,
-                            boxShadow: `0 1px 2px ${fill}22`,
+                            backgroundColor: fill,
+                            borderColor: fill,
                           }
                         : undefined
                     }

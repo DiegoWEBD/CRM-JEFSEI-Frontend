@@ -32,7 +32,9 @@ function resolverEstadoBandeja(
 }
 
 const headClass =
-	'h-9 whitespace-nowrap border-b border-border/60 bg-muted/15 px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'
+	'h-9 whitespace-nowrap border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wide text-muted-foreground'
+
+const cellClass = 'px-3 py-2.5 align-middle text-[13px]'
 
 type TablaSolicitudesEstudioProps = {
 	solicitudes: SolicitudCotizacionResumen[]
@@ -154,73 +156,73 @@ export default function TablaSolicitudesEstudio({
 						{solicitudes.map(s => {
 							const estado = resolverEstadoBandeja(s)
 							return (
-								<TableRow
-									key={s.id}
-									className={cn(
-										'border-b border-border/40 transition-colors hover:bg-muted/30',
-										estado === 'con_cotizaciones' && 'bg-muted/15 opacity-90',
-									)}
+<TableRow
+								key={s.id}
+								className={cn(
+									'border-b border-border/60 transition-colors hover:bg-accent/40',
+									estado === 'con_cotizaciones' && 'bg-muted/15',
+								)}
+							>
+								<TableCell className={cn(cellClass, 'max-w-[200px]')}>
+									<p className='truncate font-medium text-foreground'>
+										{s.nombre_riesgo}
+									</p>
+								</TableCell>
+								<TableCell className={cn(cellClass, 'max-w-[180px]')}>
+									<p className='line-clamp-2 text-foreground/85'>
+										{s.producto}
+									</p>
+								</TableCell>
+								<TableCell className={cellClass}>
+									<div className='flex flex-wrap items-center gap-1.5'>
+										<BadgeEstadoSolicitud estado={estado} />
+										{s.recotizacion && (
+											<Badge variant='pastel-fuchsia'>
+												Recotización
+											</Badge>
+										)}
+									</div>
+								</TableCell>
+								<TableCell className={cn(cellClass, 'max-w-[120px] truncate text-muted-foreground')}>
+									{s.ejecutivo_comercial}
+								</TableCell>
+								<TableCell className={cn(cellClass, 'min-w-[110px]')}>
+									<p className='tabular-nums text-foreground/90'>
+										{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy')}
+									</p>
+									<p className='tabular-nums text-[11px] text-muted-foreground'>
+										{formatearFecha(new Date(s.fecha), 'HH:mm')}
+									</p>
+								</TableCell>
+								<TableCell className={cn(cellClass, 'py-1.5')}>
+									<BadgePrioridad prioridad={s.prioridad} />
+								</TableCell>
+								<TableCell className={cn(cellClass, 'min-w-[220px] text-right')}>
+									<div className='flex flex-wrap items-center justify-end gap-1.5'>
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									className='h-8 shrink-0 px-2.5 text-xs shadow-none'
+									onClick={() => onVerDetalle(s)}
 								>
-									<TableCell className='max-w-[200px] px-3 py-2'>
-										<p className='truncate text-sm font-medium text-foreground'>
-											{s.nombre_riesgo}
-										</p>
-									</TableCell>
-									<TableCell className='max-w-[180px] px-3 py-2'>
-										<p className='line-clamp-2 text-sm text-foreground/85'>
-											{s.producto}
-										</p>
-									</TableCell>
-									<TableCell className='px-3 py-2'>
-										<div className='flex flex-wrap items-center gap-1.5'>
-											<BadgeEstadoSolicitud estado={estado} />
-											{s.recotizacion && (
-												<Badge variant='pastel-fuchsia'>
-													Recotización
-												</Badge>
-											)}
-										</div>
-									</TableCell>
-									<TableCell className='max-w-[120px] truncate px-3 py-2 text-[11px] text-muted-foreground'>
-										{s.ejecutivo_comercial}
-									</TableCell>
-									<TableCell className='min-w-[110px] px-3 py-2'>
-										<p className='tabular-nums text-[11px] text-foreground/90'>
-											{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy')}
-										</p>
-										<p className='tabular-nums text-[10px] text-muted-foreground'>
-											{formatearFecha(new Date(s.fecha), 'HH:mm')}
-										</p>
-									</TableCell>
-									<TableCell className='px-3 py-1.5'>
-										<BadgePrioridad prioridad={s.prioridad} />
-									</TableCell>
-									<TableCell className='min-w-[220px] px-3 py-2 text-right'>
-										<div className='flex flex-wrap items-center justify-end gap-1.5'>
-									<Button
-										type='button'
-										variant='outline'
-										size='sm'
-										className='h-8 shrink-0 px-2.5 text-xs'
-										onClick={() => onVerDetalle(s)}
-									>
-										<Eye className='mr-1 h-3.5 w-3.5' />
-										Ver solicitud
-									</Button>
-									<Button
-										variant='outline'
-										size='sm'
-										className='h-8 shrink-0 px-2.5 text-xs'
-										asChild
-									>
-										<Link href={`/prospectos/${s.id_prospecto}`}>
-											<ExternalLink className='mr-1 h-3.5 w-3.5' />
-											Ver perfil
-										</Link>
-									</Button>
-										</div>
-									</TableCell>
-								</TableRow>
+									<Eye className='mr-1 h-3.5 w-3.5' />
+									Ver solicitud
+								</Button>
+								<Button
+									variant='outline'
+									size='sm'
+									className='h-8 shrink-0 px-2.5 text-xs shadow-none'
+									asChild
+								>
+									<Link href={`/prospectos/${s.id_prospecto}`}>
+										<ExternalLink className='mr-1 h-3.5 w-3.5' />
+										Ver perfil
+									</Link>
+								</Button>
+									</div>
+								</TableCell>
+							</TableRow>
 							)
 						})}
 					</TableBody>

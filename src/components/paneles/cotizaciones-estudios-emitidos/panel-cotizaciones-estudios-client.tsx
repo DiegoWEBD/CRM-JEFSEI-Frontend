@@ -126,7 +126,7 @@ export default function PanelCotizacionesEstudiosClient({
 			/>
 
 			<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
-				<div className='space-y-3 border-b border-border/80 p-3 sm:p-4'>
+				<div className='border-b border-border/80 p-3 sm:p-4'>
 					<FiltrosCotizacionesEstudios
 						filtros={filtros}
 						onChange={setFiltros}

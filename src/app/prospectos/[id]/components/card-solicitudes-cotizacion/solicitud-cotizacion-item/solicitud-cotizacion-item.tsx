@@ -72,7 +72,7 @@ export default function SolicitudCotizacionItem({
 							{!solicitud.informacion_completa && (
 								<Badge
 									variant='outline'
-									className='text-[10px] font-medium capitalize border-sky-500/35 bg-sky-500/10 text-sky-950 dark:text-sky-100'
+									className='text-[10px] font-medium capitalize border-info/35 bg-info/10 text-info'
 								>
 									Información incompleta
 								</Badge>

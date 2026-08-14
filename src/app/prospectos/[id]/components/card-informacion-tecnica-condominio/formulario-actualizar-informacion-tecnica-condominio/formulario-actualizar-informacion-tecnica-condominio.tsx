@@ -33,7 +33,7 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 						label='Valor UF/m²'
 						labelClassName={classname(
 							inputPendiente(formik.values.uf_por_metro_cuadrado) &&
-								'text-amber-800 dark:text-amber-200',
+															'text-warning',
 						)}
 					>
 						<Input
@@ -51,7 +51,7 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 						label='Porcentaje de depreciación'
 						labelClassName={classname(
 							inputPendiente(formik.values.porcentaje_depreciacion) &&
-								'text-amber-800 dark:text-amber-200',
+															'text-warning',
 						)}
 					>
 						<Input
@@ -69,7 +69,7 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 						label='Porcentaje de espacios comunes'
 						labelClassName={classname(
 							inputPendiente(formik.values.porcentaje_espacios_comunes) &&
-								'text-amber-800 dark:text-amber-200',
+															'text-warning',
 						)}
 					>
 						<Input

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import AppLayout from '@/components/layouts/app-layout'
@@ -16,8 +16,19 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-	title: 'CRM JEFSEI',
-	description: 'Desarrollado por equipo JEFSEI',
+	title: {
+		default: 'CRM JEFSEI',
+		template: '%s · CRM JEFSEI',
+	},
+	description: 'Plataforma de gestión comercial y seguros JEFSEI',
+	applicationName: 'CRM JEFSEI',
+}
+
+export const viewport: Viewport = {
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#f7f8fb' },
+		{ media: '(prefers-color-scheme: dark)', color: '#1a1c24' },
+	],
 }
 
 export default async function RootLayout({
@@ -29,7 +40,8 @@ export default async function RootLayout({
 
 	return (
 		<html
-			lang='en'
+			lang='es'
+			suppressHydrationWarning
 			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
 			<body className='h-screen flex overflow-hidden'>

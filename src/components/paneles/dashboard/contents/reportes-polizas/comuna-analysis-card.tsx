@@ -94,7 +94,7 @@ export default function ComunaAnalysisCard({
                 <p className='mt-1 text-[1.65rem] font-bold tabular-nums leading-none tracking-tight text-foreground'>
                   {totalComuna.toLocaleString('es-CL')}
                 </p>
-                <p className='mt-1.5 max-w-full truncate text-center text-[10px] font-medium text-teal-700 dark:text-teal-300'>
+                <p className='mt-1.5 max-w-full truncate text-center text-[10px] font-medium text-primary'>
                   {comunaActual}
                 </p>
               </>
@@ -141,7 +141,7 @@ export default function ComunaAnalysisCard({
                   {sexoData.map((entry, index) => (
                     <span
                       key={entry.name}
-                      className='inline-flex items-center gap-1 rounded-full bg-teal-500/[0.06] px-1.5 py-0.5 text-[9px] text-muted-foreground'
+                      className='inline-flex items-center gap-1 rounded-full bg-secondary/60 px-1.5 py-0.5 text-[9px] text-muted-foreground'
                     >
                       <span
                         className='h-1.5 w-1.5 shrink-0 rounded-full'

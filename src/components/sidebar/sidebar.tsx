@@ -1,12 +1,11 @@
-import Nav from './nav/nav'
+import { getSession } from '@/lib/auth'
 import SideBarClient from './sidebar-client/sidebar-client'
 
 const SideBar = async () => {
-	return (
-		<SideBarClient>
-			<Nav open />
-		</SideBarClient>
-	)
+	const session = await getSession()
+	const roles = session?.codigo_roles ?? []
+
+	return <SideBarClient roles={roles} />
 }
 
 export default SideBar

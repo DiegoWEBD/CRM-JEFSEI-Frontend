@@ -23,6 +23,7 @@ const PanelHome = async () => {
 		<PanelHomeClient
 			prospectosIniciales={prospectos}
 			codigoRoles={codigoRoles}
+			nombreUsuario={session?.nombre ?? ''}
 			dashboardCobranzaInicial={dashboardInicial}
 		/>
 	)

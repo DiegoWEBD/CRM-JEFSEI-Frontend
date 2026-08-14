@@ -216,7 +216,7 @@ export default function SheetDetalleSolicitud({
 											key={campo}
 											className='flex items-center gap-2 text-sm'
 										>
-											<CircleAlert className='h-4 w-4 shrink-0 text-amber-500' />
+											<CircleAlert className='h-4 w-4 shrink-0 text-warning' />
 											<span className='text-muted-foreground'>
 												{labelCampo(campo)}
 											</span>
