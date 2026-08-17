@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import Poliza from '@/dominio/poliza/poliza'
 import { useQueryPolizas } from '@/hooks/polizas/use-query-polizas'
+import { KPI_PASTEL } from '@/lib/kpi-pastel'
 import { useMemo, useState } from 'react'
 import ContenedorPolizas from './contenedor-polizas/contenedor-polizas'
 import BarraFiltrosPolizas, {
@@ -133,7 +134,7 @@ export default function CardPolizas({
 									(polizasPorEstado.get('VIGENTE') ?? 0) +
 									(polizasPorEstado.get('POR_VENCER') ?? 0)
 								}
-								className='border-success/25 bg-success/6'
+								className={KPI_PASTEL.success.card}
 							/>
 							<KpiEstadoPoliza
 								label='Canceladas'
@@ -143,7 +144,7 @@ export default function CardPolizas({
 							<KpiEstadoPoliza
 								label='Prima vigente'
 								kpi={`UF ${primaVigente}`}
-								className='border-info/25 bg-info/6'
+								className={KPI_PASTEL.info.card}
 							/>
 
 							<KpiEstadoPoliza
@@ -154,7 +155,7 @@ export default function CardPolizas({
 							<KpiEstadoPoliza
 								label='Por vencer'
 								kpi={polizasPorEstado.get('POR_VENCER') ?? 0}
-								className='border-warning/25 bg-warning/6'
+								className={KPI_PASTEL.warning.card}
 							/>
 
 							<KpiEstadoPoliza

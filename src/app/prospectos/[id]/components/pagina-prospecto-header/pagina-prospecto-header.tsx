@@ -70,7 +70,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 									type='button'
 									variant='ghost'
 									size='sm'
-									className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+									className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
 									onClick={() => setOpenAsignarComercial(true)}
 								>
 									{prospecto.ejecutivo_comercial_asignado
@@ -100,7 +100,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 									type='button'
 									variant='ghost'
 									size='sm'
-									className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+									className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
 									onClick={() => setOpenAsignarEvaluacion(true)}
 								>
 									{prospecto.ejecutivo_evaluacion_asignado
@@ -130,7 +130,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 											type='button'
 											variant='ghost'
 											size='sm'
-											className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+											className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
 											onClick={() => setOpenAsignarCobranza(true)}
 										>
 											{prospecto.ejecutivo_cobranza_asignado
@@ -158,7 +158,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 											type='button'
 											variant='ghost'
 											size='sm'
-											className='ml-1 h-5 px-1.5 text-[10px] text-muted-foreground hover:text-foreground'
+											className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
 											onClick={() => setOpenAsignarRenovacion(true)}
 										>
 											{prospecto.ejecutivo_renovacion_asignado
@@ -172,7 +172,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 					</div>
 					<div className='flex flex-col gap-3 sm:flex-row sm:gap-6 lg:flex-col lg:items-end lg:gap-3 lg:pt-0.5'>
 						<div className='flex flex-col items-start gap-1.5 lg:items-end'>
-							<span className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+							<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 								Estado general del prospecto
 							</span>
 							<div className='flex flex-wrap items-center gap-2'>
@@ -182,7 +182,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 							</div>
 						</div>
 						<div className='flex flex-col items-start gap-1.5 lg:items-end'>
-							<span className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+							<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 								Estado de la información
 							</span>
 							<EstadoCompletitudInformacion

@@ -32,7 +32,7 @@ const NavElement = ({ href, icono, titulo }: NavElementProps) => {
 			aria-current={isActive ? 'page' : undefined}
 			title={collapsed ? titulo : undefined}
 			className={classname(
-				'relative flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-[13px] transition-colors duration-150 outline-none select-none',
+				'relative flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-sm transition-colors duration-150 outline-none select-none',
 				'group-data-[mode=collapsed]/sidebar:justify-center group-data-[mode=collapsed]/sidebar:px-0',
 				isActive
 					? 'bg-primary/10 text-primary font-medium before:absolute before:left-0 before:top-1/2 before:h-4 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-primary'
@@ -42,7 +42,7 @@ const NavElement = ({ href, icono, titulo }: NavElementProps) => {
 			<span className='grid size-4 shrink-0 place-items-center text-current'>
 				{icono}
 			</span>
-			<span className='min-w-0 truncate group-data-[mode=collapsed]/sidebar:hidden'>
+			<span className='min-w-0 group-data-[mode=collapsed]/sidebar:hidden'>
 				{titulo}
 			</span>
 		</Link>

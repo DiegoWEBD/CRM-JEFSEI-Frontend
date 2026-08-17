@@ -158,7 +158,7 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 								<ChevronRight className='h-3.5 w-3.5' aria-hidden />
 							</button>
 						</div>
-						<p className='text-[10px] tabular-nums text-muted-foreground'>
+						<p className='text-xs tabular-nums text-muted-foreground'>
 							Hoy: {formatearFecha(new Date(), 'dd/MM/yyyy')}
 						</p>
 					</div>
@@ -167,7 +167,7 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 						diaSeleccionado={diaSeleccionado}
 						onSeleccionarDia={setDiaSeleccionado}
 					/>
-					<p className='flex items-center gap-1.5 text-[10px] text-muted-foreground'>
+					<p className='flex items-center gap-1.5 text-xs text-muted-foreground'>
 						<span
 							className='inline-block h-1.5 w-1.5 rounded-full bg-primary'
 							aria-hidden

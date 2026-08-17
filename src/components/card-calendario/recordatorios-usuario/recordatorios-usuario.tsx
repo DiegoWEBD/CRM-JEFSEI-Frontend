@@ -66,7 +66,7 @@ export default function RecordatoriosUsuario({
 						</span>
 					)}
 				</p>
-				<Badge variant='outline' className='h-5 tabular-nums text-[10px]'>
+				<Badge variant='outline' className='h-5 tabular-nums text-xs'>
 					{recordatorios?.length ?? 0}
 				</Badge>
 			</div>

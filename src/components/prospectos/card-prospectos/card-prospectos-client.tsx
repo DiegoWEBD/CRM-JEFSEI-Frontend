@@ -1,11 +1,11 @@
 'use client'
 
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import { ESTADO_GENERAL_CLIENTE_BADGE, ESTADO_GENERAL_CLIENTE_LABELS, type EstadoGeneralCliente } from '@/lib/estados-cotizaciones'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { Dialog, DialogContent, DialogTitle } from '@/components/dialog'
+import FormularioRegistrarProspecto from '@/components/formulario-registrar-prospecto/formulario-registrar-prospecto'
 import { Input } from '@/components/input'
 import {
 	Sheet,
@@ -13,10 +13,13 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from '@/components/sheet'
-import FormularioRegistrarProspecto from '@/components/formulario-registrar-prospecto/formulario-registrar-prospecto'
-import { cn } from '@/lib/utils'
 import { useControlledInput } from '@/hooks/input/use-controlled-input'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
+import {
+	ESTADO_GENERAL_CLIENTE_BADGE,
+	ESTADO_GENERAL_CLIENTE_LABELS,
+	type EstadoGeneralCliente,
+} from '@/lib/estados-cotizaciones'
 import { useQueryClient } from '@tanstack/react-query'
 import { Plus, Search } from 'lucide-react'
 import Link from 'next/link'
@@ -102,7 +105,7 @@ export default function CardProspectosClient({
 				/>
 
 				<div className='space-y-2'>
-					<p className='text-[11px] text-muted-foreground'>
+					<p className='text-sm text-muted-foreground'>
 						{filtro === 'todos' ? (
 							`Total de prospectos: ${prospectos?.length ?? 0}`
 						) : (
@@ -186,7 +189,8 @@ export default function CardProspectosClient({
 					</SheetHeader>
 					<div className='flex-1 space-y-2 overflow-y-auto p-4'>
 						{prospectos?.map(prospecto => {
-							const estado = (prospecto.estado_general_cliente || 'prospecto') as EstadoGeneralCliente
+							const estado = (prospecto.estado_general_cliente ||
+								'prospecto') as EstadoGeneralCliente
 							return (
 								<div
 									key={prospecto.id}
@@ -198,22 +202,22 @@ export default function CardProspectosClient({
 												{prospecto.nombre_riesgo}
 											</p>
 											{prospecto.ejecutivo_comercial && (
-												<p className='truncate text-[11px] leading-snug text-muted-foreground'>
+												<p className='truncate text-sm leading-snug text-muted-foreground'>
 													{prospecto.ejecutivo_comercial}
 												</p>
 											)}
 											<div className='flex flex-wrap items-center gap-1.5 pt-0.5'>
-											<Badge
-												variant={ESTADO_GENERAL_CLIENTE_BADGE[estado]}
-												className='text-[10px] font-medium'
-											>
+												<Badge
+													variant={ESTADO_GENERAL_CLIENTE_BADGE[estado]}
+													className='text-xs font-medium'
+												>
 													{ESTADO_GENERAL_CLIENTE_LABELS[estado]}
 												</Badge>
-												<span className='text-[11px] text-muted-foreground'>
+												<span className='text-sm text-muted-foreground'>
 													{prospecto.linea_negocio}
 												</span>
 												{prospecto.nombre_administrador && (
-													<span className='text-[11px] text-muted-foreground'>
+													<span className='text-sm text-muted-foreground'>
 														· {prospecto.nombre_administrador}
 													</span>
 												)}
@@ -222,7 +226,7 @@ export default function CardProspectosClient({
 										<Button
 											size='sm'
 											variant='outline'
-											className='h-7 shrink-0 px-2.5 text-[10px]'
+											className='h-7 shrink-0 px-2.5 text-xs'
 											asChild
 										>
 											<Link href={`/prospectos/${prospecto.id}`}>

@@ -117,7 +117,7 @@ export default function SheetRegistrarPoliza({
 								</SelectContent>
 							</Select>
 							{formik.touched.id_company && formik.errors.id_company && (
-								<p className='text-[10px] text-destructive'>
+								<p className='text-xs text-destructive'>
 									{formik.errors.id_company}
 								</p>
 							)}
@@ -131,7 +131,7 @@ export default function SheetRegistrarPoliza({
 								placeholder='Ej. POL-2026-001'
 							/>
 							{formik.touched.numero_poliza && formik.errors.numero_poliza && (
-								<p className='text-[10px] text-destructive'>
+								<p className='text-xs text-destructive'>
 									{formik.errors.numero_poliza}
 								</p>
 							)}
@@ -156,7 +156,7 @@ export default function SheetRegistrarPoliza({
 								</SelectContent>
 							</Select>
 							{formik.touched.tipo && formik.errors.tipo && (
-								<p className='text-[10px] text-destructive'>
+								<p className='text-xs text-destructive'>
 									{formik.errors.tipo}
 								</p>
 							)}
@@ -173,7 +173,7 @@ export default function SheetRegistrarPoliza({
 									placeholder='0'
 								/>
 								{formik.touched.prima_neta && formik.errors.prima_neta && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.prima_neta}
 									</p>
 								)}
@@ -189,7 +189,7 @@ export default function SheetRegistrarPoliza({
 								/>
 								{formik.touched.comision_corredora_pct &&
 									formik.errors.comision_corredora_pct && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.comision_corredora_pct}
 										</p>
 									)}
@@ -204,7 +204,7 @@ export default function SheetRegistrarPoliza({
 								{...formik.getFieldProps('fecha_emision')}
 							/>
 							{formik.touched.fecha_emision && formik.errors.fecha_emision && (
-								<p className='text-[10px] text-destructive'>
+								<p className='text-xs text-destructive'>
 									{formik.errors.fecha_emision}
 								</p>
 							)}
@@ -220,7 +220,7 @@ export default function SheetRegistrarPoliza({
 								/>
 								{formik.touched.inicio_vigencia &&
 									formik.errors.inicio_vigencia && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.inicio_vigencia}
 										</p>
 									)}
@@ -233,7 +233,7 @@ export default function SheetRegistrarPoliza({
 									{...formik.getFieldProps('fin_vigencia')}
 								/>
 								{formik.touched.fin_vigencia && formik.errors.fin_vigencia && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.fin_vigencia}
 									</p>
 								)}

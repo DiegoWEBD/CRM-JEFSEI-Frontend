@@ -13,7 +13,7 @@ export default function TopCompanyCard({ nombre, prima_neta }: TopCompanyCardPro
     <Card className='border-border bg-card shadow-none'>
       <CardContent className='p-3.5'>
         <div className='flex items-start justify-between gap-2'>
-          <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+          <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
             Compañía principal
           </p>
           <Building2 className='h-3.5 w-3.5 shrink-0 text-primary/70' aria-hidden />

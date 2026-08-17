@@ -28,7 +28,7 @@ export default function ProductionSection({ data }: ProductionSectionProps) {
       </div>
 
       <div className='space-y-2.5 border-t border-border/60 pt-4'>
-        <h3 className='text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+        <h3 className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
           Compañías principales
         </h3>
         <div className='grid gap-2.5 lg:grid-cols-2 lg:items-stretch'>
@@ -41,7 +41,7 @@ export default function ProductionSection({ data }: ProductionSectionProps) {
       </div>
 
       <div className='space-y-2.5 border-t border-border/60 pt-4'>
-        <h3 className='text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+        <h3 className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
           Distribución de producción
         </h3>
         <div className='grid gap-2.5 lg:grid-cols-2 lg:items-start'>

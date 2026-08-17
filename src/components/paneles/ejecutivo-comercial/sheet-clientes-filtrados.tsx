@@ -41,22 +41,22 @@ export default function SheetClientesFiltrados({
 											{prospecto.nombre_riesgo}
 										</p>
 										{prospecto.ejecutivo_comercial && (
-											<p className='truncate text-[11px] leading-snug text-muted-foreground'>
+											<p className='truncate text-sm leading-snug text-muted-foreground'>
 												{prospecto.ejecutivo_comercial}
 											</p>
 										)}
 										<div className='flex flex-wrap items-center gap-1.5 pt-0.5'>
 										<Badge
 											variant={ESTADO_GENERAL_CLIENTE_BADGE[estado]}
-											className='text-[10px] font-medium'
+											className='text-xs font-medium'
 										>
 												{ESTADO_GENERAL_CLIENTE_LABELS[estado]}
 											</Badge>
-											<span className='text-[11px] text-muted-foreground'>
+											<span className='text-sm text-muted-foreground'>
 												{prospecto.linea_negocio}
 											</span>
 											{prospecto.nombre_administrador && (
-												<span className='text-[11px] text-muted-foreground'>
+												<span className='text-sm text-muted-foreground'>
 													· {prospecto.nombre_administrador}
 												</span>
 											)}
@@ -65,7 +65,7 @@ export default function SheetClientesFiltrados({
 									<Button
 										size='sm'
 										variant='outline'
-										className='h-7 shrink-0 px-2.5 text-[10px]'
+										className='h-7 shrink-0 px-2.5 text-xs'
 										asChild
 									>
 										<Link href={`/prospectos/${prospecto.id}`}>

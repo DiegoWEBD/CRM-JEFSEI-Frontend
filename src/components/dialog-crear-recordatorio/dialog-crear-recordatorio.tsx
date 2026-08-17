@@ -197,7 +197,7 @@ export default function DialogCrearRecordatorio({
               onBlur={formik.handleBlur}
             />
             {formik.touched.titulo && formik.errors.titulo && (
-              <p className='text-[10px] text-destructive'>
+              <p className='text-xs text-destructive'>
                 {formik.errors.titulo}
               </p>
             )}

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import CardKpi from '@/components/paneles/ejecutivo-comercial/cards/card-kpi/card-kpi'
 import { ColumnaCobranza } from '@/dominio/cobranza/dashboard-cobranza'
+import { KPI_PASTEL } from '@/lib/kpi-pastel'
 
 type KpiCobranzaProps = {
 	kpis: Record<ColumnaCobranza, number>
@@ -28,43 +29,43 @@ export default function KpiCobranza({ kpis, onKpiClick }: KpiCobranzaProps) {
 			key: 'proximos10',
 			label: 'Contactar próximos 10 días',
 			icon: Calendar,
-			accentClassName: 'border-sky-500/30 bg-sky-500/[0.05]',
-			iconClassName: 'text-sky-600 dark:text-sky-400',
+			accentClassName: KPI_PASTEL.sky.card,
+			iconClassName: KPI_PASTEL.sky.icon,
 		},
 		{
 			key: 'llamarHoy',
 			label: 'Llamar hoy',
 			icon: PhoneCall,
-			accentClassName: 'border-violet-500/30 bg-violet-500/[0.05]',
-			iconClassName: 'text-violet-600 dark:text-violet-400',
+			accentClassName: KPI_PASTEL.violet.card,
+			iconClassName: KPI_PASTEL.violet.icon,
 		},
 		{
 			key: 'atrasados',
 			label: 'Atrasados (≤30 días)',
 			icon: Clock,
-			accentClassName: 'border-amber-500/30 bg-amber-500/[0.05]',
-			iconClassName: 'text-amber-600 dark:text-amber-400',
+			accentClassName: KPI_PASTEL.warning.card,
+			iconClassName: KPI_PASTEL.warning.icon,
 		},
 		{
 			key: 'sinPlanPago',
 			label: 'Sin plan de pago',
 			icon: CreditCard,
-			accentClassName: 'border-gray-500/30 bg-gray-500/[0.05]',
-			iconClassName: 'text-gray-600 dark:text-gray-400',
+			accentClassName: KPI_PASTEL.slate.card,
+			iconClassName: KPI_PASTEL.slate.icon,
 		},
 		{
 			key: 'morosos',
 			label: 'Morosos (+30 días)',
 			icon: AlertCircle,
-			accentClassName: 'border-red-500/30 bg-red-500/[0.05]',
-			iconClassName: 'text-red-600 dark:text-red-400',
+			accentClassName: KPI_PASTEL.danger.card,
+			iconClassName: KPI_PASTEL.danger.icon,
 		},
 		{
 			key: 'pagados',
 			label: 'Pagados',
 			icon: CheckCircle2,
-			accentClassName: 'border-emerald-500/30 bg-emerald-500/[0.05]',
-			iconClassName: 'text-emerald-600 dark:text-emerald-400',
+			accentClassName: KPI_PASTEL.success.card,
+			iconClassName: KPI_PASTEL.success.icon,
 		},
 	]
 

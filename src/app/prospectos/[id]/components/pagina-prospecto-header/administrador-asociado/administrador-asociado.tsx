@@ -19,7 +19,7 @@ export default function AdministradorAsociado({
 				<Button
 					variant='outline'
 					size='sm'
-					className='px-2 text-[10px]'
+					className='px-2 text-xs'
 					asChild
 				>
 					<Link href={`/administradores/${administrador.id}`}>Ver perfil</Link>

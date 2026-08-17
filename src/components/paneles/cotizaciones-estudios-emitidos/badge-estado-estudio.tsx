@@ -13,7 +13,7 @@ export default function BadgeEstadoEstudio({
   return (
     <Badge
       variant={tieneEstudio ? 'pastel-emerald' : 'pastel-amber'}
-      className={cn('text-[10px] font-medium', className)}
+      className={cn('text-xs font-medium', className)}
     >
       {tieneEstudio ? 'Disponible' : 'Pendiente'}
     </Badge>

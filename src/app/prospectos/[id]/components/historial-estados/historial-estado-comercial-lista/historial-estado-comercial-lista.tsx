@@ -29,7 +29,7 @@ export function HistorialEstadoComercialLista({
 				>
 					<div className='flex flex-wrap items-center gap-2'>
 						{item.estado_anterior ? (
-							<Badge variant='outline' className='text-[10px] font-normal'>
+							<Badge variant='outline' className='text-xs font-normal'>
 								{ESTADO_PROSPECTO_LABELS[item.estado_anterior]}
 							</Badge>
 						) : (
@@ -38,11 +38,11 @@ export function HistorialEstadoComercialLista({
 						<span className='text-muted-foreground'>→</span>
 					<Badge
 						variant={ESTADO_COMERCIAL_BADGE[item.estado_actual]}
-						className='text-[10px] font-medium'
+						className='text-xs font-medium'
 					>
 							{ESTADO_PROSPECTO_LABELS[item.estado_actual]}
 						</Badge>
-						<span className='text-[10px] text-muted-foreground'>
+						<span className='text-xs text-muted-foreground'>
 							{item.motivo_cambio}
 						</span>
 					</div>

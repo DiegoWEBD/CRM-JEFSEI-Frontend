@@ -129,7 +129,7 @@ export default function DialogRegistrarCotizacion({
               </SelectContent>
             </Select>
             {formik.errors.id_company && formik.touched.id_company && (
-              <p className='text-[10px] text-destructive'>{formik.errors.id_company}</p>
+              <p className='text-xs text-destructive'>{formik.errors.id_company}</p>
             )}
           </div>
 
@@ -144,7 +144,7 @@ export default function DialogRegistrarCotizacion({
               {...formik.getFieldProps('monto_total_asegurado')}
             />
             {formik.errors.monto_total_asegurado && formik.touched.monto_total_asegurado && (
-              <p className='text-[10px] text-destructive'>{formik.errors.monto_total_asegurado}</p>
+              <p className='text-xs text-destructive'>{formik.errors.monto_total_asegurado}</p>
             )}
           </div>
 
@@ -159,7 +159,7 @@ export default function DialogRegistrarCotizacion({
                 {...formik.getFieldProps('tasa_afecta')}
               />
               {formik.errors.tasa_afecta && formik.touched.tasa_afecta && (
-                <p className='text-[10px] text-destructive'>{formik.errors.tasa_afecta}</p>
+                <p className='text-xs text-destructive'>{formik.errors.tasa_afecta}</p>
               )}
             </div>
             <div className='space-y-1.5'>
@@ -172,7 +172,7 @@ export default function DialogRegistrarCotizacion({
                 {...formik.getFieldProps('tasa_excenta')}
               />
               {formik.errors.tasa_excenta && formik.touched.tasa_excenta && (
-                <p className='text-[10px] text-destructive'>{formik.errors.tasa_excenta}</p>
+                <p className='text-xs text-destructive'>{formik.errors.tasa_excenta}</p>
               )}
             </div>
             <div className='space-y-1.5'>
@@ -185,7 +185,7 @@ export default function DialogRegistrarCotizacion({
                 {...formik.getFieldProps('tasa_politica')}
               />
               {formik.errors.tasa_politica && formik.touched.tasa_politica && (
-                <p className='text-[10px] text-destructive'>{formik.errors.tasa_politica}</p>
+                <p className='text-xs text-destructive'>{formik.errors.tasa_politica}</p>
               )}
             </div>
           </div>
@@ -200,7 +200,7 @@ export default function DialogRegistrarCotizacion({
               {...formik.getFieldProps('prima_adicional_asistencia')}
             />
             {formik.errors.prima_adicional_asistencia && formik.touched.prima_adicional_asistencia && (
-              <p className='text-[10px] text-destructive'>{formik.errors.prima_adicional_asistencia}</p>
+              <p className='text-xs text-destructive'>{formik.errors.prima_adicional_asistencia}</p>
             )}
           </div>
 
@@ -209,14 +209,14 @@ export default function DialogRegistrarCotizacion({
               <Label className='text-xs'>Fecha de emisión</Label>
               <Input type='date' className='h-9 text-sm shadow-none' {...formik.getFieldProps('fecha_emision')} />
               {formik.errors.fecha_emision && formik.touched.fecha_emision && (
-                <p className='text-[10px] text-destructive'>{formik.errors.fecha_emision}</p>
+                <p className='text-xs text-destructive'>{formik.errors.fecha_emision}</p>
               )}
             </div>
             <div className='space-y-1.5'>
               <Label className='text-xs'>Fecha de vencimiento</Label>
               <Input type='date' className='h-9 text-sm shadow-none' {...formik.getFieldProps('fecha_vencimiento')} />
               {formik.errors.fecha_vencimiento && formik.touched.fecha_vencimiento && (
-                <p className='text-[10px] text-destructive'>{formik.errors.fecha_vencimiento}</p>
+                <p className='text-xs text-destructive'>{formik.errors.fecha_vencimiento}</p>
               )}
             </div>
           </div>
@@ -263,7 +263,7 @@ export default function DialogRegistrarCotizacion({
           </div>
 
           {mutation.isError && (
-            <p className='text-[10px] text-destructive' role='alert'>
+            <p className='text-xs text-destructive' role='alert'>
               {mutation.error instanceof Error ? mutation.error.message : 'Error al guardar cotización'}
             </p>
           )}

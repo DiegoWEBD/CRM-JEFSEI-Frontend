@@ -219,7 +219,7 @@ export default function RecordatoriosClienteSection({
 								type='button'
 								variant='ghost'
 								size='sm'
-								className='h-7 w-full text-[10px] text-muted-foreground'
+								className='h-7 w-full text-xs text-muted-foreground'
 								onClick={() => setVerCompletados(false)}
 							>
 								Volver a pendientes
@@ -255,7 +255,7 @@ export default function RecordatoriosClienteSection({
 										type='button'
 										variant='ghost'
 										size='sm'
-										className='h-7 w-full text-[10px] text-muted-foreground'
+										className='h-7 w-full text-xs text-muted-foreground'
 										onClick={() => setVerTodosPendientes(true)}
 									>
 										Ver todos los recordatorios ({pendientes.length})
@@ -266,7 +266,7 @@ export default function RecordatoriosClienteSection({
 										type='button'
 										variant='ghost'
 										size='sm'
-										className='h-7 w-full text-[10px] text-muted-foreground'
+										className='h-7 w-full text-xs text-muted-foreground'
 										onClick={() => setVerTodosPendientes(false)}
 									>
 										Ver menos
@@ -277,7 +277,7 @@ export default function RecordatoriosClienteSection({
 										type='button'
 										variant='ghost'
 										size='sm'
-										className='h-7 w-full text-[10px] text-muted-foreground'
+										className='h-7 w-full text-xs text-muted-foreground'
 										onClick={() => setVerCompletados(true)}
 									>
 										Ver completados ({completados.length})
@@ -324,7 +324,7 @@ export default function RecordatoriosClienteSection({
 	)
 }
 
-const btnAccionClass = 'h-6 gap-0.5 px-1.5 text-[10px] font-normal shadow-none'
+const btnAccionClass = 'h-6 gap-0.5 px-1.5 text-xs font-normal shadow-none'
 
 function RecordatorioClienteFila({
 	recordatorio: r,
@@ -379,7 +379,7 @@ function RecordatorioClienteFila({
 					</p>
 					<p
 						className={cn(
-							'text-[10px] leading-snug text-muted-foreground sm:truncate',
+							'text-xs leading-snug text-muted-foreground sm:truncate',
 							completado && 'line-through opacity-80',
 						)}
 					>
@@ -389,7 +389,7 @@ function RecordatorioClienteFila({
 
 				<Badge
 					variant={prioridadReminderStyles[prio]}
-					className='h-5 shrink-0 px-1.5 text-[9px] sm:hidden'
+					className='h-5 shrink-0 px-1.5 text-xs sm:hidden'
 				>
 					{prioridadReminderLabel[prio]}
 				</Badge>
@@ -398,7 +398,7 @@ function RecordatorioClienteFila({
 			<div className='flex flex-wrap items-center gap-1 border-t border-border/50 pt-2 sm:shrink-0 sm:border-0 sm:pt-0'>
 				<Badge
 					variant={prioridadReminderStyles[prio]}
-					className='hidden h-5 px-1.5 text-[9px] sm:inline-flex'
+					className='hidden h-5 px-1.5 text-xs sm:inline-flex'
 				>
 					{prioridadReminderLabel[prio]}
 				</Badge>

@@ -1,22 +1,19 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import type {
-	ReporteProcesoComercial,
-	ReporteProcesoComercialAbierto,
-} from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
+import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { useReportesProcesosComerciales } from '@/hooks/procesos-comerciales/use-reportes-procesos-comerciales'
-import KpiProcesosComerciales, {
-	type TarjetaActiva,
-	type ConteosProcesos,
-} from './kpi-procesos-comerciales'
+import { useMemo, useState } from 'react'
+import DetalleProcesoDrawer from './detalle-proceso-drawer'
 import FiltrosProcesosComerciales, {
 	TODOS,
 	type FiltrosPanel,
 } from './filtros-procesos-comerciales'
+import KpiProcesosComerciales, {
+	type ConteosProcesos,
+	type TarjetaActiva,
+} from './kpi-procesos-comerciales'
 import TablaProcesosComerciales from './tabla-procesos-comerciales'
-import DetalleProcesoDrawer from './detalle-proceso-drawer'
 
 function buildConteos(filas: ReporteProcesoComercial[]): ConteosProcesos {
 	const conteos: ConteosProcesos = {
@@ -75,7 +72,7 @@ export default function PanelProcesosComercialesClient({
 		etapa: TODOS,
 	})
 
-	const data = reportes ?? []
+	const data = useMemo(() => reportes ?? [], [reportes])
 
 	const conteos = useMemo(() => buildConteos(data), [data])
 

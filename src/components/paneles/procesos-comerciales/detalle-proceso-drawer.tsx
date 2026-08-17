@@ -110,7 +110,7 @@ export default function DetalleProcesoDrawer({
 					<p className='text-xs text-muted-foreground'>{proceso.producto}</p>
 					<Link
 						href={`/prospectos/${proceso.id_prospecto}`}
-						className='mt-1 text-[11px] text-primary underline-offset-2 hover:underline'
+						className='mt-1 text-sm text-primary underline-offset-2 hover:underline'
 					>
 						Ver prospecto →
 					</Link>
@@ -123,7 +123,7 @@ export default function DetalleProcesoDrawer({
 							<dd>
 								<Badge
 									variant={SEMAFORO_VARIANT[reporte.estado_semaforo]}
-									className='text-[11px] font-medium'
+									className='text-sm font-medium'
 								>
 									{PRIORIDAD_LABELS[reporte.estado_semaforo]}
 								</Badge>
@@ -141,14 +141,13 @@ export default function DetalleProcesoDrawer({
 							<dt className='text-xs text-muted-foreground'>Estado</dt>
 							<dd>
 								<Badge
-									variant='outline'
-									className={cn(
-										'text-[11px] font-medium',
+									variant={
 										ESTADO_COMERCIAL_BADGE[
 											proceso.estado_actual
 												.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-										] ?? 'border-border bg-muted/50 text-muted-foreground',
-									)}
+										] ?? 'outline'
+									}
+									className='shrink-0 font-semibold'
 								>
 									{ESTADO_PROSPECTO_LABELS[
 										proceso.estado_actual
@@ -181,7 +180,7 @@ export default function DetalleProcesoDrawer({
 						{abierto && (
 							<>
 								<div className='border-t border-border/50 pt-3'>
-									<p className='mb-2 text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+									<p className='mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 										SLA
 									</p>
 								</div>
@@ -233,7 +232,7 @@ export default function DetalleProcesoDrawer({
 														? 'pastel-amber'
 														: 'pastel-emerald'
 											}
-											className='text-[11px] font-medium'
+											className='text-sm font-medium'
 										>
 											{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
 										</Badge>

@@ -99,7 +99,7 @@ function CardUsuario({
 								<Badge
 									key={rol.codigo}
 									variant='outline'
-									className='border-border bg-muted/40 text-[9px] font-medium text-muted-foreground'
+									className='border-border bg-muted/40 text-xs font-medium text-muted-foreground'
 								>
 									{rol.nombre}
 								</Badge>
@@ -130,7 +130,7 @@ function CardUsuario({
 						<Badge
 							variant='outline'
 							className={cn(
-								'text-[9px] font-medium',
+								'text-xs font-medium',
 								usuario.habilitado
 									? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-700'
 									: 'border-destructive/35 bg-destructive/10 text-destructive',
@@ -287,22 +287,22 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 						<Table className='[&_td]:whitespace-nowrap [&_th]:whitespace-nowrap'>
 							<TableHeader>
 								<TableRow className='hover:bg-transparent'>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Nombre
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Rol
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Sucursal
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Contacto
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Estado
 									</TableHead>
-									<TableHead className='text-right text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-right text-xs font-semibold uppercase text-muted-foreground'>
 										Acción
 									</TableHead>
 								</TableRow>
@@ -315,7 +315,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 												<InicialesUsuario nombre={usuario.nombre} />
 												<div>
 													<div className='font-medium'>{usuario.nombre}</div>
-													<div className='text-[10px] text-muted-foreground'>
+													<div className='text-xs text-muted-foreground'>
 														{usuario.rut}
 													</div>
 												</div>
@@ -327,7 +327,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 													<Badge
 														key={rol.codigo}
 														variant='outline'
-														className='border-border bg-muted/40 text-[9px] font-medium text-muted-foreground'
+														className='border-border bg-muted/40 text-xs font-medium text-muted-foreground'
 													>
 														{rol.nombre}
 													</Badge>
@@ -341,7 +341,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 											<div className='text-muted-foreground'>
 												{usuario.correo || '—'}
 											</div>
-											<div className='text-[10px] text-muted-foreground'>
+											<div className='text-xs text-muted-foreground'>
 												{usuario.telefono || '—'}
 											</div>
 										</TableCell>
@@ -349,7 +349,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 											<Badge
 												variant='outline'
 												className={cn(
-													'text-[9px] font-medium',
+													'text-xs font-medium',
 													usuario.habilitado
 														? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-700'
 														: 'border-destructive/35 bg-destructive/10 text-destructive',
@@ -363,7 +363,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 												<Button
 													size='sm'
 													variant='outline'
-													className='h-7 text-[10px]'
+													className='h-7 text-xs'
 													onClick={() => setUsuarioDetalle(usuario)}
 												>
 													Ver detalle
@@ -372,7 +372,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 													<Button
 														size='sm'
 														variant='destructive'
-														className='h-7 text-[10px]'
+														className='h-7 text-xs'
 														onClick={() => setUsuarioAEliminar(usuario)}
 													>
 														Eliminar
@@ -564,7 +564,7 @@ function DialogRegistrarUsuario({
 									maxLength={14}
 								/>
 								{formik.touched.rut && formik.errors.rut && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.rut}
 									</p>
 								)}
@@ -581,7 +581,7 @@ function DialogRegistrarUsuario({
 									onBlur={formik.handleBlur}
 								/>
 								{formik.touched.nombre && formik.errors.nombre && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.nombre}
 									</p>
 								)}
@@ -606,7 +606,7 @@ function DialogRegistrarUsuario({
 									onChange={v => formik.setFieldValue('telefono', v)}
 								/>
 								{formik.touched.telefono && formik.errors.telefono && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.telefono}
 									</p>
 								)}
@@ -638,7 +638,7 @@ function DialogRegistrarUsuario({
 									</SelectContent>
 								</Select>
 								{formik.touched.idSucursal && formik.errors.idSucursal && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.idSucursal}
 									</p>
 								)}
@@ -670,7 +670,7 @@ function DialogRegistrarUsuario({
 									</button>
 								</div>
 								{formik.touched.password && formik.errors.password && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.password}
 									</p>
 								)}
@@ -699,7 +699,7 @@ function DialogRegistrarUsuario({
 								))}
 							</div>
 							{formik.touched.roles && formik.errors.roles && (
-								<p className='text-[10px] text-destructive'>
+								<p className='text-xs text-destructive'>
 									{formik.errors.roles}
 								</p>
 							)}
@@ -736,7 +736,7 @@ function DialogRegistrarUsuario({
 							/>
 								{formik.touched.porcentajeComision &&
 									formik.errors.porcentajeComision && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.porcentajeComision}
 										</p>
 									)}
@@ -915,7 +915,7 @@ function DialogEditarUsuario({
 										className='h-9 text-sm shadow-none'
 									/>
 									{formik.touched.nombre && formik.errors.nombre && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.nombre}
 										</p>
 									)}
@@ -939,7 +939,7 @@ function DialogEditarUsuario({
 										className='h-9 text-sm shadow-none'
 									/>
 									{formik.touched.correo && formik.errors.correo && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.correo}
 										</p>
 									)}
@@ -951,7 +951,7 @@ function DialogEditarUsuario({
 										disabled={!puedeEditar}
 									/>
 									{formik.touched.telefono && formik.errors.telefono && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.telefono}
 										</p>
 									)}
@@ -982,7 +982,7 @@ function DialogEditarUsuario({
 										</button>
 									</div>
 									{formik.touched.password && formik.errors.password && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.password}
 										</p>
 									)}
@@ -1011,7 +1011,7 @@ function DialogEditarUsuario({
 										</SelectContent>
 									</Select>
 									{formik.touched.idSucursal && formik.errors.idSucursal && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.idSucursal}
 										</p>
 									)}
@@ -1044,7 +1044,7 @@ function DialogEditarUsuario({
 										))}
 									</div>
 									{formik.touched.roles && formik.errors.roles && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.roles}
 										</p>
 									)}
@@ -1079,7 +1079,7 @@ function DialogEditarUsuario({
 										/>
 										{formik.touched.porcentajeComision &&
 											formik.errors.porcentajeComision && (
-												<p className='text-[10px] text-destructive'>
+												<p className='text-xs text-destructive'>
 													{formik.errors.porcentajeComision}
 												</p>
 											)}

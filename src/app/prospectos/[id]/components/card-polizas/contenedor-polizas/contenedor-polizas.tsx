@@ -20,7 +20,7 @@ function EncabezadoFilas() {
     <div
       className={cn(
         filaPolizaGridClass,
-        'mb-1 hidden px-2 text-[9px] font-medium uppercase tracking-wide text-muted-foreground sm:grid',
+        'mb-1 hidden px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground sm:grid',
       )}
     >
       <span>Nº póliza</span>
@@ -78,7 +78,7 @@ export default function ContenedorPolizas({
   return (
     <div className='space-y-2.5'>
       <div className='flex flex-wrap items-center justify-between gap-2'>
-        <p className='text-[10px] text-muted-foreground sm:text-[11px]'>
+        <p className='text-xs text-muted-foreground sm:text-sm'>
           Mostrando{' '}
           <span className='font-medium tabular-nums text-foreground'>
             {totalPolizas}
@@ -91,7 +91,7 @@ export default function ContenedorPolizas({
               type='button'
               variant='ghost'
               size='sm'
-              className='h-7 px-2 text-[10px]'
+              className='h-7 px-2 text-xs'
               onClick={expandirTodos}
             >
               Expandir todas
@@ -100,7 +100,7 @@ export default function ContenedorPolizas({
               type='button'
               variant='ghost'
               size='sm'
-              className='h-7 px-2 text-[10px]'
+              className='h-7 px-2 text-xs'
               onClick={contraerTodos}
             >
               Contraer todas

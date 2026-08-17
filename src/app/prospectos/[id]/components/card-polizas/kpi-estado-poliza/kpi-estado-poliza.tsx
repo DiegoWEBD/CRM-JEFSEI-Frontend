@@ -18,7 +18,7 @@ export default function KpiEstadoPoliza({
 				className ?? 'border-border/80 bg-muted/15',
 			)}
 		>
-			<p className='text-[10px] uppercase tracking-wide text-muted-foreground'>
+			<p className='text-xs uppercase tracking-wide text-muted-foreground'>
 				{label}
 			</p>
 			<p className='mt-0.5 text-lg font-semibold tabular-nums text-foreground'>

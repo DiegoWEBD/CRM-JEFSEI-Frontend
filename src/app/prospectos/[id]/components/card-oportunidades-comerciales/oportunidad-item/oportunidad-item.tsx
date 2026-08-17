@@ -80,7 +80,7 @@ export default function OportunidadItem({
 										.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
 								] ?? 'outline'
 							}
-							className='shrink-0 px-2 py-0.5 text-[10px] font-semibold leading-none'
+							className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
 						>
 							{ESTADO_PROSPECTO_LABELS[
 								proceso.estado_actual
@@ -91,14 +91,14 @@ export default function OportunidadItem({
 						{proceso.cerrado && (
 							<Badge
 								variant='outline'
-								className='shrink-0 border-muted-foreground/30 bg-muted/30 px-2 py-0.5 text-[10px] font-semibold leading-none text-muted-foreground'
+								className='shrink-0 border-muted-foreground/30 bg-muted/30 px-2 py-0.5 text-xs font-semibold leading-none text-muted-foreground'
 							>
 								Cerrado
 							</Badge>
 						)}
 					</div>
 
-					<span className='shrink-0 text-[11px] text-muted-foreground'>
+					<span className='shrink-0 text-sm text-muted-foreground'>
 						{proceso.ejecutivo_comercial?.nombre ?? '—'}
 					</span>
 				</button>

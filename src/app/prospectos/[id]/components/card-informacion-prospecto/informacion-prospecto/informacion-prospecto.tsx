@@ -3,7 +3,6 @@ import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import ItemInformacionProspecto from '../item-informacion-prospecto/item-informacion-prospecto'
-import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 
 type InformacionProspectoProps = {
 	prospecto: Prospecto

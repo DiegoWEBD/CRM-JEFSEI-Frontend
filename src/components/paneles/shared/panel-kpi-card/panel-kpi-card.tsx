@@ -2,24 +2,25 @@
 
 import { Card, CardContent } from '@/components/card'
 import { cn } from '@/lib/utils'
+import { KPI_PASTEL } from '@/lib/kpi-pastel'
 import { type LucideIcon } from 'lucide-react'
 
 export type KpiAcento = 'info' | 'success' | 'primary' | 'warning' | 'danger' | null
 
 const ACENTO_CARD: Record<NonNullable<KpiAcento>, string> = {
-	info: 'border-info/30 bg-info/[0.05]',
-	success: 'border-success/30 bg-success/[0.05]',
-	primary: 'border-primary/30 bg-primary/[0.05]',
-	warning: 'border-warning/35 bg-warning/10',
-	danger: 'border-destructive/30 bg-destructive/[0.05]',
+	info: KPI_PASTEL.info.card,
+	success: KPI_PASTEL.success.card,
+	primary: KPI_PASTEL.primary.card,
+	warning: KPI_PASTEL.warning.card,
+	danger: KPI_PASTEL.danger.card,
 }
 
 const ACENTO_ICON: Record<NonNullable<KpiAcento>, string> = {
-	info: 'text-info',
-	success: 'text-success',
-	primary: 'text-primary',
-	warning: 'text-warning-foreground dark:text-warning',
-	danger: 'text-destructive',
+	info: KPI_PASTEL.info.icon,
+	success: KPI_PASTEL.success.icon,
+	primary: KPI_PASTEL.primary.icon,
+	warning: KPI_PASTEL.warning.icon,
+	danger: KPI_PASTEL.danger.icon,
 }
 
 type PanelKpiCardProps = {
@@ -67,12 +68,11 @@ export function PanelKpiCard({
 					<div
 						className={cn(
 							'grid size-8 shrink-0 place-items-center rounded-lg ring-1 transition-colors',
-							'bg-muted/70 ring-border/60',
 							activa
 								? 'bg-primary/10 text-primary ring-primary/20'
 								: accent
 									? ACENTO_ICON[accent]
-									: 'text-muted-foreground',
+									: 'bg-muted/70 text-muted-foreground ring-border/60',
 							'group-hover:bg-primary/10 group-hover:text-primary group-hover:ring-primary/20',
 						)}
 					>
@@ -80,7 +80,7 @@ export function PanelKpiCard({
 					</div>
 				)}
 				<div className='min-w-0 flex-1'>
-					<p className='line-clamp-2 text-[11px] font-medium uppercase leading-snug tracking-wide text-muted-foreground'>
+					<p className='line-clamp-2 text-sm font-medium uppercase leading-snug tracking-wide text-muted-foreground'>
 						{label}
 					</p>
 					<p className='mt-0.5 text-2xl font-semibold tabular-nums leading-tight tracking-tight text-foreground'>

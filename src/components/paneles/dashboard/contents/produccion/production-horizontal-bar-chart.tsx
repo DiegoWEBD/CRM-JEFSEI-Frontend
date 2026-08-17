@@ -74,7 +74,7 @@ export function ProductionHorizontalBarChart({
       <CardHeader className='space-y-0 pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>{title}</CardTitle>
         {description ? (
-          <p className='text-[10px] text-muted-foreground'>{description}</p>
+          <p className='text-xs text-muted-foreground'>{description}</p>
         ) : null}
       </CardHeader>
       <CardContent className='pb-2.5 pt-0'>

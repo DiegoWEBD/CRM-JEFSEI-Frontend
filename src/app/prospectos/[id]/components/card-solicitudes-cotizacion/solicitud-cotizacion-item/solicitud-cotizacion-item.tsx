@@ -77,14 +77,14 @@ export default function SolicitudCotizacionItem({
 						<div className='mt-1 flex flex-wrap items-center gap-1.5'>
 							<Badge
 								variant={PRIORIDAD_BADGE[solicitud.prioridad]}
-								className='text-[10px] font-medium capitalize'
+								className='text-xs font-medium capitalize'
 							>
 								{normalizarTexto(solicitud.prioridad, true)}
 							</Badge>
 
 							<EstadoCompletitudInformacion
 								completa={informacionCompleta}
-								className='text-[10px] font-medium capitalize'
+								className='text-xs font-medium capitalize'
 							/>
 						</div>
 						<p className='mt-0.5 text-xs text-muted-foreground'>
@@ -94,7 +94,7 @@ export default function SolicitudCotizacionItem({
 						{gestionesAbiertasPorDefecto &&
 						solicitud.cantidad_cotizaciones > 0 ? (
 							<p className='mt-1 flex flex-wrap items-center gap-1.5'>
-								<span className='inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground'>
+								<span className='inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 px-2 py-0.5 text-xs font-medium text-muted-foreground'>
 									{solicitud.cantidad_cotizaciones}{' '}
 									{solicitud.cantidad_cotizaciones !== 1
 										? 'cotizaciones'
@@ -145,7 +145,7 @@ export default function SolicitudCotizacionItem({
 									{TAB_LABELS[t]}
 									{t === 'cotizaciones' &&
 									solicitud.cantidad_cotizaciones > 0 ? (
-										<span className='ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px] tabular-nums'>
+										<span className='ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-xs tabular-nums'>
 											{solicitud.cantidad_cotizaciones}
 										</span>
 									) : null}
