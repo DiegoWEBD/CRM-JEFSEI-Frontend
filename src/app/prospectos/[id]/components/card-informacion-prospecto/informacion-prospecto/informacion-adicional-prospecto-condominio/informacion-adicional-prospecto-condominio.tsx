@@ -6,6 +6,7 @@ import {
 	CLASIFICACION_PRELIMINAR_INCENDIO_LABELS,
 	MATERIALIDAD_PRINCIPAL_LABELS,
 } from '@/lib/materialidades'
+import { UBICACION_PISCINA_LABELS } from '@/lib/ubicacion.piscina'
 
 type InformacionAdicionalProspectoCondominioProps = {
 	prospecto: ProspectoCondominio
@@ -107,7 +108,11 @@ export default function InformacionAdicionalProspectoCondominio({
 			{prospecto.tiene_piscina && (
 				<ItemInformacionProspecto
 					label='Ubicación de la piscina'
-					value={prospecto.ubicacion_piscina}
+					value={
+						prospecto.ubicacion_piscina
+							? UBICACION_PISCINA_LABELS[prospecto.ubicacion_piscina]
+							: undefined
+					}
 					highlightMissing={inputPendiente(prospecto.ubicacion_piscina)}
 				/>
 			)}

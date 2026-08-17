@@ -112,9 +112,14 @@ export default function SolicitudCotizacionTabContent({
 
 	const hasDetalles =
 		(solicitud.tipo === 'vida_guardia' && solicitud.numero_guardias != null) ||
-		(solicitud.tipo === 'unidades' && (solicitud.monto_asegurado_total != null || solicitud.nombre_excel != null)) ||
-		(solicitud.tipo === 'accidentes_personales' && solicitud.actividades && solicitud.actividades.length > 0) ||
-		(solicitud.tipo === 'rc_condominio' && (solicitud.actividad_del_condominio || solicitud.limite != null))
+		(solicitud.tipo === 'unidades' &&
+			(solicitud.monto_asegurado_total != null ||
+				solicitud.nombre_excel != null)) ||
+		(solicitud.tipo === 'accidentes_personales' &&
+			solicitud.actividades &&
+			solicitud.actividades.length > 0) ||
+		(solicitud.tipo === 'rc_condominio' &&
+			(solicitud.actividad_del_condominio || solicitud.limite != null))
 
 	if (tab === 'solicitud') {
 		return (
@@ -138,22 +143,15 @@ export default function SolicitudCotizacionTabContent({
 
 				{solicitud.rut_ejecutivo_comercial || nombreEjecutivo ? (
 					<div>
-						<dt className='text-xs text-muted-foreground'>
-							Ejecutivo comercial
-						</dt>
-						<dd className='font-medium text-foreground'>
-							{nombreEjecutivo}
-							{solicitud.rut_ejecutivo_comercial
-								? ` (${solicitud.rut_ejecutivo_comercial})`
-								: null}
-						</dd>
+						<dt className='text-xs text-muted-foreground'>Gestión comercial</dt>
+						<dd className='font-medium text-foreground'>{nombreEjecutivo}</dd>
 					</div>
 				) : null}
 
 				<div>
 					<dt className='text-xs text-muted-foreground'>Fecha de solicitud</dt>
 					<dd className='font-medium text-foreground'>
-						{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy')}
+						{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy HH:mm')}
 					</dd>
 				</div>
 
@@ -261,9 +259,11 @@ export default function SolicitudCotizacionTabContent({
 							<div>
 								<dt className='text-xs text-muted-foreground'>Cotización</dt>
 								<dd className='mt-1'>
-								<Badge
-									variant={ESTADO_COTIZACION_PERFIL_BADGE['cotizacion_generada']}
-								>
+									<Badge
+										variant={
+											ESTADO_COTIZACION_PERFIL_BADGE['cotizacion_generada']
+										}
+									>
 										{ESTADO_COTIZACION_PERFIL_LABELS['cotizacion_generada']}
 									</Badge>
 								</dd>
@@ -274,9 +274,9 @@ export default function SolicitudCotizacionTabContent({
 							<div>
 								<dt className='text-xs text-muted-foreground'>Estudio</dt>
 								<dd className='mt-1'>
-								<Badge
-									variant={ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']}
-								>
+									<Badge
+										variant={ESTADO_ESTUDIO_PERFIL_BADGE['estudio_disponible']}
+									>
 										{ESTADO_ESTUDIO_PERFIL_LABELS['estudio_disponible']}
 									</Badge>
 								</dd>
@@ -302,9 +302,10 @@ export default function SolicitudCotizacionTabContent({
 			<div className='space-y-3 pt-3'>
 				<div className='flex flex-wrap items-center justify-between gap-2'>
 					<p className='text-xs text-muted-foreground'>
-						{solicitud.cantidad_cotizaciones} cotización
-						{cotizaciones && cotizaciones.length !== 1 ? 'es' : ''} recibida
-						{cotizaciones && cotizaciones.length !== 1 ? 's' : ''}.
+						{solicitud.cantidad_cotizaciones}{' '}
+						{cotizaciones && cotizaciones.length !== 1
+							? 'cotizaciones recibidas.'
+							: 'cotización recibida.'}
 					</p>
 					<div className='flex flex-wrap gap-1.5'>
 						{solicitud.cantidad_cotizaciones > 0 ? (

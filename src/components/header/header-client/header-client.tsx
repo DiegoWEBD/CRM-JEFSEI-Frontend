@@ -1,6 +1,5 @@
 'use client'
 
-import { ThemeToggle } from '@/components/theme-toggle'
 import { tituloDeRuta } from '@/lib/route-titles'
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'

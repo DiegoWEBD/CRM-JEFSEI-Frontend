@@ -239,7 +239,7 @@ export default function DialogNuevaSolicitudCotizacion({
                 value={formik.values.lineaSeguro || '__none__'}
                 onValueChange={handleLineaChange}
               >
-                <SelectTrigger className='h-9 w-full text-sm'>
+                <SelectTrigger className='h-9 w-full text-sm shadow-none'>
                   <SelectValue placeholder='Seleccione línea de seguro' />
                 </SelectTrigger>
                 <SelectContent>
@@ -288,7 +288,7 @@ export default function DialogNuevaSolicitudCotizacion({
                         }
                       />
                       {formik.errors[`actividades.${index}.actividad` as keyof typeof formik.errors] && (
-                        <p className='text-[10px] font-medium text-destructive'>
+                        <p className='text-[10px] text-destructive'>
                           {formik.errors[`actividades.${index}.actividad` as keyof typeof formik.errors] as string}
                         </p>
                       )}
@@ -305,7 +305,7 @@ export default function DialogNuevaSolicitudCotizacion({
                         }
                       />
                       {formik.errors[`actividades.${index}.numero_asegurados` as keyof typeof formik.errors] && (
-                        <p className='text-[10px] font-medium text-destructive'>
+                        <p className='text-[10px] text-destructive'>
                           {formik.errors[`actividades.${index}.numero_asegurados` as keyof typeof formik.errors] as string}
                         </p>
                       )}
@@ -342,14 +342,14 @@ export default function DialogNuevaSolicitudCotizacion({
                     <Input
                       type={campo.tipo === 'number' ? 'number' : 'text'}
                       min={campo.tipo === 'number' ? 1 : undefined}
-                      className='h-9 text-sm'
+                      className='h-9 text-sm shadow-none'
                       placeholder={campo.placeholder}
                       value={formik.values[fieldKey] as string}
                       onChange={formik.handleChange}
                       name={campo.key}
                     />
                     {formik.errors[fieldKey] && formik.touched[fieldKey] && (
-                      <p className='text-xs font-medium text-destructive'>
+                      <p className='text-[10px] text-destructive'>
                         {formik.errors[fieldKey] as string}
                       </p>
                     )}
@@ -377,7 +377,7 @@ export default function DialogNuevaSolicitudCotizacion({
               value={formik.values.prioridad}
               onValueChange={(v) => formik.setFieldValue('prioridad', v)}
             >
-              <SelectTrigger className='h-9 w-full text-sm'>
+              <SelectTrigger className='h-9 w-full text-sm shadow-none'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

@@ -344,7 +344,7 @@ export default function DialogGenerarEstudio({
 												formik.setFieldValue('infraseguro1', v)
 											}
 										>
-											<SelectTrigger className='h-8 text-xs'>
+											<SelectTrigger className='h-9 text-sm shadow-none'>
 												<SelectValue placeholder='Seleccionar %' />
 											</SelectTrigger>
 											<SelectContent>
@@ -376,7 +376,7 @@ export default function DialogGenerarEstudio({
 												formik.setFieldValue('infraseguro2', v)
 											}
 										>
-											<SelectTrigger className='h-8 text-xs'>
+											<SelectTrigger className='h-9 text-sm shadow-none'>
 												<SelectValue placeholder='Seleccionar %' />
 											</SelectTrigger>
 											<SelectContent>
@@ -406,7 +406,7 @@ export default function DialogGenerarEstudio({
 											value={formik.values.cuotas}
 											onValueChange={v => formik.setFieldValue('cuotas', v)}
 										>
-											<SelectTrigger className='h-8 text-xs'>
+											<SelectTrigger className='h-9 text-sm shadow-none'>
 												<SelectValue placeholder='Seleccionar' />
 											</SelectTrigger>
 											<SelectContent>
@@ -444,7 +444,7 @@ export default function DialogGenerarEstudio({
 											type='number'
 											step='0.01'
 											min='0'
-											className='h-8 flex-1 text-xs'
+											className='h-9 flex-1 text-sm shadow-none'
 											name='valorUf'
 											value={formik.values.valorUf}
 											onChange={formik.handleChange}
@@ -475,7 +475,7 @@ export default function DialogGenerarEstudio({
 										type='number'
 										step='0.01'
 										min='0'
-										className='h-8 w-full text-xs'
+										className='h-9 w-full text-sm shadow-none'
 										name='montoAseguradoActual'
 										value={formik.values.montoAseguradoActual}
 										onChange={formik.handleChange}

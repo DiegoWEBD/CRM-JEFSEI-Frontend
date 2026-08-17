@@ -7,7 +7,7 @@ import { useFormularioActualizarProspectoCondominio } from '@/hooks/prospectos/u
 import { classname } from '@/lib/class-name'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import CamposAdicionalesProspectoCondominio from '../../card-informacion-prospecto/formulario-actualizar-prospecto/campos-adicionales-prospecto-condominio/campos-adicionales-prospecto-condominio'
-import { inp } from '../../card-informacion-prospecto/formulario-actualizar-prospecto/formulario-actualizar-prospecto'
+import { inp } from '@/utils/form-utils'
 
 type FormularioActualizarInformacionTecnicaCondominioProps = {
 	prospecto: Prospecto

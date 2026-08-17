@@ -4,6 +4,7 @@ import {
 } from '@/lib/materialidades'
 import AdministradorCondominio from '../administrador-condominio/administrador-condominio'
 import { Prospecto } from '../prospecto/prospecto'
+import { UbicacionPiscinaCondominio } from '@/lib/ubicacion.piscina'
 
 export interface ProspectoCondominio extends Prospecto {
 	administrador?: AdministradorCondominio
@@ -20,7 +21,7 @@ export interface ProspectoCondominio extends Prospecto {
 	cantidad_departamentos?: number
 	cantidad_subterraneos?: number
 	tiene_piscina?: boolean
-	ubicacion_piscina?: string
+	ubicacion_piscina?: UbicacionPiscinaCondominio
 	tiene_alarma_incendio?: boolean
 	tiene_sprinklers?: boolean
 	year_construccion?: number

@@ -50,30 +50,6 @@ export default function InformacionProspecto({
 			/>
 			<ItemInformacionProspecto label='Comuna' value={prospecto.comuna} />
 
-			{prospecto.linea_negocio.nombre.toLowerCase() !== 'condominio' && (
-				<ItemInformacionProspecto
-					label='Teléfono de contacto'
-					value={prospecto.telefono_contacto}
-					highlightMissing={inputPendiente(prospecto.telefono_contacto)}
-				/>
-			)}
-
-			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
-				<ItemInformacionProspecto
-					label='Contacto de administrador'
-					value={(prospecto as ProspectoCondominio).administrador?.telefono}
-					highlightMissing={inputPendiente(
-						(prospecto as ProspectoCondominio).administrador?.telefono,
-					)}
-				/>
-			)}
-
-			<ItemInformacionProspecto
-				label='Correo prospecto'
-				value={prospecto.correo_contacto}
-				highlightMissing={inputPendiente(prospecto.correo_contacto)}
-			/>
-
 			<ItemInformacionProspecto
 				label='Registrado por'
 				value={prospecto.registrado_por.nombre}

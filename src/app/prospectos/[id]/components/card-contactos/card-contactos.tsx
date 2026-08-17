@@ -27,13 +27,15 @@ export default function CardContactos({ idProspecto }: CardContactosProps) {
 	const { data: contactos, isLoading } = useObtenerContactos(idProspecto)
 	const [dialogRegistrar, setDialogRegistrar] = useState(false)
 	const [contactoAEditar, setContactoAEditar] = useState<Contacto | null>(null)
-	const [contactoAEliminar, setContactoAEliminar] = useState<Contacto | null>(null)
+	const [contactoAEliminar, setContactoAEliminar] = useState<Contacto | null>(
+		null,
+	)
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
 			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
 				<CardTitle className='min-w-0 text-sm font-semibold leading-tight tracking-tight text-foreground'>
-					Contactos
+					Información de contacto
 				</CardTitle>
 				<Button
 					type='button'

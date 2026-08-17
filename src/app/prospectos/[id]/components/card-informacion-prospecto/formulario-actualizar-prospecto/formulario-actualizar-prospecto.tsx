@@ -15,20 +15,10 @@ import {
 } from '@/lib/chile-regiones-comunas'
 import { classname } from '@/lib/class-name'
 import { classInputRut } from '@/utils/class-input-rut'
+import { inp } from '@/utils/form-utils'
 import { inputPendiente } from '@/utils/input/input-pendiente'
-import {
-	rutChilenoEstadoValidacion,
-} from '@/utils/validar-rut'
+import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
 import { useMemo } from 'react'
-
-export function inp(pendiente: boolean, extra?: string) {
-	return classname(
-		'h-9 text-sm shadow-none',
-		pendiente &&
-			'border-warning/60 bg-warning/[0.06] dark:bg-warning/10',
-		extra,
-	)
-}
 
 type FormularioActualizarProspectoProps = {
 	prospecto: Prospecto
@@ -62,8 +52,7 @@ export default function FormularioActualizarProspecto({
 						<Label
 							className={classname(
 								'text-xs',
-								inputPendiente(formik.values.nombre_riesgo) &&
-									'text-warning',
+								inputPendiente(formik.values.nombre_riesgo) && 'text-warning',
 							)}
 						>
 							Nombre del prospecto
@@ -114,8 +103,7 @@ export default function FormularioActualizarProspecto({
 						<Label
 							className={classname(
 								'text-xs',
-								inputPendiente(formik.values.direccion) &&
-									'text-warning',
+								inputPendiente(formik.values.direccion) && 'text-warning',
 							)}
 						>
 							Dirección
@@ -131,8 +119,7 @@ export default function FormularioActualizarProspecto({
 						<Label
 							className={classname(
 								'text-xs',
-								inputPendiente(formik.values.region) &&
-									'text-warning',
+								inputPendiente(formik.values.region) && 'text-warning',
 							)}
 						>
 							Región
@@ -165,8 +152,7 @@ export default function FormularioActualizarProspecto({
 						<Label
 							className={classname(
 								'text-xs',
-								inputPendiente(formik.values.comuna) &&
-									'text-warning',
+								inputPendiente(formik.values.comuna) && 'text-warning',
 							)}
 						>
 							Comuna
@@ -214,44 +200,6 @@ export default function FormularioActualizarProspecto({
 								))}
 							</SelectContent>
 						</Select>
-					</div>
-					{prospecto.linea_negocio.nombre.toLowerCase() !== 'condominio' && (
-						<div className='space-y-1.5'>
-							<Label
-								className={classname(
-									'text-xs',
-									inputPendiente(formik.values.telefono_contacto) &&
-										'text-warning',
-								)}
-							>
-								Teléfono de contacto
-							</Label>
-							<Input
-								className={inp(inputPendiente(formik.values.telefono_contacto))}
-								inputMode='tel'
-								name='telefono_contacto'
-								value={formik.values.telefono_contacto}
-								onChange={formik.handleChange}
-							/>
-						</div>
-					)}
-					<div className='space-y-1.5'>
-						<Label
-							className={classname(
-								'text-xs',
-								inputPendiente(formik.values.correo_contacto) &&
-									'text-warning',
-							)}
-						>
-							Correo prospecto
-						</Label>
-						<Input
-							className={inp(inputPendiente(formik.values.correo_contacto))}
-							type='email'
-							name='correo_contacto'
-							value={formik.values.correo_contacto}
-							onChange={formik.handleChange}
-						/>
 					</div>
 				</div>
 				<div className='flex flex-wrap justify-end gap-2 border-t mt-6 border-border pt-3'>

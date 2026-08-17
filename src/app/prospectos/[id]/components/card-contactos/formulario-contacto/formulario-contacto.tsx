@@ -45,15 +45,18 @@ export default function FormularioContacto({
 		<form onSubmit={formik.handleSubmit} className='space-y-4'>
 			<div className='grid gap-4 sm:grid-cols-2'>
 				<div className='space-y-1.5'>
-					<Label className='text-xs'>Nombre</Label>
+					<Label className='text-xs'>Nombre (*)</Label>
 					<Input
 						name='nombre'
 						value={formik.values.nombre}
 						onChange={formik.handleChange}
 						autoComplete='off'
+						className='h-9 text-sm shadow-none'
 					/>
 					{formik.errors.nombre && formik.touched.nombre && (
-						<p className='text-[10px] text-destructive'>{formik.errors.nombre}</p>
+						<p className='text-[10px] text-destructive'>
+							{formik.errors.nombre}
+						</p>
 					)}
 				</div>
 				<div className='space-y-1.5'>
@@ -63,6 +66,7 @@ export default function FormularioContacto({
 						value={formik.values.cargo}
 						onChange={formik.handleChange}
 						autoComplete='off'
+						className='h-9 text-sm shadow-none'
 					/>
 				</div>
 				<div className='space-y-1.5'>
@@ -73,6 +77,7 @@ export default function FormularioContacto({
 						value={formik.values.telefono}
 						onChange={formik.handleChange}
 						autoComplete='off'
+						className='h-9 text-sm shadow-none'
 					/>
 				</div>
 				<div className='space-y-1.5'>
@@ -83,9 +88,12 @@ export default function FormularioContacto({
 						value={formik.values.correo}
 						onChange={formik.handleChange}
 						autoComplete='off'
+						className='h-9 text-sm shadow-none'
 					/>
 					{formik.errors.correo && formik.touched.correo && (
-						<p className='text-[10px] text-destructive'>{formik.errors.correo}</p>
+						<p className='text-[10px] text-destructive'>
+							{formik.errors.correo}
+						</p>
 					)}
 				</div>
 			</div>
@@ -94,13 +102,18 @@ export default function FormularioContacto({
 					type='button'
 					variant='outline'
 					size='sm'
-					className='h-8 text-xs'
+					className='h-9 text-xs shadow-none'
 					onClick={onCancel}
 					disabled={cargando}
 				>
 					Cancelar
 				</Button>
-				<Button type='submit' size='sm' className='h-8 text-xs' disabled={cargando}>
+				<Button
+					type='submit'
+					size='sm'
+					className='h-9 text-xs shadow-none'
+					disabled={cargando}
+				>
 					Guardar
 				</Button>
 			</div>

@@ -23,6 +23,7 @@ import {
   UbicacionPiscinaCondominio,
 } from '@/lib/ubicacion.piscina'
 import { inputPendiente } from '@/utils/input/input-pendiente'
+import { classPendienteLabel, inp } from '@/utils/form-utils'
 import { FormikProps } from 'formik'
 import { useMemo } from 'react'
 
@@ -42,14 +43,6 @@ const USO_CONDOMINIO_OPTIONS = [
   { value: 'oficinas', label: 'Oficinas' },
   { value: 'habitacional_y_comercial', label: 'Habitacional y comercial' },
 ]
-
-function inp(_pendiente: boolean, extra?: string) {
-  return `h-9 text-sm shadow-none${extra ? ` ${extra}` : ''}`
-}
-
-function classPendienteLabel(pendiente: boolean) {
-  return pendiente ? 'text-amber-800 dark:text-amber-200' : undefined
-}
 
 export default function CamposCondominioRegistrar({ formik, section }: Props) {
   const ubicacionPiscinaPendiente = useMemo(() => {
@@ -339,7 +332,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
             }}
           >
             <SelectTrigger
-              className={`h-9 text-sm shadow-none${!formik.values.tiene_piscina ? ' cursor-not-allowed opacity-70' : ''}${ubicacionPiscinaPendiente ? ' border-amber-500/60 bg-amber-500/[0.06] dark:border-amber-500/50 dark:bg-amber-950/25' : ''}`}
+              className={`h-9 text-sm shadow-none${!formik.values.tiene_piscina ? ' cursor-not-allowed opacity-70' : ''}${ubicacionPiscinaPendiente ? ' border-warning/60 bg-warning/[0.06] dark:bg-warning/10' : ''}`}
             >
               <SelectValue placeholder='Seleccione' />
             </SelectTrigger>

@@ -94,11 +94,11 @@ export default function DialogoRegistrarAdministrador({
 							<span className='text-destructive'>*</span>
 						</Label>
 						<Input
-							className='h-9 text-sm'
+							className='h-9 text-sm shadow-none'
 							{...formik.getFieldProps('nombre_administrador')}
 						/>
 						{formik.touched.nombre_administrador && formik.errors.nombre_administrador && (
-							<p className='text-xs font-medium text-destructive'>{formik.errors.nombre_administrador}</p>
+							<p className='text-[10px] text-destructive'>{formik.errors.nombre_administrador}</p>
 						)}
 					</div>
 
@@ -106,7 +106,7 @@ export default function DialogoRegistrarAdministrador({
 						<div className='space-y-1.5'>
 							<Label className='text-xs'>Nombre de contacto</Label>
 							<Input
-								className='h-9 text-sm'
+								className='h-9 text-sm shadow-none'
 								{...formik.getFieldProps('nombre_contacto')}
 							/>
 						</div>
@@ -114,7 +114,7 @@ export default function DialogoRegistrarAdministrador({
 						<div className='space-y-1.5'>
 							<Label className='text-xs'>Teléfono</Label>
 							<Input
-								className='h-9 text-sm'
+								className='h-9 text-sm shadow-none'
 								{...formik.getFieldProps('telefono')}
 							/>
 						</div>
@@ -124,16 +124,16 @@ export default function DialogoRegistrarAdministrador({
 						<Label className='text-xs'>Correo</Label>
 						<Input
 							type='email'
-							className='h-9 text-sm'
+							className='h-9 text-sm shadow-none'
 							{...formik.getFieldProps('correo')}
 						/>
 						{formik.touched.correo && formik.errors.correo && (
-							<p className='text-xs font-medium text-destructive'>{formik.errors.correo}</p>
+							<p className='text-[10px] text-destructive'>{formik.errors.correo}</p>
 						)}
 					</div>
 
 					{mutation.isError && (
-						<p className='text-xs font-medium text-destructive' role='alert'>
+						<p className='text-[10px] text-destructive' role='alert'>
 							{mutation.error instanceof Error
 								? mutation.error.message
 								: 'Error al crear administrador'}

@@ -19,6 +19,7 @@ import {
 	obtenerComunasDeRegion,
 } from '@/lib/chile-regiones-comunas'
 import { classInputRut } from '@/utils/class-input-rut'
+import { inp } from '@/utils/form-utils'
 import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
 import { Building2, LoaderCircle, User } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -30,11 +31,6 @@ type FormularioRegistrarProspectoProps = {
 }
 
 type TipoCliente = 'condominio' | 'linea_personal'
-
-function inp(_pendiente: boolean, extra?: string) {
-	const base = 'h-9 text-sm shadow-none'
-	return `${base}${extra ? ` ${extra}` : ''}`
-}
 
 export default function FormularioRegistrarProspecto({
 	onProspectoRegistrado,
@@ -109,7 +105,7 @@ export default function FormularioRegistrarProspecto({
 				<CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
 					<div className='space-y-1.5'>
 						<label
-							className={`text-xs${estadoRut === 'vacio' || estadoRut === 'incompleto' ? ' text-amber-800 dark:text-amber-200' : ''}${estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? ' text-destructive' : ''}`}
+							className={`text-xs${estadoRut === 'vacio' || estadoRut === 'incompleto' ? ' text-warning' : ''}${estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? ' text-destructive' : ''}`}
 						>
 							RUT
 						</label>
@@ -138,7 +134,7 @@ export default function FormularioRegistrarProspecto({
 
 					<div className='space-y-1.5'>
 						<label
-							className={`text-xs${formik.values.nombre_riesgo ? '' : ' text-amber-800 dark:text-amber-200'}`}
+							className={`text-xs${formik.values.nombre_riesgo ? '' : ' text-warning'}`}
 						>
 							Nombre / Razón social *
 						</label>
@@ -157,7 +153,7 @@ export default function FormularioRegistrarProspecto({
 
 					<div className='space-y-1.5 sm:col-span-2'>
 						<label
-							className={`text-xs${inputPendienteSimple(formik.values.direccion) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+							className={`text-xs${inputPendienteSimple(formik.values.direccion) ? ' text-warning' : ''}`}
 						>
 							Dirección
 						</label>
@@ -171,7 +167,7 @@ export default function FormularioRegistrarProspecto({
 
 					<div className='space-y-1.5'>
 						<label
-							className={`text-xs${inputPendienteSimple(region) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+							className={`text-xs${inputPendienteSimple(region) ? ' text-warning' : ''}`}
 						>
 							Región
 						</label>
@@ -210,7 +206,7 @@ export default function FormularioRegistrarProspecto({
 
 					<div className='space-y-1.5'>
 						<label
-							className={`text-xs${inputPendienteSimple(formik.values.comuna) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+							className={`text-xs${inputPendienteSimple(formik.values.comuna) ? ' text-warning' : ''}`}
 						>
 							Comuna
 						</label>
@@ -277,7 +273,7 @@ export default function FormularioRegistrarProspecto({
 					{tipoActual === 'linea_personal' && (
 						<div className='space-y-1.5'>
 							<label
-								className={`text-xs${inputPendienteSimple(formik.values.telefono_contacto) ? ' text-amber-800 dark:text-amber-200' : ''}`}
+								className={`text-xs${inputPendienteSimple(formik.values.telefono_contacto) ? ' text-warning' : ''}`}
 							>
 								Teléfono de contacto
 							</label>

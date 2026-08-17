@@ -30,7 +30,12 @@ const TAB_LABELS: Record<TabId, string> = {
 	observaciones: 'Observaciones',
 }
 
-const ALL_TABS: TabId[] = ['solicitud', 'cotizaciones', 'estudio', 'observaciones']
+const ALL_TABS: TabId[] = [
+	'solicitud',
+	'cotizaciones',
+	'estudio',
+	'observaciones',
+]
 const TIPOS_CON_ESTUDIO = ['unidades', 'espacios_comunes']
 
 export default function SolicitudCotizacionItem({
@@ -43,10 +48,17 @@ export default function SolicitudCotizacionItem({
 	gestionesAbiertasPorDefecto,
 	ocultarToggle,
 }: SolicitudCotizacionItemProps) {
-	const [gestionesAbiertas, setGestionesAbiertas] = useState(gestionesAbiertasPorDefecto ?? false)
+	const [gestionesAbiertas, setGestionesAbiertas] = useState(
+		gestionesAbiertasPorDefecto ?? false,
+	)
 	const [tabActiva, setTabActiva] = useState<TabId>('solicitud')
-	const tabs = ALL_TABS.filter(t => t !== 'estudio' || TIPOS_CON_ESTUDIO.includes(solicitud.tipo.toLowerCase()))
-	const nombreEjecutivo = solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
+	const tabs = ALL_TABS.filter(
+		t =>
+			t !== 'estudio' ||
+			TIPOS_CON_ESTUDIO.includes(solicitud.tipo.toLowerCase()),
+	)
+	const nombreEjecutivo =
+		solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
 
 	return (
 		<li
@@ -69,14 +81,7 @@ export default function SolicitudCotizacionItem({
 							>
 								{normalizarTexto(solicitud.prioridad, true)}
 							</Badge>
-							{!solicitud.informacion_completa && (
-								<Badge
-									variant='outline'
-									className='text-[10px] font-medium capitalize border-info/35 bg-info/10 text-info'
-								>
-									Información incompleta
-								</Badge>
-							)}
+
 							<EstadoCompletitudInformacion
 								completa={informacionCompleta}
 								className='text-[10px] font-medium capitalize'
@@ -86,11 +91,14 @@ export default function SolicitudCotizacionItem({
 							{nombreEjecutivo ? `${nombreEjecutivo} · ` : null}
 							{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy · HH:mm')}
 						</p>
-						{gestionesAbiertasPorDefecto && solicitud.cantidad_cotizaciones > 0 ? (
+						{gestionesAbiertasPorDefecto &&
+						solicitud.cantidad_cotizaciones > 0 ? (
 							<p className='mt-1 flex flex-wrap items-center gap-1.5'>
 								<span className='inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground'>
-									{solicitud.cantidad_cotizaciones} cotización
-									{solicitud.cantidad_cotizaciones !== 1 ? 'es' : ''}
+									{solicitud.cantidad_cotizaciones}{' '}
+									{solicitud.cantidad_cotizaciones !== 1
+										? 'cotizaciones'
+										: 'cotización'}
 								</span>
 							</p>
 						) : null}
@@ -102,27 +110,27 @@ export default function SolicitudCotizacionItem({
 					</div>
 
 					{!ocultarToggle ? (
-					<div className='flex shrink-0 justify-end'>
-						<Button
-							type='button'
-							variant={gestionesAbiertas ? 'secondary' : 'outline'}
-							size='sm'
-							className='h-8 text-xs shadow-none'
-							onClick={() => {
-								setGestionesAbiertas(!gestionesAbiertas)
-								if (!gestionesAbiertas) setTabActiva('solicitud')
-							}}
-						>
-							{gestionesAbiertas ? 'Ocultar gestiones' : 'Ver gestiones'}
-						</Button>
-					</div>
-				) : null}
+						<div className='flex shrink-0 justify-end'>
+							<Button
+								type='button'
+								variant={gestionesAbiertas ? 'secondary' : 'outline'}
+								size='sm'
+								className='h-8 text-xs shadow-none'
+								onClick={() => {
+									setGestionesAbiertas(!gestionesAbiertas)
+									if (!gestionesAbiertas) setTabActiva('solicitud')
+								}}
+							>
+								{gestionesAbiertas ? 'Ocultar gestiones' : 'Ver gestiones'}
+							</Button>
+						</div>
+					) : null}
 				</div>
 
 				{gestionesAbiertas ? (
 					<div className='mt-3 min-w-0'>
 						<div className='flex border-b border-border'>
-							{tabs.map((t) => (
+							{tabs.map(t => (
 								<button
 									key={t}
 									type='button'
@@ -135,7 +143,8 @@ export default function SolicitudCotizacionItem({
 									)}
 								>
 									{TAB_LABELS[t]}
-									{t === 'cotizaciones' && solicitud.cantidad_cotizaciones > 0 ? (
+									{t === 'cotizaciones' &&
+									solicitud.cantidad_cotizaciones > 0 ? (
 										<span className='ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px] tabular-nums'>
 											{solicitud.cantidad_cotizaciones}
 										</span>

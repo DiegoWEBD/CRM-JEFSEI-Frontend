@@ -505,7 +505,6 @@ function DialogRegistrarUsuario({
 		},
 		validationSchema,
 		onSubmit: async values => {
-			console.log(values)
 			const request: RegistrarUsuarioRequest = {
 				rut: values.rut.replace(/[^0-9kK]/g, '').toUpperCase(),
 				nombre: values.nombre.trim(),
@@ -576,6 +575,7 @@ function DialogRegistrarUsuario({
 									id='nombre-crear'
 									placeholder='Nombre completo'
 									name='nombre'
+									className='h-9 text-sm shadow-none'
 									value={formik.values.nombre}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
@@ -593,6 +593,7 @@ function DialogRegistrarUsuario({
 									type='email'
 									placeholder='correo@ejemplo.cl'
 									name='correo'
+									className='h-9 text-sm shadow-none'
 									value={formik.values.correo || ''}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
@@ -645,16 +646,16 @@ function DialogRegistrarUsuario({
 							<div className='space-y-1.5'>
 								<Label htmlFor='password-crear'>Contraseña *</Label>
 								<div className='relative'>
-									<Input
-										id='password-crear'
-										type={showPassword ? 'text' : 'password'}
-										className='pr-9'
-										placeholder='••••••••'
-										name='password'
-										value={formik.values.password}
-										onChange={formik.handleChange}
-										onBlur={formik.handleBlur}
-									/>
+								<Input
+									id='password-crear'
+									type={showPassword ? 'text' : 'password'}
+									className='h-9 text-sm shadow-none pr-9'
+									placeholder='••••••••'
+									name='password'
+									value={formik.values.password}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+								/>
 									<button
 										type='button'
 										className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
@@ -707,30 +708,32 @@ function DialogRegistrarUsuario({
 						<div className='grid gap-4 sm:grid-cols-3'>
 							<div className='space-y-1.5'>
 								<Label htmlFor='metaMensual-crear'>Meta mensual UF</Label>
-								<Input
-									id='metaMensual-crear'
-									type='number'
-									min='0'
-									placeholder='0'
-									name='metaMensualUf'
-									value={formik.values.metaMensualUf || undefined}
-									onChange={formik.handleChange}
-								/>
+							<Input
+								id='metaMensual-crear'
+								type='number'
+								min='0'
+								placeholder='0'
+								name='metaMensualUf'
+								className='h-9 text-sm shadow-none'
+								value={formik.values.metaMensualUf || undefined}
+								onChange={formik.handleChange}
+							/>
 							</div>
 							<div className='space-y-1.5'>
 								<Label htmlFor='comision-crear'>Comisión %</Label>
-								<Input
-									id='comision-crear'
-									type='number'
-									min='0'
-									max='100'
-									step='0.01'
-									placeholder='0'
-									name='porcentajeComision'
-									value={formik.values.porcentajeComision || undefined}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-								/>
+							<Input
+								id='comision-crear'
+								type='number'
+								min='0'
+								max='100'
+								step='0.01'
+								placeholder='0'
+								name='porcentajeComision'
+								className='h-9 text-sm shadow-none'
+								value={formik.values.porcentajeComision || undefined}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+							/>
 								{formik.touched.porcentajeComision &&
 									formik.errors.porcentajeComision && (
 										<p className='text-[10px] text-destructive'>

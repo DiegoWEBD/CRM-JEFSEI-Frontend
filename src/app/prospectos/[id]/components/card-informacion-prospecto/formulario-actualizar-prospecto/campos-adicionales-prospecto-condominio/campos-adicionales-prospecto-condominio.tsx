@@ -23,7 +23,7 @@ import {
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import { FormikProps } from 'formik'
 import { useMemo } from 'react'
-import { inp } from '../formulario-actualizar-prospecto'
+import { inp } from '@/utils/form-utils'
 import { useAdministradores } from '@/hooks/administradores/use-administradores'
 import { SelectorAdministrador } from '@/components/selector-administrador'
 
