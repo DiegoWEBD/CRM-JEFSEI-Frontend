@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Card, CardContent } from '@/components/card'
 import { cn } from '@/lib/utils'
@@ -19,13 +19,13 @@ export default function EvaluacionKpiCard({
   return (
     <Card className={cn('border-border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
       <CardContent className='p-3'>
-        <p className='text-[11px] font-semibold uppercase tracking-wide text-foreground/70'>
+        <p className='text-sm font-semibold uppercase tracking-wide text-foreground/70'>
           {label}
         </p>
         <p className='mt-0.5 text-3xl font-bold tabular-nums tracking-tight text-foreground'>
           {value.toLocaleString('es-CL')}
         </p>
-        <p className='mt-0.5 text-[10px] text-muted-foreground'>{hint}</p>
+        <p className='mt-0.5 text-xs text-muted-foreground'>{hint}</p>
       </CardContent>
     </Card>
   )

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+﻿import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { cn } from '@/lib/utils'
 import { DatosKpi } from '@/hooks/kpi/dto/datos-kpi'
 import { Bell } from 'lucide-react'
@@ -31,7 +31,7 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 			}}
 		>
 			<CardHeader className='flex flex-row items-center justify-between gap-2 space-y-0 px-4 pt-3 pb-2'>
-				<CardTitle className='line-clamp-2 min-h-8 text-[11px] font-medium uppercase tracking-wide leading-snug text-muted-foreground sm:text-xs'>
+				<CardTitle className='line-clamp-2 min-h-8 text-sm font-medium uppercase tracking-wide leading-snug text-muted-foreground sm:text-xs'>
 					{datos.label}
 				</CardTitle>
 				<div className='grid size-8 shrink-0 place-items-center rounded-lg bg-muted/70 ring-1 ring-border/60 transition-colors group-hover:bg-primary/10 group-hover:ring-primary/20'>
@@ -43,7 +43,7 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 					{datos.value}
 				</p>
 				{datos.infoAdicional != null && datos.infoAdicional > 0 ? (
-					<div className='inline-flex items-center gap-1.5 rounded-md border border-warning/30 bg-warning/15 px-2 py-1 text-[11px] text-warning-foreground dark:text-warning'>
+					<div className='inline-flex items-center gap-1.5 rounded-md border border-warning/30 bg-warning/15 px-2 py-1 text-sm text-warning-foreground dark:text-warning'>
 						<Bell className='size-3.5 shrink-0' aria-hidden />
 						<span>
 							<span className='font-semibold tabular-nums'>

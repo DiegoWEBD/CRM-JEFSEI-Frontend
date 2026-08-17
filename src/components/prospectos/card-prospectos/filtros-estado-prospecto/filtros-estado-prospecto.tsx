@@ -1,4 +1,4 @@
-import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
+﻿import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import ChipFiltro from '@/components/chip-filtro/chip-filtro'
 import Select from '@/components/forms/select/select'
 import SelectContent from '@/components/forms/select/select-content/select-content'
@@ -31,11 +31,11 @@ export function FiltrosEstadoProspecto({
 
 	return (
 		<div className='space-y-1.5'>
-			<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 				Estado comercial
 			</p>
 
-			{/* Móvil: selector compacto */}
+			{/* MÃ³vil: selector compacto */}
 			<div className='sm:hidden'>
 				<Select
 					value={filtroActivo}

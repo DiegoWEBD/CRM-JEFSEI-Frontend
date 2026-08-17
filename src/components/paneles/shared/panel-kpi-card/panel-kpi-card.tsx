@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Card, CardContent } from '@/components/card'
 import { cn } from '@/lib/utils'
@@ -80,7 +80,7 @@ export function PanelKpiCard({
 					</div>
 				)}
 				<div className='min-w-0 flex-1'>
-					<p className='line-clamp-2 text-[11px] font-medium uppercase leading-snug tracking-wide text-muted-foreground'>
+					<p className='line-clamp-2 text-sm font-medium uppercase leading-snug tracking-wide text-muted-foreground'>
 						{label}
 					</p>
 					<p className='mt-0.5 text-2xl font-semibold tabular-nums leading-tight tracking-tight text-foreground'>

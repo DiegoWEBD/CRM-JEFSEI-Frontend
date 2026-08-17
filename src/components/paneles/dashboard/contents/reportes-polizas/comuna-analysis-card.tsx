@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
@@ -82,7 +82,7 @@ export default function ComunaAnalysisCard({
       <CardContent className='pb-2.5 pt-0'>
         <div className='grid gap-3 lg:grid-cols-[minmax(5.5rem,0.32fr)_minmax(10rem,0.68fr)_1fr]'>
           <div className='flex min-h-[10rem] flex-col items-center justify-center rounded-lg bg-muted/15 px-2 py-3'>
-            <p className='text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80'>
+            <p className='text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground/80'>
               Total
             </p>
             {sinDatosGeneral ? (
@@ -94,7 +94,7 @@ export default function ComunaAnalysisCard({
                 <p className='mt-1 text-[1.65rem] font-bold tabular-nums leading-none tracking-tight text-foreground'>
                   {totalComuna.toLocaleString('es-CL')}
                 </p>
-                <p className='mt-1.5 max-w-full truncate text-center text-[10px] font-medium text-primary'>
+                <p className='mt-1.5 max-w-full truncate text-center text-xs font-medium text-primary'>
                   {comunaActual}
                 </p>
               </>
@@ -102,7 +102,7 @@ export default function ComunaAnalysisCard({
           </div>
 
           <div className='flex min-h-[10rem] flex-col rounded-lg bg-muted/15 px-2 py-2.5'>
-            <p className='mb-1.5 px-1 text-[10px] font-semibold text-muted-foreground'>
+            <p className='mb-1.5 px-1 text-xs font-semibold text-muted-foreground'>
               P&oacute;lizas por sexo
             </p>
             {sinDatosSexo ? (
@@ -141,7 +141,7 @@ export default function ComunaAnalysisCard({
                   {sexoData.map((entry, index) => (
                     <span
                       key={entry.name}
-                      className='inline-flex items-center gap-1 rounded-full bg-secondary/60 px-1.5 py-0.5 text-[9px] text-muted-foreground'
+                      className='inline-flex items-center gap-1 rounded-full bg-secondary/60 px-1.5 py-0.5 text-xs text-muted-foreground'
                     >
                       <span
                         className='h-1.5 w-1.5 shrink-0 rounded-full'
@@ -157,7 +157,7 @@ export default function ComunaAnalysisCard({
           </div>
 
           <div className='flex min-h-[10rem] min-w-0 flex-col rounded-lg bg-muted/15 px-2 py-2.5 lg:min-h-[11rem]'>
-            <p className='mb-1.5 px-1 text-[10px] font-semibold text-muted-foreground'>
+            <p className='mb-1.5 px-1 text-xs font-semibold text-muted-foreground'>
               L&iacute;neas de seguro en {comunaActual || 'comuna'}
             </p>
             {sinDatosRamo ? (

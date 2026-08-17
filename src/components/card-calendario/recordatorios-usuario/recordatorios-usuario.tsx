@@ -1,4 +1,4 @@
-import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
+﻿import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import { Badge } from '@/components/badge'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useRecordatorios } from '@/hooks/recordatorios/use-recordatorios'
@@ -62,11 +62,11 @@ export default function RecordatoriosUsuario({
 					Recordatorios del {formatearFecha(new Date(fecha), 'dd/MM/yyyy')}
 					{fecha === hoyIso && (
 						<span className='ml-1 font-normal text-muted-foreground'>
-							· Hoy
+							Â· Hoy
 						</span>
 					)}
 				</p>
-				<Badge variant='outline' className='h-5 tabular-nums text-[10px]'>
+				<Badge variant='outline' className='h-5 tabular-nums text-xs'>
 					{recordatorios?.length ?? 0}
 				</Badge>
 			</div>
@@ -96,8 +96,8 @@ export default function RecordatoriosUsuario({
 				onOpenChange={() => setConfirmAction(null)}
 				title={
 					confirmAction?.type === 'completar'
-						? '¿Completar recordatorio?'
-						: '¿Eliminar recordatorio?'
+						? 'Â¿Completar recordatorio?'
+						: 'Â¿Eliminar recordatorio?'
 				}
 				onConfirm={onConfirm}
 				isPending={

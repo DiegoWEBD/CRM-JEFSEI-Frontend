@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { PanelEstudioFila } from '@/aplicacion/cotizaciones-estudios/dto/panel-estudio-fila'
 import {
@@ -48,7 +48,7 @@ function FilaResumen({
 }) {
   return (
     <div>
-      <dt className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+      <dt className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
         {label}
       </dt>
       <dd className='mt-0.5 text-sm text-foreground'>{children}</dd>
@@ -107,15 +107,15 @@ export default function DialogVerCotizaciones({
           <DialogTitle className='text-left text-sm leading-snug sm:text-base'>
             Cotizaciones recibidas
           </DialogTitle>
-          <p className='text-left text-[11px] text-muted-foreground sm:text-xs'>
-            Opciones de compañías aseguradoras para armar el estudio final.
+          <p className='text-left text-sm text-muted-foreground sm:text-xs'>
+            Opciones de compaÃ±Ã­as aseguradoras para armar el estudio final.
           </p>
         </DialogHeader>
 
         <div className='border-b border-border/80 px-3 py-3 sm:px-4'>
           <dl className='grid grid-cols-2 gap-2 text-xs sm:gap-3 sm:text-sm'>
             <FilaResumen label='Cliente'>{fila.cliente}</FilaResumen>
-            <FilaResumen label='Línea de seguro'>
+            <FilaResumen label='LÃ­nea de seguro'>
               {fila.linea_seguro}
             </FilaResumen>
             <FilaResumen label='Ejecutivo comercial'>
@@ -157,14 +157,14 @@ export default function DialogVerCotizaciones({
                       </span>
                       <Badge
                         variant={VENCIMIENTO_VARIANT[ev]}
-                        className='text-[10px] font-medium'
+                        className='text-xs font-medium'
                       >
                         {ESTADO_LABEL[ev]}
                       </Badge>
                     </div>
                     <div className='grid grid-cols-2 gap-x-3 gap-y-1.5 text-muted-foreground'>
                       <div>
-                        <span className='text-[9px] uppercase tracking-wide'>
+                        <span className='text-xs uppercase tracking-wide'>
                           Monto asegurado
                         </span>
                         <p className='tabular-nums text-foreground/90'>
@@ -177,7 +177,7 @@ export default function DialogVerCotizaciones({
                             type='button'
                             variant='outline'
                             size='sm'
-                            className='h-7 w-full text-[10px]'
+                            className='h-7 w-full text-xs'
                             onClick={() =>
                               descargarPDF(
                                 c.archivo_base64!,
@@ -191,7 +191,7 @@ export default function DialogVerCotizaciones({
                         </div>
                       )}
                       <div>
-                            <span className='text-[9px] uppercase tracking-wide'>
+                            <span className='text-xs uppercase tracking-wide'>
                           Tasa afecta
                         </span>
                         <p className='tabular-nums text-foreground/90'>
@@ -199,7 +199,7 @@ export default function DialogVerCotizaciones({
                         </p>
                       </div>
                       <div>
-                        <span className='text-[9px] uppercase tracking-wide'>
+                        <span className='text-xs uppercase tracking-wide'>
                           Tasa excenta
                         </span>
                         <p className='tabular-nums text-foreground/90'>
@@ -207,15 +207,15 @@ export default function DialogVerCotizaciones({
                         </p>
                       </div>
                       <div>
-                        <span className='text-[9px] uppercase tracking-wide'>
-                          Tasa política
+                        <span className='text-xs uppercase tracking-wide'>
+                          Tasa polÃ­tica
                         </span>
                         <p className='tabular-nums text-foreground/90'>
                           {formatNum(c.tasa_politica)}
                         </p>
                       </div>
                       <div>
-                        <span className='text-[9px] uppercase tracking-wide'>
+                        <span className='text-xs uppercase tracking-wide'>
                           Prima adicional
                         </span>
                         <p className='tabular-nums text-foreground/90'>
@@ -223,15 +223,15 @@ export default function DialogVerCotizaciones({
                         </p>
                       </div>
                       <div>
-                        <span className='text-[9px] uppercase tracking-wide'>
-                          Emisión
+                        <span className='text-xs uppercase tracking-wide'>
+                          EmisiÃ³n
                         </span>
                         <p className='text-foreground/90'>
                           {formatFecha(c.fecha_emision)}
                         </p>
                       </div>
                       <div>
-                        <span className='text-[9px] uppercase tracking-wide'>
+                        <span className='text-xs uppercase tracking-wide'>
                           Vencimiento
                         </span>
                         <p className='text-foreground/90'>
@@ -249,31 +249,31 @@ export default function DialogVerCotizaciones({
               <Table className='w-full'>
                 <TableHeader>
                   <TableRow className='border-border/50 hover:bg-muted/25'>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
-                      Compañía
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+                      CompaÃ±Ã­a
                     </TableHead>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
                       Monto asegurado
                     </TableHead>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
                       Tasa afecta
                     </TableHead>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
                       Tasa excenta
                     </TableHead>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
-                      Tasa política
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+                      Tasa polÃ­tica
                     </TableHead>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
                       Prima adicional
                     </TableHead>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
-                      Emisión
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+                      EmisiÃ³n
                     </TableHead>
-                    <TableHead className='whitespace-nowrap text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+                    <TableHead className='whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
                       Vencimiento
                     </TableHead>
-                    <TableHead className='text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+                    <TableHead className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
                       Estado venc.
                     </TableHead>
                     <TableHead className='w-10'></TableHead>
@@ -314,7 +314,7 @@ export default function DialogVerCotizaciones({
                         <TableCell className='py-2'>
                           <Badge
                             variant={VENCIMIENTO_VARIANT[ev]}
-                            className='text-[10px] font-medium'
+                            className='text-xs font-medium'
                           >
                             {ESTADO_LABEL[ev]}
                           </Badge>

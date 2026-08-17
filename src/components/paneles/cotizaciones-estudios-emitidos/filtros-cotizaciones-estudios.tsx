@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Input } from '@/components/input'
 import {
@@ -76,7 +76,7 @@ export default function FiltrosCotizacionesEstudios({
 			<div className='relative min-w-[12rem] flex-1'>
 				<Search className='pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground' />
 				<Input
-					placeholder='Buscar por cliente, ejecutivo, línea…'
+					placeholder='Buscar por cliente, ejecutivo, lÃ­neaâ€¦'
 					value={filtros.busqueda}
 					onChange={e => actualizar('busqueda', e.target.value)}
 					className='h-9 pl-8 text-xs shadow-none'
@@ -151,7 +151,7 @@ export default function FiltrosCotizacionesEstudios({
 					size='sm'
 					className='h-9 w-[min(100%,10rem)] text-xs shadow-none'
 				>
-					<SelectValue placeholder='Línea seguro' />
+					<SelectValue placeholder='LÃ­nea seguro' />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectItem value={TODOS} className='text-xs'>
@@ -177,7 +177,7 @@ export default function FiltrosCotizacionesEstudios({
 				</Button>
 			)}
 
-			<span className='text-[11px] text-muted-foreground'>
+			<span className='text-sm text-muted-foreground'>
 				Mostrando {filtrados} de {total} cotizaciones
 			</span>
 		</div>

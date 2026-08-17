@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect } from 'react'
 import { useSidebarStore } from '@/global_states/sidebar-store'
@@ -13,7 +13,7 @@ type Props = {
 const SideBarClient = ({ roles }: Props) => {
 	const { open, setOpen, mode, toggleMode } = useSidebarStore()
 
-	/** Rehidrata el modo persistido sólo en cliente para evitar mismatch SSR. */
+	/** Rehidrata el modo persistido sÃ³lo en cliente para evitar mismatch SSR. */
 	useEffect(() => {
 		void useSidebarStore.persist.rehydrate()
 		setOpen(false)
@@ -23,7 +23,7 @@ const SideBarClient = ({ roles }: Props) => {
 
 	return (
 		<>
-			{/* Overlay móvil */}
+			{/* Overlay mÃ³vil */}
 			{open && (
 				<div
 					className='fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] lg:hidden'
@@ -57,18 +57,18 @@ const SideBarClient = ({ roles }: Props) => {
 						<p className='truncate text-sm font-semibold leading-none text-sidebar-foreground'>
 							CRM JEFSEI
 						</p>
-						<p className='mt-1 truncate text-[11px] leading-none text-muted-foreground'>
+						<p className='mt-1 truncate text-sm leading-none text-muted-foreground'>
 							Corredora de Seguros
 						</p>
 					</div>
 				</div>
 
-				{/* Navegación */}
+				{/* NavegaciÃ³n */}
 				<div className='flex-1 overflow-y-auto overflow-x-hidden py-3'>
 					<Nav roles={roles} />
 				</div>
 
-				{/* Footer: colapsar sidebar (sólo desktop) */}
+				{/* Footer: colapsar sidebar (sÃ³lo desktop) */}
 				<div className='hidden shrink-0 border-t border-sidebar-border/60 p-2 lg:block'>
 					<button
 						type='button'
@@ -78,8 +78,8 @@ const SideBarClient = ({ roles }: Props) => {
 							'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
 							'group-data-[mode=collapsed]/sidebar:justify-center group-data-[mode=collapsed]/sidebar:px-0',
 						)}
-						title={mode === 'expanded' ? 'Contraer menú' : 'Expandir menú'}
-						aria-label={mode === 'expanded' ? 'Contraer menú' : 'Expandir menú'}
+						title={mode === 'expanded' ? 'Contraer menÃº' : 'Expandir menÃº'}
+						aria-label={mode === 'expanded' ? 'Contraer menÃº' : 'Expandir menÃº'}
 					>
 						{mode === 'expanded' ? (
 							<PanelLeftClose className='size-4 shrink-0' />

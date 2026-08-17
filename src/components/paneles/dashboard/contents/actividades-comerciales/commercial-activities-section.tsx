@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Calendar, Mail, MapPin, MessageSquare, Phone } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -50,7 +50,7 @@ export default function CommercialActivitiesSection({ data }: Props) {
       <div className='space-y-4' aria-live='polite'>
         <CommercialActivityCompletionSummary data={data.resumen} />
 
-        <p className='text-[11px] text-muted-foreground'>
+        <p className='text-sm text-muted-foreground'>
           Total visible:{' '}
           <span className='font-medium tabular-nums text-foreground'>
             {data.resumen.agendadas.toLocaleString('es-CL')}

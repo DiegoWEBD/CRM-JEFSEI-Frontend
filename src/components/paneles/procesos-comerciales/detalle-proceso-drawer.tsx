@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import type {
@@ -53,7 +53,7 @@ const PRIORIDAD_LABELS: Record<string, string> = {
 	ROJO: 'Atrasado',
 	AMARILLO: 'En riesgo',
 	VERDE: 'En plazo',
-	NO_APLICA: '—',
+	NO_APLICA: 'â€”',
 }
 
 const PRIORIDAD_DOT: Record<string, string> = {
@@ -110,9 +110,9 @@ export default function DetalleProcesoDrawer({
 					<p className='text-xs text-muted-foreground'>{proceso.producto}</p>
 					<Link
 						href={`/prospectos/${proceso.id_prospecto}`}
-						className='mt-1 text-[11px] text-primary underline-offset-2 hover:underline'
+						className='mt-1 text-sm text-primary underline-offset-2 hover:underline'
 					>
-						Ver prospecto →
+						Ver prospecto â†’
 					</Link>
 				</SheetHeader>
 
@@ -123,7 +123,7 @@ export default function DetalleProcesoDrawer({
 							<dd>
 								<Badge
 									variant={SEMAFORO_VARIANT[reporte.estado_semaforo]}
-									className='text-[11px] font-medium'
+									className='text-sm font-medium'
 								>
 									{PRIORIDAD_LABELS[reporte.estado_semaforo]}
 								</Badge>
@@ -143,7 +143,7 @@ export default function DetalleProcesoDrawer({
 								<Badge
 									variant='outline'
 									className={cn(
-										'text-[11px] font-medium',
+										'text-sm font-medium',
 										ESTADO_COMERCIAL_BADGE[
 											proceso.estado_actual
 												.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
@@ -163,14 +163,14 @@ export default function DetalleProcesoDrawer({
 								Ejecutivo comercial
 							</dt>
 							<dd className='font-medium text-foreground'>
-								{proceso.ejecutivo_comercial?.nombre ?? '—'}
+								{proceso.ejecutivo_comercial?.nombre ?? 'â€”'}
 							</dd>
 						</div>
 
 						{proceso.ejecutivo_evaluacion && (
 							<div className='flex items-center justify-between'>
 								<dt className='text-xs text-muted-foreground'>
-									Ejecutivo evaluación
+									Ejecutivo evaluaciÃ³n
 								</dt>
 								<dd className='font-medium text-foreground'>
 									{proceso.ejecutivo_evaluacion.nombre}
@@ -181,7 +181,7 @@ export default function DetalleProcesoDrawer({
 						{abierto && (
 							<>
 								<div className='border-t border-border/50 pt-3'>
-									<p className='mb-2 text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+									<p className='mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 										SLA
 									</p>
 								</div>
@@ -204,7 +204,7 @@ export default function DetalleProcesoDrawer({
 
 								<div className='flex items-center justify-between'>
 									<dt className='text-xs text-muted-foreground'>
-										Días transcurridos
+										DÃ­as transcurridos
 									</dt>
 									<dd className='font-medium tabular-nums text-foreground'>
 										{reporte.dias_transcurridos}
@@ -212,11 +212,11 @@ export default function DetalleProcesoDrawer({
 								</div>
 
 								<div className='flex items-center justify-between'>
-									<dt className='text-xs text-muted-foreground'>Límite SLA</dt>
+									<dt className='text-xs text-muted-foreground'>LÃ­mite SLA</dt>
 									<dd className='font-medium tabular-nums text-foreground'>
 										{proceso.etapa_actual.dias_limite != null
-											? `${proceso.etapa_actual.dias_limite} días`
-											: 'Sin límite'}
+											? `${proceso.etapa_actual.dias_limite} dÃ­as`
+											: 'Sin lÃ­mite'}
 									</dd>
 								</div>
 
@@ -233,7 +233,7 @@ export default function DetalleProcesoDrawer({
 														? 'pastel-amber'
 														: 'pastel-emerald'
 											}
-											className='text-[11px] font-medium'
+											className='text-sm font-medium'
 										>
 											{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
 										</Badge>
@@ -243,7 +243,7 @@ export default function DetalleProcesoDrawer({
 								{reporte.dias_restantes >= 0 ? (
 									<div className='flex items-center justify-between'>
 										<dt className='text-xs text-muted-foreground'>
-											Días restantes
+											DÃ­as restantes
 										</dt>
 										<dd className='font-medium tabular-nums text-foreground'>
 											{reporte.dias_restantes}
@@ -254,7 +254,7 @@ export default function DetalleProcesoDrawer({
 								{reporte.dias_atraso > 0 ? (
 									<div className='flex items-center justify-between'>
 										<dt className='text-xs text-muted-foreground'>
-											Días de atraso
+											DÃ­as de atraso
 										</dt>
 										<dd className='font-medium tabular-nums text-destructive'>
 											{reporte.dias_atraso}
@@ -289,7 +289,7 @@ export default function DetalleProcesoDrawer({
 									>
 										{aceptarMutation.isPending
 											? 'Aceptando...'
-											: 'Marcar aceptación del cliente'}
+											: 'Marcar aceptaciÃ³n del cliente'}
 									</Button>
 								</div>
 
@@ -331,7 +331,7 @@ export default function DetalleProcesoDrawer({
 											</div>
 											<div className='space-y-1'>
 												<Label className='text-xs text-muted-foreground'>
-													Observación{' '}
+													ObservaciÃ³n{' '}
 													<span className='text-muted-foreground/60'>
 														(opcional)
 													</span>
@@ -404,9 +404,9 @@ export default function DetalleProcesoDrawer({
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>¿Marcar aceptación del cliente?</AlertDialogTitle>
+						<AlertDialogTitle>Â¿Marcar aceptaciÃ³n del cliente?</AlertDialogTitle>
 						<AlertDialogDescription>
-							Se registrará la aceptación del cliente para esta oportunidad.
+							Se registrarÃ¡ la aceptaciÃ³n del cliente para esta oportunidad.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
@@ -430,7 +430,7 @@ export default function DetalleProcesoDrawer({
 						>
 							{aceptarMutation.isPending
 								? 'Aceptando...'
-								: 'Confirmar aceptación'}
+								: 'Confirmar aceptaciÃ³n'}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -439,10 +439,10 @@ export default function DetalleProcesoDrawer({
 			<AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>¿Cerrar oportunidad?</AlertDialogTitle>
+						<AlertDialogTitle>Â¿Cerrar oportunidad?</AlertDialogTitle>
 						<AlertDialogDescription>
-							Esta acción es irreversible. La oportunidad quedará cerrada y no
-							podrá modificarse.
+							Esta acciÃ³n es irreversible. La oportunidad quedarÃ¡ cerrada y no
+							podrÃ¡ modificarse.
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>

@@ -7,7 +7,7 @@ const LoginFormHeader = () => {
 				<span className='text-sm font-semibold leading-none'>IB</span>
 			</div>
 			<h1 className='text-xl font-semibold tracking-tight text-foreground'>Bienvenido</h1>
-			<p className='text-[13px] text-muted-foreground'>Inicia sesión para acceder al CRM</p>
+			<p className='text-sm text-muted-foreground'>Inicia sesión para acceder al CRM</p>
 		</CardHeader>
 	)
 }

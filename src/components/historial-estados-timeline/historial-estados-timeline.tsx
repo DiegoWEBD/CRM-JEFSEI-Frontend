@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { HistorialEtapaResumen } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-etapa-resumen'
 import { Skeleton } from '@/components/skeleton'
@@ -15,7 +15,7 @@ export default function HistorialEstadosTimeline({
   return (
     <>
       <div className='border-t border-border/50 pt-3'>
-        <p className='mb-2 text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+        <p className='mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
           Historial de estados
         </p>
       </div>
@@ -57,10 +57,10 @@ export default function HistorialEstadosTimeline({
                   <p className='text-xs font-medium text-foreground'>
                     {estado.estado}
                   </p>
-                  <p className='text-[11px] text-muted-foreground'>
+                  <p className='text-sm text-muted-foreground'>
                     Por: {estado.registrado_por}
                   </p>
-                  <p className='text-[11px] text-muted-foreground tabular-nums'>
+                  <p className='text-sm text-muted-foreground tabular-nums'>
                     {new Date(estado.fecha_registro).toLocaleDateString(
                       'es-CL',
                       {
@@ -73,7 +73,7 @@ export default function HistorialEstadosTimeline({
                     )}
                   </p>
                   {estado.observacion && (
-                    <p className='mt-0.5 text-[11px] text-muted-foreground/80 italic'>
+                    <p className='mt-0.5 text-sm text-muted-foreground/80 italic'>
                       {estado.observacion}
                     </p>
                   )}

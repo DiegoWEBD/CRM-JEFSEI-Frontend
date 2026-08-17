@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
@@ -91,7 +91,7 @@ export default function FormularioRegistrarProspecto({
 						onClick={() => setTipo('linea_personal')}
 					>
 						<User className='mr-1.5 h-3.5 w-3.5' aria-hidden />
-						Línea personal / Persona natural
+						LÃ­nea personal / Persona natural
 					</Button>
 				</CardContent>
 			</Card>
@@ -120,14 +120,14 @@ export default function FormularioRegistrarProspecto({
 							onChange={formik.handleChange}
 						/>
 						{estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? (
-							<p className='text-[10px] text-destructive'>
+							<p className='text-xs text-destructive'>
 								{estadoRut === 'dv_invalido'
-									? 'El dígito verificador no corresponde.'
-									: 'Ingrese 8 números y el dígito verificador (0-9 o K).'}
+									? 'El dÃ­gito verificador no corresponde.'
+									: 'Ingrese 8 nÃºmeros y el dÃ­gito verificador (0-9 o K).'}
 							</p>
 						) : estadoRut === 'incompleto' ? (
-							<p className='text-[10px] text-muted-foreground'>
-								8 dígitos + verificador (número o K).
+							<p className='text-xs text-muted-foreground'>
+								8 dÃ­gitos + verificador (nÃºmero o K).
 							</p>
 						) : null}
 					</div>
@@ -136,7 +136,7 @@ export default function FormularioRegistrarProspecto({
 						<label
 							className={`text-xs${formik.values.nombre_riesgo ? '' : ' text-warning'}`}
 						>
-							Nombre / Razón social *
+							Nombre / RazÃ³n social *
 						</label>
 						<Input
 							className={inp(!formik.values.nombre_riesgo)}
@@ -145,7 +145,7 @@ export default function FormularioRegistrarProspecto({
 							onChange={formik.handleChange}
 						/>
 						{formik.touched.nombre_riesgo && formik.errors.nombre_riesgo ? (
-							<p className='text-[10px] text-destructive'>
+							<p className='text-xs text-destructive'>
 								{formik.errors.nombre_riesgo}
 							</p>
 						) : null}
@@ -155,7 +155,7 @@ export default function FormularioRegistrarProspecto({
 						<label
 							className={`text-xs${inputPendienteSimple(formik.values.direccion) ? ' text-warning' : ''}`}
 						>
-							Dirección
+							DirecciÃ³n
 						</label>
 						<Input
 							className={inp(inputPendienteSimple(formik.values.direccion))}
@@ -169,7 +169,7 @@ export default function FormularioRegistrarProspecto({
 						<label
 							className={`text-xs${inputPendienteSimple(region) ? ' text-warning' : ''}`}
 						>
-							Región
+							RegiÃ³n
 						</label>
 						<Select
 							value={region || '__none__'}
@@ -186,14 +186,14 @@ export default function FormularioRegistrarProspecto({
 							}}
 						>
 							<SelectTrigger className={inp(inputPendienteSimple(region))}>
-								<SelectValue placeholder='Selecciona una región' />
+								<SelectValue placeholder='Selecciona una regiÃ³n' />
 							</SelectTrigger>
 							<SelectContent className='max-h-70'>
 								<SelectItem
 									value='__none__'
 									className='text-xs text-muted-foreground'
 								>
-									Selecciona una región
+									Selecciona una regiÃ³n
 								</SelectItem>
 								{CHILE_REGIONES_NOMBRES.map(r => (
 									<SelectItem key={r} value={r} className='text-xs'>
@@ -230,7 +230,7 @@ export default function FormularioRegistrarProspecto({
 									placeholder={
 										region
 											? 'Selecciona una comuna'
-											: 'Primero selecciona una región'
+											: 'Primero selecciona una regiÃ³n'
 									}
 								/>
 							</SelectTrigger>
@@ -241,7 +241,7 @@ export default function FormularioRegistrarProspecto({
 								>
 									{region
 										? 'Selecciona una comuna'
-										: 'Primero selecciona una región'}
+										: 'Primero selecciona una regiÃ³n'}
 								</SelectItem>
 								{comunasDeRegion.map(c => (
 									<SelectItem key={c} value={c} className='text-xs'>
@@ -264,7 +264,7 @@ export default function FormularioRegistrarProspecto({
 							onChange={formik.handleChange}
 						/>
 						{formik.touched.correo_contacto && formik.errors.correo_contacto ? (
-							<p className='text-[10px] text-destructive'>
+							<p className='text-xs text-destructive'>
 								{formik.errors.correo_contacto}
 							</p>
 						) : null}
@@ -275,7 +275,7 @@ export default function FormularioRegistrarProspecto({
 							<label
 								className={`text-xs${inputPendienteSimple(formik.values.telefono_contacto) ? ' text-warning' : ''}`}
 							>
-								Teléfono de contacto
+								TelÃ©fono de contacto
 							</label>
 							<Input
 								className={inp(
@@ -307,7 +307,7 @@ export default function FormularioRegistrarProspecto({
 					<Card className='border-border bg-card shadow-none'>
 						<CardHeader className='pb-2 pt-3'>
 							<CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
-								Características de construcción
+								CaracterÃ­sticas de construcciÃ³n
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
@@ -321,7 +321,7 @@ export default function FormularioRegistrarProspecto({
 					<Card className='border-border bg-card shadow-none'>
 						<CardHeader className='pb-2 pt-3'>
 							<CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
-								Información para evaluación del seguro
+								InformaciÃ³n para evaluaciÃ³n del seguro
 							</CardTitle>
 						</CardHeader>
 						<CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>

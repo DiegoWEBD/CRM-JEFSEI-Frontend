@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo } from 'react'
 import { ChevronDown } from 'lucide-react'
@@ -29,10 +29,10 @@ function textoPlazoVencimientoRelativo(
   const dias = calendarioDiffDias(hoy, vd)
   if (dias < 0) {
     const a = Math.abs(dias)
-    return `vencida hace ${a} ${a === 1 ? 'día' : 'días'}`
+    return `vencida hace ${a} ${a === 1 ? 'dÃ­a' : 'dÃ­as'}`
   }
   if (dias === 0) return 'vence hoy'
-  return `vence en ${dias} ${dias === 1 ? 'día' : 'días'}`
+  return `vence en ${dias} ${dias === 1 ? 'dÃ­a' : 'dÃ­as'}`
 }
 
 function formatFechaCelda(iso: string) {
@@ -78,7 +78,7 @@ export default function VencimientoCell({
 
   if (!vencimientoMasProximo || opciones.length === 0) {
     return (
-      <span className='text-[11px] text-muted-foreground'>—</span>
+      <span className='text-sm text-muted-foreground'>â€”</span>
     )
   }
 
@@ -92,16 +92,16 @@ export default function VencimientoCell({
   const resumen = (
     <div className='flex min-w-0 flex-1 items-start gap-1'>
       <div className='min-w-0 flex-1 space-y-0.5'>
-        <p className='line-clamp-2 text-[11px] leading-snug text-foreground'>
+        <p className='line-clamp-2 text-sm leading-snug text-foreground'>
           <span className='font-medium'>{principal.company}</span>
-          <span className='text-muted-foreground'> · {lineaPlazo}</span>
+          <span className='text-muted-foreground'> Â· {lineaPlazo}</span>
         </p>
-        <p className='tabular-nums text-[11px] text-muted-foreground'>
+        <p className='tabular-nums text-sm text-muted-foreground'>
           {formatFechaCelda(principal.fecha_vencimiento)}
         </p>
-        <p className='text-[10px] text-muted-foreground/90'>
+        <p className='text-xs text-muted-foreground/90'>
           {opciones.length}{' '}
-          {opciones.length === 1 ? 'opción cotizada' : 'opciones cotizadas'}
+          {opciones.length === 1 ? 'opciÃ³n cotizada' : 'opciones cotizadas'}
         </p>
       </div>
       {varias ? (
@@ -137,8 +137,8 @@ export default function VencimientoCell({
         className='w-80 max-w-[min(92vw,20rem)] p-0 shadow-md'
       >
         <div className='max-h-[min(46vh,280px)] overflow-y-auto p-2'>
-          <p className='px-1 pb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
-            {varias ? 'Opciones cotizadas' : 'Cotización'}
+          <p className='px-1 pb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+            {varias ? 'Opciones cotizadas' : 'CotizaciÃ³n'}
           </p>
           <ul className='space-y-1.5'>
             {opciones.map((op) => {
@@ -152,15 +152,15 @@ export default function VencimientoCell({
                   className='rounded-md border border-border/50 bg-card px-2 py-1.5'
                 >
                   <div className='flex flex-wrap items-start justify-between gap-x-2 gap-y-1'>
-                    <p className='min-w-0 flex-1 text-[11px] leading-snug text-foreground'>
+                    <p className='min-w-0 flex-1 text-sm leading-snug text-foreground'>
                       <span className='font-medium'>{op.company}</span>
-                      <span className='text-muted-foreground'> · {plazo}</span>
+                      <span className='text-muted-foreground'> Â· {plazo}</span>
                     </p>
                     <div className='shrink-0'>
                       {estadoVencimiento && (
                         <Badge
                           variant={VENCIMIENTO_VARIANT[estadoVencimiento]}
-                          className='text-[10px] font-medium'
+                          className='text-xs font-medium'
                         >
                           {estadoVencimiento === 'vigente' && 'Vigente'}
                           {estadoVencimiento === 'por_vencer' && 'Por vencer'}
@@ -169,7 +169,7 @@ export default function VencimientoCell({
                       )}
                     </div>
                   </div>
-                  <p className='mt-0.5 tabular-nums text-[11px] text-muted-foreground'>
+                  <p className='mt-0.5 tabular-nums text-sm text-muted-foreground'>
                     {formatFechaCelda(op.fecha_vencimiento)}
                   </p>
                 </li>

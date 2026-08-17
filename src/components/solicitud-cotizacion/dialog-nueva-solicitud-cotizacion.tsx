@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useFormik } from 'formik'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
@@ -87,7 +87,7 @@ export default function DialogNuevaSolicitudCotizacion({
   function validar(values: DialogNuevaSolicitudFormValues) {
     const errors: Record<string, string> = {}
     if (!tipoPredefinido && !values.lineaSeguro) {
-      errors.lineaSeguro = 'Debe seleccionar una línea de seguro'
+      errors.lineaSeguro = 'Debe seleccionar una lÃ­nea de seguro'
     }
     const campos = camposSolicitudParaLinea(tipoCliente, values.lineaSeguro)
     for (const campo of campos) {
@@ -214,14 +214,14 @@ export default function DialogNuevaSolicitudCotizacion({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-h-[min(90vh,720px)] max-w-md gap-4 overflow-y-auto'>
         <DialogHeader className='space-y-0'>
-          <DialogTitle>Solicitud de cotización</DialogTitle>
+          <DialogTitle>Solicitud de cotizaciÃ³n</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={formik.handleSubmit} className='space-y-3'>
           <div className='space-y-1'>
             <Label className='text-xs text-muted-foreground'>Cliente</Label>
             <p className='rounded-md border border-border bg-muted/15 px-3 py-2 text-sm font-medium text-foreground'>
-              {nombreCliente.trim() || '—'}
+              {nombreCliente.trim() || 'â€”'}
             </p>
           </div>
 
@@ -234,13 +234,13 @@ export default function DialogNuevaSolicitudCotizacion({
 
           {!tipoPredefinido && (
             <div className='space-y-1.5'>
-              <Label className='text-xs'>Línea de seguro</Label>
+              <Label className='text-xs'>LÃ­nea de seguro</Label>
               <Select
                 value={formik.values.lineaSeguro || '__none__'}
                 onValueChange={handleLineaChange}
               >
                 <SelectTrigger className='h-9 w-full text-sm shadow-none'>
-                  <SelectValue placeholder='Seleccione línea de seguro' />
+                  <SelectValue placeholder='Seleccione lÃ­nea de seguro' />
                 </SelectTrigger>
                 <SelectContent>
                   {lineasOpciones.map((l) => (
@@ -259,7 +259,7 @@ export default function DialogNuevaSolicitudCotizacion({
           {esAccidentesPersonales ? (
             <div className='space-y-2 rounded-md border border-border/70 bg-muted/10 p-3'>
               <div className='flex items-center justify-between'>
-                <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+                <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                   Actividades aseguradas
                 </p>
                 <Button
@@ -288,7 +288,7 @@ export default function DialogNuevaSolicitudCotizacion({
                         }
                       />
                       {formik.errors[`actividades.${index}.actividad` as keyof typeof formik.errors] && (
-                        <p className='text-[10px] text-destructive'>
+                        <p className='text-xs text-destructive'>
                           {formik.errors[`actividades.${index}.actividad` as keyof typeof formik.errors] as string}
                         </p>
                       )}
@@ -298,14 +298,14 @@ export default function DialogNuevaSolicitudCotizacion({
                         type='number'
                         min={1}
                         className='h-8 text-xs'
-                        placeholder='N° asegurados'
+                        placeholder='NÂ° asegurados'
                         value={act.numero_asegurados}
                         onChange={(e) =>
                           formik.setFieldValue(`actividades.${index}.numero_asegurados`, e.target.value)
                         }
                       />
                       {formik.errors[`actividades.${index}.numero_asegurados` as keyof typeof formik.errors] && (
-                        <p className='text-[10px] text-destructive'>
+                        <p className='text-xs text-destructive'>
                           {formik.errors[`actividades.${index}.numero_asegurados` as keyof typeof formik.errors] as string}
                         </p>
                       )}
@@ -328,8 +328,8 @@ export default function DialogNuevaSolicitudCotizacion({
 
           {camposEstandar.length > 0 ? (
             <div className='space-y-3 rounded-md border border-border/70 bg-muted/10 p-3'>
-              <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
-                Datos de la línea
+              <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+                Datos de la lÃ­nea
               </p>
               {camposEstandar.map((campo) => {
                 const fieldKey = campo.key as keyof DialogNuevaSolicitudFormValues
@@ -349,7 +349,7 @@ export default function DialogNuevaSolicitudCotizacion({
                       name={campo.key}
                     />
                     {formik.errors[fieldKey] && formik.touched[fieldKey] && (
-                      <p className='text-[10px] text-destructive'>
+                      <p className='text-xs text-destructive'>
                         {formik.errors[fieldKey] as string}
                       </p>
                     )}
@@ -367,7 +367,7 @@ export default function DialogNuevaSolicitudCotizacion({
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               name='observaciones'
-              placeholder='Indicación breve para la solicitud…'
+              placeholder='IndicaciÃ³n breve para la solicitudâ€¦'
             />
           </div>
 

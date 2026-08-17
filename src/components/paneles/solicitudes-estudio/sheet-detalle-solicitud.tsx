@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
@@ -31,7 +31,7 @@ function FilaDetalle({
 }) {
 	return (
 		<div className='space-y-0.5'>
-			<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 				{label}
 			</p>
 			<div className='text-sm text-foreground'>{children}</div>
@@ -123,7 +123,7 @@ export default function SheetDetalleSolicitud({
 								)}
 
 								{full.tipo === 'vida_guardia' && full.numero_guardias != null ? (
-									<FilaDetalle label='Número de guardias'>
+									<FilaDetalle label='NÃºmero de guardias'>
 										{full.numero_guardias}
 									</FilaDetalle>
 								) : null}
@@ -144,7 +144,7 @@ export default function SheetDetalleSolicitud({
 								full.actividades &&
 								full.actividades.length > 0 ? (
 									<div className='space-y-1.5'>
-										<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+										<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 											Actividades aseguradas
 										</p>
 										<div className='space-y-1'>
@@ -174,7 +174,7 @@ export default function SheetDetalleSolicitud({
 											</FilaDetalle>
 										) : null}
 										{full.limite != null ? (
-											<FilaDetalle label='Límite RC'>
+											<FilaDetalle label='LÃ­mite RC'>
 												{full.limite.toLocaleString('es-CL')}
 											</FilaDetalle>
 										) : null}
@@ -198,7 +198,7 @@ export default function SheetDetalleSolicitud({
 						</FilaDetalle>
 
 						{full?.recotizacion ? (
-							<FilaDetalle label='Motivo de recotización'>
+							<FilaDetalle label='Motivo de recotizaciÃ³n'>
 								{full.motivo_recotizacion || (
 									<span className='italic text-muted-foreground'>Sin motivo registrado</span>
 								)}
@@ -208,7 +208,7 @@ export default function SheetDetalleSolicitud({
 						<Separator />
 
 						<div className='space-y-2'>
-							<h4 className='text-sm font-semibold'>Información faltante</h4>
+							<h4 className='text-sm font-semibold'>InformaciÃ³n faltante</h4>
 							{solicitud.campos_faltantes.length > 0 ? (
 								<div className='space-y-1.5'>
 									{solicitud.campos_faltantes.map(campo => (
@@ -225,7 +225,7 @@ export default function SheetDetalleSolicitud({
 								</div>
 							) : (
 								<p className='text-sm text-muted-foreground'>
-									No hay información faltante.
+									No hay informaciÃ³n faltante.
 								</p>
 							)}
 						</div>

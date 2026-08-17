@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import {
 	Building2,
@@ -46,7 +46,7 @@ const SECCIONES: NavSection[] = [
 		],
 	},
 	{
-		titulo: 'Administración',
+		titulo: 'AdministraciÃ³n',
 		items: [
 			{ href: '/personal', icono: Group, titulo: 'Personal', visible: r => r.some(c => ROLES_GERENTE.includes(c)) },
 			{ href: '/administradores', icono: Building2, titulo: 'Administradores', visible: r => r.length > 0 },
@@ -60,14 +60,14 @@ type NavProps = {
 
 const Nav = ({ roles }: NavProps) => {
 	return (
-		<nav aria-label='Navegación principal' className='px-2'>
+		<nav aria-label='NavegaciÃ³n principal' className='px-2'>
 			<ul className='flex flex-col gap-1'>
 				{SECCIONES.map(seccion => {
 					const items = seccion.items.filter(i => i.visible(roles))
 					if (items.length === 0) return null
 					return (
 						<li key={seccion.titulo} className='flex flex-col gap-0.5'>
-							<p className='px-3 pt-4 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/80 select-none group-data-[mode=collapsed]/sidebar:hidden'>
+							<p className='px-3 pt-4 pb-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground/80 select-none group-data-[mode=collapsed]/sidebar:hidden'>
 								{seccion.titulo}
 							</p>
 							{items.map(item => (

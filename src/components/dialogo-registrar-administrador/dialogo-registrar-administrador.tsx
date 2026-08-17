@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useFormik } from 'formik'
 import { Building2, Loader2 } from 'lucide-react'
@@ -32,7 +32,7 @@ type FormValues = {
 
 const validationSchema = Yup.object({
 	nombre_administrador: Yup.string().required('El nombre es obligatorio'),
-	correo: Yup.string().email('Correo inválido').nullable(),
+	correo: Yup.string().email('Correo invÃ¡lido').nullable(),
 })
 
 export default function DialogoRegistrarAdministrador({
@@ -98,7 +98,7 @@ export default function DialogoRegistrarAdministrador({
 							{...formik.getFieldProps('nombre_administrador')}
 						/>
 						{formik.touched.nombre_administrador && formik.errors.nombre_administrador && (
-							<p className='text-[10px] text-destructive'>{formik.errors.nombre_administrador}</p>
+							<p className='text-xs text-destructive'>{formik.errors.nombre_administrador}</p>
 						)}
 					</div>
 
@@ -112,7 +112,7 @@ export default function DialogoRegistrarAdministrador({
 						</div>
 
 						<div className='space-y-1.5'>
-							<Label className='text-xs'>Teléfono</Label>
+							<Label className='text-xs'>TelÃ©fono</Label>
 							<Input
 								className='h-9 text-sm shadow-none'
 								{...formik.getFieldProps('telefono')}
@@ -128,12 +128,12 @@ export default function DialogoRegistrarAdministrador({
 							{...formik.getFieldProps('correo')}
 						/>
 						{formik.touched.correo && formik.errors.correo && (
-							<p className='text-[10px] text-destructive'>{formik.errors.correo}</p>
+							<p className='text-xs text-destructive'>{formik.errors.correo}</p>
 						)}
 					</div>
 
 					{mutation.isError && (
-						<p className='text-[10px] text-destructive' role='alert'>
+						<p className='text-xs text-destructive' role='alert'>
 							{mutation.error instanceof Error
 								? mutation.error.message
 								: 'Error al crear administrador'}

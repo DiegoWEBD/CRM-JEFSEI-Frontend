@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -82,7 +82,7 @@ export default function DialogCrearRecordatorio({
     initialValues: parsearInitialValues(),
     enableReinitialize: true,
     validationSchema: Yup.object({
-      titulo: Yup.string().required('El título es obligatorio'),
+      titulo: Yup.string().required('El tÃ­tulo es obligatorio'),
       fecha: Yup.string().required('La fecha es obligatoria'),
       hora: Yup.string().required('La hora es obligatoria'),
       prioridad: Yup.string()
@@ -161,7 +161,7 @@ export default function DialogCrearRecordatorio({
           <DialogDescription>
             {esEdicion
               ? 'Modifica los datos del recordatorio.'
-              : 'Asocia recordatorios comerciales al calendario del día.'}
+              : 'Asocia recordatorios comerciales al calendario del dÃ­a.'}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={formik.handleSubmit}>
@@ -190,14 +190,14 @@ export default function DialogCrearRecordatorio({
             ) : null}
 
             <Input
-              placeholder='Título'
+              placeholder='TÃ­tulo'
               name='titulo'
               value={formik.values.titulo}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
             {formik.touched.titulo && formik.errors.titulo && (
-              <p className='text-[10px] text-destructive'>
+              <p className='text-xs text-destructive'>
                 {formik.errors.titulo}
               </p>
             )}
@@ -249,7 +249,7 @@ export default function DialogCrearRecordatorio({
                   <SelectItem value='correo'>Correo</SelectItem>
                   <SelectItem value='whatsapp'>Mensaje</SelectItem>
                   <SelectItem value='visita'>Visita</SelectItem>
-                  <SelectItem value='reunion'>Reunión</SelectItem>
+                  <SelectItem value='reunion'>ReuniÃ³n</SelectItem>
                   <SelectItem value='otro'>General</SelectItem>
                 </SelectContent>
               </Select>
@@ -274,7 +274,7 @@ export default function DialogCrearRecordatorio({
             </Button>
             <Button type='submit' size='sm' disabled={crearMutation.isPending || actualizarMutation.isPending}>
               {crearMutation.isPending || actualizarMutation.isPending
-                ? 'Guardando…'
+                ? 'Guardandoâ€¦'
                 : esEdicion
                   ? 'Actualizar'
                   : 'Guardar'}

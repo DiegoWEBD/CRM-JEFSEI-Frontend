@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Campo from '@/components/forms/campo/campo'
 import SiNoSelect from '@/components/forms/si-no-select/si-no-select'
@@ -85,7 +85,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='Año de construcción'
+          label='AÃ±o de construcciÃ³n'
           labelClassName={classPendienteLabel(inputPendiente(formik.values.year_construccion))}
         >
           <Input
@@ -98,7 +98,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='Materialidad principal de construcción'
+          label='Materialidad principal de construcciÃ³n'
           labelClassName={classPendienteLabel(inputPendiente(formik.values.materialidad))}
         >
           <Select
@@ -134,7 +134,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='Clasificación preliminar incendio'
+          label='ClasificaciÃ³n preliminar incendio'
           labelClassName={classPendienteLabel(
             inputPendiente(formik.values.clasificacion_preliminar_incendio),
           )}
@@ -150,13 +150,13 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
                     formik.values
                       .clasificacion_preliminar_incendio as ClasificacionPreliminarIncendio
                   ]
-                : '—'
+                : 'â€”'
             }
-            aria-label='Clasificación preliminar incendio (calculada automáticamente)'
+            aria-label='ClasificaciÃ³n preliminar incendio (calculada automÃ¡ticamente)'
           />
-          <p className='mt-1 text-[10px] leading-snug text-muted-foreground'>
-            Valor preliminar según materialidad. La validación final corresponde a
-            evaluación/proyectos.
+          <p className='mt-1 text-xs leading-snug text-muted-foreground'>
+            Valor preliminar segÃºn materialidad. La validaciÃ³n final corresponde a
+            evaluaciÃ³n/proyectos.
           </p>
         </Campo>
 
@@ -187,7 +187,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
     return (
       <>
         <Campo
-          label='Total m² construidos'
+          label='Total mÂ² construidos'
           labelClassName={classPendienteLabel(inputPendiente(formik.values.metros_cuadrados))}
         >
           <Input
@@ -200,7 +200,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='Valor UF / m² con IVA'
+          label='Valor UF / mÂ² con IVA'
           labelClassName={classPendienteLabel(
             inputPendiente(formik.values.uf_por_metro_cuadrado),
           )}
@@ -215,7 +215,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='% depreciación'
+          label='% depreciaciÃ³n'
           labelClassName={classPendienteLabel(
             inputPendiente(formik.values.porcentaje_depreciacion),
           )}
@@ -245,7 +245,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='Número de pisos'
+          label='NÃºmero de pisos'
           labelClassName={classPendienteLabel(inputPendiente(formik.values.numero_pisos))}
         >
           <Input
@@ -258,7 +258,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='Número de torres'
+          label='NÃºmero de torres'
           labelClassName={classPendienteLabel(inputPendiente(formik.values.numero_torres))}
         >
           <Input
@@ -286,7 +286,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         </Campo>
 
         <Campo
-          label='Cantidad de subterráneos'
+          label='Cantidad de subterrÃ¡neos'
           labelClassName={classPendienteLabel(
             inputPendiente(formik.values.cantidad_subterraneos),
           )}
@@ -309,7 +309,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
         />
 
         <Campo
-          label='Ubicación de la piscina'
+          label='UbicaciÃ³n de la piscina'
           labelClassName={classPendienteLabel(ubicacionPiscinaPendiente)}
         >
           <Select

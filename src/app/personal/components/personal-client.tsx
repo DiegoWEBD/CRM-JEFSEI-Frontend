@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { Input } from '@/components/input'
@@ -99,7 +99,7 @@ function CardUsuario({
 								<Badge
 									key={rol.codigo}
 									variant='outline'
-									className='border-border bg-muted/40 text-[9px] font-medium text-muted-foreground'
+									className='border-border bg-muted/40 text-xs font-medium text-muted-foreground'
 								>
 									{rol.nombre}
 								</Badge>
@@ -130,7 +130,7 @@ function CardUsuario({
 						<Badge
 							variant='outline'
 							className={cn(
-								'text-[9px] font-medium',
+								'text-xs font-medium',
 								usuario.habilitado
 									? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-700'
 									: 'border-destructive/35 bg-destructive/10 text-destructive',
@@ -248,7 +248,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 			<div className='relative'>
 				<Search className='absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
 				<Input
-					placeholder='Buscar por nombre, rut, correo, teléfono, sucursal o rol...'
+					placeholder='Buscar por nombre, rut, correo, telÃ©fono, sucursal o rol...'
 					className='h-9 pl-9 text-sm shadow-none'
 					value={busqueda}
 					onChange={handleChange}
@@ -261,7 +261,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 						<Building2 className='size-10 text-muted-foreground/40' />
 						<p className='text-sm text-muted-foreground'>
 							{busqueda.trim()
-								? 'No se encontraron usuarios que coincidan con la búsqueda.'
+								? 'No se encontraron usuarios que coincidan con la bÃºsqueda.'
 								: 'No hay usuarios registrados.'}
 						</p>
 					</CardContent>
@@ -287,23 +287,23 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 						<Table className='[&_td]:whitespace-nowrap [&_th]:whitespace-nowrap'>
 							<TableHeader>
 								<TableRow className='hover:bg-transparent'>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Nombre
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Rol
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Sucursal
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Contacto
 									</TableHead>
-									<TableHead className='text-[10px] font-semibold uppercase text-muted-foreground'>
+									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
 										Estado
 									</TableHead>
-									<TableHead className='text-right text-[10px] font-semibold uppercase text-muted-foreground'>
-										Acción
+									<TableHead className='text-right text-xs font-semibold uppercase text-muted-foreground'>
+										AcciÃ³n
 									</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -315,7 +315,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 												<InicialesUsuario nombre={usuario.nombre} />
 												<div>
 													<div className='font-medium'>{usuario.nombre}</div>
-													<div className='text-[10px] text-muted-foreground'>
+													<div className='text-xs text-muted-foreground'>
 														{usuario.rut}
 													</div>
 												</div>
@@ -327,7 +327,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 													<Badge
 														key={rol.codigo}
 														variant='outline'
-														className='border-border bg-muted/40 text-[9px] font-medium text-muted-foreground'
+														className='border-border bg-muted/40 text-xs font-medium text-muted-foreground'
 													>
 														{rol.nombre}
 													</Badge>
@@ -335,21 +335,21 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 											</div>
 										</TableCell>
 										<TableCell className='text-muted-foreground'>
-											{usuario.sucursal || '—'}
+											{usuario.sucursal || 'â€”'}
 										</TableCell>
 										<TableCell>
 											<div className='text-muted-foreground'>
-												{usuario.correo || '—'}
+												{usuario.correo || 'â€”'}
 											</div>
-											<div className='text-[10px] text-muted-foreground'>
-												{usuario.telefono || '—'}
+											<div className='text-xs text-muted-foreground'>
+												{usuario.telefono || 'â€”'}
 											</div>
 										</TableCell>
 										<TableCell>
 											<Badge
 												variant='outline'
 												className={cn(
-													'text-[9px] font-medium',
+													'text-xs font-medium',
 													usuario.habilitado
 														? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-700'
 														: 'border-destructive/35 bg-destructive/10 text-destructive',
@@ -363,7 +363,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 												<Button
 													size='sm'
 													variant='outline'
-													className='h-7 text-[10px]'
+													className='h-7 text-xs'
 													onClick={() => setUsuarioDetalle(usuario)}
 												>
 													Ver detalle
@@ -372,7 +372,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 													<Button
 														size='sm'
 														variant='destructive'
-														className='h-7 text-[10px]'
+														className='h-7 text-xs'
 														onClick={() => setUsuarioAEliminar(usuario)}
 													>
 														Eliminar
@@ -405,8 +405,8 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 			<ConfirmDialog
 				open={usuarioAEliminar !== null}
 				onOpenChange={() => setUsuarioAEliminar(null)}
-				title='¿Eliminar usuario?'
-				description={`${usuarioAEliminar?.nombre ?? ''} no podrá iniciar sesión.`}
+				title='Â¿Eliminar usuario?'
+				description={`${usuarioAEliminar?.nombre ?? ''} no podrÃ¡ iniciar sesiÃ³n.`}
 				confirmText='Eliminar'
 				onConfirm={() => {
 					if (usuarioAEliminar) {
@@ -477,16 +477,16 @@ function DialogRegistrarUsuario({
 			.required('El RUT es obligatorio')
 			.test(
 				'rut-valido',
-				'El RUT ingresado no es válido',
+				'El RUT ingresado no es vÃ¡lido',
 				v => !v || rutChilenoEsValido(v),
 			),
-		telefono: Yup.string().matches(/^\d{8}$/, 'Debe tener 8 dígitos'),
+		telefono: Yup.string().matches(/^\d{8}$/, 'Debe tener 8 dÃ­gitos'),
 		idSucursal: Yup.number()
 			.typeError('Debe seleccionar una sucursal')
 			.required('Debe seleccionar una sucursal'),
 		password: Yup.string()
-			.required('La contraseña es obligatoria')
-			.min(6, 'Mínimo 6 caracteres'),
+			.required('La contraseÃ±a es obligatoria')
+			.min(6, 'MÃ­nimo 6 caracteres'),
 		roles: Yup.array().min(1, 'Debe seleccionar al menos un rol'),
 	})
 
@@ -564,7 +564,7 @@ function DialogRegistrarUsuario({
 									maxLength={14}
 								/>
 								{formik.touched.rut && formik.errors.rut && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.rut}
 									</p>
 								)}
@@ -581,7 +581,7 @@ function DialogRegistrarUsuario({
 									onBlur={formik.handleBlur}
 								/>
 								{formik.touched.nombre && formik.errors.nombre && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.nombre}
 									</p>
 								)}
@@ -600,13 +600,13 @@ function DialogRegistrarUsuario({
 								/>
 							</div>
 							<div className='space-y-1.5'>
-								<Label htmlFor='telefono-crear'>Teléfono</Label>
+								<Label htmlFor='telefono-crear'>TelÃ©fono</Label>
 								<InputTelefono
 									value={formik.values.telefono || ''}
 									onChange={v => formik.setFieldValue('telefono', v)}
 								/>
 								{formik.touched.telefono && formik.errors.telefono && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.telefono}
 									</p>
 								)}
@@ -638,19 +638,19 @@ function DialogRegistrarUsuario({
 									</SelectContent>
 								</Select>
 								{formik.touched.idSucursal && formik.errors.idSucursal && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.idSucursal}
 									</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
-								<Label htmlFor='password-crear'>Contraseña *</Label>
+								<Label htmlFor='password-crear'>ContraseÃ±a *</Label>
 								<div className='relative'>
 								<Input
 									id='password-crear'
 									type={showPassword ? 'text' : 'password'}
 									className='h-9 text-sm shadow-none pr-9'
-									placeholder='••••••••'
+									placeholder='â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢'
 									name='password'
 									value={formik.values.password}
 									onChange={formik.handleChange}
@@ -670,7 +670,7 @@ function DialogRegistrarUsuario({
 									</button>
 								</div>
 								{formik.touched.password && formik.errors.password && (
-									<p className='text-[10px] text-destructive'>
+									<p className='text-xs text-destructive'>
 										{formik.errors.password}
 									</p>
 								)}
@@ -699,7 +699,7 @@ function DialogRegistrarUsuario({
 								))}
 							</div>
 							{formik.touched.roles && formik.errors.roles && (
-								<p className='text-[10px] text-destructive'>
+								<p className='text-xs text-destructive'>
 									{formik.errors.roles}
 								</p>
 							)}
@@ -720,7 +720,7 @@ function DialogRegistrarUsuario({
 							/>
 							</div>
 							<div className='space-y-1.5'>
-								<Label htmlFor='comision-crear'>Comisión %</Label>
+								<Label htmlFor='comision-crear'>ComisiÃ³n %</Label>
 							<Input
 								id='comision-crear'
 								type='number'
@@ -736,7 +736,7 @@ function DialogRegistrarUsuario({
 							/>
 								{formik.touched.porcentajeComision &&
 									formik.errors.porcentajeComision && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.porcentajeComision}
 										</p>
 									)}
@@ -799,15 +799,15 @@ function DialogEditarUsuario({
 
 	const validationSchema = Yup.object({
 		nombre: Yup.string().required('El nombre es obligatorio'),
-		correo: Yup.string().email('Correo inválido').nullable(),
-		telefono: Yup.string().matches(/^\d{0,8}$/, 'Debe tener hasta 8 dígitos'),
+		correo: Yup.string().email('Correo invÃ¡lido').nullable(),
+		telefono: Yup.string().matches(/^\d{0,8}$/, 'Debe tener hasta 8 dÃ­gitos'),
 		idSucursal: Yup.number()
 			.typeError('Debe seleccionar una sucursal')
 			.required('Debe seleccionar una sucursal'),
 		roles: Yup.array().min(1, 'Debe seleccionar al menos un rol'),
 		password: Yup.string().test(
 			'min',
-			'Mínimo 6 caracteres',
+			'MÃ­nimo 6 caracteres',
 			v => !v || v.length >= 6,
 		),
 		porcentajeComision: Yup.string().test(
@@ -882,7 +882,7 @@ function DialogEditarUsuario({
 					<DialogDescription className='text-sm text-muted-foreground'>
 						{puedeEditar
 							? 'Modifica los datos del usuario.'
-							: 'Información del usuario.'}
+							: 'InformaciÃ³n del usuario.'}
 					</DialogDescription>
 				</div>
 
@@ -901,7 +901,7 @@ function DialogEditarUsuario({
 						<Card className='border-border bg-card shadow-none'>
 							<CardHeader className='pb-2 pt-3'>
 								<CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
-									Información general
+									InformaciÃ³n general
 								</CardTitle>
 							</CardHeader>
 							<CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
@@ -915,7 +915,7 @@ function DialogEditarUsuario({
 										className='h-9 text-sm shadow-none'
 									/>
 									{formik.touched.nombre && formik.errors.nombre && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.nombre}
 										</p>
 									)}
@@ -939,30 +939,30 @@ function DialogEditarUsuario({
 										className='h-9 text-sm shadow-none'
 									/>
 									{formik.touched.correo && formik.errors.correo && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.correo}
 										</p>
 									)}
 								</Campo>
-								<Campo label='Teléfono'>
+								<Campo label='TelÃ©fono'>
 									<InputTelefono
 										value={formik.values.telefono}
 										onChange={v => formik.setFieldValue('telefono', v)}
 										disabled={!puedeEditar}
 									/>
 									{formik.touched.telefono && formik.errors.telefono && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.telefono}
 										</p>
 									)}
 								</Campo>
-								<Campo label='Contraseña'>
+								<Campo label='ContraseÃ±a'>
 									<div className='relative'>
 										<Input
 											name='password'
 											type={showPassword ? 'text' : 'password'}
 											className='h-9 pr-9 text-sm shadow-none'
-											placeholder='••••••••'
+											placeholder='â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢'
 											value={formik.values.password}
 											onChange={formik.handleChange}
 											onBlur={formik.handleBlur}
@@ -982,7 +982,7 @@ function DialogEditarUsuario({
 										</button>
 									</div>
 									{formik.touched.password && formik.errors.password && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.password}
 										</p>
 									)}
@@ -1011,7 +1011,7 @@ function DialogEditarUsuario({
 										</SelectContent>
 									</Select>
 									{formik.touched.idSucursal && formik.errors.idSucursal && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.idSucursal}
 										</p>
 									)}
@@ -1022,7 +1022,7 @@ function DialogEditarUsuario({
 						<Card className='border-border bg-card shadow-none'>
 							<CardHeader className='pb-2 pt-3'>
 								<CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
-									Roles y configuración
+									Roles y configuraciÃ³n
 								</CardTitle>
 							</CardHeader>
 							<CardContent className='space-y-3 pb-4'>
@@ -1044,7 +1044,7 @@ function DialogEditarUsuario({
 										))}
 									</div>
 									{formik.touched.roles && formik.errors.roles && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.roles}
 										</p>
 									)}
@@ -1063,7 +1063,7 @@ function DialogEditarUsuario({
 											className='h-9 text-sm shadow-none'
 										/>
 									</Campo>
-									<Campo label='Comisión %'>
+									<Campo label='ComisiÃ³n %'>
 										<Input
 											name='porcentajeComision'
 											type='number'
@@ -1079,7 +1079,7 @@ function DialogEditarUsuario({
 										/>
 										{formik.touched.porcentajeComision &&
 											formik.errors.porcentajeComision && (
-												<p className='text-[10px] text-destructive'>
+												<p className='text-xs text-destructive'>
 													{formik.errors.porcentajeComision}
 												</p>
 											)}

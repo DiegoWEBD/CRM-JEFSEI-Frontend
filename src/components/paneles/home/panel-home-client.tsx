@@ -285,7 +285,7 @@ function TarjetaEnlace({
 						<Icono className='size-5' aria-hidden />
 					</span>
 					<div className='min-w-0 flex-1'>
-						<h2 className='text-sm font-semibold leading-snug text-foreground sm:text-[15px]'>
+						<h2 className='text-sm font-semibold leading-snug text-foreground sm:text-base'>
 							{titulo}
 						</h2>
 						<p className='mt-0.5 text-xs leading-snug text-muted-foreground'>

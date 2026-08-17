@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import type { LucideIcon } from 'lucide-react'
 import { Card, CardContent } from '@/components/card'
@@ -19,7 +19,7 @@ export function CommercialActivityCountCard({
     <Card className={cn('border-border bg-card shadow-none', className)}>
       <CardContent className='flex items-center justify-between gap-2 p-2.5'>
         <div className='min-w-0'>
-          <p className='text-[10px] font-medium text-muted-foreground'>{label}</p>
+          <p className='text-xs font-medium text-muted-foreground'>{label}</p>
           <p className='text-lg font-semibold tabular-nums tracking-tight text-foreground'>
             {cantidad.toLocaleString('es-CL')}
           </p>

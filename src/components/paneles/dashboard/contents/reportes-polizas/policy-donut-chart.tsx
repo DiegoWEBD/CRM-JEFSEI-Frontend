@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo, useState } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
@@ -91,7 +91,7 @@ export default function PolicyDonutChart({
                   <p className='text-2xl font-bold tabular-nums leading-none tracking-tight sm:text-[1.75rem]'>
                     {total.toLocaleString('es-CL')}
                   </p>
-                  <p className='mt-1 text-[8px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/75'>
+                  <p className='mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground/75'>
                     Total
                   </p>
                 </div>
@@ -109,7 +109,7 @@ export default function PolicyDonutChart({
                       setSeleccionado((prev) => (prev === entry.name ? null : entry.name))
                     }
                     className={cn(
-                      'inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] transition-all',
+                      'inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-xs transition-all',
                       isSelected
                         ? 'text-white shadow-sm'
                         : 'border-transparent bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground',

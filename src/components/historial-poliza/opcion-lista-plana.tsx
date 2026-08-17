@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Skeleton } from '@/components/skeleton'
 import { HistorialEtapaResumen } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-etapa-resumen'
@@ -75,7 +75,7 @@ export function OpcionListaPlana({ historial, cargando }: OpcionListaPlanaProps)
           <span className='flex-1 text-muted-foreground'>
             {item.estado}
           </span>
-          <span className='hidden rounded-sm border border-border bg-muted/50 px-1.5 py-0.5 text-[10px] text-muted-foreground sm:inline-block'>
+          <span className='hidden rounded-sm border border-border bg-muted/50 px-1.5 py-0.5 text-xs text-muted-foreground sm:inline-block'>
             {item.etapa}
           </span>
         </div>

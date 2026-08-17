@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/input'
@@ -74,7 +74,7 @@ export default function FiltrosSolicitudesEstudio({
 				/>
 				<Input
 					className='h-9 pl-8 text-xs shadow-none'
-					placeholder='Buscar por cliente, línea de seguro o ejecutivo…'
+					placeholder='Buscar por cliente, lÃ­nea de seguro o ejecutivoâ€¦'
 					value={filtros.busqueda}
 					onChange={e => actualizar({ busqueda: e.target.value })}
 				/>
@@ -154,11 +154,11 @@ export default function FiltrosSolicitudesEstudio({
 					size='sm'
 					className='h-9 w-[min(100%,10rem)] text-xs shadow-none'
 				>
-					<SelectValue placeholder='Línea' />
+					<SelectValue placeholder='LÃ­nea' />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectItem value={TODOS} className='text-xs'>
-						Línea: todas
+						LÃ­nea: todas
 					</SelectItem>
 					{opcionesLinea.map(l => (
 						<SelectItem key={l} value={l} className='text-xs'>
@@ -181,7 +181,7 @@ export default function FiltrosSolicitudesEstudio({
 				</Button>
 			) : null}
 
-			<span className='text-[11px] text-muted-foreground'>
+			<span className='text-sm text-muted-foreground'>
 				Mostrando {filtrados} de {total} solicitudes
 			</span>
 		</div>

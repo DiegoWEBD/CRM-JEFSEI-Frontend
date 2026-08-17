@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/solicitud-cotizacion-resumen'
 import {
@@ -32,9 +32,9 @@ function resolverEstadoBandeja(
 }
 
 const headClass =
-	'h-9 whitespace-nowrap border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wide text-muted-foreground'
+	'h-9 whitespace-nowrap border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-sm font-medium uppercase tracking-wide text-muted-foreground'
 
-const cellClass = 'px-3 py-2.5 align-middle text-[13px]'
+const cellClass = 'px-3 py-2.5 align-middle text-sm'
 
 type TablaSolicitudesEstudioProps = {
 	solicitudes: SolicitudCotizacionResumen[]
@@ -92,13 +92,13 @@ export default function TablaSolicitudesEstudio({
 									<BadgeEstadoSolicitud estado={estado} />
 									{s.recotizacion && (
 										<Badge variant='pastel-fuchsia'>
-											Recotización
+											RecotizaciÃ³n
 										</Badge>
 									)}
 									<BadgePrioridad prioridad={s.prioridad} />
 								</div>
 
-								<div className='mt-2 flex items-center justify-between text-[11px] text-muted-foreground'>
+								<div className='mt-2 flex items-center justify-between text-sm text-muted-foreground'>
 									<span>{s.ejecutivo_comercial}</span>
 									<span className='tabular-nums'>
 										{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy HH:mm')}
@@ -133,7 +133,7 @@ export default function TablaSolicitudesEstudio({
 								Cliente
 							</TableHead>
 							<TableHead className={cn(headClass, 'min-w-[130px]')}>
-								Línea de seguro
+								LÃ­nea de seguro
 							</TableHead>
 							<TableHead className={cn(headClass, 'min-w-[148px]')}>
 								Estado
@@ -148,7 +148,7 @@ export default function TablaSolicitudesEstudio({
 								Prioridad
 							</TableHead>
 							<TableHead className={cn(headClass, 'min-w-[220px] text-right')}>
-								Acción
+								AcciÃ³n
 							</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -178,7 +178,7 @@ export default function TablaSolicitudesEstudio({
 										<BadgeEstadoSolicitud estado={estado} />
 										{s.recotizacion && (
 											<Badge variant='pastel-fuchsia'>
-												Recotización
+												RecotizaciÃ³n
 											</Badge>
 										)}
 									</div>
@@ -190,7 +190,7 @@ export default function TablaSolicitudesEstudio({
 									<p className='tabular-nums text-foreground/90'>
 										{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy')}
 									</p>
-									<p className='tabular-nums text-[11px] text-muted-foreground'>
+									<p className='tabular-nums text-sm text-muted-foreground'>
 										{formatearFecha(new Date(s.fecha), 'HH:mm')}
 									</p>
 								</TableCell>

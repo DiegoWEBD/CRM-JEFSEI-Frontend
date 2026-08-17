@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import { ESTADO_GENERAL_CLIENTE_BADGE, ESTADO_GENERAL_CLIENTE_LABELS, type EstadoGeneralCliente } from '@/lib/estados-cotizaciones'
@@ -69,7 +69,7 @@ export default function CardProspectosClient({
 	return (
 		<Card className='border-border bg-card shadow-none'>
 			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
-				<CardTitle primary>Búsqueda de prospectos</CardTitle>
+				<CardTitle primary>BÃºsqueda de prospectos</CardTitle>
 				<div className='flex shrink-0 flex-wrap gap-1.5'>
 					<Button
 						size='sm'
@@ -88,7 +88,7 @@ export default function CardProspectosClient({
 						aria-hidden
 					/>
 					<Input
-						placeholder='Nombre, rut, estado comercial, correo, teléfono o contacto'
+						placeholder='Nombre, rut, estado comercial, correo, telÃ©fono o contacto'
 						className='h-9 pl-9 text-sm shadow-none'
 						value={busqueda}
 						onChange={handleChange}
@@ -102,18 +102,18 @@ export default function CardProspectosClient({
 				/>
 
 				<div className='space-y-2'>
-					<p className='text-[11px] text-muted-foreground'>
+					<p className='text-sm text-muted-foreground'>
 						{filtro === 'todos' ? (
 							`Total de prospectos: ${prospectos?.length ?? 0}`
 						) : (
 							<>
 								{prospectosConBusqueda.length} cliente
-								{prospectosConBusqueda.length !== 1 ? 's' : ''} ·{' '}
+								{prospectosConBusqueda.length !== 1 ? 's' : ''} Â·{' '}
 								<span className='text-foreground'>{filtro}</span>
 							</>
 						)}
 						{busqueda.trim() && prospectosConBusqueda.length > 0
-							? ` · ${prospectosConBusqueda.length} prospecto${prospectosConBusqueda.length !== 1 ? 's' : ''} en búsqueda`
+							? ` Â· ${prospectosConBusqueda.length} prospecto${prospectosConBusqueda.length !== 1 ? 's' : ''} en bÃºsqueda`
 							: ''}
 					</p>
 					<div className='max-h-[min(52vh,420px)] space-y-2 overflow-y-auto rounded-md border border-border p-1.5'>
@@ -124,7 +124,7 @@ export default function CardProspectosClient({
 						) : prospectosConBusqueda.length === 0 ? (
 							<p className='py-6 text-center text-xs text-muted-foreground'>
 								No hay clientes con este estado
-								{busqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
+								{busqueda.trim() ? ' que coincidan con la bÃºsqueda' : ''}.
 							</p>
 						) : (
 							prospectosConBusqueda.map(prospecto => (
@@ -198,23 +198,23 @@ export default function CardProspectosClient({
 												{prospecto.nombre_riesgo}
 											</p>
 											{prospecto.ejecutivo_comercial && (
-												<p className='truncate text-[11px] leading-snug text-muted-foreground'>
+												<p className='truncate text-sm leading-snug text-muted-foreground'>
 													{prospecto.ejecutivo_comercial}
 												</p>
 											)}
 											<div className='flex flex-wrap items-center gap-1.5 pt-0.5'>
 											<Badge
 												variant={ESTADO_GENERAL_CLIENTE_BADGE[estado]}
-												className='text-[10px] font-medium'
+												className='text-xs font-medium'
 											>
 													{ESTADO_GENERAL_CLIENTE_LABELS[estado]}
 												</Badge>
-												<span className='text-[11px] text-muted-foreground'>
+												<span className='text-sm text-muted-foreground'>
 													{prospecto.linea_negocio}
 												</span>
 												{prospecto.nombre_administrador && (
-													<span className='text-[11px] text-muted-foreground'>
-														· {prospecto.nombre_administrador}
+													<span className='text-sm text-muted-foreground'>
+														Â· {prospecto.nombre_administrador}
 													</span>
 												)}
 											</div>
@@ -222,7 +222,7 @@ export default function CardProspectosClient({
 										<Button
 											size='sm'
 											variant='outline'
-											className='h-7 shrink-0 px-2.5 text-[10px]'
+											className='h-7 shrink-0 px-2.5 text-xs'
 											asChild
 										>
 											<Link href={`/prospectos/${prospecto.id}`}>

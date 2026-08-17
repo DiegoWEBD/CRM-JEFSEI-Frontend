@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
@@ -8,7 +8,7 @@ import { chartAxisTickUf, formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
 
 function truncarLabel(label: string, max = 16) {
-  return label.length > max ? `${label.slice(0, max - 1)}…` : label
+  return label.length > max ? `${label.slice(0, max - 1)}â€¦` : label
 }
 
 function TooltipBarra({
@@ -61,7 +61,7 @@ export function ProductionHorizontalBarChart({
     return (
       <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
         <CardContent className='py-12 text-center text-xs text-muted-foreground'>
-          No hay datos disponibles para este período
+          No hay datos disponibles para este perÃ­odo
         </CardContent>
       </Card>
     )
@@ -74,7 +74,7 @@ export function ProductionHorizontalBarChart({
       <CardHeader className='space-y-0 pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>{title}</CardTitle>
         {description ? (
-          <p className='text-[10px] text-muted-foreground'>{description}</p>
+          <p className='text-xs text-muted-foreground'>{description}</p>
         ) : null}
       </CardHeader>
       <CardContent className='pb-2.5 pt-0'>

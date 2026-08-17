@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo } from 'react'
 import {
@@ -36,7 +36,7 @@ type ColumnaConfig = {
 const COLUMNAS: ColumnaConfig[] = [
 	{
 		key: 'proximos10',
-		label: 'Contactar próximos 10 días',
+		label: 'Contactar prÃ³ximos 10 dÃ­as',
 		icon: Calendar,
 		bgColor: 'bg-sky-500/[0.04]',
 		headerBorder: 'border-sky-500/30',
@@ -132,14 +132,14 @@ export default function KanbanCobranza({
 								<span className='text-xs font-semibold leading-snug text-foreground'>
 									{columna.label}
 								</span>
-								<span className='ml-auto text-[10px] font-medium tabular-nums text-muted-foreground'>
+								<span className='ml-auto text-xs font-medium tabular-nums text-muted-foreground'>
 									{columna.items.length}
 								</span>
 							</div>
 
 							<div className='flex-1 space-y-2 overflow-y-auto p-2'>
 								{columna.items.length === 0 ? (
-									<p className='py-8 text-center text-[10px] text-muted-foreground'>
+									<p className='py-8 text-center text-xs text-muted-foreground'>
 										Sin elementos
 									</p>
 								) : (

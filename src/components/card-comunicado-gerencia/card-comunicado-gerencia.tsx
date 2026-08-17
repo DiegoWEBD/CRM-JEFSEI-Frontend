@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useComunicadosGerencia } from '@/hooks/comunicados-gerencia/use-comunicados-gerencia'
 import { useRegistrarComunicadoGerencia } from '@/hooks/comunicados-gerencia/use-registrar-comunicado-gerencia'
@@ -44,8 +44,8 @@ export default function CardComunicadoGerencia() {
 			caducidad: '',
 		},
 		validationSchema: Yup.object({
-			titulo: Yup.string().required('El título es obligatorio'),
-			descripcion: Yup.string().required('La descripción es obligatoria'),
+			titulo: Yup.string().required('El tÃ­tulo es obligatorio'),
+			descripcion: Yup.string().required('La descripciÃ³n es obligatoria'),
 			prioridad: Yup.string()
 				.oneOf(['media', 'alta'], 'Selecciona una prioridad')
 				.required(),
@@ -112,7 +112,7 @@ export default function CardComunicadoGerencia() {
 								<p className='font-medium text-foreground'>{aviso.titulo}</p>
 								<Badge
 									variant={(PRIORIDAD_VARIANT[aviso.prioridad as keyof typeof PRIORIDAD_VARIANT] ?? 'outline')}
-									className='h-5 shrink-0 text-[9px]'
+									className='h-5 shrink-0 text-xs'
 								>
 									{aviso.prioridad}
 								</Badge>
@@ -120,7 +120,7 @@ export default function CardComunicadoGerencia() {
 							<p className='mt-1 leading-snug text-muted-foreground'>
 								{aviso.descripcion}
 							</p>
-							<p className='mt-1 text-[10px] tabular-nums text-muted-foreground'>
+							<p className='mt-1 text-xs tabular-nums text-muted-foreground'>
 								{formatearFecha(new Date(aviso.fecha), 'dd/MM/yyyy')}
 							</p>
 						</div>
@@ -141,7 +141,7 @@ export default function CardComunicadoGerencia() {
 					<form onSubmit={formik.handleSubmit}>
 						<div className='space-y-4 px-6 py-4'>
 							<div className='space-y-1.5'>
-								<Label className='text-xs'>Título</Label>
+								<Label className='text-xs'>TÃ­tulo</Label>
 								<Input
 									name='titulo'
 									value={formik.values.titulo}
@@ -150,11 +150,11 @@ export default function CardComunicadoGerencia() {
 									className='h-9 text-sm shadow-none'
 								/>
 								{formik.touched.titulo && formik.errors.titulo && (
-									<p className='text-[10px] text-destructive'>{formik.errors.titulo}</p>
+									<p className='text-xs text-destructive'>{formik.errors.titulo}</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
-								<Label className='text-xs'>Descripción</Label>
+								<Label className='text-xs'>DescripciÃ³n</Label>
 								<Textarea
 									name='descripcion'
 									value={formik.values.descripcion}
@@ -163,7 +163,7 @@ export default function CardComunicadoGerencia() {
 									className='min-h-[80px] text-sm shadow-none'
 								/>
 								{formik.touched.descripcion && formik.errors.descripcion && (
-									<p className='text-[10px] text-destructive'>{formik.errors.descripcion}</p>
+									<p className='text-xs text-destructive'>{formik.errors.descripcion}</p>
 								)}
 							</div>
 							<div className='grid grid-cols-2 gap-3'>
@@ -193,7 +193,7 @@ export default function CardComunicadoGerencia() {
 										className='h-9 text-sm shadow-none'
 									/>
 									{formik.touched.caducidad && formik.errors.caducidad && (
-										<p className='text-[10px] text-destructive'>{formik.errors.caducidad}</p>
+										<p className='text-xs text-destructive'>{formik.errors.caducidad}</p>
 									)}
 								</div>
 							</div>

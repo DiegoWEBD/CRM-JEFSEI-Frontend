@@ -1,4 +1,4 @@
-import { classname } from '@/lib/class-name'
+﻿import { classname } from '@/lib/class-name'
 import { TrendingUp } from 'lucide-react'
 import { ReactNode } from 'react'
 
@@ -29,7 +29,7 @@ export default function MetricaSmall({
 				<Icon className='h-3.5 w-3.5' />
 			</div>
 			<div className='min-w-0'>
-				<p className='text-[10px] leading-tight text-muted-foreground'>
+				<p className='text-xs leading-tight text-muted-foreground'>
 					{label}
 				</p>
 				<div className='text-sm font-semibold tabular-nums leading-tight text-foreground'>
