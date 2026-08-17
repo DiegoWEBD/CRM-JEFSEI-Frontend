@@ -89,10 +89,7 @@ export default function FiltrosProcesosComerciales({
 				</SelectContent>
 			</Select>
 
-			<Select
-				value={filtros.etapa}
-				onValueChange={v => actualizar('etapa', v)}
-			>
+			<Select value={filtros.etapa} onValueChange={v => actualizar('etapa', v)}>
 				<SelectTrigger
 					size='sm'
 					className='h-9 w-[min(100%,9rem)] text-xs shadow-none'

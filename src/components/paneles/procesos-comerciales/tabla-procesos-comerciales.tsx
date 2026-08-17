@@ -131,14 +131,13 @@ export default function TablaProcesosComerciales({
 								<span>
 									Estado:{' '}
 									<Badge
-										variant='outline'
-										className={cn(
-											'text-xs font-medium',
+										variant={
 											ESTADO_COMERCIAL_BADGE[
 												f.proceso.estado_actual
 													.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-											] ?? 'border-border bg-muted/50 text-muted-foreground',
-										)}
+											] ?? 'outline'
+										}
+										className='shrink-0 font-semibold text-xs'
 									>
 										{ESTADO_PROSPECTO_LABELS[
 											f.proceso.estado_actual
@@ -246,14 +245,13 @@ export default function TablaProcesosComerciales({
 								</TableCell>
 								<TableCell className={cn(cellClass, 'p-1.5')}>
 									<Badge
-										variant='outline'
-										className={cn(
-											'text-xs font-medium',
+										variant={
 											ESTADO_COMERCIAL_BADGE[
 												f.proceso.estado_actual
 													.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-											] ?? 'border-border bg-muted/50 text-muted-foreground',
-										)}
+											] ?? 'outline'
+										}
+										className='shrink-0 font-semibold text-xs'
 									>
 										{ESTADO_PROSPECTO_LABELS[
 											f.proceso.estado_actual

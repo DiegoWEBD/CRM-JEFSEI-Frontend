@@ -141,14 +141,13 @@ export default function DetalleProcesoDrawer({
 							<dt className='text-xs text-muted-foreground'>Estado</dt>
 							<dd>
 								<Badge
-									variant='outline'
-									className={cn(
-										'text-sm font-medium',
+									variant={
 										ESTADO_COMERCIAL_BADGE[
 											proceso.estado_actual
 												.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-										] ?? 'border-border bg-muted/50 text-muted-foreground',
-									)}
+										] ?? 'outline'
+									}
+									className='shrink-0 font-semibold'
 								>
 									{ESTADO_PROSPECTO_LABELS[
 										proceso.estado_actual
