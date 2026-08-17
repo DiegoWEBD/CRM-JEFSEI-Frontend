@@ -19,7 +19,7 @@ export default function CommercialActivityCompletionSummary({
               de {data.agendadas.toLocaleString('es-CL')}
             </span>
           </p>
-          <p className='text-sm font-medium text-emerald-600 dark:text-emerald-400'>
+          <p className='text-sm font-medium text-emerald-700 dark:text-emerald-300'>
             {data.porcentaje_cumplimiento}% cumplimiento
           </p>
         </div>

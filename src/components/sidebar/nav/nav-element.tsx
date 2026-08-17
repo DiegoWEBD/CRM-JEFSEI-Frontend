@@ -42,7 +42,7 @@ const NavElement = ({ href, icono, titulo }: NavElementProps) => {
 			<span className='grid size-4 shrink-0 place-items-center text-current'>
 				{icono}
 			</span>
-			<span className='min-w-0 truncate group-data-[mode=collapsed]/sidebar:hidden'>
+			<span className='min-w-0 group-data-[mode=collapsed]/sidebar:hidden'>
 				{titulo}
 			</span>
 		</Link>

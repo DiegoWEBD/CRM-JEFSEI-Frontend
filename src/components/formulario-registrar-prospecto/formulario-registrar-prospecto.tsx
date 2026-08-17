@@ -10,9 +10,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/select'
+import { SelectorAdministrador } from '@/components/selector-administrador'
 import { Textarea } from '@/components/textarea'
 import { useAdministradores } from '@/hooks/administradores/use-administradores'
-import { SelectorAdministrador } from '@/components/selector-administrador'
 import { useFormularioRegistrarProspecto } from '@/hooks/prospectos/use-formulario-registrar-prospecto'
 import {
 	CHILE_REGIONES_NOMBRES,
@@ -50,7 +50,9 @@ export default function FormularioRegistrarProspecto({
 	)
 
 	const tipoActual: TipoCliente =
-		formik.values.linea_negocio === 'condominio' ? 'condominio' : 'linea_personal'
+		formik.values.linea_negocio === 'condominio'
+			? 'condominio'
+			: 'linea_personal'
 
 	const setTipo = (tipo: TipoCliente) => {
 		formik.setFieldValue(
@@ -252,43 +254,6 @@ export default function FormularioRegistrarProspecto({
 						</Select>
 					</div>
 
-					<div className='space-y-1.5'>
-						<label className='text-xs'>Correo contacto</label>
-						<Input
-							className={inp(
-								inputPendienteSimple(formik.values.correo_contacto),
-							)}
-							type='email'
-							name='correo_contacto'
-							value={formik.values.correo_contacto}
-							onChange={formik.handleChange}
-						/>
-						{formik.touched.correo_contacto && formik.errors.correo_contacto ? (
-							<p className='text-xs text-destructive'>
-								{formik.errors.correo_contacto}
-							</p>
-						) : null}
-					</div>
-
-					{tipoActual === 'linea_personal' && (
-						<div className='space-y-1.5'>
-							<label
-								className={`text-xs${inputPendienteSimple(formik.values.telefono_contacto) ? ' text-warning' : ''}`}
-							>
-								Teléfono de contacto
-							</label>
-							<Input
-								className={inp(
-									inputPendienteSimple(formik.values.telefono_contacto),
-								)}
-								inputMode='tel'
-								name='telefono_contacto'
-								value={formik.values.telefono_contacto}
-								onChange={formik.handleChange}
-							/>
-						</div>
-					)}
-
 					{tipoActual === 'condominio' && (
 						<div className='space-y-1.5'>
 							<label className='text-xs'>Administrador</label>
@@ -350,7 +315,7 @@ export default function FormularioRegistrarProspecto({
 				</CardHeader>
 				<CardContent className='pb-4'>
 					<Textarea
-						className='min-h-[120px] resize-y text-sm leading-relaxed shadow-none'
+						className='min-h-30 resize-y text-sm leading-relaxed shadow-none'
 						placeholder='Agrega un comentario...'
 						name='observaciones'
 						onChange={formik.handleChange}

@@ -34,8 +34,13 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 				<CardTitle className='line-clamp-2 min-h-8 text-sm font-medium uppercase tracking-wide leading-snug text-muted-foreground sm:text-xs'>
 					{datos.label}
 				</CardTitle>
-				<div className='grid size-8 shrink-0 place-items-center rounded-lg bg-muted/70 ring-1 ring-border/60 transition-colors group-hover:bg-primary/10 group-hover:ring-primary/20'>
-					<Icon className={cn('size-4', iconClassName ?? 'text-primary')} aria-hidden />
+				<div
+					className={cn(
+						'grid size-8 shrink-0 place-items-center rounded-lg ring-1 transition-colors group-hover:bg-primary/10 group-hover:ring-primary/20',
+						iconClassName ?? 'bg-muted/70 text-primary ring-border/60',
+					)}
+				>
+					<Icon className='size-4' aria-hidden />
 				</div>
 			</CardHeader>
 			<CardContent className='space-y-2 px-4 pb-3 pt-0'>

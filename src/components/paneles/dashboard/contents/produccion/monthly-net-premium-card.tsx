@@ -31,8 +31,8 @@ export default function MonthlyNetPremiumCard({
           className={cn(
             'mt-1.5 inline-flex items-center gap-0.5 text-xs',
             positiva
-              ? 'text-emerald-600/90 dark:text-emerald-400/90'
-              : 'text-amber-700/90 dark:text-amber-400/90',
+              ? 'text-emerald-700 dark:text-emerald-300'
+              : 'text-amber-700 dark:text-amber-300',
           )}
         >
           {positiva ? (

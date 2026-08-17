@@ -1,6 +1,10 @@
 'use client'
 
-import { PanelKpiCard, PanelKpiSkeleton, type KpiAcento } from '@/components/paneles/shared/panel-kpi-card'
+import {
+	PanelKpiCard,
+	PanelKpiSkeleton,
+	type KpiAcento,
+} from '@/components/paneles/shared/panel-kpi-card'
 
 export type TarjetaActiva =
 	| 'todas'
@@ -25,9 +29,9 @@ const KPI_LABELS: Record<TarjetaActiva, string> = {
 
 const KPI_ACENTOS: Record<TarjetaActiva, KpiAcento> = {
 	todas: null,
-	abiertos: 'info',
-	ganados: 'success',
-	perdidos: 'danger',
+	abiertos: null,
+	ganados: null,
+	perdidos: null,
 	verde: 'success',
 	amarillo: 'warning',
 	rojo: 'danger',
@@ -69,9 +73,7 @@ export default function KpiProcesosComerciales({
 					value={conteos[key] ?? 0}
 					accent={KPI_ACENTOS[key]}
 					activa={tarjetaActiva === key}
-					onClick={() =>
-						onToggleTarjeta(tarjetaActiva === key ? 'todas' : key)
-					}
+					onClick={() => onToggleTarjeta(tarjetaActiva === key ? 'todas' : key)}
 				/>
 			))}
 		</div>

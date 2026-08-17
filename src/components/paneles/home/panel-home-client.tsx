@@ -26,6 +26,7 @@ import {
 } from '@/hooks/prospectos/use-filtrar-prospectos'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
+import { KPI_PASTEL } from '@/lib/kpi-pastel'
 import CardProspectosClient from '../../prospectos/card-prospectos/card-prospectos-client'
 import CardKpi from '../ejecutivo-comercial/cards/card-kpi/card-kpi'
 import MetricasEjecutivoComercial from '../ejecutivo-comercial/metricas-ejecutivo-comercial/metricas-ejecutivo-comercial'
@@ -35,23 +36,11 @@ import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelLayout from '../panel-layout/panel-layout'
 
 const Acentos = {
-	info: { card: 'border-info/30 bg-info/[0.06]', icon: 'text-info' },
-	success: {
-		card: 'border-success/30 bg-success/[0.06]',
-		icon: 'text-success',
-	},
-	primary: {
-		card: 'border-primary/30 bg-primary/[0.06]',
-		icon: 'text-primary',
-	},
-	warning: {
-		card: 'border-warning/35 bg-warning/10',
-		icon: 'text-warning-foreground dark:text-warning',
-	},
-	danger: {
-		card: 'border-destructive/30 bg-destructive/[0.06]',
-		icon: 'text-destructive',
-	},
+	info: { card: KPI_PASTEL.info.card, icon: KPI_PASTEL.info.icon },
+	success: { card: KPI_PASTEL.success.card, icon: KPI_PASTEL.success.icon },
+	primary: { card: KPI_PASTEL.primary.card, icon: KPI_PASTEL.primary.icon },
+	warning: { card: KPI_PASTEL.warning.card, icon: KPI_PASTEL.warning.icon },
+	danger: { card: KPI_PASTEL.danger.card, icon: KPI_PASTEL.danger.icon },
 } as const
 
 type PanelHomeClientProps = {
