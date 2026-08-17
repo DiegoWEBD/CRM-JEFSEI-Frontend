@@ -25,10 +25,10 @@ export function HistorialPoliza({ historial, cargando }: HistorialPolizaProps) {
         variant='outline'
         size='sm'
       >
-        <ToggleGroupItem value='timeline' className='text-[11px]'>
+        <ToggleGroupItem value='timeline' className='text-sm'>
           Timeline
         </ToggleGroupItem>
-        <ToggleGroupItem value='lista-plana' className='text-[11px]'>
+        <ToggleGroupItem value='lista-plana' className='text-sm'>
           Lista plana
         </ToggleGroupItem>
       </ToggleGroup>

@@ -74,7 +74,7 @@ export default function BarraFiltrosPolizas({
     <div className='rounded-lg border border-border/80 bg-muted/10 p-2.5'>
       <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end'>
         <div className='w-full sm:w-auto sm:min-w-[8.5rem] sm:max-w-[9.5rem]'>
-          <Label className='mb-1 block text-[10px] text-muted-foreground'>
+          <Label className='mb-1 block text-xs text-muted-foreground'>
             Estado
           </Label>
           <Select
@@ -97,7 +97,7 @@ export default function BarraFiltrosPolizas({
         </div>
 
         <div className='w-full sm:w-auto sm:min-w-[8.5rem] sm:max-w-[10rem]'>
-          <Label className='mb-1 block text-[10px] text-muted-foreground'>
+          <Label className='mb-1 block text-xs text-muted-foreground'>
             Compañía
           </Label>
           <Select
@@ -121,7 +121,7 @@ export default function BarraFiltrosPolizas({
         </div>
 
         <div className='w-full sm:w-auto sm:min-w-[8.5rem] sm:max-w-[11rem]'>
-          <Label className='mb-1 block text-[10px] text-muted-foreground'>
+          <Label className='mb-1 block text-xs text-muted-foreground'>
             Vencimiento
           </Label>
           <Select
@@ -147,7 +147,7 @@ export default function BarraFiltrosPolizas({
         </div>
 
         <div className='w-full sm:min-w-[10rem] sm:flex-[1.4] sm:max-w-[14rem]'>
-          <Label className='mb-1 block text-[10px] text-muted-foreground'>
+          <Label className='mb-1 block text-xs text-muted-foreground'>
             Buscar
           </Label>
           <div className='relative'>

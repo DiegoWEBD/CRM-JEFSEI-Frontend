@@ -42,26 +42,26 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
           <Link
             href={`/polizas/${poliza.numero_poliza}`}
             onClick={(e) => e.stopPropagation()}
-            className='truncate text-[11px] font-medium text-primary underline-offset-2 hover:underline'
+            className='truncate text-sm font-medium text-primary underline-offset-2 hover:underline'
           >
             {poliza.numero_poliza}
           </Link>
         <Badge
           variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
-          className='shrink-0 text-[10px]'
+          className='shrink-0 text-xs'
         >
             {ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
           </Badge>
         </div>
         <div className='flex items-center justify-between gap-2'>
-          <span className='truncate text-[10px] text-muted-foreground'>
+          <span className='truncate text-xs text-muted-foreground'>
             {poliza.company?.nombre ?? '—'}
           </span>
-          <span className='shrink-0 text-[10px] tabular-nums text-muted-foreground'>
+          <span className='shrink-0 text-xs tabular-nums text-muted-foreground'>
             {fechaFin}
           </span>
         </div>
-        <span className='text-[10px] text-muted-foreground'>
+        <span className='text-xs text-muted-foreground'>
           {formatUfAmount(poliza.prima_neta)}
         </span>
       </button>
@@ -76,13 +76,13 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
       >
         <Link
           href={`/polizas/${poliza.numero_poliza}`}
-          className='truncate text-[11px] font-medium text-primary underline-offset-2 hover:underline'
+          className='truncate text-sm font-medium text-primary underline-offset-2 hover:underline'
           title={poliza.numero_poliza}
         >
           {poliza.numero_poliza}
         </Link>
         <span
-          className='truncate text-[11px] text-muted-foreground'
+          className='truncate text-sm text-muted-foreground'
           title={poliza.company?.nombre ?? undefined}
         >
           {poliza.company?.nombre ?? '—'}
@@ -90,16 +90,16 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
         <div className='min-w-0'>
           <Badge
             variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
-            className='text-[10px] font-medium'
+            className='text-xs font-medium'
           >
             {ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
           </Badge>
         </div>
-        <span className='whitespace-nowrap text-[11px] tabular-nums text-muted-foreground'>
+        <span className='whitespace-nowrap text-sm tabular-nums text-muted-foreground'>
           {fechaFin}
         </span>
         <span
-          className='truncate text-[11px] text-muted-foreground'
+          className='truncate text-sm text-muted-foreground'
           title={formatUfAmount(poliza.prima_neta)}
         >
           {formatUfAmount(poliza.prima_neta)}
@@ -108,7 +108,7 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
           <button
             type='button'
             onClick={() => setVerDetalle(!verDetalle)}
-            className='inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-[9px] font-medium text-muted-foreground hover:bg-muted/30 hover:text-foreground transition-colors'
+            className='inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/30 hover:text-foreground transition-colors'
           >
             <Eye className='h-3 w-3 shrink-0' aria-hidden />
             {verDetalle ? 'Ocultar' : 'Visualizar'}
@@ -118,7 +118,7 @@ export default function ItemPoliza({ poliza }: ItemPolizaProps) {
 
       {/* Detalle */}
       {verDetalle && (
-        <div className='rounded border border-border/60 bg-muted/15 px-2 py-1.5 text-[11px] text-muted-foreground'>
+        <div className='rounded border border-border/60 bg-muted/15 px-2 py-1.5 text-sm text-muted-foreground'>
           <p>
             <span className='font-medium text-foreground'>Vigencia:</span>{' '}
             {poliza.inicio_vigencia

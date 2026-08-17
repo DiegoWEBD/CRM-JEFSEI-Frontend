@@ -38,12 +38,12 @@ export default function CardRecordatorio({
 	const prio = recordatorio.prioridad
 
 	const badgePrincipal = esRenovacion
-		? { label: `Póliza ${recordatorio.numero_poliza}`, className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal border-sky-500/25 bg-sky-500/10 text-sky-950 dark:text-sky-100' }
+		? { label: `Póliza ${recordatorio.numero_poliza}`, className: 'h-5 max-w-full truncate px-1.5 text-xs font-normal border-sky-500/25 bg-sky-500/10 text-sky-950 dark:text-sky-100' }
 		: esCobranza
-			? { label: `Cobranza — Póliza ${recordatorio.numero_poliza}`, href: `/polizas/${recordatorio.numero_poliza}`, className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal border-amber-500/25 bg-amber-500/10 text-amber-950 dark:text-amber-100' }
+			? { label: `Cobranza — Póliza ${recordatorio.numero_poliza}`, href: `/polizas/${recordatorio.numero_poliza}`, className: 'h-5 max-w-full truncate px-1.5 text-xs font-normal border-amber-500/25 bg-amber-500/10 text-amber-950 dark:text-amber-100' }
 			: asociado
-				? { label: recordatorio.nombre_prospecto?.trim() ?? '—', href: `/prospectos/${recordatorio.id_prospecto}`, className: 'h-5 max-w-full truncate px-1.5 text-[9px] font-normal' }
-				: { label: 'General', className: 'h-5 border-muted-foreground/30 bg-muted/50 px-1.5 text-[9px] font-normal text-muted-foreground' }
+				? { label: recordatorio.nombre_prospecto?.trim() ?? '—', href: `/prospectos/${recordatorio.id_prospecto}`, className: 'h-5 max-w-full truncate px-1.5 text-xs font-normal' }
+				: { label: 'General', className: 'h-5 border-muted-foreground/30 bg-muted/50 px-1.5 text-xs font-normal text-muted-foreground' }
 
 	return (
 		<>
@@ -54,7 +54,7 @@ export default function CardRecordatorio({
 				</p>
 			<Badge
 				variant={reminderStatusStyles[recordatorio.estado]}
-				className='shrink-0 px-1 py-0 text-[9px]'
+				className='shrink-0 px-1 py-0 text-xs'
 			>
 					{reminderStatusLabel[recordatorio.estado]}
 				</Badge>
@@ -79,26 +79,26 @@ export default function CardRecordatorio({
 				)}
 			<Badge
 				variant={prioridadReminderStyles[prio]}
-				className='h-5 px-1.5 text-[9px]'
+				className='h-5 px-1.5 text-xs'
 			>
 					{prio}
 				</Badge>
 			</div>
-			<p className='mt-1 text-[10px] leading-tight text-muted-foreground'>
+			<p className='mt-1 text-xs leading-tight text-muted-foreground'>
 				{etiquetaTipoRecordatorio(recordatorio.tipo_gestion)} ·{' '}
 				{formatearFecha(
 					new Date(recordatorio.fecha_recordatorio),
 					'dd-MM-yyyy',
 				)}
 			</p>
-			<p className='mt-0.5 line-clamp-2 text-[10px] leading-snug text-muted-foreground'>
+			<p className='mt-0.5 line-clamp-2 text-xs leading-snug text-muted-foreground'>
 				{recordatorio.detalle}
 			</p>
 			<div className='mt-1.5 flex flex-wrap gap-1'>
 				<Button
 					size='sm'
 					variant='outline'
-					className='h-6 px-2 text-[10px]'
+					className='h-6 px-2 text-xs'
 					onClick={onComplete}
 					disabled={isCompletando}
 				>
@@ -108,7 +108,7 @@ export default function CardRecordatorio({
 				<Button
 					size='sm'
 					variant='outline'
-					className='h-6 px-2 text-[10px]'
+					className='h-6 px-2 text-xs'
 					onClick={() => setEditando(true)}
 				>
 					Editar
@@ -116,7 +116,7 @@ export default function CardRecordatorio({
 					<Button
 						size='sm'
 						variant='ghost'
-						className='h-6 px-2 text-[10px] text-destructive hover:text-destructive'
+						className='h-6 px-2 text-xs text-destructive hover:text-destructive'
 						onClick={onDelete}
 						disabled={isEliminando}
 					>

@@ -31,7 +31,7 @@ function FilaDetalle({
 }) {
 	return (
 		<div className='space-y-0.5'>
-			<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 				{label}
 			</p>
 			<div className='text-sm text-foreground'>{children}</div>
@@ -144,7 +144,7 @@ export default function SheetDetalleSolicitud({
 								full.actividades &&
 								full.actividades.length > 0 ? (
 									<div className='space-y-1.5'>
-										<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+										<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 											Actividades aseguradas
 										</p>
 										<div className='space-y-1'>

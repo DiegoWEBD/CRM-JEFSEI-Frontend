@@ -23,7 +23,7 @@ export default function FilaProspecto({
 				<p className='truncate font-medium leading-snug text-foreground'>
 					{prospecto.nombre_riesgo}
 				</p>
-				<p className='truncate text-[11px] leading-snug text-muted-foreground'>
+				<p className='truncate text-sm leading-snug text-muted-foreground'>
 					{prospecto.linea_negocio} ·{' '}
 					{prospecto.id_cliente ? 'Cliente' : 'Prospecto'}
 				</p>
@@ -31,7 +31,7 @@ export default function FilaProspecto({
 			<Button
 				size='sm'
 				variant='outline'
-				className='h-7 shrink-0 px-2.5 text-[10px]'
+				className='h-7 shrink-0 px-2.5 text-xs'
 			>
 				<Link href={`/prospectos/${prospecto.id}`}>Ver prospecto</Link>
 			</Button>

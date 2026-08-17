@@ -18,7 +18,7 @@ export default function ChipFiltro({
 			type='button'
 			onClick={onClick}
 			className={classname(
-				'hover:cursor-pointer inline-flex h-7 max-w-full items-center gap-1 rounded-full border px-2.5 text-[11px] font-medium transition-colors',
+				'hover:cursor-pointer inline-flex h-7 max-w-full items-center gap-1 rounded-full border px-2.5 text-xs font-medium transition-colors',
 				activo
 					? 'border-primary bg-primary text-primary-foreground shadow-none'
 					: 'border-border bg-background text-foreground hover:bg-sidebar-accent',
@@ -27,7 +27,7 @@ export default function ChipFiltro({
 			<span className='truncate'>{label}</span>
 			<span
 				className={classname(
-					'shrink-0 tabular-nums text-[10px]',
+					'shrink-0 tabular-nums',
 					activo ? 'text-primary-foreground/90' : 'text-muted-foreground',
 				)}
 			>

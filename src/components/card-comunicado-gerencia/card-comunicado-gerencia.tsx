@@ -112,7 +112,7 @@ export default function CardComunicadoGerencia() {
 								<p className='font-medium text-foreground'>{aviso.titulo}</p>
 								<Badge
 									variant={(PRIORIDAD_VARIANT[aviso.prioridad as keyof typeof PRIORIDAD_VARIANT] ?? 'outline')}
-									className='h-5 shrink-0 text-[9px]'
+									className='h-5 shrink-0 text-xs'
 								>
 									{aviso.prioridad}
 								</Badge>
@@ -120,7 +120,7 @@ export default function CardComunicadoGerencia() {
 							<p className='mt-1 leading-snug text-muted-foreground'>
 								{aviso.descripcion}
 							</p>
-							<p className='mt-1 text-[10px] tabular-nums text-muted-foreground'>
+							<p className='mt-1 text-xs tabular-nums text-muted-foreground'>
 								{formatearFecha(new Date(aviso.fecha), 'dd/MM/yyyy')}
 							</p>
 						</div>
@@ -150,7 +150,7 @@ export default function CardComunicadoGerencia() {
 									className='h-9 text-sm shadow-none'
 								/>
 								{formik.touched.titulo && formik.errors.titulo && (
-									<p className='text-[10px] text-destructive'>{formik.errors.titulo}</p>
+									<p className='text-xs text-destructive'>{formik.errors.titulo}</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
@@ -163,7 +163,7 @@ export default function CardComunicadoGerencia() {
 									className='min-h-[80px] text-sm shadow-none'
 								/>
 								{formik.touched.descripcion && formik.errors.descripcion && (
-									<p className='text-[10px] text-destructive'>{formik.errors.descripcion}</p>
+									<p className='text-xs text-destructive'>{formik.errors.descripcion}</p>
 								)}
 							</div>
 							<div className='grid grid-cols-2 gap-3'>
@@ -193,7 +193,7 @@ export default function CardComunicadoGerencia() {
 										className='h-9 text-sm shadow-none'
 									/>
 									{formik.touched.caducidad && formik.errors.caducidad && (
-										<p className='text-[10px] text-destructive'>{formik.errors.caducidad}</p>
+										<p className='text-xs text-destructive'>{formik.errors.caducidad}</p>
 									)}
 								</div>
 							</div>

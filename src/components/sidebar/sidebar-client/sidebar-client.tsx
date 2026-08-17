@@ -57,7 +57,7 @@ const SideBarClient = ({ roles }: Props) => {
 						<p className='truncate text-sm font-semibold leading-none text-sidebar-foreground'>
 							CRM JEFSEI
 						</p>
-						<p className='mt-1 truncate text-[11px] leading-none text-muted-foreground'>
+						<p className='mt-1 truncate text-sm leading-none text-muted-foreground'>
 							Corredora de Seguros
 						</p>
 					</div>

@@ -315,7 +315,7 @@ export default function DialogGenerarEstudio({
 														</p>
 														<Badge
 															variant={VENCIMIENTO_VARIANT[ev]}
-															className='text-[10px] font-medium'
+															className='text-xs font-medium'
 														>
 															{ev === 'vigente' && 'Vigente'}
 															{ev === 'por_vencer' && 'Por vencer'}
@@ -327,13 +327,13 @@ export default function DialogGenerarEstudio({
 										})}
 									</div>
 								)}
-								<p className='text-[10px] text-muted-foreground'>
+								<p className='text-xs text-muted-foreground'>
 									Seleccione una o más cotizaciones para incluir en el estudio.
 								</p>
 							</div>
 
 							<div className='space-y-3 rounded-md border border-border/80 bg-muted/20 p-3'>
-								<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+								<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Configuración del estudio
 								</p>
 								<div className='grid gap-3 sm:grid-cols-3'>
@@ -431,7 +431,7 @@ export default function DialogGenerarEstudio({
 											</SelectContent>
 										</Select>
 										{formik.touched.cuotas && formik.errors.cuotas && (
-											<p className='text-[10px] text-destructive'>
+											<p className='text-xs text-destructive'>
 												{formik.errors.cuotas}
 											</p>
 										)}
@@ -464,7 +464,7 @@ export default function DialogGenerarEstudio({
 										</Button>
 									</div>
 									{formik.touched.valorUf && formik.errors.valorUf && (
-										<p className='text-[10px] text-destructive'>
+										<p className='text-xs text-destructive'>
 											{formik.errors.valorUf}
 										</p>
 									)}
@@ -502,7 +502,7 @@ export default function DialogGenerarEstudio({
 										Secciones
 									</p>
 									{secciones.length === 0 ? (
-										<p className='text-[11px] text-muted-foreground'>
+										<p className='text-sm text-muted-foreground'>
 											Sin secciones agregadas.
 										</p>
 									) : (
@@ -513,7 +513,7 @@ export default function DialogGenerarEstudio({
 													className='flex flex-wrap items-end gap-2 rounded-md border border-border/70 bg-card p-2 sm:flex-nowrap'
 												>
 													<div className='min-w-0 flex-1 space-y-1'>
-														<Label className='text-[10px]'>Título</Label>
+														<Label className='text-xs'>Título</Label>
 														<Input
 															className='h-7 text-xs'
 															value={s.titulo}
@@ -528,7 +528,7 @@ export default function DialogGenerarEstudio({
 														/>
 													</div>
 													<div className='w-full space-y-1 sm:w-32'>
-														<Label className='text-[10px]'>
+														<Label className='text-xs'>
 															Monto asegurado
 														</Label>
 														<Input
@@ -548,7 +548,7 @@ export default function DialogGenerarEstudio({
 														/>
 													</div>
 													<div className='w-full space-y-1 sm:w-20'>
-														<Label className='text-[10px]'>Propietarios</Label>
+														<Label className='text-xs'>Propietarios</Label>
 														<Input
 															type='number'
 															min='0'

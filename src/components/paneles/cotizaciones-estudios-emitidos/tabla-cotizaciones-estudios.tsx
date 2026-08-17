@@ -22,9 +22,9 @@ import { cn } from '@/lib/utils'
 import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
 
 const headClass =
-  'h-9 border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-[11px] font-medium uppercase tracking-wide text-muted-foreground'
+  'h-9 border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-sm font-medium uppercase tracking-wide text-muted-foreground'
 
-const cellClass = 'px-3 py-2.5 align-middle text-[13px]'
+const cellClass = 'px-3 py-2.5 align-middle text-sm'
 
 const ESTADO_VENCIMIENTO_LABELS: Record<string, string> = {
   vigente: 'Vigente',
@@ -81,14 +81,14 @@ export default function TablaCotizacionesEstudios({
                 {f.estado_vencimiento && (
                   <Badge
                     variant={VENCIMIENTO_VARIANT[f.estado_vencimiento]}
-                    className='text-[10px] font-medium'
+                    className='text-xs font-medium'
                   >
                     {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}
                   </Badge>
                 )}
               </div>
 
-              <div className='mt-2 flex items-center justify-between text-[11px] text-muted-foreground'>
+              <div className='mt-2 flex items-center justify-between text-sm text-muted-foreground'>
                 <span>{f.ejecutivo_comercial}</span>
                 {f.vencimiento_mas_proximo && (
                   <span className='tabular-nums'>
@@ -172,11 +172,11 @@ export default function TablaCotizacionesEstudios({
                   </span>
                 </TableCell>
                 <TableCell className={cn(cellClass, 'text-muted-foreground')}>
-                  <span className='line-clamp-2 text-[11px] leading-snug'>
+                  <span className='line-clamp-2 text-sm leading-snug'>
                     {f.linea_seguro}
                   </span>
                 </TableCell>
-                <TableCell className={cn(cellClass, 'text-[11px] text-muted-foreground')}>
+                <TableCell className={cn(cellClass, 'text-sm text-muted-foreground')}>
                   <span className='line-clamp-2 leading-snug'>
                     {f.ejecutivo_comercial}
                   </span>
@@ -193,12 +193,12 @@ export default function TablaCotizacionesEstudios({
                   {f.estado_vencimiento ? (
                     <Badge
                       variant={VENCIMIENTO_VARIANT[f.estado_vencimiento]}
-                      className='text-[10px] font-medium'
+                      className='text-xs font-medium'
                     >
                       {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}
                     </Badge>
                   ) : (
-                    <span className='text-[10px] text-muted-foreground'>—</span>
+                    <span className='text-xs text-muted-foreground'>—</span>
                   )}
                 </TableCell>
                 <TableCell className={cn(cellClass, 'p-1.5')}>
@@ -210,7 +210,7 @@ export default function TablaCotizacionesEstudios({
                       type='button'
                       variant='outline'
                       size='sm'
-                      className='h-7 w-full px-2 text-[11px] shadow-none sm:w-auto'
+                      className='h-7 w-full px-2 text-sm shadow-none sm:w-auto'
                       onClick={() => onVerCotizaciones(f)}
                     >
                       Ver cotizaciones
@@ -218,7 +218,7 @@ export default function TablaCotizacionesEstudios({
                     <Button
                       variant='outline'
                       size='sm'
-                      className='h-7 w-full px-2 text-[11px] shadow-none sm:w-auto'
+                      className='h-7 w-full px-2 text-sm shadow-none sm:w-auto'
                       asChild
                     >
                       <Link href={`/prospectos/${f.id_prospecto}`}>

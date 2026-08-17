@@ -17,7 +17,7 @@ export default function Calendario({
 }) {
 	return (
 		<div className='rounded-md border border-border/80 p-2'>
-			<div className='mb-1 grid grid-cols-7 gap-1 text-center text-[9px] font-medium uppercase text-muted-foreground'>
+			<div className='mb-1 grid grid-cols-7 gap-1 text-center text-xs font-medium uppercase text-muted-foreground'>
 				{['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, idx) => (
 					<span key={`${d}-${idx}`}>{d}</span>
 				))}
@@ -28,7 +28,7 @@ export default function Calendario({
 						key={d.iso}
 						type='button'
 						className={classname(
-							'relative flex h-8 items-center justify-center rounded-md text-[11px] tabular-nums transition-colors hover:bg-muted',
+							'relative flex h-8 items-center justify-center rounded-md text-sm tabular-nums transition-colors hover:bg-muted',
 							!d.esMesActual && 'text-muted-foreground/45',
 							d.esHoy && 'border border-primary/50 font-semibold text-primary',
 							diaSeleccionado === d.iso &&

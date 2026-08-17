@@ -129,7 +129,7 @@ export default function AdministradorClient({
 								</p>
 							) : (
 								<>
-									<p className='text-[11px] text-muted-foreground'>
+									<p className='text-sm text-muted-foreground'>
 										{condominiosFiltrados.length} condominio
 										{condominiosFiltrados.length !== 1 ? 's' : ''}
 										{busqueda.trim()

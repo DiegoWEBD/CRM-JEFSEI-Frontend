@@ -259,7 +259,7 @@ export default function DialogNuevaSolicitudCotizacion({
           {esAccidentesPersonales ? (
             <div className='space-y-2 rounded-md border border-border/70 bg-muted/10 p-3'>
               <div className='flex items-center justify-between'>
-                <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+                <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                   Actividades aseguradas
                 </p>
                 <Button
@@ -288,7 +288,7 @@ export default function DialogNuevaSolicitudCotizacion({
                         }
                       />
                       {formik.errors[`actividades.${index}.actividad` as keyof typeof formik.errors] && (
-                        <p className='text-[10px] text-destructive'>
+                        <p className='text-xs text-destructive'>
                           {formik.errors[`actividades.${index}.actividad` as keyof typeof formik.errors] as string}
                         </p>
                       )}
@@ -305,7 +305,7 @@ export default function DialogNuevaSolicitudCotizacion({
                         }
                       />
                       {formik.errors[`actividades.${index}.numero_asegurados` as keyof typeof formik.errors] && (
-                        <p className='text-[10px] text-destructive'>
+                        <p className='text-xs text-destructive'>
                           {formik.errors[`actividades.${index}.numero_asegurados` as keyof typeof formik.errors] as string}
                         </p>
                       )}
@@ -328,7 +328,7 @@ export default function DialogNuevaSolicitudCotizacion({
 
           {camposEstandar.length > 0 ? (
             <div className='space-y-3 rounded-md border border-border/70 bg-muted/10 p-3'>
-              <p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+              <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
                 Datos de la línea
               </p>
               {camposEstandar.map((campo) => {
@@ -349,7 +349,7 @@ export default function DialogNuevaSolicitudCotizacion({
                       name={campo.key}
                     />
                     {formik.errors[fieldKey] && formik.touched[fieldKey] && (
-                      <p className='text-[10px] text-destructive'>
+                      <p className='text-xs text-destructive'>
                         {formik.errors[fieldKey] as string}
                       </p>
                     )}

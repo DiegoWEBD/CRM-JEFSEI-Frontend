@@ -86,7 +86,7 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 								<ItemInformacionPoliza label='Estado'>
 								<Badge
 									variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
-									className='text-[10px] font-medium'
+									className='text-xs font-medium'
 								>
 										{ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
 									</Badge>

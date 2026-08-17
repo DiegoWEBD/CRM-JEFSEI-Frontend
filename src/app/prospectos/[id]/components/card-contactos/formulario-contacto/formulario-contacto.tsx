@@ -54,7 +54,7 @@ export default function FormularioContacto({
 						className='h-9 text-sm shadow-none'
 					/>
 					{formik.errors.nombre && formik.touched.nombre && (
-						<p className='text-[10px] text-destructive'>
+						<p className='text-xs text-destructive'>
 							{formik.errors.nombre}
 						</p>
 					)}
@@ -91,7 +91,7 @@ export default function FormularioContacto({
 						className='h-9 text-sm shadow-none'
 					/>
 					{formik.errors.correo && formik.touched.correo && (
-						<p className='text-[10px] text-destructive'>
+						<p className='text-xs text-destructive'>
 							{formik.errors.correo}
 						</p>
 					)}

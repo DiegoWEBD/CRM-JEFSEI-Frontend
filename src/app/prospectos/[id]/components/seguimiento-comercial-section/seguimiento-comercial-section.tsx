@@ -300,7 +300,7 @@ export default function SeguimientoComercialSection({
 								<ResumenItem label='Estado del seguimiento'>
 								<Badge
 									variant={SEGUIMIENTO_VARIANT[estadoSeguimiento]}
-									className='text-[10px] font-medium'
+									className='text-xs font-medium'
 								>
 									{ESTADO_SEGUIMIENTO_LABELS[estadoSeguimiento]}
 								</Badge>
@@ -487,10 +487,10 @@ export default function SeguimientoComercialSection({
 											</Select>
 										</div>
 										<div className='rounded-md border border-dashed border-border bg-muted/30 px-3 py-2'>
-											<p className='text-[11px] font-medium text-foreground'>
+											<p className='text-sm font-medium text-foreground'>
 												Próxima acción (automática)
 											</p>
-											<p className='mt-1 text-[11px] text-muted-foreground'>
+											<p className='mt-1 text-sm text-muted-foreground'>
 												{ESTADO_CONTACTO_PROXIMA_ACCION[
 													formikGestion.values.estadoContacto
 												] ?? ''}
@@ -674,7 +674,7 @@ function ResumenItem({
 }) {
 	return (
 		<div className='space-y-1'>
-			<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 				{label}
 			</p>
 			<div className='text-sm text-foreground'>{children}</div>

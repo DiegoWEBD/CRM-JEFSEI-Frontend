@@ -28,7 +28,7 @@ export default function ItemInformacionProspecto({
 				className,
 			)}
 		>
-			<p className='text-[10px] font-medium text-muted-foreground'>{label}</p>
+			<p className='text-xs font-medium text-muted-foreground'>{label}</p>
 			<p
 				className={classname(
 					'text-sm leading-snug text-foreground',

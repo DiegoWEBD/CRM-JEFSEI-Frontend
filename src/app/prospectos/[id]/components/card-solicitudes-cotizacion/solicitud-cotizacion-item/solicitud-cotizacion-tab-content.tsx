@@ -125,7 +125,7 @@ export default function SolicitudCotizacionTabContent({
 		return (
 			<dl className='space-y-2.5 pt-3 text-sm'>
 				<div>
-					<dt className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+					<dt className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 						Información general
 					</dt>
 				</div>
@@ -158,7 +158,7 @@ export default function SolicitudCotizacionTabContent({
 				{hasDetalles ? (
 					<>
 						<div className='pt-1'>
-							<dt className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+							<dt className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 								Detalles del seguro
 							</dt>
 						</div>
@@ -250,7 +250,7 @@ export default function SolicitudCotizacionTabContent({
 				{tieneCotizaciones || (estudios && estudios.length > 0) ? (
 					<>
 						<div className='pt-1'>
-							<dt className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+							<dt className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 								Estado
 							</dt>
 						</div>
@@ -353,7 +353,7 @@ export default function SolicitudCotizacionTabContent({
 										</span>
 										<span
 											className={cn(
-												'inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-[9px] font-semibold leading-none',
+												'inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-semibold leading-none',
 												ESTADO_VENC_COLORS[ev],
 											)}
 										>
@@ -377,7 +377,7 @@ export default function SolicitudCotizacionTabContent({
 											type='button'
 											variant='outline'
 											size='sm'
-											className='mt-2 h-7 text-[10px]'
+											className='mt-2 h-7 text-xs'
 											onClick={() =>
 												descargarPDF(c.archivo_base64!, c.nombre_archivo!)
 											}

@@ -25,7 +25,7 @@ export function CommercialActivityFilters({
       )}
     >
       <div className={cn(campoClass)}>
-        <Label className='mb-0.5 block text-[10px] text-muted-foreground'>Función</Label>
+        <Label className='mb-0.5 block text-xs text-muted-foreground'>Función</Label>
         <Select defaultValue='ejecutivo_comercial'>
           <SelectTrigger className='h-7 text-xs shadow-none'>
             <SelectValue placeholder='Función' />
@@ -37,7 +37,7 @@ export function CommercialActivityFilters({
         </Select>
       </div>
       <div className={cn(campoClass)}>
-        <Label className='mb-0.5 block text-[10px] text-muted-foreground'>Ejecutivo</Label>
+        <Label className='mb-0.5 block text-xs text-muted-foreground'>Ejecutivo</Label>
         <Select defaultValue='todos'>
           <SelectTrigger className='h-7 text-xs shadow-none'>
             <SelectValue placeholder='Ejecutivo' />
@@ -48,14 +48,14 @@ export function CommercialActivityFilters({
         </Select>
       </div>
       <div className={cn(campoClass, 'min-w-[8.5rem]')}>
-        <Label className='mb-0.5 block text-[10px] text-muted-foreground'>Fecha desde</Label>
+        <Label className='mb-0.5 block text-xs text-muted-foreground'>Fecha desde</Label>
         <input
           type='date'
           className='flex h-7 w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
         />
       </div>
       <div className={cn(campoClass, 'min-w-[8.5rem]')}>
-        <Label className='mb-0.5 block text-[10px] text-muted-foreground'>Fecha hasta</Label>
+        <Label className='mb-0.5 block text-xs text-muted-foreground'>Fecha hasta</Label>
         <input
           type='date'
           className='flex h-7 w-full rounded-md border border-input bg-transparent px-2 py-1 text-xs shadow-none file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'

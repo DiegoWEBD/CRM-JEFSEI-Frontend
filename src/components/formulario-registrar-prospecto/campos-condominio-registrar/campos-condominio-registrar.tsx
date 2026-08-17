@@ -154,7 +154,7 @@ export default function CamposCondominioRegistrar({ formik, section }: Props) {
             }
             aria-label='Clasificación preliminar incendio (calculada automáticamente)'
           />
-          <p className='mt-1 text-[10px] leading-snug text-muted-foreground'>
+          <p className='mt-1 text-xs leading-snug text-muted-foreground'>
             Valor preliminar según materialidad. La validación final corresponde a
             evaluación/proyectos.
           </p>

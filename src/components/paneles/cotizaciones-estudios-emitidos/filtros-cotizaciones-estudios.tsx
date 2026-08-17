@@ -177,7 +177,7 @@ export default function FiltrosCotizacionesEstudios({
 				</Button>
 			)}
 
-			<span className='text-[11px] text-muted-foreground'>
+			<span className='text-sm text-muted-foreground'>
 				Mostrando {filtrados} de {total} cotizaciones
 			</span>
 		</div>

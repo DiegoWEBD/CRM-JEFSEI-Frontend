@@ -13,8 +13,8 @@ type CuotasPlanPagoTableProps = {
 	onMarcarPago?: (idCuota: number) => Promise<void>
 }
 
-const TH = 'border border-border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wide'
-const TD = 'border border-border px-2 py-1.5 text-center align-middle text-[11px] leading-snug'
+const TH = 'border border-border px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide'
+const TD = 'border border-border px-2 py-1.5 text-center align-middle text-sm leading-snug'
 
 export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTableProps) {
 	const [pagandoId, setPagandoId] = useState<number | null>(null)
@@ -42,18 +42,18 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 				{cuotas.map((cuota) => (
 					<div key={cuota.numero_cuota} className='space-y-1 px-3 py-2.5 text-xs'>
 						<div className='flex items-center justify-between'>
-							<span className='text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/80'>
+							<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground/80'>
 								Cuota N°{cuota.numero_cuota}
 							</span>
 							{cuota.pagado ? (
 								<span className='flex items-center gap-1 text-emerald-600'>
 									<CheckIcon className='h-3.5 w-3.5' aria-hidden />
-									<span className='text-[10px] font-medium'>Pagado</span>
+									<span className='text-xs font-medium'>Pagado</span>
 								</span>
 							) : (
 								<span className='flex items-center gap-1 text-muted-foreground/50'>
 									<XIcon className='h-3.5 w-3.5' aria-hidden />
-									<span className='text-[10px]'>Pendiente</span>
+									<span className='text-xs'>Pendiente</span>
 								</span>
 							)}
 						</div>
@@ -67,12 +67,12 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 						</div>
 						<div className='flex justify-end'>
 							{cuota.pagado ? (
-								<span className='text-[10px] text-emerald-600'>Pagado</span>
+								<span className='text-xs text-emerald-600'>Pagado</span>
 							) : (
 								<Button
 									variant='outline'
 									size='sm'
-									className='h-7 text-[10px]'
+									className='h-7 text-xs'
 									disabled={!onMarcarPago || pagandoId === cuota.id}
 									onClick={() => handlePagar(cuota.id)}
 								>
@@ -136,12 +136,12 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 							<td className={TD}>
 								<div className='flex items-center justify-center'>
 									{cuota.pagado ? (
-										<span className='text-[10px] text-emerald-600'>Pagado</span>
+										<span className='text-xs text-emerald-600'>Pagado</span>
 									) : (
 										<Button
 											variant='outline'
 											size='sm'
-											className='h-7 text-[10px]'
+											className='h-7 text-xs'
 											disabled={!onMarcarPago || pagandoId === cuota.id}
 											onClick={() => handlePagar(cuota.id)}
 										>

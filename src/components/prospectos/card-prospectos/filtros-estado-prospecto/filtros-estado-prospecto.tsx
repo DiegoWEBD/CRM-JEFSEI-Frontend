@@ -9,7 +9,10 @@ import {
 	FiltroEstadoComercialValor,
 	useFiltrosProspectos,
 } from '@/hooks/prospectos/use-filtros-prospectos'
-import { ESTADO_PROSPECTO_LABELS, ESTADOS_PROSPECTO } from '@/types/estados/estado-comercial-cliente'
+import {
+	ESTADO_PROSPECTO_LABELS,
+	ESTADOS_PROSPECTO,
+} from '@/types/estados/estado-comercial-cliente'
 
 type FiltrosEstadoProspectoProps = {
 	prospectos?: ProspectoResumenJson[]
@@ -31,7 +34,7 @@ export function FiltrosEstadoProspecto({
 
 	return (
 		<div className='space-y-1.5'>
-			<p className='text-[10px] font-medium uppercase tracking-wide text-muted-foreground'>
+			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 				Estado comercial
 			</p>
 
@@ -42,12 +45,7 @@ export function FiltrosEstadoProspecto({
 					onValueChange={v => onFiltroChange(v as FiltroEstadoComercialValor)}
 				>
 					<SelectTrigger className='h-9 w-full text-xs shadow-none'>
-						<SelectValue>
-							{labelSelectActivo}
-							{/*filtroActivo === 'todos'
-								? conteos.todos
-								: conteos.porEstado[filtroActivo as EstadoComercialCliente]*/}
-						</SelectValue>
+						<SelectValue>{labelSelectActivo}</SelectValue>
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value='todos' className='text-xs'>

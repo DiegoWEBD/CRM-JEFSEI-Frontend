@@ -88,13 +88,13 @@ export default function FormularioActualizarProspecto({
 							onChange={formik.handleChange}
 						/>
 						{estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? (
-							<p className='text-[10px] text-destructive'>
+							<p className='text-xs text-destructive'>
 								{estadoRut === 'dv_invalido'
 									? 'El dígito verificador no corresponde.'
 									: 'Ingrese 8 números y el dígito verificador (0-9 o K).'}
 							</p>
 						) : estadoRut === 'incompleto' ? (
-							<p className='text-[10px] text-muted-foreground'>
+							<p className='text-xs text-muted-foreground'>
 								8 dígitos + verificador (número o K).
 							</p>
 						) : null}

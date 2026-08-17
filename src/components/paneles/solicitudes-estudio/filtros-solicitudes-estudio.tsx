@@ -181,7 +181,7 @@ export default function FiltrosSolicitudesEstudio({
 				</Button>
 			) : null}
 
-			<span className='text-[11px] text-muted-foreground'>
+			<span className='text-sm text-muted-foreground'>
 				Mostrando {filtrados} de {total} solicitudes
 			</span>
 		</div>
