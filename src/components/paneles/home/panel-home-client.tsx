@@ -17,14 +17,15 @@ import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-
 import { Card, CardContent } from '@/components/card'
 import CardCalendario from '@/components/card-calendario/card-calendario'
 import CardComunicadoGerencia from '@/components/card-comunicado-gerencia/card-comunicado-gerencia'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
+import PanelCobranzaClient from '@/components/paneles/ejecutivo-cobranza/panel-cobranza-client'
+import { DashboardCobranza } from '@/dominio/cobranza/dashboard-cobranza'
 import {
 	FiltroEstadoValor,
 	useFiltrarProspectos,
 } from '@/hooks/prospectos/use-filtrar-prospectos'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
-import { DashboardCobranza } from '@/dominio/cobranza/dashboard-cobranza'
-import PanelCobranzaClient from '@/components/paneles/ejecutivo-cobranza/panel-cobranza-client'
 import CardProspectosClient from '../../prospectos/card-prospectos/card-prospectos-client'
 import CardKpi from '../ejecutivo-comercial/cards/card-kpi/card-kpi'
 import MetricasEjecutivoComercial from '../ejecutivo-comercial/metricas-ejecutivo-comercial/metricas-ejecutivo-comercial'
@@ -35,10 +36,22 @@ import PanelLayout from '../panel-layout/panel-layout'
 
 const Acentos = {
 	info: { card: 'border-info/30 bg-info/[0.06]', icon: 'text-info' },
-	success: { card: 'border-success/30 bg-success/[0.06]', icon: 'text-success' },
-	primary: { card: 'border-primary/30 bg-primary/[0.06]', icon: 'text-primary' },
-	warning: { card: 'border-warning/35 bg-warning/10', icon: 'text-warning-foreground dark:text-warning' },
-	danger: { card: 'border-destructive/30 bg-destructive/[0.06]', icon: 'text-destructive' },
+	success: {
+		card: 'border-success/30 bg-success/[0.06]',
+		icon: 'text-success',
+	},
+	primary: {
+		card: 'border-primary/30 bg-primary/[0.06]',
+		icon: 'text-primary',
+	},
+	warning: {
+		card: 'border-warning/35 bg-warning/10',
+		icon: 'text-warning-foreground dark:text-warning',
+	},
+	danger: {
+		card: 'border-destructive/30 bg-destructive/[0.06]',
+		icon: 'text-destructive',
+	},
 } as const
 
 type PanelHomeClientProps = {
@@ -58,10 +71,6 @@ export default function PanelHomeClient({
 
 	const [kpiAbierto, setKpiAbierto] = useState<string | null>(null)
 
-	const esEjecutivoComercial = codigoRoles.includes('EJECUTIVO_COMERCIAL')
-	const esEjecutivoEvaluacion = codigoRoles.includes(
-		'EJECUTIVO_EVALUACION_PROYECTOS',
-	)
 	const esEjecutivoCobranza = codigoRoles.includes('EJECUTIVO_COBRANZA')
 
 	const { filtrosContados } = useFiltrosProspectos(prospectos)
@@ -69,8 +78,10 @@ export default function PanelHomeClient({
 
 	const KPI_FILTRO: Record<string, FiltroEstadoValor> = useMemo(
 		() => ({
+			prospectos: 'prospecto',
 			asignados: 'todos',
-			activos: 'todos',
+			activos: 'cliente_activo',
+			inactivos: 'cliente_inactivo',
 			cotiz: 'COTIZACION_SOLICITADA_COMPANY',
 			estDisp: 'ESTUDIO_DISPONIBLE',
 			pendRevision: 'COTIZACION_SOLICITADA_COMPANY',
@@ -82,8 +93,10 @@ export default function PanelHomeClient({
 	)
 
 	const KPI_TITULOS: Record<string, string> = {
+		prospectos: 'Prospectos',
 		asignados: 'Clientes asignados',
 		activos: 'Clientes activos',
+		inactivos: 'Clientes inactivos',
 		cotiz: 'Cotizaciones solicitadas',
 		estDisp: 'Estudios disponibles',
 		pendRevision: 'Pendientes de revisión',
@@ -97,7 +110,45 @@ export default function PanelHomeClient({
 		[kpiAbierto, filtrar, KPI_FILTRO],
 	)
 
+	console.log(kpiAbierto)
+
 	const tituloSheet = kpiAbierto ? (KPI_TITULOS[kpiAbierto] ?? '') : ''
+
+	const totalProspectos = useMemo(
+		() =>
+			prospectos.reduce(
+				(acc, prospecto) =>
+					prospecto.estado_general_cliente.toUpperCase() === 'PROSPECTO'
+						? acc + 1
+						: acc + 0,
+				0,
+			),
+		[prospectos],
+	)
+
+	const clientesActivos = useMemo(
+		() =>
+			prospectos.reduce(
+				(acc, prospecto) =>
+					prospecto.estado_general_cliente.toUpperCase() === 'CLIENTE_ACTIVO'
+						? acc + 1
+						: acc + 0,
+				0,
+			),
+		[prospectos],
+	)
+
+	const clientesInactivos = useMemo(
+		() =>
+			prospectos.reduce(
+				(acc, prospecto) =>
+					prospecto.estado_general_cliente.toUpperCase() === 'CLIENTE_INACTIVO'
+						? acc + 1
+						: acc + 0,
+				0,
+			),
+		[prospectos],
+	)
 
 	return (
 		<PanelLayout>
@@ -112,70 +163,92 @@ export default function PanelHomeClient({
 					</p>
 				</div>
 
-				{esEjecutivoComercial && (
-					<>
+				<>
+					<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_COMERCIAL']}>
 						<MetricasEjecutivoComercial />
-						<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
+					</AuthGuard>
+
+					<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
+						<AuthGuard
+							fallback={null}
+							allowedRoles={[
+								'EJECUTIVO_COMERCIAL',
+								'GERENTE_GENERAL',
+								'GERENTE_COMERCIAL',
+								'GERENTE_OPERACIONES',
+							]}
+						>
 							<CardKpi
 								datos={{
-									key: 'asignados',
-									label: 'Clientes asignados',
-									value: prospectos?.length ?? 0,
+									key: 'prospectos',
+									label: 'Prospectos',
+									value: totalProspectos,
 									icon: UserCheck,
 								}}
 								setKpiAbierto={setKpiAbierto}
 								accentClassName={Acentos.info.card}
 								iconClassName={Acentos.info.icon}
 							/>
+
 							<CardKpi
 								datos={{
-									key: 'cotiz',
-									label: 'Cotizaciones solicitadas',
-									value:
-										filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
-									icon: ClipboardList,
+									key: 'activos',
+									label: 'Clientes activos',
+									value: clientesActivos,
+									icon: Users,
 								}}
 								setKpiAbierto={setKpiAbierto}
 								accentClassName={Acentos.success.card}
 								iconClassName={Acentos.success.icon}
 							/>
+
 							<CardKpi
 								datos={{
-									key: 'estDisp',
-									label: 'Estudios disponibles',
-									value: filtrosContados.get('ESTUDIO_DISPONIBLE') ?? 0,
-									icon: FileText,
-								}}
-								setKpiAbierto={setKpiAbierto}
-								accentClassName={Acentos.primary.card}
-								iconClassName={Acentos.primary.icon}
-							/>
-							<CardKpi
-								datos={{
-									key: 'activos',
-									label: 'Clientes activos',
-									value:
-										prospectos?.filter(
-											prospecto =>
-												prospecto.estado_general_cliente == 'cliente_activo',
-										).length ?? 0,
+									key: 'inactivos',
+									label: 'Clientes inactivos',
+									value: clientesInactivos,
 									icon: Users,
 								}}
 								setKpiAbierto={setKpiAbierto}
-								accentClassName={Acentos.warning.card}
-								iconClassName={Acentos.warning.icon}
+								accentClassName={Acentos.danger.card}
+								iconClassName={Acentos.danger.icon}
 							/>
-						</div>
-					</>
-				)}
 
-				{esEjecutivoEvaluacion && (
-					<>
-						<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
+							<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_COMERCIAL']}>
+								<CardKpi
+									datos={{
+										key: 'cotiz',
+										label: 'Cotizaciones solicitadas',
+										value:
+											filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
+										icon: ClipboardList,
+									}}
+									setKpiAbierto={setKpiAbierto}
+									accentClassName={Acentos.warning.card}
+									iconClassName={Acentos.warning.icon}
+								/>
+								<CardKpi
+									datos={{
+										key: 'estDisp',
+										label: 'Estudios disponibles',
+										value: filtrosContados.get('ESTUDIO_DISPONIBLE') ?? 0,
+										icon: FileText,
+									}}
+									setKpiAbierto={setKpiAbierto}
+									accentClassName={Acentos.primary.card}
+									iconClassName={Acentos.primary.icon}
+								/>
+							</AuthGuard>
+						</AuthGuard>
+
+						<AuthGuard
+							fallback={null}
+							allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}
+						>
 							<CardKpi
 								datos={{
 									key: 'pendRevision',
-									label: 'Pendientes de revisión',
+									label: 'Cotizaciones pendientes',
 									value:
 										filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
 									icon: Bell,
@@ -217,24 +290,29 @@ export default function PanelHomeClient({
 								accentClassName={Acentos.info.card}
 								iconClassName={Acentos.info.icon}
 							/>
-						</div>
+						</AuthGuard>
+					</div>
+				</>
 
-						<div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-							<TarjetaEnlace
-								href='/solicitudes-estudio'
-								icono={ClipboardList}
-								titulo='Solicitudes de estudio'
-								descripcion='Revisa y gestiona las solicitudes de cotización'
-							/>
-							<TarjetaEnlace
-								href='/cotizaciones-estudios-emitidos'
-								icono={FileText}
-								titulo='Cotizaciones / estudios emitidos'
-								descripcion='Historial de cotizaciones y estudios emitidos'
-							/>
-						</div>
-					</>
-				)}
+				<AuthGuard
+					fallback={null}
+					allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}
+				>
+					<div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+						<TarjetaEnlace
+							href='/solicitudes-estudio'
+							icono={ClipboardList}
+							titulo='Solicitudes de estudio'
+							descripcion='Revisa y gestiona las solicitudes de cotización'
+						/>
+						<TarjetaEnlace
+							href='/cotizaciones-estudios-emitidos'
+							icono={FileText}
+							titulo='Cotizaciones / estudios emitidos'
+							descripcion='Historial de cotizaciones y estudios emitidos'
+						/>
+					</div>
+				</AuthGuard>
 
 				{esEjecutivoCobranza && (
 					<PanelCobranzaClient dashboardInicial={dashboardCobranzaInicial} />
@@ -281,7 +359,7 @@ function TarjetaEnlace({
 		>
 			<Card className='border-border/70 bg-card shadow-none transition-all duration-150 group-hover:-translate-y-0.5 group-hover:border-primary/30 group-hover:shadow-md'>
 				<CardContent className='flex items-center gap-3.5 p-4'>
-					<span className='grid size-11 shrink-0 place-items-center rounded-xl bg-primary/[0.06] text-primary ring-1 ring-primary/15 transition-colors group-hover:bg-primary/10'>
+					<span className='grid size-11 shrink-0 place-items-center rounded-xl bg-primary/6 text-primary ring-1 ring-primary/15 transition-colors group-hover:bg-primary/10'>
 						<Icono className='size-5' aria-hidden />
 					</span>
 					<div className='min-w-0 flex-1'>
