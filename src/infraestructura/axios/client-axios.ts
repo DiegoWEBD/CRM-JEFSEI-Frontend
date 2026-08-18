@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { toast } from 'sonner'
 
 export const clientAxios = axios.create()
 
@@ -14,15 +13,7 @@ function instalarInterceptor(instancia: typeof axios | typeof clientAxios) {
             window.dispatchEvent(new Event('session-expired'))
             window.location.replace('/api/auth/logout?redirect=/login')
           }
-          return Promise.reject(error)
         }
-        toast.error(
-          error.response?.data?.error
-            || error.response?.data?.detail
-            || 'Ha ocurrido un error inesperado',
-        )
-      } else {
-        toast.error(error?.message || 'Ha ocurrido un error inesperado')
       }
 
       return Promise.reject(error)
