@@ -1,3 +1,4 @@
+import { Badge } from '@/components/badge'
 import { classname } from '@/lib/class-name'
 
 type ItemInformacionProspectoProps = {
@@ -21,23 +22,16 @@ export default function ItemInformacionProspecto({
 	else texto = value.trim()
 
 	return (
-		<div
-			className={classname(
-				'min-w-0 space-y-0.5',
-				highlightMissing && 'rounded-sm bg-warning/6 px-1 -mx-1',
-				className,
-			)}
-		>
+		<div className={classname('min-w-0 space-y-0.5', className)}>
 			<p className='text-xs font-medium text-muted-foreground'>{label}</p>
-			<p
-				className={classname(
-					'text-sm leading-snug text-foreground',
-					texto === '—' && 'text-muted-foreground',
-					highlightMissing && texto === '—' && 'text-warning/90',
-				)}
-			>
-				{texto}
-			</p>
+			{!highlightMissing && (
+				<p className='text-sm leading-snug text-foreground'>{texto}</p>
+			)}
+			{highlightMissing && (
+				<Badge variant='pastel-amber' className='w-full justify-start py-1.5'>
+					{texto}
+				</Badge>
+			)}
 		</div>
 	)
 }
