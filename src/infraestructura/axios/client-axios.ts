@@ -11,6 +11,7 @@ function instalarInterceptor(instancia: typeof axios | typeof clientAxios) {
         if (error.response?.status === 401) {
           const url = error.config?.url || ''
           if (!url.startsWith('/api/auth/')) {
+            window.dispatchEvent(new Event('session-expired'))
             window.location.replace('/api/auth/logout?redirect=/login')
           }
           return Promise.reject(error)

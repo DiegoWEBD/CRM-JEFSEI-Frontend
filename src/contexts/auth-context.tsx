@@ -25,7 +25,10 @@ export function AuthProvider({ children, initialPayload }: AuthProviderProps) {
 	useEffect(() => {
 		obtenerSesion()
 			.then(payload => setUsuario(payload))
-			.catch(() => setUsuario(null))
+			.catch(() => {
+				setUsuario(null)
+				window.dispatchEvent(new Event('session-expired'))
+			})
 			.finally(() => setCargando(false))
 	}, [])
 
