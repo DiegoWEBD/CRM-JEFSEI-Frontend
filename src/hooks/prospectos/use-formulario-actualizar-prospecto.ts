@@ -34,15 +34,15 @@ export const useFormularioActualizarProspecto = ({
 	})
 
 	const validationSchema = Yup.object({
-		rut_riesgo: Yup.string().test(
-			'rut-valido',
-			'El RUT no es válido. Debe tener formato XX.XXX.XXX-Y con dígito verificador correcto.',
-			value => {
+		rut_riesgo: Yup.string()
+			.test('rut-valido', 'RUT inválido.', value => {
 				if (!value || value.trim() === '') return true
 				return rutChilenoEstadoValidacion(value) === 'valido'
-			},
+			})
+			.nullable(),
+		nombre_riesgo: Yup.string().required(
+			'El nombre del prospecto es obligatorio',
 		),
-		nombre_riesgo: Yup.string().required('El nombre del prospecto es obligatorio'),
 	})
 
 	const formik = useFormik<FormularioInitialValues>({
@@ -55,18 +55,27 @@ export const useFormularioActualizarProspecto = ({
 			region: prospecto.region,
 			comuna: prospecto.comuna,
 			observaciones: prospecto.observaciones,
-			linea_negocio: prospecto.linea_negocio.nombre?.toLowerCase() || 'lineas_personales',
+			linea_negocio:
+				prospecto.linea_negocio.nombre?.toLowerCase() || 'lineas_personales',
 		},
 		onSubmit: async values => {
 			await mutation.mutateAsync({
-				rut_riesgo: values.rut_riesgo === '' ? null : (values.rut_riesgo ?? null),
+				rut_riesgo:
+					values.rut_riesgo === '' ? null : (values.rut_riesgo ?? null),
 				nombre_riesgo: values.nombre_riesgo,
-				telefono_contacto: values.telefono_contacto === '' ? null : (values.telefono_contacto ?? null),
-				correo_contacto: values.correo_contacto === '' ? null : (values.correo_contacto ?? null),
+				telefono_contacto:
+					values.telefono_contacto === ''
+						? null
+						: (values.telefono_contacto ?? null),
+				correo_contacto:
+					values.correo_contacto === ''
+						? null
+						: (values.correo_contacto ?? null),
 				direccion: values.direccion === '' ? null : (values.direccion ?? null),
 				region: values.region === '' ? null : (values.region ?? null),
 				comuna: values.comuna === '' ? null : (values.comuna ?? null),
-				observaciones: values.observaciones === '' ? null : (values.observaciones ?? null),
+				observaciones:
+					values.observaciones === '' ? null : (values.observaciones ?? null),
 			})
 			onComplete?.()
 		},

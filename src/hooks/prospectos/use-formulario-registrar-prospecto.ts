@@ -76,10 +76,12 @@ export const useFormularioRegistrarProspecto = ({
 	})
 
 	const validationSchema = Yup.object({
-		rut_riesgo: Yup.string().test('rut-valido', 'RUT inválido.', value => {
-			if (!value || value.trim() === '') return true
-			return rutChilenoEstadoValidacion(value) === 'valido'
-		}),
+		rut_riesgo: Yup.string()
+			.test('rut-valido', 'RUT inválido.', value => {
+				if (!value || value.trim() === '') return true
+				return rutChilenoEstadoValidacion(value) === 'valido'
+			})
+			.nullable(),
 
 		nombre_riesgo: Yup.string().required('El nombre del riesgo es obligatorio'),
 
