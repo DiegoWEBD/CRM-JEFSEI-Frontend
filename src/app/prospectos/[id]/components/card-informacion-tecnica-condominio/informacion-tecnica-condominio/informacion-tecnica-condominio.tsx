@@ -26,7 +26,7 @@ export default function InformacionTecnicaCondominio({
 				/>
 			)}
 			<ItemInformacionProspecto
-				label='Valor UF/m²'
+				label='Valor UF / m² sin IVA'
 				value={prospecto.uf_por_metro_cuadrado}
 				highlightMissing={inputPendiente(prospecto.uf_por_metro_cuadrado)}
 			/>

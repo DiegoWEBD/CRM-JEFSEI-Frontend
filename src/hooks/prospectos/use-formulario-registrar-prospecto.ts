@@ -1,6 +1,7 @@
 import { registrarProspecto } from '@/aplicacion/prospectos/use-cases/registrar-prospecto/registrar-prospecto'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
@@ -15,29 +16,29 @@ type UseFormularioRegistrarProspecto = {
 }
 
 const LINEA_TO_ID: Record<string, number> = {
-  condominio: 10,
-  lineas_personales: 11,
+	condominio: 10,
+	lineas_personales: 11,
 }
 
 export const useFormularioRegistrarProspecto = ({
-  onClose,
-  onProspectoRegistrado,
+	onClose,
+	onProspectoRegistrado,
 }: UseFormularioRegistrarProspecto = {}) => {
-  const queryClient = useQueryClient()
+	const queryClient = useQueryClient()
 
-  const mutation = useMutation({
-    mutationFn: async (values: FormularioInitialValues) => {
-      const request = {
-        rut_riesgo: values.rut_riesgo || null,
-        id_administrador: values.id_administrador ?? null,
-        nombre_riesgo: values.nombre_riesgo,
-        telefono_contacto: values.telefono_contacto || null,
-        correo_contacto: values.correo_contacto || null,
-        direccion: values.direccion || null,
-        region: values.region || null,
-        comuna: values.comuna || null,
-        observaciones: values.observaciones || null,
-        id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? 0,
+	const mutation = useMutation({
+		mutationFn: async (values: FormularioInitialValues) => {
+			const request = {
+				rut_riesgo: values.rut_riesgo || null,
+				id_administrador: values.id_administrador ?? null,
+				nombre_riesgo: values.nombre_riesgo,
+				telefono_contacto: values.telefono_contacto || null,
+				correo_contacto: values.correo_contacto || null,
+				direccion: values.direccion || null,
+				region: values.region || null,
+				comuna: values.comuna || null,
+				observaciones: values.observaciones || null,
+				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? 0,
 				uf_por_metro_cuadrado: values.uf_por_metro_cuadrado ?? null,
 				porcentaje_depreciacion: (() => {
 					const n = n2(values.porcentaje_depreciacion)
@@ -75,13 +76,21 @@ export const useFormularioRegistrarProspecto = ({
 	})
 
 	const validationSchema = Yup.object({
+		rut_riesgo: Yup.string().test('rut-valido', 'RUT inválido.', value => {
+			if (!value || value.trim() === '') return true
+			return rutChilenoEstadoValidacion(value) === 'valido'
+		}),
+
 		nombre_riesgo: Yup.string().required('El nombre del riesgo es obligatorio'),
 
 		correo_contacto: Yup.string().email('Correo inválido').nullable(),
 
-    linea_negocio: Yup.string()
-      .oneOf(['condominio', 'lineas_personales'], 'La línea de negocio es obligatoria')
-      .required('La línea de negocio es obligatoria'),
+		linea_negocio: Yup.string()
+			.oneOf(
+				['condominio', 'lineas_personales'],
+				'La línea de negocio es obligatoria',
+			)
+			.required('La línea de negocio es obligatoria'),
 
 		numero_pisos: Yup.number()
 			.min(0, 'No puede ser negativo')
@@ -142,7 +151,7 @@ export const useFormularioRegistrarProspecto = ({
 			region: '',
 			comuna: '',
 			observaciones: '',
-      linea_negocio: 'lineas_personales',
+			linea_negocio: 'lineas_personales',
 			id_administrador: undefined,
 			tiene_locales_comerciales: undefined,
 			uso_del_condominio: '',

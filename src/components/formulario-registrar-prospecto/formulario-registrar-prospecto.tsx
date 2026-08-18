@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import Campo from '@/components/forms/campo/campo'
 import { Input } from '@/components/input'
 import {
 	Select,
@@ -18,11 +19,10 @@ import {
 	CHILE_REGIONES_NOMBRES,
 	obtenerComunasDeRegion,
 } from '@/lib/chile-regiones-comunas'
-import { classInputRut } from '@/utils/class-input-rut'
-import { inp } from '@/utils/form-utils'
-import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
+import { formatRut } from '@/utils/format-rut'
 import { Building2, LoaderCircle, User } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import FormError from '../forms/form-error/form-error'
 import CamposCondominioRegistrar from './campos-condominio-registrar/campos-condominio-registrar'
 
 type FormularioRegistrarProspectoProps = {
@@ -60,11 +60,6 @@ export default function FormularioRegistrarProspecto({
 			tipo === 'condominio' ? 'condominio' : 'lineas_personales',
 		)
 	}
-
-	const estadoRut = useMemo(
-		() => rutChilenoEstadoValidacion(formik.values.rut_riesgo ?? ''),
-		[formik.values.rut_riesgo],
-	)
 
 	return (
 		<form onSubmit={formik.handleSubmit} className='space-y-6'>
@@ -105,74 +100,46 @@ export default function FormularioRegistrarProspecto({
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
-					<div className='space-y-1.5'>
-						<label
-							className={`text-xs${estadoRut === 'vacio' || estadoRut === 'incompleto' ? ' text-warning' : ''}${estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? ' text-destructive' : ''}`}
-						>
-							RUT
-						</label>
+					<Campo label='RUT'>
 						<Input
-							className={classInputRut(estadoRut)}
 							placeholder='12.345.678-9'
 							inputMode='text'
 							autoComplete='off'
 							maxLength={14}
 							name='rut_riesgo'
 							value={formik.values.rut_riesgo ?? ''}
-							onChange={formik.handleChange}
+							onChange={e =>
+								formik.setFieldValue(
+									'rut_riesgo',
+									formatRut(e.target.value),
+								)
+							}
 						/>
-						{estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? (
-							<p className='text-xs text-destructive'>
-								{estadoRut === 'dv_invalido'
-									? 'El dígito verificador no corresponde.'
-									: 'Ingrese 8 números y el dígito verificador (0-9 o K).'}
-							</p>
-						) : estadoRut === 'incompleto' ? (
-							<p className='text-xs text-muted-foreground'>
-								8 dígitos + verificador (número o K).
-							</p>
+						{formik.touched.rut_riesgo && formik.errors.rut_riesgo ? (
+							<FormError>{formik.errors.rut_riesgo}</FormError>
 						) : null}
-					</div>
+					</Campo>
 
-					<div className='space-y-1.5'>
-						<label
-							className={`text-xs${formik.values.nombre_riesgo ? '' : ' text-warning'}`}
-						>
-							Nombre / Razón social *
-						</label>
+					<Campo label='Nombre / Razón social *'>
 						<Input
-							className={inp(!formik.values.nombre_riesgo)}
 							name='nombre_riesgo'
 							value={formik.values.nombre_riesgo}
 							onChange={formik.handleChange}
 						/>
 						{formik.touched.nombre_riesgo && formik.errors.nombre_riesgo ? (
-							<p className='text-xs text-destructive'>
-								{formik.errors.nombre_riesgo}
-							</p>
+							<FormError>{formik.errors.nombre_riesgo}</FormError>
 						) : null}
-					</div>
+					</Campo>
 
-					<div className='space-y-1.5 sm:col-span-2'>
-						<label
-							className={`text-xs${inputPendienteSimple(formik.values.direccion) ? ' text-warning' : ''}`}
-						>
-							Dirección
-						</label>
+					<Campo label='Dirección' className='sm:col-span-2'>
 						<Input
-							className={inp(inputPendienteSimple(formik.values.direccion))}
 							name='direccion'
 							value={formik.values.direccion}
 							onChange={formik.handleChange}
 						/>
-					</div>
+					</Campo>
 
-					<div className='space-y-1.5'>
-						<label
-							className={`text-xs${inputPendienteSimple(region) ? ' text-warning' : ''}`}
-						>
-							Región
-						</label>
+					<Campo label='Región'>
 						<Select
 							value={region || '__none__'}
 							onValueChange={value => {
@@ -187,7 +154,7 @@ export default function FormularioRegistrarProspecto({
 								}
 							}}
 						>
-							<SelectTrigger className={inp(inputPendienteSimple(region))}>
+							<SelectTrigger>
 								<SelectValue placeholder='Selecciona una región' />
 							</SelectTrigger>
 							<SelectContent className='max-h-70'>
@@ -204,14 +171,9 @@ export default function FormularioRegistrarProspecto({
 								))}
 							</SelectContent>
 						</Select>
-					</div>
+					</Campo>
 
-					<div className='space-y-1.5'>
-						<label
-							className={`text-xs${inputPendienteSimple(formik.values.comuna) ? ' text-warning' : ''}`}
-						>
-							Comuna
-						</label>
+					<Campo label='Comuna'>
 						<Select
 							disabled={!region}
 							value={
@@ -225,9 +187,7 @@ export default function FormularioRegistrarProspecto({
 								formik.setFieldValue('comuna', c)
 							}}
 						>
-							<SelectTrigger
-								className={`${inp(inputPendienteSimple(formik.values.comuna))}${!region ? ' cursor-not-allowed opacity-70' : ''}`}
-							>
+							<SelectTrigger>
 								<SelectValue
 									placeholder={
 										region
@@ -252,17 +212,18 @@ export default function FormularioRegistrarProspecto({
 								))}
 							</SelectContent>
 						</Select>
-					</div>
+					</Campo>
 
 					{tipoActual === 'condominio' && (
-						<div className='space-y-1.5'>
-							<label className='text-xs'>Administrador</label>
+						<Campo label='Administrador'>
 							<SelectorAdministrador
 								value={formik.values.id_administrador}
-								onChange={id => formik.setFieldValue('id_administrador', id)}
+								onChange={id =>
+									formik.setFieldValue('id_administrador', id)
+								}
 								administradores={administradores ?? []}
 							/>
-						</div>
+						</Campo>
 					)}
 				</CardContent>
 			</Card>
@@ -349,10 +310,4 @@ export default function FormularioRegistrarProspecto({
 			</div>
 		</form>
 	)
-}
-
-function inputPendienteSimple(input?: string | number | boolean | null) {
-	if (input === undefined || input === null) return true
-	if (typeof input === 'boolean' || typeof input === 'number') return false
-	return !String(input).trim()
 }

@@ -101,6 +101,7 @@ export default function AsignarEjecutivoDialog({
 				'EJECUTIVO_EVALUACION_PROYECTOS',
 				'GERENTE_GENERAL',
 				'GERENTE_COMERCIAL',
+				'GERENTE_OPERACIONES',
 			]
 		return [ROLE_MAP[tipo]]
 	}, [tipo])
