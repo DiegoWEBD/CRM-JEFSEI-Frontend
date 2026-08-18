@@ -33,9 +33,7 @@ export default function ItemInformacionProspecto({
 				className={classname(
 					'text-sm leading-snug text-foreground',
 					texto === '—' && 'text-muted-foreground',
-					highlightMissing &&
-						texto === '—' &&
-						'text-warning/90',
+					highlightMissing && texto === '—' && 'text-warning/90',
 				)}
 			>
 				{texto}

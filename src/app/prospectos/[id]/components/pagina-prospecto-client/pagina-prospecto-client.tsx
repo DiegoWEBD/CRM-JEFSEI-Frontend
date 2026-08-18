@@ -38,12 +38,9 @@ export default function PaginaProspectoClient({
 					completa={prospecto.informacion_completa}
 					className='px-3 py-2.5 flex gap-2 w-full items-center justify-start'
 				>
-					<AlertTriangle
-						className='mt-0.5 shrink-0 text-warning'
-						aria-hidden
-					/>
+					<AlertTriangle className='mt-0.5 shrink-0 text-warning' aria-hidden />
 					<p className='font-medium'>
-						Faltan datos obligatorios del prospecto.
+						Faltan datos para la evaluación de seguros.
 					</p>
 				</EstadoCompletitudInformacion>
 			)}

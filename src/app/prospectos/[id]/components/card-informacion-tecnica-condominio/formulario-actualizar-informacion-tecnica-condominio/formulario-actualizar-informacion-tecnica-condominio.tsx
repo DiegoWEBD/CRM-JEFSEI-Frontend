@@ -4,10 +4,7 @@ import Campo from '@/components/forms/campo/campo'
 import Input from '@/components/forms/input/input'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { useFormularioActualizarProspectoCondominio } from '@/hooks/prospectos/use-formulario-actualizar-prospecto-condominio'
-import { classname } from '@/lib/class-name'
-import { inputPendiente } from '@/utils/input/input-pendiente'
 import CamposAdicionalesProspectoCondominio from '../../card-informacion-prospecto/formulario-actualizar-prospecto/campos-adicionales-prospecto-condominio/campos-adicionales-prospecto-condominio'
-import { inp } from '@/utils/form-utils'
 
 type FormularioActualizarInformacionTecnicaCondominioProps = {
 	prospecto: Prospecto
@@ -29,17 +26,8 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 				<div className='grid gap-4 sm:grid-cols-2'>
 					<CamposAdicionalesProspectoCondominio formik={formik} />
 
-					<Campo
-						label='Valor UF/m²'
-						labelClassName={classname(
-							inputPendiente(formik.values.uf_por_metro_cuadrado) &&
-															'text-warning',
-						)}
-					>
+					<Campo label='Valor UF / m² (sin IVA)'>
 						<Input
-							className={inp(
-								inputPendiente(formik.values.uf_por_metro_cuadrado),
-							)}
 							name='uf_por_metro_cuadrado'
 							type='number'
 							value={formik.values.uf_por_metro_cuadrado}
@@ -47,17 +35,8 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 						/>
 					</Campo>
 
-					<Campo
-						label='Porcentaje de depreciación'
-						labelClassName={classname(
-							inputPendiente(formik.values.porcentaje_depreciacion) &&
-															'text-warning',
-						)}
-					>
+					<Campo label='Porcentaje de depreciación'>
 						<Input
-							className={inp(
-								inputPendiente(formik.values.porcentaje_depreciacion),
-							)}
 							name='porcentaje_depreciacion'
 							type='number'
 							value={formik.values.porcentaje_depreciacion}
@@ -65,17 +44,8 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 						/>
 					</Campo>
 
-					<Campo
-						label='Porcentaje de espacios comunes'
-						labelClassName={classname(
-							inputPendiente(formik.values.porcentaje_espacios_comunes) &&
-															'text-warning',
-						)}
-					>
+					<Campo label='Porcentaje de espacios comunes'>
 						<Input
-							className={inp(
-								inputPendiente(formik.values.porcentaje_espacios_comunes),
-							)}
 							name='porcentaje_espacios_comunes'
 							type='number'
 							value={formik.values.porcentaje_espacios_comunes}

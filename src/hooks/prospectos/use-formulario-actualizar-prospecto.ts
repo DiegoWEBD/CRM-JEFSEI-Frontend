@@ -2,8 +2,10 @@ import { actualizarProspecto } from '@/aplicacion/prospectos/use-cases/actualiza
 import { ActualizarProspectoRequest } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto/dto/requests/actualizar-prospecto-request'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
+import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
 type UseFormularioActualizarProspecto = {
 	prospecto: Prospecto
@@ -31,6 +33,18 @@ export const useFormularioActualizarProspecto = ({
 		},
 	})
 
+	const validationSchema = Yup.object({
+		rut_riesgo: Yup.string().test(
+			'rut-valido',
+			'El RUT no es válido. Debe tener formato XX.XXX.XXX-Y con dígito verificador correcto.',
+			value => {
+				if (!value || value.trim() === '') return true
+				return rutChilenoEstadoValidacion(value) === 'valido'
+			},
+		),
+		nombre_riesgo: Yup.string().required('El nombre del prospecto es obligatorio'),
+	})
+
 	const formik = useFormik<FormularioInitialValues>({
 		initialValues: {
 			rut_riesgo: prospecto.rut_riesgo,
@@ -56,6 +70,7 @@ export const useFormularioActualizarProspecto = ({
 			})
 			onComplete?.()
 		},
+		validationSchema,
 	})
 
 	return {
