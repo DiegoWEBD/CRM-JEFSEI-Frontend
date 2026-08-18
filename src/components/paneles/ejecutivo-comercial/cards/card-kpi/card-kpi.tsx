@@ -2,16 +2,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { cn } from '@/lib/utils'
 import { DatosKpi } from '@/hooks/kpi/dto/datos-kpi'
 import { Bell } from 'lucide-react'
-import { Dispatch, SetStateAction } from 'react'
 
 type CardKpiProps = {
 	datos: DatosKpi
-	setKpiAbierto: Dispatch<SetStateAction<string | null>>
+	onClick: (key: string) => void
 	accentClassName?: string
 	iconClassName?: string
+	activo?: boolean
 }
 
-export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconClassName }: CardKpiProps) {
+export default function CardKpi({ datos, onClick, accentClassName, iconClassName, activo }: CardKpiProps) {
 	const Icon = datos.icon
 	return (
 		<Card
@@ -20,13 +20,14 @@ export default function CardKpi({ datos, setKpiAbierto, accentClassName, iconCla
 			tabIndex={0}
 			className={cn(
 				'group cursor-pointer gap-0 overflow-hidden border-border/70 bg-card py-0 transition-all duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+				activo && 'ring-2 ring-primary border-primary/50',
 				accentClassName,
 			)}
-			onClick={() => setKpiAbierto(datos.key)}
+			onClick={() => onClick(datos.key)}
 			onKeyDown={e => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault()
-					setKpiAbierto(datos.key)
+					onClick(datos.key)
 				}
 			}}
 		>

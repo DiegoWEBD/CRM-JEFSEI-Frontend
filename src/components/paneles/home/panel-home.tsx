@@ -5,7 +5,7 @@ import { getSession } from '@/lib/auth'
 import PanelHomeClient from './panel-home-client'
 
 const PanelHome = async () => {
-	const prospectos = await obtenerProspectos()
+	const prospectos = await obtenerProspectos({ pagina: 1, tamanoPagina: 10 })
 	const session = await getSession()
 	const codigoRoles = session?.codigo_roles ?? []
 

@@ -1,8 +1,7 @@
 import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/obtener-prospectos'
-import CardQueryProspectos from './card-query-prospectos'
+import CardProspectosClient from './card-prospectos-client'
 
 export default async function CardProspectos() {
-	const prospectos = await obtenerProspectos()
-
-	return <CardQueryProspectos prospectosIniciales={prospectos} />
+	const resultado = await obtenerProspectos({ pagina: 1, tamanoPagina: 10 })
+	return <CardProspectosClient initialData={resultado} />
 }

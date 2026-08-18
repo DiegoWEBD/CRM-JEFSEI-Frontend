@@ -1,36 +1,36 @@
-import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import ChipFiltro from '@/components/chip-filtro/chip-filtro'
 import Select from '@/components/forms/select/select'
 import SelectContent from '@/components/forms/select/select-content/select-content'
 import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
-import {
-	FiltroEstadoComercialValor,
-	useFiltrosProspectos,
-} from '@/hooks/prospectos/use-filtros-prospectos'
+import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
 import {
 	ESTADO_PROSPECTO_LABELS,
 	ESTADOS_PROSPECTO,
 } from '@/types/estados/estado-comercial-cliente'
 
 type FiltrosEstadoProspectoProps = {
-	prospectos?: ProspectoResumenJson[]
-	filtroActivo: FiltroEstadoComercialValor
-	onFiltroChange: (valor: FiltroEstadoComercialValor) => void
+	contadoresEstado: Record<string, number>
+	total: number
+	filtroActivo: string
+	onFiltroChange: (valor: string) => void
 }
 
 export function FiltrosEstadoProspecto({
-	prospectos,
+	contadoresEstado,
+	total,
 	filtroActivo,
 	onFiltroChange,
 }: FiltrosEstadoProspectoProps) {
 	const labelSelectActivo =
 		filtroActivo === 'todos'
 			? 'Estado comercial'
-			: ESTADO_PROSPECTO_LABELS[filtroActivo]
+			: ESTADO_PROSPECTO_LABELS[
+					filtroActivo as keyof typeof ESTADO_PROSPECTO_LABELS
+				] ?? 'Estado comercial'
 
-	const { filtrosContados } = useFiltrosProspectos(prospectos)
+	const { contadores } = useFiltrosProspectos(contadoresEstado)
 
 	return (
 		<div className='space-y-1.5'>
@@ -42,18 +42,18 @@ export function FiltrosEstadoProspecto({
 			<div className='sm:hidden'>
 				<Select
 					value={filtroActivo}
-					onValueChange={v => onFiltroChange(v as FiltroEstadoComercialValor)}
+					onValueChange={onFiltroChange}
 				>
 					<SelectTrigger className='h-9 w-full text-xs shadow-none'>
 						<SelectValue>{labelSelectActivo}</SelectValue>
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value='todos' className='text-xs'>
-							Todos ({prospectos?.length ?? 0})
+							Todos ({total})
 						</SelectItem>
 						{ESTADOS_PROSPECTO.map(est => (
 							<SelectItem key={est} value={est} className='text-xs'>
-								{ESTADO_PROSPECTO_LABELS[est]} ({filtrosContados.get(est)})
+								{ESTADO_PROSPECTO_LABELS[est]} ({contadores.get(est) ?? 0})
 							</SelectItem>
 						))}
 					</SelectContent>
@@ -70,7 +70,7 @@ export function FiltrosEstadoProspecto({
 					activo={filtroActivo === 'todos'}
 					onClick={() => onFiltroChange('todos')}
 					label='Todos'
-					count={prospectos?.length ?? 0}
+					count={total}
 				/>
 				{ESTADOS_PROSPECTO.map(est => (
 					<ChipFiltro
@@ -78,7 +78,7 @@ export function FiltrosEstadoProspecto({
 						activo={filtroActivo === est}
 						onClick={() => onFiltroChange(est)}
 						label={ESTADO_PROSPECTO_LABELS[est]}
-						count={filtrosContados.get(est) ?? 0}
+						count={contadores.get(est) ?? 0}
 					/>
 				))}
 			</div>

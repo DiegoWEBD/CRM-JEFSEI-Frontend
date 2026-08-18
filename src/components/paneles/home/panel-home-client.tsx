@@ -13,24 +13,19 @@ import {
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
-import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
+import { ObtenerProspectosResponse } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/obtener-prospectos-response'
 import { Card, CardContent } from '@/components/card'
 import CardCalendario from '@/components/card-calendario/card-calendario'
 import CardComunicadoGerencia from '@/components/card-comunicado-gerencia/card-comunicado-gerencia'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import PanelCobranzaClient from '@/components/paneles/ejecutivo-cobranza/panel-cobranza-client'
 import { DashboardCobranza } from '@/dominio/cobranza/dashboard-cobranza'
-import {
-	FiltroEstadoValor,
-	useFiltrarProspectos,
-} from '@/hooks/prospectos/use-filtrar-prospectos'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
 import { KPI_PASTEL } from '@/lib/kpi-pastel'
 import CardProspectosClient from '../../prospectos/card-prospectos/card-prospectos-client'
 import CardKpi from '../ejecutivo-comercial/cards/card-kpi/card-kpi'
 import MetricasEjecutivoComercial from '../ejecutivo-comercial/metricas-ejecutivo-comercial/metricas-ejecutivo-comercial'
-import SheetClientesFiltrados from '../ejecutivo-comercial/sheet-clientes-filtrados'
 import PanelFooter from '../panel-layout/panel-footer/panel-footer'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelLayout from '../panel-layout/panel-layout'
@@ -44,7 +39,7 @@ const Acentos = {
 } as const
 
 type PanelHomeClientProps = {
-	prospectosIniciales: ProspectoResumenJson[]
+	prospectosIniciales: ObtenerProspectosResponse
 	codigoRoles: string[]
 	nombreUsuario: string
 	dashboardCobranzaInicial?: DashboardCobranza
@@ -56,16 +51,20 @@ export default function PanelHomeClient({
 	nombreUsuario,
 	dashboardCobranzaInicial,
 }: PanelHomeClientProps) {
-	const { data: prospectos } = useObtenerProspectos(prospectosIniciales)
+	const { data } = useObtenerProspectos(prospectosIniciales, null, '', 1, 10)
 
-	const [kpiAbierto, setKpiAbierto] = useState<string | null>(null)
+	const response = data ?? prospectosIniciales
+	const prospectos = response.data
+
+	const [filtroHome, setFiltroHome] = useState<string>('todos')
 
 	const esEjecutivoCobranza = codigoRoles.includes('EJECUTIVO_COBRANZA')
 
-	const { filtrosContados } = useFiltrosProspectos(prospectos)
-	const { filtrar } = useFiltrarProspectos(prospectos)
+	const { contadores: filtrosContados } = useFiltrosProspectos(
+		response.contadores_estado,
+	)
 
-	const KPI_FILTRO: Record<string, FiltroEstadoValor> = useMemo(
+	const KPI_FILTRO: Record<string, string> = useMemo(
 		() => ({
 			prospectos: 'prospecto',
 			asignados: 'todos',
@@ -81,63 +80,15 @@ export default function PanelHomeClient({
 		[],
 	)
 
-	const KPI_TITULOS: Record<string, string> = {
-		prospectos: 'Prospectos',
-		asignados: 'Clientes asignados',
-		activos: 'Clientes activos',
-		inactivos: 'Clientes inactivos',
-		cotiz: 'Cotizaciones solicitadas',
-		estDisp: 'Estudios disponibles',
-		pendRevision: 'Pendientes de revisión',
-		infoCompleta: 'Información completa',
-		recotizaciones: 'Recotizaciones pendientes',
-		estXGenerar: 'Estudios por generar',
+	const onKpiClick = (key: string) => {
+		const filtro = KPI_FILTRO[key]
+		if (!filtro) return
+		setFiltroHome(prev => (prev === filtro ? 'todos' : filtro))
 	}
 
-	const prospectosSheet = useMemo(
-		() => filtrar(KPI_FILTRO[kpiAbierto ?? '']),
-		[kpiAbierto, filtrar, KPI_FILTRO],
-	)
-
-	console.log(kpiAbierto)
-
-	const tituloSheet = kpiAbierto ? (KPI_TITULOS[kpiAbierto] ?? '') : ''
-
-	const totalProspectos = useMemo(
-		() =>
-			prospectos.reduce(
-				(acc, prospecto) =>
-					prospecto.estado_general_cliente.toUpperCase() === 'PROSPECTO'
-						? acc + 1
-						: acc + 0,
-				0,
-			),
-		[prospectos],
-	)
-
-	const clientesActivos = useMemo(
-		() =>
-			prospectos.reduce(
-				(acc, prospecto) =>
-					prospecto.estado_general_cliente.toUpperCase() === 'CLIENTE_ACTIVO'
-						? acc + 1
-						: acc + 0,
-				0,
-			),
-		[prospectos],
-	)
-
-	const clientesInactivos = useMemo(
-		() =>
-			prospectos.reduce(
-				(acc, prospecto) =>
-					prospecto.estado_general_cliente.toUpperCase() === 'CLIENTE_INACTIVO'
-						? acc + 1
-						: acc + 0,
-				0,
-			),
-		[prospectos],
-	)
+	const totalProspectos = filtrosContados.get('prospecto') ?? 0
+	const clientesActivos = filtrosContados.get('cliente_activo') ?? 0
+	const clientesInactivos = filtrosContados.get('cliente_inactivo') ?? 0
 
 	return (
 		<PanelLayout>
@@ -174,7 +125,8 @@ export default function PanelHomeClient({
 									value: totalProspectos,
 									icon: UserCheck,
 								}}
-								setKpiAbierto={setKpiAbierto}
+								onClick={onKpiClick}
+								activo={filtroHome === 'prospecto'}
 								accentClassName={Acentos.info.card}
 								iconClassName={Acentos.info.icon}
 							/>
@@ -186,7 +138,8 @@ export default function PanelHomeClient({
 									value: clientesActivos,
 									icon: Users,
 								}}
-								setKpiAbierto={setKpiAbierto}
+								onClick={onKpiClick}
+								activo={filtroHome === 'cliente_activo'}
 								accentClassName={Acentos.success.card}
 								iconClassName={Acentos.success.icon}
 							/>
@@ -198,7 +151,8 @@ export default function PanelHomeClient({
 									value: clientesInactivos,
 									icon: Users,
 								}}
-								setKpiAbierto={setKpiAbierto}
+								onClick={onKpiClick}
+								activo={filtroHome === 'cliente_inactivo'}
 								accentClassName={Acentos.danger.card}
 								iconClassName={Acentos.danger.icon}
 							/>
@@ -212,7 +166,8 @@ export default function PanelHomeClient({
 											filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
 										icon: ClipboardList,
 									}}
-									setKpiAbierto={setKpiAbierto}
+									onClick={onKpiClick}
+									activo={filtroHome === 'COTIZACION_SOLICITADA_COMPANY'}
 									accentClassName={Acentos.warning.card}
 									iconClassName={Acentos.warning.icon}
 								/>
@@ -223,7 +178,8 @@ export default function PanelHomeClient({
 										value: filtrosContados.get('ESTUDIO_DISPONIBLE') ?? 0,
 										icon: FileText,
 									}}
-									setKpiAbierto={setKpiAbierto}
+									onClick={onKpiClick}
+									activo={filtroHome === 'ESTUDIO_DISPONIBLE'}
 									accentClassName={Acentos.primary.card}
 									iconClassName={Acentos.primary.icon}
 								/>
@@ -242,7 +198,8 @@ export default function PanelHomeClient({
 										filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
 									icon: Bell,
 								}}
-								setKpiAbierto={setKpiAbierto}
+								onClick={onKpiClick}
+								activo={filtroHome === 'COTIZACION_SOLICITADA_COMPANY'}
 								accentClassName={Acentos.danger.card}
 								iconClassName={Acentos.danger.icon}
 							/>
@@ -253,7 +210,8 @@ export default function PanelHomeClient({
 									value: 0,
 									icon: ClipboardList,
 								}}
-								setKpiAbierto={setKpiAbierto}
+								onClick={onKpiClick}
+								activo={false}
 								accentClassName={Acentos.success.card}
 								iconClassName={Acentos.success.icon}
 							/>
@@ -264,7 +222,8 @@ export default function PanelHomeClient({
 									value: filtrosContados.get('RECOTIZACION_SOLICITADA') ?? 0,
 									icon: RefreshCw,
 								}}
-								setKpiAbierto={setKpiAbierto}
+								onClick={onKpiClick}
+								activo={filtroHome === 'RECOTIZACION_SOLICITADA'}
 								accentClassName={Acentos.warning.card}
 								iconClassName={Acentos.warning.icon}
 							/>
@@ -275,7 +234,8 @@ export default function PanelHomeClient({
 									value: filtrosContados.get('COTIZACION_DISPONIBLE') ?? 0,
 									icon: Upload,
 								}}
-								setKpiAbierto={setKpiAbierto}
+								onClick={onKpiClick}
+								activo={filtroHome === 'COTIZACION_DISPONIBLE'}
 								accentClassName={Acentos.info.card}
 								iconClassName={Acentos.info.icon}
 							/>
@@ -308,7 +268,11 @@ export default function PanelHomeClient({
 				)}
 
 				{!esEjecutivoCobranza && (
-					<CardProspectosClient prospectos={prospectos} />
+					<CardProspectosClient
+						initialData={response}
+						filtroExterno={filtroHome}
+						onFiltroChange={setFiltroHome}
+					/>
 				)}
 			</PanelHeader>
 
@@ -317,15 +281,6 @@ export default function PanelHomeClient({
 			<PanelFooter>
 				<CardComunicadoGerencia />
 			</PanelFooter>
-
-			<SheetClientesFiltrados
-				prospectos={prospectosSheet}
-				titulo={tituloSheet}
-				abierto={kpiAbierto != null}
-				onOpenChange={open => {
-					if (!open) setKpiAbierto(null)
-				}}
-			/>
 		</PanelLayout>
 	)
 }
