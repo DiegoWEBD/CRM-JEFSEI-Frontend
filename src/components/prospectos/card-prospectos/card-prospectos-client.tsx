@@ -10,7 +10,8 @@ import Paginacion from '@/components/paginacion/paginacion'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
 import { useQueryClient } from '@tanstack/react-query'
 import { Plus, Search } from 'lucide-react'
-import { useDeferredValue, useState } from 'react'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useState } from 'react'
 import FilaProspecto from './fila-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
 
@@ -30,7 +31,7 @@ export default function CardProspectosClient({
 	const [filtroInterno, setFiltroInterno] = useState<string>('todos')
 	const [pagina, setPagina] = useState(1)
 	const [inputValue, setInputValue] = useState('')
-	const textoBusqueda = useDeferredValue(inputValue)
+	const textoBusqueda = useDebounce(inputValue, 300)
 
 	const queryClient = useQueryClient()
 
