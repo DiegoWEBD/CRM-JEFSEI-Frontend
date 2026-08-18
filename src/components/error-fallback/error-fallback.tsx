@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/button'
 import { ShieldAlert } from 'lucide-react'
+import axios from 'axios'
 
 type ErrorFallbackProps = {
 	error: Error & { digest?: string }
@@ -10,7 +11,9 @@ type ErrorFallbackProps = {
 }
 
 export default function ErrorFallback({ error, reset }: ErrorFallbackProps) {
-	const isUnauthorized = error.name === 'UnauthorizedError'
+	const isUnauthorized =
+		error.name === 'UnauthorizedError' ||
+		(axios.isAxiosError(error) && error.response?.status === 401)
 
 	if (isUnauthorized) {
 		return (

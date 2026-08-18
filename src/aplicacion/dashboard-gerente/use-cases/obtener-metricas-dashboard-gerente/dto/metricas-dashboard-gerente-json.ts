@@ -5,6 +5,7 @@ export interface MetricasDashboardGerenteJson {
 			variacion_mes_anterior: number
 			mes_label: string
 		}
+		comision_mes_actual: ComisionMesActual
 		tendencia_12_meses: TendenciaMes[]
 		por_compania: ItemValor[]
 		por_ejecutivo: ItemValor[]
@@ -29,6 +30,11 @@ export interface MetricasDashboardGerenteJson {
 		por_compania: ItemCantidad[]
 		por_ramo: ItemCantidad[]
 	}
+}
+
+export interface ComisionMesActual {
+	total_comision: number
+	mes_label: string
 }
 
 export interface TendenciaMes {

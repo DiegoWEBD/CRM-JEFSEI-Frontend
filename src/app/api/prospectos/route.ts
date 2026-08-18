@@ -5,9 +5,16 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { CrearProspectoRequest } from './dto/requests/crear-prospecto-request'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const prospectos = await obtenerProspectos()
+    const { searchParams } = new URL(request.url)
+
+    const prospectos = await obtenerProspectos({
+      filtro: searchParams.get('filtro'),
+      textoBusqueda: searchParams.get('texto_busqueda'),
+      pagina: Number(searchParams.get('pagina')) || 1,
+      tamanoPagina: Number(searchParams.get('tamano_pagina')) || 10,
+    })
     return NextResponse.json(prospectos)
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -80,7 +80,7 @@ export default function KpiCobranza({ kpis, onKpiClick }: KpiCobranzaProps) {
 						value: kpis[k.key],
 						icon: k.icon,
 					}}
-					setKpiAbierto={v => onKpiClick(v as ColumnaCobranza)}
+					onClick={v => onKpiClick(v as ColumnaCobranza)}
 					accentClassName={k.accentClassName}
 					iconClassName={k.iconClassName}
 				/>
