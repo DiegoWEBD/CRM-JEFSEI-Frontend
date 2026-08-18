@@ -11,7 +11,6 @@ export type FiltroEstadoValor =
 export function useFiltrarProspectos(prospectos?: ProspectoResumenJson[]) {
 	const filtrar = useCallback(
 		(filtro: FiltroEstadoValor): ProspectoResumenJson[] => {
-			console.log(filtro)
 			if (!prospectos) return []
 			if (filtro === 'todos') return [...prospectos]
 
