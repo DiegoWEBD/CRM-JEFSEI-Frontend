@@ -1,7 +1,8 @@
 import { Button } from '@/components/button'
 import { CardContent } from '@/components/card'
+import Campo from '@/components/forms/campo/campo'
+import FormError from '@/components/forms/form-error/form-error'
 import Input from '@/components/forms/input/input'
-import Label from '@/components/forms/label/label'
 import Select from '@/components/forms/select/select'
 import SelectContent from '@/components/forms/select/select-content/select-content'
 import SelectItem from '@/components/forms/select/select-item/select-item'
@@ -13,11 +14,7 @@ import {
 	CHILE_REGIONES_NOMBRES,
 	obtenerComunasDeRegion,
 } from '@/lib/chile-regiones-comunas'
-import { classname } from '@/lib/class-name'
-import { classInputRut } from '@/utils/class-input-rut'
-import { inp } from '@/utils/form-utils'
-import { inputPendiente } from '@/utils/input/input-pendiente'
-import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
+import { formatRut } from '@/utils/format-rut'
 import { useMemo } from 'react'
 
 type FormularioActualizarProspectoProps = {
@@ -34,11 +31,6 @@ export default function FormularioActualizarProspecto({
 		onComplete: cancelarEdicionInformacion,
 	})
 
-	const estadoRut = useMemo(
-		() => rutChilenoEstadoValidacion(formik.values.rut_riesgo),
-		[formik.values.rut_riesgo],
-	)
-
 	const comunasDeRegionSelect = useMemo(
 		() => [...obtenerComunasDeRegion(formik.values.region)],
 		[formik.values.region],
@@ -48,160 +40,109 @@ export default function FormularioActualizarProspecto({
 		<CardContent className='space-y-4 p-4'>
 			<form onSubmit={formik.handleSubmit}>
 				<div className='grid gap-4 sm:grid-cols-2'>
-					<div className='space-y-1.5 sm:col-span-2'>
-						<Label
-							className={classname(
-								'text-xs',
-								inputPendiente(formik.values.nombre_riesgo) && 'text-warning',
-							)}
-						>
-							Nombre del prospecto
-						</Label>
-						<Input
-							className={inp(inputPendiente(formik.values.nombre_riesgo))}
-							name='nombre_riesgo'
-							value={formik.values.nombre_riesgo}
-							onChange={formik.handleChange}
-						/>
-					</div>
-					<div className='space-y-1.5'>
-						<Label
-							className={classname(
-								'text-xs',
-								(estadoRut === 'vacio' || estadoRut === 'incompleto') &&
-									'text-warning',
-								(estadoRut === 'formato_invalido' ||
-									estadoRut === 'dv_invalido') &&
-									'text-destructive',
-							)}
-						>
-							RUT
-						</Label>
-						<Input
-							className={classInputRut(estadoRut)}
-							placeholder='12.345.678-9'
-							inputMode='text'
-							autoComplete='off'
-							maxLength={14}
-							name='rut_riesgo'
-							value={formik.values.rut_riesgo ?? ''}
-							onChange={formik.handleChange}
-						/>
-						{estadoRut === 'formato_invalido' || estadoRut === 'dv_invalido' ? (
-							<p className='text-xs text-destructive'>
-								{estadoRut === 'dv_invalido'
-									? 'El dígito verificador no corresponde.'
-									: 'Ingrese 8 números y el dígito verificador (0-9 o K).'}
-							</p>
-						) : estadoRut === 'incompleto' ? (
-							<p className='text-xs text-muted-foreground'>
-								8 dígitos + verificador (número o K).
-							</p>
-						) : null}
-					</div>
-					<div className='space-y-1.5 sm:col-span-2'>
-						<Label
-							className={classname(
-								'text-xs',
-								inputPendiente(formik.values.direccion) && 'text-warning',
-							)}
-						>
-							Dirección
-						</Label>
-						<Input
-							className={inp(inputPendiente(formik.values.direccion))}
-							name='direccion'
-							value={formik.values.direccion}
-							onChange={formik.handleChange}
-						/>
-					</div>
-					<div className='space-y-1.5'>
-						<Label
-							className={classname(
-								'text-xs',
-								inputPendiente(formik.values.region) && 'text-warning',
-							)}
-						>
-							Región
-						</Label>
-						<Select
-							value={formik.values.region || '__none__'}
-							onValueChange={value => formik.setFieldValue('region', value)}
-						>
-							<SelectTrigger
-								className={inp(inputPendiente(formik.values.region))}
+				<Campo label='Nombre del prospecto' className='sm:col-span-2'>
+					<Input
+						name='nombre_riesgo'
+						value={formik.values.nombre_riesgo}
+						onChange={formik.handleChange}
+					/>
+					{formik.touched.nombre_riesgo && formik.errors.nombre_riesgo ? (
+						<FormError>{formik.errors.nombre_riesgo}</FormError>
+					) : null}
+				</Campo>
+				<Campo label='RUT'>
+					<Input
+						placeholder='12.345.678-9'
+						inputMode='text'
+						autoComplete='off'
+						maxLength={14}
+						name='rut_riesgo'
+						value={formik.values.rut_riesgo ?? ''}
+						onChange={e =>
+							formik.setFieldValue('rut_riesgo', formatRut(e.target.value))
+						}
+					/>
+					{formik.touched.rut_riesgo && formik.errors.rut_riesgo ? (
+						<FormError>{formik.errors.rut_riesgo}</FormError>
+					) : null}
+				</Campo>
+				<Campo label='Dirección' className='sm:col-span-2'>
+					<Input
+						name='direccion'
+						value={formik.values.direccion}
+						onChange={formik.handleChange}
+					/>
+				</Campo>
+				<Campo label='Región'>
+					<Select
+						value={formik.values.region || '__none__'}
+						onValueChange={value => formik.setFieldValue('region', value)}
+					>
+						<SelectTrigger>
+							<SelectValue placeholder='Selecciona una región' />
+						</SelectTrigger>
+						<SelectContent className='max-h-70'>
+							<SelectItem
+								value='__none__'
+								className='text-xs text-muted-foreground'
 							>
-								<SelectValue placeholder='Selecciona una región' />
-							</SelectTrigger>
-							<SelectContent className='max-h-70'>
-								<SelectItem
-									value='__none__'
-									className='text-xs text-muted-foreground'
-								>
-									Selecciona una región
+								Selecciona una región
+							</SelectItem>
+							{CHILE_REGIONES_NOMBRES.map(r => (
+								<SelectItem key={r} value={r} className='text-xs'>
+									{r}
 								</SelectItem>
-								{CHILE_REGIONES_NOMBRES.map(r => (
-									<SelectItem key={r} value={r} className='text-xs'>
-										{r}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-					<div className='space-y-1.5'>
-						<Label
-							className={classname(
-								'text-xs',
-								inputPendiente(formik.values.comuna) && 'text-warning',
-							)}
-						>
-							Comuna
-						</Label>
-						<Select
-							disabled={!formik.values.region}
-							value={
-								formik.values.comuna &&
-								comunasDeRegionSelect.includes(formik.values.comuna)
-									? formik.values.comuna
-									: '__none__'
+							))}
+						</SelectContent>
+					</Select>
+				</Campo>
+				<Campo label='Comuna'>
+					<Select
+						disabled={!formik.values.region}
+						value={
+							formik.values.comuna &&
+							comunasDeRegionSelect.includes(formik.values.comuna)
+								? formik.values.comuna
+								: '__none__'
+						}
+						onValueChange={value => {
+							const comuna = value === '__none__' ? '' : value
+							formik.setFieldValue('comuna', comuna)
+						}}
+					>
+						<SelectTrigger
+							className={
+								!formik.values.region
+									? 'cursor-not-allowed opacity-70'
+									: undefined
 							}
-							onValueChange={value => {
-								const comuna = value === '__none__' ? '' : value
-								formik.setFieldValue('comuna', comuna)
-							}}
 						>
-							<SelectTrigger
-								className={classname(
-									inp(inputPendiente(formik.values.comuna)),
-									!formik.values.region && 'cursor-not-allowed opacity-70',
-								)}
-							>
-								<SelectValue
-									placeholder={
-										formik.values.region
-											? 'Selecciona una comuna'
-											: 'Primero selecciona una región'
-									}
-								/>
-							</SelectTrigger>
-							<SelectContent className='max-h-70'>
-								<SelectItem
-									value='__none__'
-									className='text-xs text-muted-foreground'
-								>
-									{formik.values.region
+							<SelectValue
+								placeholder={
+									formik.values.region
 										? 'Selecciona una comuna'
-										: 'Primero selecciona una región'}
+										: 'Primero selecciona una región'
+								}
+							/>
+						</SelectTrigger>
+						<SelectContent className='max-h-70'>
+							<SelectItem
+								value='__none__'
+								className='text-xs text-muted-foreground'
+							>
+								{formik.values.region
+									? 'Selecciona una comuna'
+									: 'Primero selecciona una región'}
+							</SelectItem>
+							{comunasDeRegionSelect.map(c => (
+								<SelectItem key={c} value={c} className='text-xs'>
+									{c}
 								</SelectItem>
-								{comunasDeRegionSelect.map(c => (
-									<SelectItem key={c} value={c} className='text-xs'>
-										{c}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
+							))}
+						</SelectContent>
+					</Select>
+				</Campo>
+			</div>
 				<div className='flex flex-wrap justify-end gap-2 border-t mt-6 border-border pt-3'>
 					<Button
 						type='button'

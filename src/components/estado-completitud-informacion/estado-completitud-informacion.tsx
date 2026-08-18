@@ -1,6 +1,5 @@
-import { classname } from '@/lib/class-name'
-import { Badge } from '../badge/badge'
 import { ReactNode } from 'react'
+import { Badge } from '../badge/badge'
 
 type EstadoCompletitudInformacionProps = {
 	completa: boolean

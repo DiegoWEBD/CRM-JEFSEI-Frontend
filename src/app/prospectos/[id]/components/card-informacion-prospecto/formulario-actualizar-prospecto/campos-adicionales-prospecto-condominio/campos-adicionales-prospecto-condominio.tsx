@@ -7,7 +7,6 @@ import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
 import SiNoSelect from '@/components/forms/si-no-select/si-no-select'
-import { classname } from '@/lib/class-name'
 import {
 	CLASIFICACION_PRELIMINAR_INCENDIO_LABELS,
 	clasificacionPreliminarDesdeMaterialidad,
@@ -20,10 +19,7 @@ import {
 	UBICACION_PISCINA_OPCIONES_CON_PISCINA,
 	UbicacionPiscinaCondominio,
 } from '@/lib/ubicacion.piscina'
-import { inputPendiente } from '@/utils/input/input-pendiente'
 import { FormikProps } from 'formik'
-import { useMemo } from 'react'
-import { inp } from '@/utils/form-utils'
 import { useAdministradores } from '@/hooks/administradores/use-administradores'
 import { SelectorAdministrador } from '@/components/selector-administrador'
 
@@ -34,17 +30,6 @@ type CamposAdicionalesProspectoCondominioProps = {
 export default function CamposAdicionalesProspectoCondominio({
 	formik,
 }: CamposAdicionalesProspectoCondominioProps) {
-	const ubicacionPiscinaPendiente = useMemo(() => {
-		if (formik.values.tiene_piscina === undefined) return true
-		else if (!formik.values.tiene_piscina) return false
-		else if (
-			formik.values.ubicacion_piscina === undefined ||
-			formik.values.ubicacion_piscina === ''
-		)
-			return true
-		else return false
-	}, [formik.values.tiene_piscina, formik.values.ubicacion_piscina])
-
 	const { data: administradores } = useAdministradores()
 
 	return (
@@ -59,21 +44,13 @@ export default function CamposAdicionalesProspectoCondominio({
 
 			<Campo label='Uso del condominio'>
 				<Input
-					className={inp(inputPendiente(formik.values.uso_del_condominio))}
 					name='uso_del_condominio'
 					value={formik.values.uso_del_condominio}
 					onChange={formik.handleChange}
 				/>
 			</Campo>
 
-			<Campo
-				label='Materialidad principal de construcción'
-				labelClassName={
-					inputPendiente(formik.values.materialidad)
-						? 'text-warning'
-						: undefined
-				}
-			>
+			<Campo label='Materialidad principal de construcción'>
 				<Select
 					value={formik.values.materialidad || '__none__'}
 					onValueChange={value => {
@@ -92,9 +69,7 @@ export default function CamposAdicionalesProspectoCondominio({
 						)
 					}}
 				>
-					<SelectTrigger
-						className={inp(inputPendiente(formik.values.materialidad))}
-					>
+					<SelectTrigger>
 						<SelectValue placeholder='Seleccionar materialidad' />
 					</SelectTrigger>
 					<SelectContent>
@@ -117,24 +92,12 @@ export default function CamposAdicionalesProspectoCondominio({
 				</Select>
 			</Campo>
 
-			<Campo
-				label='Clasificación preliminar incendio'
-				labelClassName={
-					inputPendiente(formik.values.clasificacion_preliminar_incendio)
-						? 'text-warning'
-						: undefined
-				}
-			>
+			<Campo label='Clasificación preliminar incendio'>
 				<Input
 					readOnly
 					disabled
 					tabIndex={-1}
-					className={classname(
-						'h-9 text-sm shadow-none cursor-default bg-muted/40 text-foreground opacity-100 w-fit',
-						inp(
-							inputPendiente(formik.values.clasificacion_preliminar_incendio),
-						),
-					)}
+					className='h-9 text-sm shadow-none cursor-default bg-muted/40 text-foreground opacity-100 w-fit'
 					value={
 						formik.values.clasificacion_preliminar_incendio
 							? CLASIFICACION_PRELIMINAR_INCENDIO_LABELS[
@@ -153,7 +116,6 @@ export default function CamposAdicionalesProspectoCondominio({
 
 			<Campo label='Año de construcción'>
 				<Input
-					className={inp(inputPendiente(formik.values.year_construccion))}
 					name='year_construccion'
 					value={formik.values.year_construccion}
 					onChange={formik.handleChange}
@@ -163,14 +125,6 @@ export default function CamposAdicionalesProspectoCondominio({
 			<SiNoSelect
 				label='Cuenta con locales comerciales'
 				value={formik.values.tiene_locales_comerciales}
-				labelClassName={
-					inputPendiente(formik.values.tiene_locales_comerciales)
-						? 'text-warning'
-						: undefined
-				}
-				triggerClassName={inp(
-					inputPendiente(formik.values.tiene_locales_comerciales),
-				)}
 				onChange={value =>
 					formik.setFieldValue('tiene_locales_comerciales', value)
 				}
@@ -179,20 +133,11 @@ export default function CamposAdicionalesProspectoCondominio({
 			<SiNoSelect
 				label='Procesos productivos'
 				value={formik.values.procesos_productivos}
-				labelClassName={
-					inputPendiente(formik.values.procesos_productivos)
-						? 'text-warning'
-						: undefined
-				}
-				triggerClassName={inp(
-					inputPendiente(formik.values.procesos_productivos),
-				)}
 				onChange={value => formik.setFieldValue('procesos_productivos', value)}
 			/>
 
 			<Campo label='Total m² construidos'>
 				<Input
-					className={inp(inputPendiente(formik.values.metros_cuadrados))}
 					name='metros_cuadrados'
 					value={formik.values.metros_cuadrados}
 					onChange={formik.handleChange}
@@ -201,7 +146,6 @@ export default function CamposAdicionalesProspectoCondominio({
 
 			<Campo label='Número de pisos'>
 				<Input
-					className={inp(inputPendiente(formik.values.numero_pisos))}
 					name='numero_pisos'
 					value={formik.values.numero_pisos}
 					onChange={formik.handleChange}
@@ -210,7 +154,6 @@ export default function CamposAdicionalesProspectoCondominio({
 
 			<Campo label='Número de torres'>
 				<Input
-					className={inp(inputPendiente(formik.values.numero_torres))}
 					name='numero_torres'
 					value={formik.values.numero_torres}
 					onChange={formik.handleChange}
@@ -219,7 +162,6 @@ export default function CamposAdicionalesProspectoCondominio({
 
 			<Campo label='Cantidad de departamentos'>
 				<Input
-					className={inp(inputPendiente(formik.values.cantidad_departamentos))}
 					name='cantidad_departamentos'
 					value={formik.values.cantidad_departamentos}
 					onChange={formik.handleChange}
@@ -228,7 +170,6 @@ export default function CamposAdicionalesProspectoCondominio({
 
 			<Campo label='Cantidad de subterráneos'>
 				<Input
-					className={inp(inputPendiente(formik.values.cantidad_subterraneos))}
 					name='cantidad_subterraneos'
 					value={formik.values.cantidad_subterraneos}
 					onChange={formik.handleChange}
@@ -238,23 +179,10 @@ export default function CamposAdicionalesProspectoCondominio({
 			<SiNoSelect
 				label='Cuenta con piscina'
 				value={formik.values.tiene_piscina}
-				labelClassName={
-					inputPendiente(formik.values.tiene_piscina)
-						? 'text-warning'
-						: undefined
-				}
-				triggerClassName={inp(inputPendiente(formik.values.tiene_piscina))}
 				onChange={value => formik.setFieldValue('tiene_piscina', value)}
 			/>
 
-			<Campo
-				label='Ubicación de la piscina'
-				labelClassName={
-					ubicacionPiscinaPendiente
-						? 'text-warning'
-						: undefined
-				}
-			>
+			<Campo label='Ubicación de la piscina'>
 				<Select
 					disabled={!formik.values.tiene_piscina}
 					value={
@@ -271,11 +199,11 @@ export default function CamposAdicionalesProspectoCondominio({
 					}}
 				>
 					<SelectTrigger
-						className={classname(
-							'h-9 text-sm shadow-none',
-							!formik.values.tiene_piscina && 'cursor-not-allowed opacity-70',
-							inp(ubicacionPiscinaPendiente),
-						)}
+						className={
+							!formik.values.tiene_piscina
+								? 'cursor-not-allowed opacity-70'
+								: undefined
+						}
 					>
 						<SelectValue placeholder='Seleccione' />
 					</SelectTrigger>
@@ -306,26 +234,12 @@ export default function CamposAdicionalesProspectoCondominio({
 			<SiNoSelect
 				label='Cuenta con alarma de incendio'
 				value={formik.values.tiene_alarma_incendio}
-				labelClassName={
-					inputPendiente(formik.values.tiene_alarma_incendio)
-						? 'text-warning'
-						: undefined
-				}
-				triggerClassName={inp(
-					inputPendiente(formik.values.tiene_alarma_incendio),
-				)}
 				onChange={value => formik.setFieldValue('tiene_alarma_incendio', value)}
 			/>
 
 			<SiNoSelect
 				label='Cuenta con sprinklers'
 				value={formik.values.tiene_sprinklers}
-				labelClassName={
-					inputPendiente(formik.values.tiene_sprinklers)
-						? 'text-warning'
-						: undefined
-				}
-				triggerClassName={inp(inputPendiente(formik.values.tiene_sprinklers))}
 				onChange={value => formik.setFieldValue('tiene_sprinklers', value)}
 			/>
 		</>
