@@ -1,9 +1,11 @@
 'use client'
 
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
+import { Separator } from '@/components/separator'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import {
@@ -11,14 +13,65 @@ import {
 	ESTADO_GENERAL_CLIENTE_LABELS,
 	type EstadoGeneralCliente,
 } from '@/lib/estados-cotizaciones'
-import { Building2 } from 'lucide-react'
+import {
+	Briefcase,
+	Building2,
+	ClipboardCheck,
+	DollarSign,
+	RefreshCw,
+	type LucideIcon,
+} from 'lucide-react'
 import { useState } from 'react'
 import AdministradorAsociado from './administrador-asociado/administrador-asociado'
 import { AsignarEjecutivoDialog } from './asignar-ejecutivo-dialog'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
+
+const ROLES_GESTION = ['GERENTE_GENERAL', 'GERENTE_COMERCIAL', 'GERENTE_OPERACIONES']
 
 type PaginaProspectoHeaderProps = {
 	prospecto: Prospecto
+}
+
+type EjecutivoItemProps = {
+	label: string
+	icon: LucideIcon
+	nombre?: string
+	onClick: () => void
+}
+
+const EjecutivoItem = ({
+	label,
+	icon: Icon,
+	nombre,
+	onClick,
+}: EjecutivoItemProps) => {
+	return (
+		<div className='flex min-w-0 flex-col gap-3 overflow-hidden rounded-lg border bg-muted/30 p-3 transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:gap-3'>
+			<div className='flex min-w-0 flex-1 items-center gap-3'>
+				<div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-md border bg-card text-muted-foreground shadow-xs'>
+					<Icon className='h-4 w-4' aria-hidden />
+				</div>
+				<div className='min-w-0 flex-1 space-y-0.5'>
+					<p className='truncate text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+						{label}
+					</p>
+					<p className='truncate text-sm font-medium text-foreground'>
+						{nombre ?? '—'}
+					</p>
+				</div>
+			</div>
+			<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
+				<Button
+					type='button'
+					variant='outline'
+					size='sm'
+					className='h-7 w-full shrink-0 px-2.5 text-xs sm:w-auto'
+					onClick={onClick}
+				>
+					{nombre ? 'Reasignar' : 'Asignar'}
+				</Button>
+			</AuthGuard>
+		</div>
+	)
 }
 
 const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
@@ -30,158 +83,112 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 	const estadoCliente: EstadoGeneralCliente =
 		(prospecto.estado_general_cliente as EstadoGeneralCliente) || 'prospecto'
 
+	const esCondominio =
+		prospecto.linea_negocio.nombre.toLowerCase() === 'condominio'
+	const tieneCliente = Boolean(prospecto.id_cliente)
+
+	const lineaNegocioLabel = prospecto.linea_negocio.nombre
+		.replace(/_/g, ' ')
+		.replace(/^\w/, (c) => c.toUpperCase())
+
+	const ejecutivos = [
+		{
+			key: 'comercial',
+			label: 'Gestión comercial',
+			icon: Briefcase,
+			nombre: prospecto.ejecutivo_comercial_asignado?.nombre,
+			onClick: () => setOpenAsignarComercial(true),
+		},
+		{
+			key: 'evaluacion',
+			label: 'Evaluación técnica',
+			icon: ClipboardCheck,
+			nombre: prospecto.ejecutivo_evaluacion_asignado?.nombre,
+			onClick: () => setOpenAsignarEvaluacion(true),
+		},
+		...(tieneCliente
+			? [
+					{
+						key: 'cobranza',
+						label: 'Cobranza',
+						icon: DollarSign,
+						nombre: prospecto.ejecutivo_cobranza_asignado?.nombre,
+						onClick: () => setOpenAsignarCobranza(true),
+					},
+					{
+						key: 'renovacion',
+						label: 'Renovación',
+						icon: RefreshCw,
+						nombre: prospecto.ejecutivo_renovacion_asignado?.nombre,
+						onClick: () => setOpenAsignarRenovacion(true),
+					},
+				]
+			: []),
+	]
+
 	return (
 		<Card className='border-border bg-card shadow-none'>
-			<CardContent className='p-4 sm:p-5'>
-				<div className='flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between'>
-					<div className='min-w-0 space-y-3'>
-						<div className='flex flex-wrap items-center gap-2'>
-							<Building2
-								className='h-5 w-5 shrink-0 text-muted-foreground'
-								aria-hidden
-							/>
-							<h1 className='truncate text-base font-semibold leading-tight text-foreground sm:text-lg lg:text-xl'>
-								{prospecto.nombre_riesgo}
-							</h1>
-						</div>
-						{prospecto.linea_negocio.nombre.toLowerCase() == 'condominio' && (
-							<AdministradorAsociado
-								administrador={(prospecto as ProspectoCondominio).administrador}
-							/>
-						)}
-						<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
-							<span>
-								<span className='text-muted-foreground'>
-									Gestión comercial:
-								</span>{' '}
-								<span className='font-medium text-foreground'>
-									{prospecto.ejecutivo_comercial_asignado?.nombre ?? '—'}
-								</span>
-							</span>
-							<AuthGuard
-								allowedRoles={[
-									'GERENTE_GENERAL',
-									'GERENTE_COMERCIAL',
-									'GERENTE_OPERACIONES',
-								]}
-								fallback={null}
-							>
-								<Button
-									type='button'
-									variant='ghost'
-									size='sm'
-									className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
-									onClick={() => setOpenAsignarComercial(true)}
-								>
-									{prospecto.ejecutivo_comercial_asignado
-										? 'Reasignar'
-										: 'Asignar'}
-								</Button>
-							</AuthGuard>
-						</div>
-						<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
-							<span>
-								<span className='text-muted-foreground'>
-									Evaluación técnica:
-								</span>{' '}
-								<span className='font-medium text-foreground'>
-									{prospecto.ejecutivo_evaluacion_asignado?.nombre ?? '—'}
-								</span>
-							</span>
-							<AuthGuard
-								allowedRoles={[
-									'GERENTE_GENERAL',
-									'GERENTE_COMERCIAL',
-									'GERENTE_OPERACIONES',
-								]}
-								fallback={null}
-							>
-								<Button
-									type='button'
-									variant='ghost'
-									size='sm'
-									className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
-									onClick={() => setOpenAsignarEvaluacion(true)}
-								>
-									{prospecto.ejecutivo_evaluacion_asignado
-										? 'Reasignar'
-										: 'Asignar'}
-								</Button>
-							</AuthGuard>
-						</div>
-						{prospecto.id_cliente && (
-							<>
-								<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
-									<span>
-										<span className='text-muted-foreground'>Cobranza:</span>{' '}
-										<span className='font-medium text-foreground'>
-											{prospecto.ejecutivo_cobranza_asignado?.nombre ?? '—'}
-										</span>
-									</span>
-									<AuthGuard
-										allowedRoles={[
-											'GERENTE_GENERAL',
-											'GERENTE_COMERCIAL',
-											'GERENTE_OPERACIONES',
-										]}
-										fallback={null}
-									>
-										<Button
-											type='button'
-											variant='ghost'
-											size='sm'
-											className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
-											onClick={() => setOpenAsignarCobranza(true)}
-										>
-											{prospecto.ejecutivo_cobranza_asignado
-												? 'Reasignar'
-												: 'Asignar'}
-										</Button>
-									</AuthGuard>
+			<CardContent className='p-4 sm:p-5 lg:p-6'>
+				<div className='flex flex-col gap-6 lg:flex-row lg:items-stretch lg:gap-8'>
+					<div className='min-w-0 flex-1 space-y-5'>
+						<div className='flex items-start gap-3 sm:gap-4'>
+							<div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-12 sm:w-12'>
+								<Building2 className='h-5 w-5 sm:h-6 sm:w-6' aria-hidden />
+							</div>
+							<div className='min-w-0 flex-1 pt-0.5'>
+								<h1 className='text-lg font-bold leading-snug tracking-tight break-words text-foreground sm:text-xl lg:text-2xl'>
+									{prospecto.nombre_riesgo}
+								</h1>
+								<div className='mt-1.5 space-y-2'>
+									<Badge variant='secondary'>{lineaNegocioLabel}</Badge>
+									{esCondominio && (
+										<div className='w-fit rounded-lg bg-muted/40 px-2.5 py-1.5'>
+											<AdministradorAsociado
+												administrador={
+													(prospecto as ProspectoCondominio).administrador
+												}
+											/>
+										</div>
+									)}
 								</div>
-								<div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground'>
-									<span>
-										<span className='text-muted-foreground'>Renovación:</span>{' '}
-										<span className='font-medium text-foreground'>
-											{prospecto.ejecutivo_renovacion_asignado?.nombre ?? '—'}
-										</span>
-									</span>
-									<AuthGuard
-										allowedRoles={[
-											'GERENTE_GENERAL',
-											'GERENTE_COMERCIAL',
-											'GERENTE_OPERACIONES',
-										]}
-										fallback={null}
-									>
-										<Button
-											type='button'
-											variant='ghost'
-											size='sm'
-											className='ml-1 h-5 px-1.5 text-xs text-muted-foreground hover:text-foreground'
-											onClick={() => setOpenAsignarRenovacion(true)}
-										>
-											{prospecto.ejecutivo_renovacion_asignado
-												? 'Reasignar'
-												: 'Asignar'}
-										</Button>
-									</AuthGuard>
-								</div>
-							</>
-						)}
+							</div>
+						</div>
+
+						<Separator />
+
+						<div>
+							<h2 className='mb-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+								Ejecutivos asignados
+							</h2>
+							<div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2'>
+								{ejecutivos.map((ejecutivo) => (
+									<EjecutivoItem
+										key={ejecutivo.key}
+										label={ejecutivo.label}
+										icon={ejecutivo.icon}
+										nombre={ejecutivo.nombre}
+										onClick={ejecutivo.onClick}
+									/>
+								))}
+							</div>
+						</div>
 					</div>
-					<div className='flex flex-col gap-3 sm:flex-row sm:gap-6 lg:flex-col lg:items-end lg:gap-3 lg:pt-0.5'>
-						<div className='flex flex-col items-start gap-1.5 lg:items-end'>
+
+					<Separator
+						orientation='vertical'
+						className='hidden self-stretch lg:block'
+					/>
+
+					<div className='flex flex-col gap-3 lg:w-64 lg:shrink-0'>
+						<div className='flex items-center justify-between gap-3 rounded-lg border bg-muted/30 p-3 sm:p-4 lg:flex-col lg:items-start lg:gap-2'>
 							<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 								Estado general del prospecto
 							</span>
-							<div className='flex flex-wrap items-center gap-2'>
-								<Badge variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoCliente]}>
-									{ESTADO_GENERAL_CLIENTE_LABELS[estadoCliente]}
-								</Badge>
-							</div>
+							<Badge variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoCliente]}>
+								{ESTADO_GENERAL_CLIENTE_LABELS[estadoCliente]}
+							</Badge>
 						</div>
-						<div className='flex flex-col items-start gap-1.5 lg:items-end'>
+						<div className='flex items-center justify-between gap-3 rounded-lg border bg-muted/30 p-3 sm:p-4 lg:flex-col lg:items-start lg:gap-2'>
 							<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 								Estado de la información
 							</span>
@@ -192,14 +199,8 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 					</div>
 				</div>
 			</CardContent>
-			<AuthGuard
-				allowedRoles={[
-					'GERENTE_GENERAL',
-					'GERENTE_COMERCIAL',
-					'GERENTE_OPERACIONES',
-				]}
-				fallback={null}
-			>
+
+			<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
 				<AsignarEjecutivoDialog
 					open={openAsignarComercial}
 					onOpenChange={setOpenAsignarComercial}
@@ -209,14 +210,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 				/>
 			</AuthGuard>
 
-			<AuthGuard
-				allowedRoles={[
-					'GERENTE_GENERAL',
-					'GERENTE_COMERCIAL',
-					'GERENTE_OPERACIONES',
-				]}
-				fallback={null}
-			>
+			<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
 				<AsignarEjecutivoDialog
 					open={openAsignarEvaluacion}
 					onOpenChange={setOpenAsignarEvaluacion}
@@ -226,16 +220,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 				/>
 			</AuthGuard>
 
-			{prospecto.id_cliente && (
+			{tieneCliente && (
 				<>
-					<AuthGuard
-						allowedRoles={[
-							'GERENTE_GENERAL',
-							'GERENTE_COMERCIAL',
-							'GERENTE_OPERACIONES',
-						]}
-						fallback={null}
-					>
+					<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
 						<AsignarEjecutivoDialog
 							open={openAsignarCobranza}
 							onOpenChange={setOpenAsignarCobranza}
@@ -246,14 +233,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 						/>
 					</AuthGuard>
 
-					<AuthGuard
-						allowedRoles={[
-							'GERENTE_GENERAL',
-							'GERENTE_COMERCIAL',
-							'GERENTE_OPERACIONES',
-						]}
-						fallback={null}
-					>
+					<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
 						<AsignarEjecutivoDialog
 							open={openAsignarRenovacion}
 							onOpenChange={setOpenAsignarRenovacion}
