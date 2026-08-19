@@ -2,6 +2,7 @@
 
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
+import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
 import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
@@ -9,6 +10,7 @@ import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { useObtenerProspecto } from '@/hooks/prospectos/use-obtener-prospecto'
 import { AlertTriangle } from 'lucide-react'
 import CardInformacionProspecto from '../card-informacion-prospecto/card-informacion-prospecto'
+import CardArchivos from '../card-archivos/card-archivos'
 import CardContactos from '../card-contactos/card-contactos'
 import CardInformacionTecnicaCondominio from '../card-informacion-tecnica-condominio/card-informacion-tecnica-condominio'
 import CardPolizas from '../card-polizas/card-polizas'
@@ -53,17 +55,23 @@ export default function PaginaProspectoClient({
 				/>
 			)}
 
-			<AuthGuard
-				allowedRoles={[
-					'EJECUTIVO_COMERCIAL',
-					'GERENTE_GENERAL',
-					'GERENTE_COMERCIAL',
-					'GERENTE_OPERACIONES',
-				]}
-				fallback={null}
-			>
-				<CardContactos idProspecto={prospecto.id} />
-			</AuthGuard>
+			<PanelBody className='lg:grid-cols-2'>
+				<AuthGuard
+					allowedRoles={[
+						'EJECUTIVO_COMERCIAL',
+						'GERENTE_GENERAL',
+						'GERENTE_COMERCIAL',
+						'GERENTE_OPERACIONES',
+					]}
+					fallback={null}
+				>
+					<CardContactos idProspecto={prospecto.id} />
+				</AuthGuard>
+
+				<AuthGuard>
+					<CardArchivos idProspecto={prospecto.id} />
+				</AuthGuard>
+			</PanelBody>
 
 			<AuthGuard
 				allowedRoles={[
