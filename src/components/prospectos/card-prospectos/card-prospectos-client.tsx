@@ -9,10 +9,11 @@ import { Input } from '@/components/input'
 import Paginacion from '@/components/paginacion/paginacion'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
 import { useQueryClient } from '@tanstack/react-query'
-import { Plus, Search } from 'lucide-react'
+import { Plus, Search, X } from 'lucide-react'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useState } from 'react'
 import FilaProspecto from './fila-prospecto'
+import SkeletonFilasProspecto from './skeleton-filas-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
 
 const TAMANO_PAGINA = 10
@@ -40,7 +41,7 @@ export default function CardProspectosClient({
 
 	const filtro = filtroExterno ?? filtroInterno
 
-	const { data } = useObtenerProspectos(
+	const { data, isFetching } = useObtenerProspectos(
 		initialData,
 		filtro === 'todos' ? null : filtro,
 		textoBusqueda,
@@ -49,6 +50,11 @@ export default function CardProspectosClient({
 	)
 
 	const response = data ?? initialData
+
+	const esConsultaInicial =
+		filtro === 'todos' && textoBusqueda === '' && pagina === 1
+	const buscandoEnDebounce = inputValue !== textoBusqueda
+	const mostrandoEsqueleto = isFetching && !esConsultaInicial
 
 	const onFiltroChange = (valor: string) => {
 		if (onFiltroChangeProp) {
@@ -91,10 +97,21 @@ export default function CardProspectosClient({
 					/>
 					<Input
 						placeholder='Nombre, rut, estado comercial, correo, teléfono o contacto'
-						className='h-9 pl-9 text-sm shadow-none'
+						className='h-9 pr-9 pl-9 text-sm shadow-none'
 						value={inputValue}
 						onChange={e => onBusquedaChange(e.target.value)}
 					/>
+					{inputValue && (
+						<Button
+							type='button'
+							variant='ghost'
+							className='absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground'
+							onClick={() => onBusquedaChange('')}
+							aria-label='Limpiar búsqueda'
+						>
+							<X className='h-3.5 w-3.5' aria-hidden />
+						</Button>
+					)}
 				</div>
 
 				<FiltrosEstadoProspecto
@@ -119,26 +136,31 @@ export default function CardProspectosClient({
 							? ` · ${response.total} prospecto${response.total !== 1 ? 's' : ''} en búsqueda`
 							: ''}
 					</p>
-					<div className='max-h-[min(52vh,420px)] space-y-2 overflow-y-auto rounded-md border border-border p-1.5'>
-						{response.data.length === 0 ? (
-							<p className='py-6 text-center text-xs text-muted-foreground'>
-								No hay clientes con este estado
-								{textoBusqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
-							</p>
-						) : (
-							response.data.map(prospecto => (
-								<FilaProspecto
-									key={prospecto.id}
-									prospecto={prospecto}
-									className={
-										textoBusqueda.trim()
-											? 'border-violet-500/25 bg-violet-500/4'
-											: undefined
-									}
-								/>
-							))
-						)}
-					</div>
+<div className='relative max-h-[min(52vh,420px)] overflow-y-auto divide-y divide-border rounded-md border border-border'>
+					{buscandoEnDebounce && !isFetching && (
+						<div className='pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 animate-pulse bg-primary/50' />
+					)}
+					{mostrandoEsqueleto ? (
+						<SkeletonFilasProspecto />
+					) : response.data.length === 0 ? (
+						<p className='py-6 text-center text-xs text-muted-foreground'>
+							No hay clientes con este estado
+							{textoBusqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
+						</p>
+					) : (
+						response.data.map(prospecto => (
+							<FilaProspecto
+								key={prospecto.id}
+								prospecto={prospecto}
+								className={
+									textoBusqueda.trim()
+										? 'bg-violet-500/4 hover:bg-violet-500/8'
+										: undefined
+								}
+							/>
+						))
+					)}
+				</div>
 					<Paginacion
 						pagina={response.pagina}
 						totalPaginas={response.total_paginas}

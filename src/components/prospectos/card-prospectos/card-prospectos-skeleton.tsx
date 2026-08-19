@@ -14,25 +14,31 @@ export function CardProspectosSkeleton() {
       <CardContent className='space-y-3 p-4'>
         <Skeleton className='h-9 w-full rounded-md' />
         <div className='flex flex-wrap gap-1.5'>
+          <Skeleton className='h-7 w-16 rounded-full' />
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className='h-7 w-20 rounded-full' />
           ))}
+          <Skeleton className='h-7 w-28 rounded-full' />
         </div>
         <div className='space-y-2'>
           <Skeleton className='h-3 w-32' />
-          <div className='max-h-[52vh] space-y-2 overflow-hidden rounded-md border border-border p-1.5'>
+          <div className='max-h-[52vh] divide-y divide-border overflow-hidden rounded-md border border-border'>
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className='flex items-center justify-between gap-3 rounded-md border px-3 py-2'>
-                <div className='min-w-0 flex-1 space-y-1'>
-                  <Skeleton className='h-3 w-3/4' />
+              <div key={i} className='flex items-center justify-between gap-3 px-3 py-3'>
+                <div className='min-w-0 flex-1 space-y-1.5'>
+                  <div className='flex gap-1.5'>
+                    <Skeleton className='h-4 w-16 rounded-full' />
+                    <Skeleton className='h-4 w-24 rounded-full' />
+                  </div>
+                  <Skeleton className='h-4 w-3/4' />
                   <Skeleton className='h-3 w-1/2' />
                 </div>
-                <Skeleton className='h-7 w-24 rounded-md' />
+                <Skeleton className='h-8 w-14 rounded-md' />
               </div>
             ))}
           </div>
         </div>
-        <Skeleton className='h-8 w-full rounded-md' />
+        <Skeleton className='h-10 w-full rounded-lg' />
       </CardContent>
     </Card>
   )

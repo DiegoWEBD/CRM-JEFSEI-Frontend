@@ -36,11 +36,11 @@ export default function FilaProspecto({
 	return (
 		<div
 			className={classname(
-				'flex items-start justify-between gap-3 rounded-md border px-3 py-2.5 text-xs',
+				'flex items-start justify-between gap-3 px-3 py-3 text-xs transition-colors hover:bg-muted/40',
 				className,
 			)}
 		>
-			<div className='min-w-0 flex-1 space-y-1'>
+			<div className='min-w-0 flex-1 space-y-1.5'>
 				<div className='flex flex-wrap items-center gap-1.5'>
 					<Badge
 						variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoGeneral]}
@@ -63,7 +63,7 @@ export default function FilaProspecto({
 						</Badge>
 					)}
 				</div>
-				<p className='truncate font-medium leading-snug text-foreground'>
+				<p className='truncate text-sm font-semibold leading-snug text-foreground'>
 					{prospecto.nombre_riesgo}
 				</p>
 				<div className='flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-muted-foreground'>
@@ -85,7 +85,7 @@ export default function FilaProspecto({
 			<Button
 				size='sm'
 				variant='outline'
-				className='h-7 shrink-0 px-2.5 text-xs'
+				className='h-8 shrink-0 px-3 text-xs transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground'
 			>
 				<Link href={`/prospectos/${prospecto.id}`}>Ver</Link>
 			</Button>

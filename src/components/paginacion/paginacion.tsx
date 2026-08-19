@@ -44,7 +44,7 @@ export default function Paginacion({
 	const paginas = generarPaginas(pagina, totalPaginas)
 
 	return (
-		<div className='flex flex-col items-center gap-2 border-t border-border pt-3 sm:flex-row sm:justify-between'>
+		<div className='mt-3 flex flex-col items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2.5 sm:flex-row sm:justify-between sm:gap-3'>
 			<p className='text-xs text-muted-foreground'>
 				Página {pagina} de {totalPaginas}
 			</p>
@@ -53,7 +53,7 @@ export default function Paginacion({
 					type='button'
 					variant='outline'
 					size='sm'
-					className='h-8 px-2 text-xs'
+					className='h-8 rounded-lg px-2 text-xs'
 					onClick={() => onPaginaChange(pagina - 1)}
 					disabled={pagina <= 1}
 				>
@@ -74,7 +74,7 @@ export default function Paginacion({
 							type='button'
 							variant={p === pagina ? 'default' : 'outline'}
 							size='sm'
-							className='h-8 min-w-8 px-2 text-xs'
+							className='h-8 min-w-8 rounded-lg px-2 text-xs'
 							onClick={() => onPaginaChange(p)}
 						>
 							{p}
@@ -86,7 +86,7 @@ export default function Paginacion({
 					type='button'
 					variant='outline'
 					size='sm'
-					className='h-8 px-2 text-xs'
+					className='h-8 rounded-lg px-2 text-xs'
 					onClick={() => onPaginaChange(pagina + 1)}
 					disabled={pagina >= totalPaginas}
 				>
