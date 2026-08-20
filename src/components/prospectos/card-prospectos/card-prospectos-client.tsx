@@ -13,6 +13,8 @@ import { Plus, Search, X } from 'lucide-react'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useState } from 'react'
 import FilaProspecto from './fila-prospecto'
+import FiltroEjecutivo from './filtro-ejecutivo'
+import FiltroRegionComuna from './filtro-region-comuna'
 import SkeletonFilasProspecto from './skeleton-filas-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
 
@@ -32,12 +34,17 @@ export default function CardProspectosClient({
 	const [filtroInterno, setFiltroInterno] = useState<string>('todos')
 	const [pagina, setPagina] = useState(1)
 	const [inputValue, setInputValue] = useState('')
+	const [rutUsuario, setRutUsuario] = useState<string>('')
+	const [region, setRegion] = useState<string>('')
+	const [comuna, setComuna] = useState<string>('')
 	const textoBusqueda = useDebounce(inputValue, 300)
 
 	const queryClient = useQueryClient()
 
-	const [openFormularioRegistrarProspecto, setOpenFormularioRegistrarProspecto] =
-		useState<boolean>(false)
+	const [
+		openFormularioRegistrarProspecto,
+		setOpenFormularioRegistrarProspecto,
+	] = useState<boolean>(false)
 
 	const filtro = filtroExterno ?? filtroInterno
 
@@ -47,12 +54,20 @@ export default function CardProspectosClient({
 		textoBusqueda,
 		pagina,
 		TAMANO_PAGINA,
+		rutUsuario || null,
+		region || null,
+		comuna || null,
 	)
 
 	const response = data ?? initialData
 
 	const esConsultaInicial =
-		filtro === 'todos' && textoBusqueda === '' && pagina === 1
+		filtro === 'todos' &&
+		textoBusqueda === '' &&
+		pagina === 1 &&
+		!rutUsuario &&
+		!region &&
+		!comuna
 	const buscandoEnDebounce = inputValue !== textoBusqueda
 	const mostrandoEsqueleto = isFetching && !esConsultaInicial
 
@@ -67,6 +82,22 @@ export default function CardProspectosClient({
 
 	const onBusquedaChange = (valor: string) => {
 		setInputValue(valor)
+		setPagina(1)
+	}
+
+	const onRutUsuarioChange = (valor: string) => {
+		setRutUsuario(valor)
+		setPagina(1)
+	}
+
+	const onRegionChange = (valor: string) => {
+		setRegion(valor)
+		setComuna('')
+		setPagina(1)
+	}
+
+	const onComunaChange = (valor: string) => {
+		setComuna(valor)
 		setPagina(1)
 	}
 
@@ -121,6 +152,16 @@ export default function CardProspectosClient({
 					onFiltroChange={onFiltroChange}
 				/>
 
+				<div className='flex flex-col gap-2 sm:flex-row'>
+					<FiltroEjecutivo value={rutUsuario} onChange={onRutUsuarioChange} />
+					<FiltroRegionComuna
+						region={region}
+						comuna={comuna}
+						onRegionChange={onRegionChange}
+						onComunaChange={onComunaChange}
+					/>
+				</div>
+
 				<div className='space-y-2'>
 					<p className='text-sm text-muted-foreground'>
 						{filtro === 'todos' ? (
@@ -136,31 +177,32 @@ export default function CardProspectosClient({
 							? ` · ${response.total} prospecto${response.total !== 1 ? 's' : ''} en búsqueda`
 							: ''}
 					</p>
-<div className='relative max-h-[min(52vh,420px)] overflow-y-auto divide-y divide-border rounded-md border border-border'>
-					{buscandoEnDebounce && !isFetching && (
-						<div className='pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 animate-pulse bg-primary/50' />
-					)}
-					{mostrandoEsqueleto ? (
-						<SkeletonFilasProspecto />
-					) : response.data.length === 0 ? (
-						<p className='py-6 text-center text-xs text-muted-foreground'>
-							No hay clientes con este estado
-							{textoBusqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
-						</p>
-					) : (
-						response.data.map(prospecto => (
-							<FilaProspecto
-								key={prospecto.id}
-								prospecto={prospecto}
-								className={
-									textoBusqueda.trim()
-										? 'bg-violet-500/4 hover:bg-violet-500/8'
-										: undefined
-								}
-							/>
-						))
-					)}
-				</div>
+					<div className='relative max-h-[min(52vh,420px)] overflow-y-auto divide-y divide-border rounded-md border border-border'>
+						{buscandoEnDebounce && !isFetching && (
+							<div className='pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 animate-pulse bg-primary/50' />
+						)}
+						{mostrandoEsqueleto ? (
+							<SkeletonFilasProspecto />
+						) : response.data.length === 0 ? (
+							<p className='py-6 text-center text-xs text-muted-foreground'>
+								No hay clientes con este estado
+								{textoBusqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
+							</p>
+						) : (
+							response.data.map(prospecto => (
+								<FilaProspecto
+									key={prospecto.id}
+									prospecto={prospecto}
+									textoBusqueda={textoBusqueda}
+									className={
+										textoBusqueda.trim()
+											? 'bg-violet-500/4 hover:bg-violet-500/8'
+											: undefined
+									}
+								/>
+							))
+						)}
+					</div>
 					<Paginacion
 						pagina={response.pagina}
 						totalPaginas={response.total_paginas}

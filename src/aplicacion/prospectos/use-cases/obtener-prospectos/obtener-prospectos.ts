@@ -7,6 +7,9 @@ export type ObtenerProspectosParams = {
 	textoBusqueda?: string | null
 	pagina?: number
 	tamanoPagina?: number
+	rutUsuario?: string | null
+	region?: string | null
+	comuna?: string | null
 }
 
 export const obtenerProspectos = async (
@@ -19,6 +22,9 @@ export const obtenerProspectos = async (
 	if (params?.textoBusqueda) searchParams.set('texto_busqueda', params.textoBusqueda)
 	if (params?.pagina) searchParams.set('pagina', String(params.pagina))
 	if (params?.tamanoPagina) searchParams.set('tamano_pagina', String(params.tamanoPagina))
+	if (params?.rutUsuario) searchParams.set('rut_usuario', params.rutUsuario)
+	if (params?.region) searchParams.set('region', params.region)
+	if (params?.comuna) searchParams.set('comuna', params.comuna)
 
 	const queryString = searchParams.toString()
 	const url = queryString ? `/prospectos?${queryString}` : '/prospectos'

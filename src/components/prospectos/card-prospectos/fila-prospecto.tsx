@@ -7,31 +7,40 @@ import {
 	ESTADO_GENERAL_CLIENTE_LABELS,
 	type EstadoGeneralCliente,
 } from '@/lib/estados-cotizaciones'
+import { Briefcase, CreditCard, MapPin, User, UserCheck } from 'lucide-react'
 import { ESTADO_COMERCIAL_VARIANT } from '@/lib/badge-variants'
 import {
 	ESTADO_PROSPECTO_LABELS,
 	type EstadoComercialProspecto,
 } from '@/types/estados/estado-comercial-cliente'
+import { resaltarTexto, resaltarRut } from '@/lib/resaltar-texto'
 import Link from 'next/link'
+import { useMemo } from 'react'
 
 interface FilaProspectoProps {
 	prospecto: ProspectoResumenJson
 	className?: string
+	textoBusqueda?: string
 }
 
 export default function FilaProspecto({
 	prospecto,
 	className,
+	textoBusqueda = '',
 }: FilaProspectoProps) {
 	const estadoGeneral = (prospecto.estado_general_cliente ||
 		'prospecto') as EstadoGeneralCliente
 
-	const ultimoProceso =
-		prospecto.procesos_comerciales.length > 0
-			? prospecto.procesos_comerciales[
-					prospecto.procesos_comerciales.length - 1
-				]
-			: null
+	const procesosAbiertos = useMemo(
+		() =>
+			prospecto.procesos_comerciales.filter(
+				proceso =>
+					proceso.codigo_estado !== null &&
+					proceso.codigo_estado !== 'GANADO' &&
+					proceso.codigo_estado !== 'PERDIDO',
+			),
+		[prospecto.procesos_comerciales],
+	)
 
 	return (
 		<div
@@ -41,44 +50,65 @@ export default function FilaProspecto({
 			)}
 		>
 			<div className='min-w-0 flex-1 space-y-1.5'>
+				<p className='truncate text-sm font-semibold leading-snug text-foreground'>
+					{resaltarTexto(prospecto.nombre_riesgo, textoBusqueda)}
+				</p>
+				<Badge
+					variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoGeneral]}
+					className='text-[10px]'
+				>
+					{ESTADO_GENERAL_CLIENTE_LABELS[estadoGeneral]}
+				</Badge>
 				<div className='flex flex-wrap items-center gap-1.5'>
-					<Badge
-						variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoGeneral]}
-						className='text-[10px]'
-					>
-						{ESTADO_GENERAL_CLIENTE_LABELS[estadoGeneral]}
-					</Badge>
-					{ultimoProceso && ultimoProceso.codigo_estado !== null && (
+					{procesosAbiertos.map((proceso, i) => (
 						<Badge
+							key={i}
 							variant={
 								ESTADO_COMERCIAL_VARIANT[
-									ultimoProceso.codigo_estado as EstadoComercialProspecto
+									proceso.codigo_estado as EstadoComercialProspecto
 								]
 							}
 							className='text-[10px]'
 						>
 							{ESTADO_PROSPECTO_LABELS[
-								ultimoProceso.codigo_estado as EstadoComercialProspecto
-							] ?? ultimoProceso.nombre_estado}
+								proceso.codigo_estado as EstadoComercialProspecto
+							] ?? proceso.nombre_estado}
 						</Badge>
+					))}
+				</div>
+
+				<div className='flex flex-col gap-1 text-muted-foreground sm:flex-row sm:gap-x-3'>
+					{prospecto.rut_riesgo && (
+						<span className='flex items-center gap-1'>
+							<CreditCard size={14} />
+							<span className='rounded bg-muted px-1.5 py-0.5 font-medium text-foreground'>
+								{resaltarRut(prospecto.rut_riesgo, textoBusqueda)}
+							</span>
+						</span>
+					)}
+					<span className='flex items-center gap-1'>
+						<Briefcase size={14} />
+						{resaltarTexto(prospecto.linea_negocio, textoBusqueda)}
+					</span>
+					{prospecto.comuna && (
+						<span className='flex items-center gap-1'>
+							<MapPin size={14} />
+							{resaltarTexto(prospecto.comuna, textoBusqueda)}
+						</span>
 					)}
 				</div>
-				<p className='truncate text-sm font-semibold leading-snug text-foreground'>
-					{prospecto.nombre_riesgo}
-				</p>
-				<div className='flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-muted-foreground'>
-					<span>{prospecto.linea_negocio}</span>
+				<div className='flex flex-col gap-1 text-muted-foreground sm:flex-row sm:gap-x-3'>
 					{prospecto.nombre_administrador && (
-						<>
-							<span>·</span>
-							<span>{prospecto.nombre_administrador}</span>
-						</>
+						<span className='flex items-center gap-1'>
+							<User size={14} />
+							Admin: {resaltarTexto(prospecto.nombre_administrador, textoBusqueda)}
+						</span>
 					)}
 					{prospecto.ejecutivo_comercial && (
-						<>
-							<span>·</span>
-							<span>Ejec: {prospecto.ejecutivo_comercial}</span>
-						</>
+						<span className='flex items-center gap-1'>
+							<UserCheck size={14} />
+							Ejec: {resaltarTexto(prospecto.ejecutivo_comercial, textoBusqueda)}
+						</span>
 					)}
 				</div>
 			</div>
