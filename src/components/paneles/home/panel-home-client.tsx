@@ -51,7 +51,16 @@ export default function PanelHomeClient({
 	nombreUsuario,
 	dashboardCobranzaInicial,
 }: PanelHomeClientProps) {
-	const { data } = useObtenerProspectos(prospectosIniciales, null, '', 1, 10)
+	const { data } = useObtenerProspectos(
+		prospectosIniciales,
+		null,
+		'',
+		1,
+		10,
+		null,
+		null,
+		null,
+	)
 
 	const response = data ?? prospectosIniciales
 	const prospectos = response.data
