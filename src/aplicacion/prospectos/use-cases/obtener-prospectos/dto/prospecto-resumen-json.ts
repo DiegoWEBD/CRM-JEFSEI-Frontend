@@ -3,10 +3,12 @@ import { ProcesoComercialResumenJson } from '@/aplicacion/procesos-comerciales/d
 export interface ProspectoResumenJson {
 	id: number
 	id_cliente?: number
+	rut_riesgo: string
 	nombre_riesgo: string
 	nombre_administrador?: string
 	linea_negocio: string
 	ejecutivo_comercial?: string
 	procesos_comerciales: ProcesoComercialResumenJson[]
 	estado_general_cliente: string
+	comuna: string
 }

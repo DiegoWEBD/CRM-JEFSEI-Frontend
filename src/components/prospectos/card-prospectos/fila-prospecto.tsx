@@ -68,6 +68,18 @@ export default function FilaProspecto({
 				</p>
 				<div className='flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-muted-foreground'>
 					<span>{prospecto.linea_negocio}</span>
+					{prospecto.comuna && (
+						<>
+							<span>·</span>
+							<span>{prospecto.comuna}</span>
+						</>
+					)}
+					{prospecto.rut_riesgo && (
+						<>
+							<span>·</span>
+							<span>{prospecto.rut_riesgo}</span>
+						</>
+					)}
 					{prospecto.nombre_administrador && (
 						<>
 							<span>·</span>
