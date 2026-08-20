@@ -19,6 +19,5 @@ export const useReportesProcesosComerciales = (
 			return response.data
 		},
 		initialData,
-		staleTime: 60000,
 	})
 }
