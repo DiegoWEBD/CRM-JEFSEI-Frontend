@@ -41,8 +41,10 @@ export default function CardProspectosClient({
 
 	const queryClient = useQueryClient()
 
-	const [openFormularioRegistrarProspecto, setOpenFormularioRegistrarProspecto] =
-		useState<boolean>(false)
+	const [
+		openFormularioRegistrarProspecto,
+		setOpenFormularioRegistrarProspecto,
+	] = useState<boolean>(false)
 
 	const filtro = filtroExterno ?? filtroInterno
 
@@ -60,7 +62,12 @@ export default function CardProspectosClient({
 	const response = data ?? initialData
 
 	const esConsultaInicial =
-		filtro === 'todos' && textoBusqueda === '' && pagina === 1 && !rutUsuario && !region && !comuna
+		filtro === 'todos' &&
+		textoBusqueda === '' &&
+		pagina === 1 &&
+		!rutUsuario &&
+		!region &&
+		!comuna
 	const buscandoEnDebounce = inputValue !== textoBusqueda
 	const mostrandoEsqueleto = isFetching && !esConsultaInicial
 
@@ -170,31 +177,32 @@ export default function CardProspectosClient({
 							? ` · ${response.total} prospecto${response.total !== 1 ? 's' : ''} en búsqueda`
 							: ''}
 					</p>
-<div className='relative max-h-[min(52vh,420px)] overflow-y-auto divide-y divide-border rounded-md border border-border'>
-					{buscandoEnDebounce && !isFetching && (
-						<div className='pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 animate-pulse bg-primary/50' />
-					)}
-					{mostrandoEsqueleto ? (
-						<SkeletonFilasProspecto />
-					) : response.data.length === 0 ? (
-						<p className='py-6 text-center text-xs text-muted-foreground'>
-							No hay clientes con este estado
-							{textoBusqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
-						</p>
-					) : (
-						response.data.map(prospecto => (
-							<FilaProspecto
-								key={prospecto.id}
-								prospecto={prospecto}
-								className={
-									textoBusqueda.trim()
-										? 'bg-violet-500/4 hover:bg-violet-500/8'
-										: undefined
-								}
-							/>
-						))
-					)}
-				</div>
+					<div className='relative max-h-[min(52vh,420px)] overflow-y-auto divide-y divide-border rounded-md border border-border'>
+						{buscandoEnDebounce && !isFetching && (
+							<div className='pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 animate-pulse bg-primary/50' />
+						)}
+						{mostrandoEsqueleto ? (
+							<SkeletonFilasProspecto />
+						) : response.data.length === 0 ? (
+							<p className='py-6 text-center text-xs text-muted-foreground'>
+								No hay clientes con este estado
+								{textoBusqueda.trim() ? ' que coincidan con la búsqueda' : ''}.
+							</p>
+						) : (
+							response.data.map(prospecto => (
+								<FilaProspecto
+									key={prospecto.id}
+									prospecto={prospecto}
+									textoBusqueda={textoBusqueda}
+									className={
+										textoBusqueda.trim()
+											? 'bg-violet-500/4 hover:bg-violet-500/8'
+											: undefined
+									}
+								/>
+							))
+						)}
+					</div>
 					<Paginacion
 						pagina={response.pagina}
 						totalPaginas={response.total_paginas}
