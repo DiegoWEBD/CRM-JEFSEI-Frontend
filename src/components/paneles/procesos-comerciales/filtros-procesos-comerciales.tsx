@@ -22,10 +22,9 @@ export type FiltrosPanel = {
 type FiltrosProcesosComercialesProps = {
 	filtros: FiltrosPanel
 	onChange: (f: FiltrosPanel) => void
-	opcionesEjecutivo: string[]
-	opcionesEtapa: string[]
+	opcionesEjecutivo: Array<{ rut: string; nombre: string }>
+	opcionesEtapa: Array<{ codigo: string; nombre: string }>
 	total?: number
-	filtrados?: number
 }
 
 export default function FiltrosProcesosComerciales({
@@ -34,7 +33,6 @@ export default function FiltrosProcesosComerciales({
 	opcionesEjecutivo,
 	opcionesEtapa,
 	total,
-	filtrados,
 }: FiltrosProcesosComercialesProps) {
 	const actualizar = (key: keyof FiltrosPanel, value: string) => {
 		onChange({ ...filtros, [key]: value })
@@ -52,8 +50,6 @@ export default function FiltrosProcesosComerciales({
 		filtros.busqueda !== '' ||
 		filtros.ejecutivo !== TODOS ||
 		filtros.etapa !== TODOS
-
-	const mostrarContador = total != null && filtrados != null
 
 	return (
 		<div className='flex flex-wrap items-center gap-2'>
@@ -82,8 +78,8 @@ export default function FiltrosProcesosComerciales({
 						Todos
 					</SelectItem>
 					{opcionesEjecutivo.map(op => (
-						<SelectItem key={op} value={op} className='text-xs'>
-							{op}
+						<SelectItem key={op.rut} value={op.rut} className='text-xs'>
+							{op.nombre}
 						</SelectItem>
 					))}
 				</SelectContent>
@@ -101,8 +97,8 @@ export default function FiltrosProcesosComerciales({
 						Todas
 					</SelectItem>
 					{opcionesEtapa.map(op => (
-						<SelectItem key={op} value={op} className='text-xs'>
-							{op}
+						<SelectItem key={op.codigo} value={op.codigo} className='text-xs'>
+							{op.nombre}
 						</SelectItem>
 					))}
 				</SelectContent>
@@ -120,9 +116,9 @@ export default function FiltrosProcesosComerciales({
 				</Button>
 			)}
 
-			{mostrarContador && (
+			{total != null && (
 				<span className='text-sm text-muted-foreground'>
-					Mostrando {filtrados} de {total} oportunidades
+					Mostrando {total} oportunidades
 				</span>
 			)}
 		</div>

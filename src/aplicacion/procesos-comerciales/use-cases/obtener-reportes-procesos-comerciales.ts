@@ -1,17 +1,28 @@
-import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
-import type { FiltrosProcesosComerciales } from '@/aplicacion/procesos-comerciales/dto/filtros-procesos-comerciales'
+import type { ObtenerReportesResponse } from '@/aplicacion/procesos-comerciales/dto/obtener-reportes-response'
 import { axiosClient } from '@/infraestructura/axios/axios-client'
 import { cookies } from 'next/headers'
 
+export type ObtenerReportesParams = {
+	texto_busqueda?: string | null
+	ejecutivos?: string[] | null
+	etapas?: string[] | null
+	estado_semaforo?: string[] | null
+	estado_proceso?: string | null
+	cerrado?: boolean | null
+	fecha_desde?: string | null
+	fecha_hasta?: string | null
+	pagina?: number
+	tamano_pagina?: number
+}
+
 export const obtenerReportesProcesosComerciales = async (
-	filtros: FiltrosProcesosComerciales,
-): Promise<ReporteProcesoComercial[]> => {
+	params?: ObtenerReportesParams,
+): Promise<ObtenerReportesResponse> => {
 	const cookieStore = await cookies()
 	const axiosResponse = await axiosClient.post(
 		'/procesos-comerciales/reportes',
-		filtros,
+		params ?? {},
 		{ headers: { Cookie: cookieStore.toString() } },
 	)
-	const data: ReporteProcesoComercial[] = axiosResponse.data
-	return data
+	return axiosResponse.data as ObtenerReportesResponse
 }

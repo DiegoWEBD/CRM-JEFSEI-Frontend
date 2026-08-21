@@ -7,6 +7,7 @@ import type {
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { Badge } from '@/components/badge'
 import { Card, CardContent } from '@/components/card'
+import Paginacion from '@/components/paginacion/paginacion'
 import {
 	Table,
 	TableBody,
@@ -56,12 +57,18 @@ type TablaProcesosComercialesProps = {
 	filas: ReporteProcesoComercial[]
 	isFetching: boolean
 	onSeleccionar: (fila: ReporteProcesoComercial) => void
+	pagina: number
+	totalPaginas: number
+	onPaginaChange: (pagina: number) => void
 }
 
 export default function TablaProcesosComerciales({
 	filas,
 	isFetching,
 	onSeleccionar,
+	pagina,
+	totalPaginas,
+	onPaginaChange,
 }: TablaProcesosComercialesProps) {
 	if (isFetching) {
 		return <SkeletonTabla />
@@ -162,145 +169,153 @@ export default function TablaProcesosComerciales({
 				))}
 			</div>
 
-			<div className='hidden max-h-[65vh] overflow-y-auto lg:block'>
-				<Table className='min-w-300 w-full border-separate border-spacing-0'>
-					<TableHeader className='sticky top-0 z-10 bg-background'>
-						<TableRow className='border-0 hover:bg-transparent'>
-							<TableHead className={cn(headClass, 'w-10')}>
-								<span className='sr-only'>Prioridad</span>
-								<span
-									aria-hidden
-									className='inline-block h-3 w-3 rounded-full bg-current opacity-30'
-								/>
-							</TableHead>
-							<TableHead className={cn(headClass, 'w-[20%]')}>
-								Cliente
-							</TableHead>
-							<TableHead className={cn(headClass, 'w-[11%]')}>
-								Producto
-							</TableHead>
-							<TableHead className={cn(headClass, 'w-[11%]')}>
-								Ejecutivo
-							</TableHead>
-							<TableHead className={cn(headClass, 'w-[9%]')}>Etapa</TableHead>
-							<TableHead className={cn(headClass, 'w-[9%]')}>Estado</TableHead>
-							<TableHead className={cn(headClass, 'w-[9%]')}>
-								Tiempo etapa
-							</TableHead>
-							<TableHead className={cn(headClass, 'w-16')}>
-								SLA límite
-							</TableHead>
-							<TableHead className={cn(headClass, 'w-16')}>% SLA</TableHead>
-							<TableHead className={cn(headClass, 'w-[18%]')}>
-								Mensaje
-							</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{ordenadas.map((f, i) => (
-							<TableRow
-								key={`${f.proceso.id}-${i}`}
-								role='button'
-								tabIndex={0}
-								onClick={() => onSeleccionar(f)}
-								onKeyDown={e => {
-									if (e.key === 'Enter' || e.key === ' ') {
-										e.preventDefault()
-										onSeleccionar(f)
-									}
-								}}
-								className='cursor-pointer border-0 border-b border-border/60 transition-colors last:border-b-0 hover:bg-accent/40'
-							>
-								<TableCell className={cn(cellClass, 'p-1.5 text-center')}>
+			<div className='hidden lg:block'>
+				<div className='max-h-[65vh] overflow-y-auto'>
+					<Table className='min-w-300 w-full border-separate border-spacing-0'>
+						<TableHeader className='sticky top-0 z-10 bg-background'>
+							<TableRow className='border-0 hover:bg-transparent'>
+								<TableHead className={cn(headClass, 'w-10')}>
+									<span className='sr-only'>Prioridad</span>
 									<span
-										className={cn(
-											'inline-block h-3 w-3 rounded-full',
-											PRIORIDAD_COLORS[f.estado_semaforo],
-										)}
+										aria-hidden
+										className='inline-block h-3 w-3 rounded-full bg-current opacity-30'
 									/>
-								</TableCell>
-								<TableCell
-									className={cn(cellClass, 'font-medium text-foreground')}
-								>
-									<span className='wrap-break-words text-xs leading-snug'>
-										{f.proceso.nombre_cliente}
-									</span>
-								</TableCell>
-								<TableCell
-									className={cn(cellClass, 'text-sm text-muted-foreground')}
-								>
-									<span className='line-clamp-2 leading-snug'>
-										{f.proceso.producto}
-									</span>
-								</TableCell>
-								<TableCell
-									className={cn(cellClass, 'text-sm text-muted-foreground')}
-								>
-									{f.proceso.ejecutivo_comercial?.nombre ?? '—'}
-								</TableCell>
-								<TableCell
-									className={cn(cellClass, 'text-sm text-muted-foreground')}
-								>
-									{f.proceso.etapa_actual.nombre}
-								</TableCell>
-								<TableCell className={cn(cellClass, 'p-1.5')}>
-									<Badge
-										variant={
-											ESTADO_COMERCIAL_BADGE[
-												f.proceso.estado_actual
-													.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-											] ?? 'outline'
-										}
-										className='shrink-0 font-semibold text-xs'
-									>
-										{ESTADO_PROSPECTO_LABELS[
-											f.proceso.estado_actual
-												.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-										] ?? f.proceso.estado_actual.nombre}
-									</Badge>
-								</TableCell>
-								<TableCell
-									className={cn(
-										cellClass,
-										'text-sm tabular-nums text-muted-foreground',
-									)}
-								>
-									{esAbierto(f) ? `${f.dias_transcurridos} días` : '—'}
-								</TableCell>
-								<TableCell
-									className={cn(
-										cellClass,
-										'text-sm tabular-nums text-muted-foreground',
-									)}
-								>
-									{esAbierto(f) && f.proceso.etapa_actual.dias_limite != null
-										? `${f.proceso.etapa_actual.dias_limite} días`
-										: '—'}
-								</TableCell>
-								<TableCell className={cn(cellClass, 'p-1.5')}>
-									{esAbierto(f) ? (
-										<Badge
-											variant={SEMAFORO_VARIANT[f.estado_semaforo]}
-											className='text-xs font-medium tabular-nums'
-										>
-											{(f.porentaje_sla_consumido * 100).toFixed(0)}%
-										</Badge>
-									) : (
-										<span className='text-xs text-muted-foreground'>—</span>
-									)}
-								</TableCell>
-								<TableCell
-									className={cn(cellClass, 'text-sm text-muted-foreground')}
-								>
-									<span className='line-clamp-2 leading-snug'>
-										{esAbierto(f) ? f.mensaje_semaforo : '—'}
-									</span>
-								</TableCell>
+								</TableHead>
+								<TableHead className={cn(headClass, 'w-[20%]')}>
+									Cliente
+								</TableHead>
+								<TableHead className={cn(headClass, 'w-[11%]')}>
+									Producto
+								</TableHead>
+								<TableHead className={cn(headClass, 'w-[11%]')}>
+									Ejecutivo
+								</TableHead>
+								<TableHead className={cn(headClass, 'w-[9%]')}>Etapa</TableHead>
+								<TableHead className={cn(headClass, 'w-[9%]')}>Estado</TableHead>
+								<TableHead className={cn(headClass, 'w-[9%]')}>
+									Tiempo etapa
+								</TableHead>
+								<TableHead className={cn(headClass, 'w-16')}>
+									SLA límite
+								</TableHead>
+								<TableHead className={cn(headClass, 'w-16')}>% SLA</TableHead>
+								<TableHead className={cn(headClass, 'w-[18%]')}>
+									Mensaje
+								</TableHead>
 							</TableRow>
-						))}
-					</TableBody>
-				</Table>
+						</TableHeader>
+						<TableBody>
+							{ordenadas.map((f, i) => (
+								<TableRow
+									key={`${f.proceso.id}-${i}`}
+									role='button'
+									tabIndex={0}
+									onClick={() => onSeleccionar(f)}
+									onKeyDown={e => {
+										if (e.key === 'Enter' || e.key === ' ') {
+											e.preventDefault()
+											onSeleccionar(f)
+										}
+									}}
+									className='cursor-pointer border-0 border-b border-border/60 transition-colors last:border-b-0 hover:bg-accent/40'
+								>
+									<TableCell className={cn(cellClass, 'p-1.5 text-center')}>
+										<span
+											className={cn(
+												'inline-block h-3 w-3 rounded-full',
+												PRIORIDAD_COLORS[f.estado_semaforo],
+											)}
+										/>
+									</TableCell>
+									<TableCell
+										className={cn(cellClass, 'font-medium text-foreground')}
+									>
+										<span className='wrap-break-words text-xs leading-snug'>
+											{f.proceso.nombre_cliente}
+										</span>
+									</TableCell>
+									<TableCell
+										className={cn(cellClass, 'text-sm text-muted-foreground')}
+									>
+										<span className='line-clamp-2 leading-snug'>
+											{f.proceso.producto}
+										</span>
+									</TableCell>
+									<TableCell
+										className={cn(cellClass, 'text-sm text-muted-foreground')}
+									>
+										{f.proceso.ejecutivo_comercial?.nombre ?? '—'}
+									</TableCell>
+									<TableCell
+										className={cn(cellClass, 'text-sm text-muted-foreground')}
+									>
+										{f.proceso.etapa_actual.nombre}
+									</TableCell>
+									<TableCell className={cn(cellClass, 'p-1.5')}>
+										<Badge
+											variant={
+												ESTADO_COMERCIAL_BADGE[
+													f.proceso.estado_actual
+														.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
+												] ?? 'outline'
+											}
+											className='shrink-0 font-semibold text-xs'
+										>
+											{ESTADO_PROSPECTO_LABELS[
+												f.proceso.estado_actual
+													.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
+											] ?? f.proceso.estado_actual.nombre}
+										</Badge>
+									</TableCell>
+									<TableCell
+										className={cn(
+											cellClass,
+											'text-sm tabular-nums text-muted-foreground',
+										)}
+									>
+										{esAbierto(f) ? `${f.dias_transcurridos} días` : '—'}
+									</TableCell>
+									<TableCell
+										className={cn(
+											cellClass,
+											'text-sm tabular-nums text-muted-foreground',
+										)}
+									>
+										{esAbierto(f) && f.proceso.etapa_actual.dias_limite != null
+											? `${f.proceso.etapa_actual.dias_limite} días`
+											: '—'}
+									</TableCell>
+									<TableCell className={cn(cellClass, 'p-1.5')}>
+										{esAbierto(f) ? (
+											<Badge
+												variant={SEMAFORO_VARIANT[f.estado_semaforo]}
+												className='text-xs font-medium tabular-nums'
+											>
+												{(f.porentaje_sla_consumido * 100).toFixed(0)}%
+											</Badge>
+										) : (
+											<span className='text-xs text-muted-foreground'>—</span>
+										)}
+									</TableCell>
+									<TableCell
+										className={cn(cellClass, 'text-sm text-muted-foreground')}
+									>
+										<span className='line-clamp-2 leading-snug'>
+											{esAbierto(f) ? f.mensaje_semaforo : '—'}
+										</span>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</div>
 			</div>
+
+			<Paginacion
+				pagina={pagina}
+				totalPaginas={totalPaginas}
+				onPaginaChange={onPaginaChange}
+			/>
 		</>
 	)
 }
