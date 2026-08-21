@@ -1,24 +1,60 @@
 'use client'
 
-import type { FiltrosProcesosComerciales } from '@/aplicacion/procesos-comerciales/dto/filtros-procesos-comerciales'
-import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
-import { useQuery } from '@tanstack/react-query'
+import type { ObtenerReportesResponse } from '@/aplicacion/procesos-comerciales/dto/obtener-reportes-response'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
 export const useReportesProcesosComerciales = (
-	filtros: FiltrosProcesosComerciales,
-	initialData?: ReporteProcesoComercial[],
+	initialData: ObtenerReportesResponse,
+	textoBusqueda: string,
+	ejecutivos: string[] | null,
+	etapas: string[] | null,
+	estadoSemaforo: string[] | null,
+	estadoProceso: string | null,
+	cerrado: boolean | null,
+	pagina: number,
+	tamanoPagina: number,
 ) => {
-	return useQuery<ReporteProcesoComercial[]>({
-		queryKey: ['reportes-procesos-comerciales', filtros],
+	const esConsultaInicial =
+		textoBusqueda === '' &&
+		ejecutivos === null &&
+		etapas === null &&
+		estadoSemaforo === null &&
+		estadoProceso === null &&
+		cerrado === false &&
+		pagina === 1 &&
+		tamanoPagina === 15
+
+	return useQuery<ObtenerReportesResponse>({
+		queryKey: [
+			'reportes-procesos-comerciales',
+			textoBusqueda,
+			ejecutivos,
+			etapas,
+			estadoSemaforo,
+			estadoProceso,
+			cerrado,
+			pagina,
+			tamanoPagina,
+		],
 		queryFn: async () => {
+			const body: Record<string, unknown> = {
+				pagina,
+				tamano_pagina: tamanoPagina,
+			}
+			if (textoBusqueda) body.texto_busqueda = textoBusqueda
+			if (ejecutivos) body.ejecutivos = ejecutivos
+			if (etapas) body.etapas = etapas
+			if (estadoSemaforo) body.estado_semaforo = estadoSemaforo
+			if (estadoProceso) body.estado_proceso = estadoProceso
+			if (cerrado !== null) body.cerrado = cerrado
 			const response = await axios.post(
 				'/api/procesos-comerciales/reportes',
-				filtros,
+				body,
 			)
 			return response.data
 		},
-		initialData,
-		staleTime: 60000,
+		...(esConsultaInicial ? { initialData } : {}),
+		placeholderData: keepPreviousData,
 	})
 }

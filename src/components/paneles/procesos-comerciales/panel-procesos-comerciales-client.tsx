@@ -1,8 +1,12 @@
 'use client'
 
+import type { ObtenerReportesResponse } from '@/aplicacion/procesos-comerciales/dto/obtener-reportes-response'
 import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useEtapasProcesoComerciales } from '@/hooks/procesos-comerciales/use-etapas-proceso-comerciales'
 import { useReportesProcesosComerciales } from '@/hooks/procesos-comerciales/use-reportes-procesos-comerciales'
+import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { useMemo, useState } from 'react'
 import DetalleProcesoDrawer from './detalle-proceso-drawer'
 import FiltrosProcesosComerciales, {
@@ -15,161 +19,167 @@ import KpiProcesosComerciales, {
 } from './kpi-procesos-comerciales'
 import TablaProcesosComerciales from './tabla-procesos-comerciales'
 
-function buildConteos(filas: ReporteProcesoComercial[]): ConteosProcesos {
-	const conteos: ConteosProcesos = {
-		todas: filas.length,
-		abiertos: 0,
-		ganados: 0,
-		perdidos: 0,
-		verde: 0,
-		amarillo: 0,
-		rojo: 0,
-	}
-	for (const f of filas) {
-		if (!f.proceso.cerrado) conteos.abiertos++
-		else if (f.proceso.estado_actual.codigo === 'GANADO') conteos.ganados++
-		else if (f.proceso.estado_actual.codigo === 'PERDIDO') conteos.perdidos++
+const TAMANO_PAGINA = 15
 
-		if (!f.proceso.cerrado) {
-			if (f.estado_semaforo === 'VERDE') conteos.verde++
-			else if (f.estado_semaforo === 'AMARILLO') conteos.amarillo++
-			else if (f.estado_semaforo === 'ROJO') conteos.rojo++
-		}
-	}
-	return conteos
-}
-
-function filaMatchesBusqueda(f: ReporteProcesoComercial, q: string): boolean {
-	if (!q) return true
-	const t = q.toLowerCase()
-	return (
-		f.proceso.nombre_cliente.toLowerCase().includes(t) ||
-		(f.proceso.ejecutivo_comercial?.nombre ?? '').toLowerCase().includes(t) ||
-		f.proceso.producto.toLowerCase().includes(t)
-	)
-}
+const ROLES_EJECUTIVO = [
+	'EJECUTIVO_COMERCIAL',
+	'EJECUTIVO_EVALUACION_PROYECTOS',
+	'GERENTE_GENERAL',
+	'GERENTE_COMERCIAL',
+	'GERENTE_OPERACIONES',
+]
 
 type PanelProcesosComercialesClientProps = {
-	initialData: ReporteProcesoComercial[]
+	initialData: ObtenerReportesResponse
 }
 
 export default function PanelProcesosComercialesClient({
 	initialData,
 }: PanelProcesosComercialesClientProps) {
-	const { data: reportes, isFetching } = useReportesProcesosComerciales(
-		{},
-		initialData,
-	)
-
-	const [drawerAbierto, setDrawerAbierto] = useState(false)
-	const [filaSeleccionada, setFilaSeleccionada] =
-		useState<ReporteProcesoComercial | null>(null)
-
 	const [tarjetaActiva, setTarjetaActiva] = useState<TarjetaActiva>('abiertos')
 	const [filtros, setFiltros] = useState<FiltrosPanel>({
 		busqueda: '',
 		ejecutivo: TODOS,
 		etapa: TODOS,
 	})
+	const [pagina, setPagina] = useState(1)
 
-	const data = useMemo(() => reportes ?? [], [reportes])
+	const textoBusqueda = useDebounce(filtros.busqueda, 300)
 
-	const conteos = useMemo(() => buildConteos(data), [data])
-
-	const opcionesEjecutivo = useMemo(
-		() =>
-			[
-				...new Set(
-					data
-						.map(f => f.proceso.ejecutivo_comercial?.nombre ?? '')
-						.filter(Boolean),
-				),
-			].sort(),
-		[data],
+	const ejecutivosParam = useMemo(
+		() => (filtros.ejecutivo !== TODOS ? [filtros.ejecutivo] : null),
+		[filtros.ejecutivo],
 	)
+
+	const etapasParam = useMemo(
+		() => (filtros.etapa !== TODOS ? [filtros.etapa] : null),
+		[filtros.etapa],
+	)
+
+	const cerradoParam = useMemo(() => {
+		if (filtros.etapa === 'CERRADO') return true
+		if (tarjetaActiva === 'abiertos') return false
+		if (tarjetaActiva === 'ganados') return true
+		if (tarjetaActiva === 'perdidos') return true
+		if (tarjetaActiva === 'verde') return false
+		if (tarjetaActiva === 'amarillo') return false
+		if (tarjetaActiva === 'rojo') return false
+		if (tarjetaActiva === 'todas') return null
+		return null
+	}, [tarjetaActiva, filtros.etapa])
+
+	const estadoProcesoParam = useMemo(() => {
+		if (tarjetaActiva === 'ganados') return 'ganados'
+		if (tarjetaActiva === 'perdidos') return 'perdidos'
+		return null
+	}, [tarjetaActiva])
+
+	const estadoSemaforoParam = useMemo(() => {
+		if (tarjetaActiva === 'verde') return ['VERDE']
+		if (tarjetaActiva === 'amarillo') return ['AMARILLO']
+		if (tarjetaActiva === 'rojo') return ['ROJO']
+		return null
+	}, [tarjetaActiva])
+
+	const { data: response, isFetching } = useReportesProcesosComerciales(
+		initialData,
+		textoBusqueda,
+		ejecutivosParam,
+		etapasParam,
+		estadoSemaforoParam,
+		estadoProcesoParam,
+		cerradoParam,
+		pagina,
+		TAMANO_PAGINA,
+	)
+
+	const { data: usuarios } = useUsuarios()
+	const { data: etapas } = useEtapasProcesoComerciales()
+
+	const [drawerAbierto, setDrawerAbierto] = useState(false)
+	const [filaSeleccionada, setFilaSeleccionada] =
+		useState<ReporteProcesoComercial | null>(null)
+
+	const opcionesEjecutivo = useMemo(() => {
+		if (!usuarios) return []
+		return usuarios
+			.filter(u => u.roles.some(r => ROLES_EJECUTIVO.includes(r.codigo)))
+			.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
+			.map(u => ({ rut: u.rut, nombre: u.nombre }))
+	}, [usuarios])
 
 	const opcionesEtapa = useMemo(
-		() => [...new Set(data.map(f => f.proceso.etapa_actual.nombre))].sort(),
-		[data],
+		() => [...(etapas ?? [])].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')),
+		[etapas],
 	)
 
-	const listaFiltrada = useMemo(() => {
-		return data.filter(f => {
-			if (!filaMatchesBusqueda(f, filtros.busqueda)) return false
+	const conteos: ConteosProcesos = useMemo(() => {
+		const c = response?.contadores_estado ?? {}
+		return {
+			todas: c.todas ?? 0,
+			abiertos: c.abiertos ?? 0,
+			ganados: c.ganados ?? 0,
+			perdidos: c.perdidos ?? 0,
+			verde: c.verde ?? 0,
+			amarillo: c.amarillo ?? 0,
+			rojo: c.rojo ?? 0,
+		}
+	}, [response])
 
-			if (tarjetaActiva !== 'todas') {
-				if (tarjetaActiva === 'abiertos' && f.proceso.cerrado) return false
-				if (
-					tarjetaActiva === 'ganados' &&
-					f.proceso.estado_actual.codigo !== 'GANADO'
-				)
-					return false
-				if (
-					tarjetaActiva === 'perdidos' &&
-					f.proceso.estado_actual.codigo !== 'PERDIDO'
-				)
-					return false
-				if (
-					tarjetaActiva === 'verde' &&
-					(f.proceso.cerrado || f.estado_semaforo !== 'VERDE')
-				)
-					return false
-				if (
-					tarjetaActiva === 'amarillo' &&
-					(f.proceso.cerrado || f.estado_semaforo !== 'AMARILLO')
-				)
-					return false
-				if (
-					tarjetaActiva === 'rojo' &&
-					(f.proceso.cerrado || f.estado_semaforo !== 'ROJO')
-				)
-					return false
-			}
+	const esConsultaInicial = useMemo(
+		() =>
+			textoBusqueda === '' &&
+			filtros.ejecutivo === TODOS &&
+			filtros.etapa === TODOS &&
+			tarjetaActiva === 'abiertos' &&
+			pagina === 1,
+		[textoBusqueda, filtros.ejecutivo, filtros.etapa, tarjetaActiva, pagina],
+	)
 
-			if (filtros.ejecutivo !== TODOS) {
-				if ((f.proceso.ejecutivo_comercial?.nombre ?? '') !== filtros.ejecutivo)
-					return false
-			}
-			if (
-				filtros.etapa !== TODOS &&
-				f.proceso.etapa_actual.nombre !== filtros.etapa
-			)
-				return false
+	const handleChangeFiltros = (nuevosFiltros: FiltrosPanel) => {
+		setFiltros(nuevosFiltros)
+		setPagina(1)
+	}
 
-			return true
-		})
-	}, [data, filtros, tarjetaActiva])
+	const handleToggleTarjeta = (key: TarjetaActiva) => {
+		setTarjetaActiva(key)
+		setPagina(1)
+	}
 
 	const handleSeleccionar = (fila: ReporteProcesoComercial) => {
 		setFilaSeleccionada(fila)
 		setDrawerAbierto(true)
 	}
 
+	const data = useMemo(() => response?.data ?? [], [response])
+
 	return (
 		<PanelLayout>
 			<KpiProcesosComerciales
 				conteos={conteos}
 				tarjetaActiva={tarjetaActiva}
-				onToggleTarjeta={setTarjetaActiva}
+				onToggleTarjeta={handleToggleTarjeta}
 			/>
 
 			<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
 				<div className='border-b border-border/80 p-3 sm:p-4'>
 					<FiltrosProcesosComerciales
 						filtros={filtros}
-						onChange={setFiltros}
+						onChange={handleChangeFiltros}
 						opcionesEjecutivo={opcionesEjecutivo}
 						opcionesEtapa={opcionesEtapa}
-						total={data?.length ?? 0}
-						filtrados={listaFiltrada.length}
+						total={response?.total ?? 0}
 					/>
 				</div>
 
 				<div className='p-3 sm:p-4'>
 					<TablaProcesosComerciales
-						filas={listaFiltrada}
-						isFetching={isFetching}
+						filas={data}
+						isFetching={isFetching && !esConsultaInicial}
 						onSeleccionar={handleSeleccionar}
+						pagina={response?.pagina ?? 1}
+						totalPaginas={response?.total_paginas ?? 0}
+						onPaginaChange={setPagina}
 					/>
 				</div>
 			</section>

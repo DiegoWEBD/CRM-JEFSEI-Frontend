@@ -3,13 +3,12 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
 export const usePanelEstudios = (initialData?: PanelEstudioFila[]) => {
-  return useQuery<PanelEstudioFila[]>({
-    queryKey: ['panel-estudios'],
-    queryFn: async () => {
-      const response = await axios.get('/api/estudio-comercial/panel')
-      return response.data
-    },
-    initialData,
-    staleTime: 60000,
-  })
+	return useQuery<PanelEstudioFila[]>({
+		queryKey: ['panel-estudios'],
+		queryFn: async () => {
+			const response = await axios.get('/api/estudio-comercial/panel')
+			return response.data
+		},
+		initialData,
+	})
 }
