@@ -116,30 +116,21 @@ export default function DetalleProcesoDrawer({
 					</Link>
 				</SheetHeader>
 
-				<div className='flex-1 overflow-y-auto px-4 py-3'>
-					<dl className='space-y-3 text-sm'>
-						<div className='flex items-center justify-between'>
-							<dt className='text-xs text-muted-foreground'>Prioridad</dt>
-							<dd>
-								<Badge
-									variant={SEMAFORO_VARIANT[reporte.estado_semaforo]}
-									className='text-sm font-medium'
-								>
-									{PRIORIDAD_LABELS[reporte.estado_semaforo]}
-								</Badge>
-							</dd>
-						</div>
-
-						<div className='flex items-center justify-between'>
-							<dt className='text-xs text-muted-foreground'>Etapa actual</dt>
-							<dd className='font-medium text-foreground'>
-								{proceso.etapa_actual.nombre}
-							</dd>
-						</div>
-
-						<div className='flex items-center justify-between'>
-							<dt className='text-xs text-muted-foreground'>Estado</dt>
-							<dd>
+				<div className='flex-1 overflow-y-auto px-4 py-3 space-y-4'>
+					{/* Sección: Información General */}
+					<div className='space-y-2.5'>
+						<h3 className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+							Información General
+						</h3>
+						<div className='grid grid-cols-2 gap-x-4 gap-y-2.5'>
+							<div className='space-y-0.5'>
+								<p className='text-[11px] text-muted-foreground'>Etapa</p>
+								<p className='text-sm font-medium text-foreground'>
+									{proceso.etapa_actual.nombre}
+								</p>
+							</div>
+							<div className='space-y-0.5'>
+								<p className='text-[11px] text-muted-foreground'>Estado</p>
 								<Badge
 									variant={
 										ESTADO_COMERCIAL_BADGE[
@@ -147,83 +138,92 @@ export default function DetalleProcesoDrawer({
 												.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
 										] ?? 'outline'
 									}
-									className='shrink-0 font-semibold'
+									className='text-xs font-semibold'
 								>
 									{ESTADO_PROSPECTO_LABELS[
 										proceso.estado_actual
 											.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
 									] ?? proceso.estado_actual.nombre}
 								</Badge>
-							</dd>
-						</div>
-
-						<div className='flex items-center justify-between'>
-							<dt className='text-xs text-muted-foreground'>
-								Ejecutivo comercial
-							</dt>
-							<dd className='font-medium text-foreground'>
-								{proceso.ejecutivo_comercial?.nombre ?? '—'}
-							</dd>
-						</div>
-
-						{proceso.ejecutivo_evaluacion && (
-							<div className='flex items-center justify-between'>
-								<dt className='text-xs text-muted-foreground'>
-									Ejecutivo evaluación
-								</dt>
-								<dd className='font-medium text-foreground'>
-									{proceso.ejecutivo_evaluacion.nombre}
-								</dd>
 							</div>
-						)}
-
-						{abierto && (
-							<>
-								<div className='border-t border-border/50 pt-3'>
-									<p className='mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-										SLA
+							<div className='space-y-0.5'>
+								<p className='text-[11px] text-muted-foreground'>
+									Ejecutivo comercial
+								</p>
+								<p className='text-sm font-medium text-foreground'>
+									{proceso.ejecutivo_comercial?.nombre ?? '—'}
+								</p>
+							</div>
+							<div className='space-y-0.5'>
+								<p className='text-[11px] text-muted-foreground'>Prioridad</p>
+								<Badge
+									variant={SEMAFORO_VARIANT[reporte.estado_semaforo]}
+									className='text-xs font-medium'
+								>
+									{PRIORIDAD_LABELS[reporte.estado_semaforo]}
+								</Badge>
+							</div>
+							{proceso.ejecutivo_evaluacion && (
+								<div className='col-span-2 space-y-0.5'>
+									<p className='text-[11px] text-muted-foreground'>
+										Ejecutivo evaluación
+									</p>
+									<p className='text-sm font-medium text-foreground'>
+										{proceso.ejecutivo_evaluacion.nombre}
 									</p>
 								</div>
+							)}
+						</div>
+					</div>
 
-								<div className='flex items-center justify-between'>
-									<dt className='text-xs text-muted-foreground'>
-										Fecha ingreso etapa
-									</dt>
-									<dd className='font-medium tabular-nums text-foreground'>
-										{new Date(reporte.fecha_ingreso_etapa).toLocaleDateString(
-											'es-CL',
-											{
-												day: 'numeric',
-												month: 'short',
-												year: 'numeric',
-											},
-										)}
-									</dd>
-								</div>
+					{/* Sección: SLA y Seguimiento */}
+					{abierto && (
+						<div className='space-y-2.5'>
+							<div className='border-t border-border/50 pt-3'>
+								<h3 className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									SLA y Seguimiento
+								</h3>
+							</div>
 
-								<div className='flex items-center justify-between'>
-									<dt className='text-xs text-muted-foreground'>
-										Días transcurridos
-									</dt>
-									<dd className='font-medium tabular-nums text-foreground'>
-										{reporte.dias_transcurridos}
-									</dd>
-								</div>
-
-								<div className='flex items-center justify-between'>
-									<dt className='text-xs text-muted-foreground'>Límite SLA</dt>
-									<dd className='font-medium tabular-nums text-foreground'>
-										{proceso.etapa_actual.dias_limite != null
-											? `${proceso.etapa_actual.dias_limite} días`
-											: 'Sin límite'}
-									</dd>
-								</div>
-
-								<div className='flex items-center justify-between'>
-									<dt className='text-xs text-muted-foreground'>
-										% SLA consumido
-									</dt>
-									<dd>
+							<div className='rounded-lg border border-border/70 bg-muted/20 p-3 space-y-2.5'>
+								<div className='grid grid-cols-2 gap-x-4 gap-y-2'>
+									<div className='space-y-0.5'>
+										<p className='text-[11px] text-muted-foreground'>
+											Ingreso etapa
+										</p>
+										<p className='text-sm font-medium tabular-nums text-foreground'>
+											{new Date(reporte.fecha_ingreso_etapa).toLocaleDateString(
+												'es-CL',
+												{
+													day: 'numeric',
+													month: 'short',
+													year: 'numeric',
+												},
+											)}
+										</p>
+									</div>
+									<div className='space-y-0.5'>
+										<p className='text-[11px] text-muted-foreground'>
+											Transcurrido
+										</p>
+										<p className='text-sm font-medium tabular-nums text-foreground'>
+											{reporte.dias_transcurridos} días
+										</p>
+									</div>
+									<div className='space-y-0.5'>
+										<p className='text-[11px] text-muted-foreground'>
+											Límite SLA
+										</p>
+										<p className='text-sm font-medium tabular-nums text-foreground'>
+											{proceso.etapa_actual.dias_limite != null
+												? `${proceso.etapa_actual.dias_limite} días`
+												: 'Sin límite'}
+										</p>
+									</div>
+									<div className='space-y-0.5'>
+										<p className='text-[11px] text-muted-foreground'>
+											% Consumido
+										</p>
 										<Badge
 											variant={
 												reporte.porentaje_sla_consumido >= 1
@@ -232,156 +232,181 @@ export default function DetalleProcesoDrawer({
 														? 'pastel-amber'
 														: 'pastel-emerald'
 											}
-											className='text-sm font-medium'
+											className='text-xs font-medium'
 										>
 											{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
 										</Badge>
-									</dd>
+									</div>
 								</div>
 
-								{reporte.dias_restantes >= 0 ? (
-									<div className='flex items-center justify-between'>
-										<dt className='text-xs text-muted-foreground'>
-											Días restantes
-										</dt>
-										<dd className='font-medium tabular-nums text-foreground'>
-											{reporte.dias_restantes}
-										</dd>
+								{/* Progress bar SLA */}
+								<div className='space-y-1'>
+									<div className='h-2 w-full overflow-hidden rounded-full bg-border/50'>
+										<div
+											className={cn(
+												'h-full rounded-full transition-all',
+												reporte.porentaje_sla_consumido >= 1
+													? 'bg-destructive'
+													: reporte.porentaje_sla_consumido >= 0.7
+														? 'bg-warning'
+														: 'bg-success',
+											)}
+											style={{
+												width: `${Math.min(reporte.porentaje_sla_consumido * 100, 100)}%`,
+											}}
+										/>
 									</div>
-								) : null}
+								</div>
 
-								{reporte.dias_atraso > 0 ? (
-									<div className='flex items-center justify-between'>
-										<dt className='text-xs text-muted-foreground'>
-											Días de atraso
-										</dt>
-										<dd className='font-medium tabular-nums text-destructive'>
-											{reporte.dias_atraso}
-										</dd>
-									</div>
-								) : null}
+								<div className='grid grid-cols-2 gap-x-4'>
+									{reporte.dias_restantes >= 0 && (
+										<div className='space-y-0.5'>
+											<p className='text-[11px] text-muted-foreground'>
+												Días restantes
+											</p>
+											<p className='text-sm font-medium tabular-nums text-foreground'>
+												{reporte.dias_restantes}
+											</p>
+										</div>
+									)}
+									{reporte.dias_atraso > 0 && (
+										<div className='space-y-0.5'>
+											<p className='text-[11px] text-muted-foreground'>
+												Días de atraso
+											</p>
+											<p className='text-sm font-medium tabular-nums text-destructive'>
+												{reporte.dias_atraso}
+											</p>
+										</div>
+									)}
+								</div>
 
-								<div className='rounded-md border border-border/70 bg-muted/20 p-2.5'>
-									<dt className='text-xs text-muted-foreground'>Mensaje</dt>
-									<dd className='mt-1 text-sm font-medium text-foreground'>
+								<div className='rounded-md border border-border/70 bg-background p-2.5'>
+									<p className='text-[11px] text-muted-foreground'>Mensaje</p>
+									<p className='mt-0.5 text-sm font-medium text-foreground'>
 										{reporte.mensaje_semaforo}
-									</dd>
+									</p>
 								</div>
-							</>
-						)}
+							</div>
+						</div>
+					)}
 
+					{/* Sección: Historial */}
+					<div className='space-y-2.5'>
+						<div className='border-t border-border/50 pt-3'>
+							<h3 className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								Historial de Estados
+							</h3>
+						</div>
 						<HistorialEstadosTimeline
 							historial={historial}
 							cargando={historialCargando}
 						/>
+					</div>
 
-						{abierto && (
-							<>
-								<div className='border-t border-border/50 pt-3'>
+					{/* Acciones */}
+					{abierto && (
+						<div className='space-y-2.5 border-t border-border/50 pt-3'>
+							<Button
+								type='button'
+								variant='outline'
+								size='sm'
+								className='w-full text-xs shadow-none'
+								disabled={aceptarMutation.isPending}
+								onClick={() => setAceptarConfirmOpen(true)}
+							>
+								{aceptarMutation.isPending
+									? 'Aceptando...'
+									: 'Marcar aceptación del cliente'}
+							</Button>
+
+							{!cerrarOpen ? (
+								<Button
+									type='button'
+									variant='destructive'
+									size='sm'
+									className='w-full text-xs shadow-none'
+									onClick={() => setCerrarOpen(true)}
+								>
+									Cerrar oportunidad
+								</Button>
+							) : (
+								<div className='space-y-2.5 rounded-lg border border-border/70 p-3'>
+									<div className='space-y-1'>
+										<Label className='text-xs text-muted-foreground'>
+											Estado de cierre
+										</Label>
+										<Select
+											value={estadoCierre}
+											onValueChange={v =>
+												setEstadoCierre(v as 'GANADO' | 'PERDIDO')
+											}
+										>
+											<SelectTrigger className='h-8 text-xs shadow-none'>
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value='GANADO' className='text-xs'>
+													Ganado
+												</SelectItem>
+												<SelectItem value='PERDIDO' className='text-xs'>
+													Perdido
+												</SelectItem>
+											</SelectContent>
+										</Select>
+									</div>
+									<div className='space-y-1'>
+										<Label className='text-xs text-muted-foreground'>
+											Observación{' '}
+											<span className='text-muted-foreground/60'>
+												(opcional)
+											</span>
+										</Label>
+										<Textarea
+											value={observacion}
+											onChange={e => setObservacion(e.target.value)}
+											placeholder='Motivo del cierre...'
+											className='min-h-20 text-xs shadow-none'
+										/>
+									</div>
 									<Button
 										type='button'
-										variant='outline'
+										variant='destructive'
 										size='sm'
 										className='w-full text-xs shadow-none'
-										disabled={aceptarMutation.isPending}
-										onClick={() => setAceptarConfirmOpen(true)}
+										disabled={cerrarMutation.isPending}
+										onClick={() => setConfirmOpen(true)}
 									>
-										{aceptarMutation.isPending
-											? 'Aceptando...'
-											: 'Marcar aceptación del cliente'}
+										{cerrarMutation.isPending
+											? 'Cerrando...'
+											: 'Confirmar cierre'}
 									</Button>
 								</div>
+							)}
+						</div>
+					)}
 
-								<div className='border-t border-border/50 pt-3'>
-									{!cerrarOpen ? (
-										<Button
-											type='button'
-											variant='destructive'
-											size='sm'
-											className='w-full text-xs shadow-none'
-											onClick={() => setCerrarOpen(true)}
-										>
-											Cerrar oportunidad
-										</Button>
-									) : (
-										<div className='space-y-2.5'>
-											<div className='space-y-1'>
-												<Label className='text-xs text-muted-foreground'>
-													Estado de cierre
-												</Label>
-												<Select
-													value={estadoCierre}
-													onValueChange={v =>
-														setEstadoCierre(v as 'GANADO' | 'PERDIDO')
-													}
-												>
-													<SelectTrigger className='h-8 text-xs shadow-none'>
-														<SelectValue />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value='GANADO' className='text-xs'>
-															Ganado
-														</SelectItem>
-														<SelectItem value='PERDIDO' className='text-xs'>
-															Perdido
-														</SelectItem>
-													</SelectContent>
-												</Select>
-											</div>
-											<div className='space-y-1'>
-												<Label className='text-xs text-muted-foreground'>
-													Observación{' '}
-													<span className='text-muted-foreground/60'>
-														(opcional)
-													</span>
-												</Label>
-												<Textarea
-													value={observacion}
-													onChange={e => setObservacion(e.target.value)}
-													placeholder='Motivo del cierre...'
-													className='min-h-20 text-xs shadow-none'
-												/>
-											</div>
-											<Button
-												type='button'
-												variant='destructive'
-												size='sm'
-												className='w-full text-xs shadow-none'
-												disabled={cerrarMutation.isPending}
-												onClick={() => setConfirmOpen(true)}
-											>
-												{cerrarMutation.isPending
-													? 'Cerrando...'
-													: 'Confirmar cierre'}
-											</Button>
-										</div>
-									)}
-								</div>
-							</>
-						)}
-
-						{!abierto && (
-							<div
+					{!abierto && (
+						<div
+							className={cn(
+								'rounded-lg border p-3',
+								proceso.estado_actual.codigo === 'GANADO'
+									? 'border-success/30 bg-success/10'
+									: 'border-destructive/30 bg-destructive/10',
+							)}
+						>
+							<p
 								className={cn(
-									'rounded-md border p-2.5',
+									'text-sm font-medium',
 									proceso.estado_actual.codigo === 'GANADO'
-										? 'border-success/30 bg-success/10'
-										: 'border-destructive/30 bg-destructive/10',
+										? 'text-success'
+										: 'text-destructive',
 								)}
 							>
-								<p
-									className={cn(
-										'text-xs font-medium',
-										proceso.estado_actual.codigo === 'GANADO'
-											? 'text-success'
-											: 'text-destructive',
-									)}
-								>
-									Proceso {proceso.estado_actual.nombre.toLowerCase()}
-								</p>
-							</div>
-						)}
-					</dl>
+								Proceso {proceso.estado_actual.nombre.toLowerCase()}
+							</p>
+						</div>
+					)}
 				</div>
 
 				<SheetFooter className='border-t border-border px-4 py-3'>

@@ -9,6 +9,7 @@ export const useReportesProcesosComerciales = (
 	textoBusqueda: string,
 	ejecutivos: string[] | null,
 	etapas: string[] | null,
+	estadosComerciales: string[] | null,
 	estadoSemaforo: string[] | null,
 	estadoProceso: string | null,
 	cerrado: boolean | null,
@@ -19,6 +20,7 @@ export const useReportesProcesosComerciales = (
 		textoBusqueda === '' &&
 		ejecutivos === null &&
 		etapas === null &&
+		estadosComerciales === null &&
 		estadoSemaforo === null &&
 		estadoProceso === null &&
 		cerrado === false &&
@@ -31,6 +33,7 @@ export const useReportesProcesosComerciales = (
 			textoBusqueda,
 			ejecutivos,
 			etapas,
+			estadosComerciales,
 			estadoSemaforo,
 			estadoProceso,
 			cerrado,
@@ -45,6 +48,7 @@ export const useReportesProcesosComerciales = (
 			if (textoBusqueda) body.texto_busqueda = textoBusqueda
 			if (ejecutivos) body.ejecutivos = ejecutivos
 			if (etapas) body.etapas = etapas
+			if (estadosComerciales) body.estados_comerciales = estadosComerciales
 			if (estadoSemaforo) body.estado_semaforo = estadoSemaforo
 			if (estadoProceso) body.estado_proceso = estadoProceso
 			if (cerrado !== null) body.cerrado = cerrado

@@ -20,7 +20,7 @@ const PRIORIDAD_ORDER: Record<string, number> = {
 	NO_APLICA: 3,
 }
 
-const PRIORIDAD_COLORS: Record<string, string> = {
+const PRIORIDAD_DOT: Record<string, string> = {
 	ROJO: 'bg-destructive',
 	AMARILLO: 'bg-warning',
 	VERDE: 'bg-success',
@@ -79,6 +79,7 @@ export default function TablaProcesosComerciales({
 
 	return (
 		<>
+			{/* Mobile: cards */}
 			<div className='space-y-3 lg:hidden'>
 				{ordenadas.map((f, i) => (
 					<Card
@@ -100,7 +101,7 @@ export default function TablaProcesosComerciales({
 									<span
 										className={cn(
 											'mt-0.5 h-3 w-3 shrink-0 rounded-full',
-											PRIORIDAD_COLORS[f.estado_semaforo],
+											PRIORIDAD_DOT[f.estado_semaforo],
 										)}
 									/>
 									<div className='min-w-0'>
@@ -156,108 +157,110 @@ export default function TablaProcesosComerciales({
 				))}
 			</div>
 
-			<div className='hidden lg:block space-y-3'>
-				{ordenadas.map((f, i) => (
-					<Card
-						key={`${f.proceso.id}-${i}`}
-						role='button'
-						tabIndex={0}
-						onClick={() => onSeleccionar(f)}
-						onKeyDown={e => {
-							if (e.key === 'Enter' || e.key === ' ') {
-								e.preventDefault()
-								onSeleccionar(f)
-							}
-						}}
-						className='cursor-pointer border-border bg-card shadow-none transition-colors hover:border-primary/40 hover:shadow-sm'
-					>
-						<CardContent className='px-5 py-2.5'>
-							<div className='flex items-center gap-6'>
-								<div className='flex-1 min-w-0 space-y-1'>
-									<p className='text-sm font-semibold text-foreground truncate'>
-										{f.proceso.nombre_cliente}
-										<span className='font-normal text-muted-foreground'>
-											{' '}
-											— {f.proceso.producto}
-										</span>
-									</p>
-
-									<div className='grid grid-cols-4 gap-x-4'>
-										<div className='flex flex-col gap-px'>
-											<span className='text-[11px] text-muted-foreground'>
-												Ejecutivo
-											</span>
-											<span className='text-xs text-foreground truncate'>
-												{f.proceso.ejecutivo_comercial?.nombre ?? '—'}
-											</span>
-										</div>
-										<div className='flex flex-col gap-px'>
-											<span className='text-[11px] text-muted-foreground'>
-												Etapa
-											</span>
-											<span className='text-xs text-foreground truncate'>
-												{f.proceso.etapa_actual.nombre}
-											</span>
-										</div>
-										<div className='flex flex-col gap-px'>
-											<span className='text-[11px] text-muted-foreground'>
-												Tiempo etapa
-											</span>
-											<span className='text-xs tabular-nums text-foreground'>
-												{esAbierto(f)
-													? `${f.dias_transcurridos} / ${f.proceso.etapa_actual.dias_limite ?? '—'} días`
-													: '—'}
-											</span>
-										</div>
-										<div className='flex flex-col gap-px'>
-											<span className='text-[11px] text-muted-foreground'>
-												SLA límite
-											</span>
-											<span className='text-xs tabular-nums text-foreground'>
-												{esAbierto(f) && f.proceso.etapa_actual.dias_limite != null
-													? `${f.proceso.etapa_actual.dias_limite} días`
-													: '—'}
-											</span>
-										</div>
-									</div>
-								</div>
-
-								<div className='flex flex-col items-end justify-center gap-1 shrink-0'>
-									<Badge
-										variant={
-											ESTADO_COMERCIAL_BADGE[
-												f.proceso.estado_actual
-													.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-											] ?? 'outline'
+			{/* Desktop: tabla densa */}
+			<div className='hidden lg:block'>
+				<div className='overflow-x-auto rounded-lg border border-border'>
+					<table className='w-full text-sm'>
+						<thead>
+							<tr className='border-b border-border bg-muted/40'>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Cliente
+								</th>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Ejecutivo
+								</th>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Etapa
+								</th>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Estado
+								</th>
+								<th className='px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									SLA
+								</th>
+								<th className='px-4 py-2.5 text-center text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Semáforo
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{ordenadas.map((f, i) => (
+								<tr
+									key={`${f.proceso.id}-${i}`}
+									role='button'
+									tabIndex={0}
+									onClick={() => onSeleccionar(f)}
+									onKeyDown={e => {
+										if (e.key === 'Enter' || e.key === ' ') {
+											e.preventDefault()
+											onSeleccionar(f)
 										}
-										className='font-semibold text-[11px]'
-									>
-										{ESTADO_PROSPECTO_LABELS[
-											f.proceso.estado_actual
-												.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-										] ?? f.proceso.estado_actual.nombre}
-									</Badge>
-									<Badge
-										variant={SEMAFORO_VARIANT[f.estado_semaforo]}
-										className='text-[11px] font-medium'
-									>
-										{PRIORIDAD_LABELS[f.estado_semaforo]}
-									</Badge>
+									}}
+									className='cursor-pointer border-b border-border/50 transition-colors hover:bg-accent/50 last:border-b-0'
+								>
+									<td className='px-4 py-2.5'>
+										<p className='font-semibold text-foreground truncate max-w-[200px]'>
+											{f.proceso.nombre_cliente}
+										</p>
+										<p className='text-xs text-muted-foreground truncate max-w-[200px]'>
+											{f.proceso.producto}
+										</p>
+									</td>
+									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-[140px]'>
+										{f.proceso.ejecutivo_comercial?.nombre ?? '—'}
+									</td>
+									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-[120px]'>
+										{f.proceso.etapa_actual.nombre}
+									</td>
+									<td className='px-4 py-2.5'>
+										<Badge
+											variant={
+												ESTADO_COMERCIAL_BADGE[
+													f.proceso.estado_actual
+														.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
+												] ?? 'outline'
+											}
+											className='text-[11px] font-semibold'
+										>
+											{ESTADO_PROSPECTO_LABELS[
+												f.proceso.estado_actual
+													.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
+											] ?? f.proceso.estado_actual.nombre}
+										</Badge>
+									</td>
+								<td className='px-4 py-2.5 text-right'>
 									{esAbierto(f) ? (
 										<Badge
-											variant={SEMAFORO_VARIANT[f.estado_semaforo]}
+											variant={
+												f.porentaje_sla_consumido >= 1
+													? 'pastel-red'
+													: f.porentaje_sla_consumido >= 0.7
+														? 'pastel-amber'
+														: 'pastel-emerald'
+											}
 											className='text-[11px] font-medium tabular-nums'
 										>
 											{(f.porentaje_sla_consumido * 100).toFixed(0)}%
 										</Badge>
 									) : (
-										<span className='text-[11px] text-muted-foreground'>—</span>
+										<span className='text-xs text-muted-foreground'>—</span>
 									)}
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				))}
+								</td>
+								<td className='px-4 py-2.5'>
+									<div className='flex justify-center'>
+										<Badge
+											variant={SEMAFORO_VARIANT[f.estado_semaforo]}
+											className='text-[11px] font-medium'
+										>
+											{PRIORIDAD_LABELS[f.estado_semaforo]}
+										</Badge>
+									</div>
+								</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 			<Paginacion

@@ -3,9 +3,9 @@
 import type { ObtenerReportesResponse } from '@/aplicacion/procesos-comerciales/dto/obtener-reportes-response'
 import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import { useDebounce } from '@/hooks/use-debounce'
 import { useEtapasProcesoComerciales } from '@/hooks/procesos-comerciales/use-etapas-proceso-comerciales'
 import { useReportesProcesosComerciales } from '@/hooks/procesos-comerciales/use-reportes-procesos-comerciales'
+import { useDebounce } from '@/hooks/use-debounce'
 import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { useMemo, useState } from 'react'
 import DetalleProcesoDrawer from './detalle-proceso-drawer'
@@ -41,6 +41,7 @@ export default function PanelProcesosComercialesClient({
 		busqueda: '',
 		ejecutivo: TODOS,
 		etapa: TODOS,
+		estadoComercial: TODOS,
 	})
 	const [pagina, setPagina] = useState(1)
 
@@ -54,6 +55,12 @@ export default function PanelProcesosComercialesClient({
 	const etapasParam = useMemo(
 		() => (filtros.etapa !== TODOS ? [filtros.etapa] : null),
 		[filtros.etapa],
+	)
+
+	const estadosComercialesParam = useMemo(
+		() =>
+			filtros.estadoComercial !== TODOS ? [filtros.estadoComercial] : null,
+		[filtros.estadoComercial],
 	)
 
 	const cerradoParam = useMemo(() => {
@@ -86,6 +93,7 @@ export default function PanelProcesosComercialesClient({
 		textoBusqueda,
 		ejecutivosParam,
 		etapasParam,
+		estadosComercialesParam,
 		estadoSemaforoParam,
 		estadoProcesoParam,
 		cerradoParam,
@@ -109,7 +117,10 @@ export default function PanelProcesosComercialesClient({
 	}, [usuarios])
 
 	const opcionesEtapa = useMemo(
-		() => [...(etapas ?? [])].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')),
+		() =>
+			[...(etapas ?? [])].sort((a, b) =>
+				a.nombre.localeCompare(b.nombre, 'es'),
+			),
 		[etapas],
 	)
 
@@ -131,9 +142,17 @@ export default function PanelProcesosComercialesClient({
 			textoBusqueda === '' &&
 			filtros.ejecutivo === TODOS &&
 			filtros.etapa === TODOS &&
+			filtros.estadoComercial === TODOS &&
 			tarjetaActiva === 'abiertos' &&
 			pagina === 1,
-		[textoBusqueda, filtros.ejecutivo, filtros.etapa, tarjetaActiva, pagina],
+		[
+			textoBusqueda,
+			filtros.ejecutivo,
+			filtros.etapa,
+			filtros.estadoComercial,
+			tarjetaActiva,
+			pagina,
+		],
 	)
 
 	const handleChangeFiltros = (nuevosFiltros: FiltrosPanel) => {
