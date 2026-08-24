@@ -18,7 +18,6 @@ import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
 import { Label } from '@/components/label'
-import { cn } from '@/lib/utils'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Campo from '@/components/forms/campo/campo'
@@ -98,8 +97,8 @@ function CardUsuario({
 							{usuario.roles.map(rol => (
 								<Badge
 									key={rol.codigo}
-									variant='outline'
-									className='border-border bg-muted/40 text-xs font-medium text-muted-foreground'
+									variant='pastel-sky'
+									className='text-xs font-medium'
 								>
 									{rol.nombre}
 								</Badge>
@@ -127,15 +126,10 @@ function CardUsuario({
 							</div>
 						)}
 
-						<Badge
-							variant='outline'
-							className={cn(
-								'text-xs font-medium',
-								usuario.habilitado
-									? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-700'
-									: 'border-destructive/35 bg-destructive/10 text-destructive',
-							)}
-						>
+					<Badge
+						variant={usuario.habilitado ? 'success' : 'destructive'}
+						className='text-xs font-medium'
+					>
 							{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
 						</Badge>
 					</div>
@@ -201,192 +195,185 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 
 	if (isLoading) {
 		return (
-			<div className='space-y-6'>
-				<Skeleton className='h-9 w-full rounded-md' />
-				<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-					{Array.from({ length: 6 }).map((_, i) => (
-						<Card key={i}>
-							<CardContent className='flex items-start gap-3 p-4'>
-								<Skeleton className='size-10 shrink-0 rounded-full' />
-								<div className='min-w-0 flex-1 space-y-2'>
-									<Skeleton className='h-5 w-3/4' />
-									<Skeleton className='h-3 w-1/2' />
-									<Skeleton className='h-3 w-2/3' />
-									<Skeleton className='h-3 w-1/3' />
-								</div>
-							</CardContent>
-						</Card>
-					))}
+			<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
+				<div className='border-b border-border/80 p-3 sm:p-4'>
+					<div className='flex flex-wrap items-center gap-2'>
+						<Skeleton className='h-9 min-w-[12rem] flex-1 rounded-md' />
+						<Skeleton className='h-5 w-24 rounded-md' />
+						<Skeleton className='h-9 w-32 rounded-md' />
+					</div>
 				</div>
-			</div>
+				<div className='p-3 sm:p-4'>
+					<div className='grid gap-3 sm:hidden'>
+						{Array.from({ length: 4 }).map((_, i) => (
+							<Skeleton key={i} className='h-[120px] rounded-lg' />
+						))}
+					</div>
+					<div className='hidden sm:block'>
+						{Array.from({ length: 6 }).map((_, i) => (
+							<Skeleton key={i} className='mb-2 h-11 w-full rounded-md' />
+						))}
+					</div>
+				</div>
+			</section>
 		)
 	}
 
 	return (
-		<div className='space-y-6'>
-			<div className='flex items-center justify-between gap-3'>
-				<div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
-					<Building2 className='size-4' />
-					<span>
-						{usuariosFiltrados.length} usuario
-						{usuariosFiltrados.length !== 1 ? 's' : ''}
+		<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
+			<div className='border-b border-border/80 p-3 sm:p-4'>
+				<div className='flex flex-wrap items-center gap-2'>
+					<div className='relative min-w-[12rem] flex-1'>
+						<Search className='absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
+						<Input
+							placeholder='Buscar por nombre, rut, correo, teléfono, sucursal o rol...'
+							className='h-9 pl-8 text-xs shadow-none'
+							value={busqueda}
+							onChange={handleChange}
+						/>
+					</div>
+					<span className='text-sm text-muted-foreground'>
+						Mostrando {usuariosFiltrados.length} de {lista?.length ?? 0}
 					</span>
+					<AuthGuard allowedRoles={['GERENTE_GENERAL']}>
+						<Button
+							size='sm'
+							className='h-9 text-xs'
+							onClick={() => setRegistrarAbierto(true)}
+						>
+							<UserPlus className='mr-1.5 size-3.5' />
+							Registrar usuario
+						</Button>
+					</AuthGuard>
 				</div>
-
-				<AuthGuard allowedRoles={['GERENTE_GENERAL']}>
-					<Button
-						size='sm'
-						className='h-9 text-xs'
-						onClick={() => setRegistrarAbierto(true)}
-					>
-						<UserPlus className='mr-1.5 size-3.5' />
-						Registrar usuario
-					</Button>
-				</AuthGuard>
 			</div>
 
-			<div className='relative'>
-				<Search className='absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
-				<Input
-					placeholder='Buscar por nombre, rut, correo, teléfono, sucursal o rol...'
-					className='h-9 pl-9 text-sm shadow-none'
-					value={busqueda}
-					onChange={handleChange}
-				/>
-			</div>
-
-			{usuariosFiltrados.length === 0 ? (
-				<Card>
-					<CardContent className='flex flex-col items-center gap-2 py-12'>
-						<Building2 className='size-10 text-muted-foreground/40' />
+			<div className='p-3 sm:p-4'>
+				{usuariosFiltrados.length === 0 ? (
+					<div className='flex items-center justify-center py-12'>
 						<p className='text-sm text-muted-foreground'>
 							{busqueda.trim()
 								? 'No se encontraron usuarios que coincidan con la búsqueda.'
 								: 'No hay usuarios registrados.'}
 						</p>
-					</CardContent>
-				</Card>
-			) : (
-				<>
-					{/* Cards: mobile */}
-					<div className='grid gap-4 sm:hidden'>
-						{usuariosFiltrados.map(usuario => (
-							<CardUsuario
-								key={usuario.rut}
-								usuario={usuario}
-								onVerDetalle={setUsuarioDetalle}
-								onEliminar={
-									tieneRol('GERENTE_GENERAL') ? setUsuarioAEliminar : undefined
-								}
-							/>
-						))}
 					</div>
+				) : (
+					<>
+						{/* Cards: mobile */}
+						<div className='grid gap-3 sm:hidden'>
+							{usuariosFiltrados.map(usuario => (
+								<CardUsuario
+									key={usuario.rut}
+									usuario={usuario}
+									onVerDetalle={setUsuarioDetalle}
+									onEliminar={
+										tieneRol('GERENTE_GENERAL') ? setUsuarioAEliminar : undefined
+									}
+								/>
+							))}
+						</div>
 
-					{/* Tabla: desktop */}
-					<div className='hidden sm:block w-full overflow-x-auto rounded-md border border-border'>
-						<Table className='[&_td]:whitespace-nowrap [&_th]:whitespace-nowrap'>
-							<TableHeader>
-								<TableRow className='hover:bg-transparent'>
-									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
-										Nombre
-									</TableHead>
-									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
-										Rol
-									</TableHead>
-									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
-										Sucursal
-									</TableHead>
-									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
-										Contacto
-									</TableHead>
-									<TableHead className='text-xs font-semibold uppercase text-muted-foreground'>
-										Estado
-									</TableHead>
-									<TableHead className='text-right text-xs font-semibold uppercase text-muted-foreground'>
-										Acción
-									</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{usuariosFiltrados.map(usuario => (
-									<TableRow key={usuario.rut} className='text-xs'>
-										<TableCell>
-											<div className='flex items-center gap-2'>
-												<InicialesUsuario nombre={usuario.nombre} />
-												<div>
-													<div className='font-medium'>{usuario.nombre}</div>
-													<div className='text-xs text-muted-foreground'>
-														{usuario.rut}
+						{/* Tabla: desktop */}
+						<div className='hidden overflow-x-auto sm:block'>
+							<Table className='w-full text-sm [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap'>
+								<TableHeader>
+									<TableRow className='border-0 hover:bg-transparent'>
+										<TableHead className='h-9 min-w-[180px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+											Nombre
+										</TableHead>
+										<TableHead className='h-9 min-w-[120px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+											Cargo
+										</TableHead>
+										<TableHead className='h-9 min-w-[100px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+											Sucursal
+										</TableHead>
+										<TableHead className='h-9 min-w-[160px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+											Contacto
+										</TableHead>
+										<TableHead className='h-9 w-[96px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+											Estado
+										</TableHead>
+										<TableHead className='h-9 min-w-[140px] px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+											Acción
+										</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{usuariosFiltrados.map(usuario => (
+										<TableRow key={usuario.rut} className='border-b border-border/60 transition-colors hover:bg-accent/40'>
+											<TableCell className='px-3 py-2.5'>
+												<div className='flex items-center gap-2'>
+													<InicialesUsuario nombre={usuario.nombre} />
+													<div className='min-w-0'>
+														<div className='font-medium'>{usuario.nombre}</div>
+														<div className='text-xs text-muted-foreground'>
+															{usuario.rut}
+														</div>
 													</div>
 												</div>
-											</div>
-										</TableCell>
-										<TableCell>
-											<div className='flex flex-wrap gap-1'>
-												{usuario.roles.map(rol => (
-													<Badge
-														key={rol.codigo}
-														variant='outline'
-														className='border-border bg-muted/40 text-xs font-medium text-muted-foreground'
-													>
-														{rol.nombre}
-													</Badge>
-												))}
-											</div>
-										</TableCell>
-										<TableCell className='text-muted-foreground'>
-											{usuario.sucursal || '—'}
-										</TableCell>
-										<TableCell>
-											<div className='text-muted-foreground'>
-												{usuario.correo || '—'}
-											</div>
-											<div className='text-xs text-muted-foreground'>
-												{usuario.telefono || '—'}
-											</div>
-										</TableCell>
-										<TableCell>
-											<Badge
-												variant='outline'
-												className={cn(
-													'text-xs font-medium',
-													usuario.habilitado
-														? 'border-emerald-500/45 bg-emerald-500/10 text-emerald-700'
-														: 'border-destructive/35 bg-destructive/10 text-destructive',
-												)}
-											>
-												{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
-											</Badge>
-										</TableCell>
-										<TableCell className='text-right'>
-											<div className='flex items-center justify-end gap-1'>
-												<Button
-													size='sm'
-													variant='outline'
-													className='h-7 text-xs'
-													onClick={() => setUsuarioDetalle(usuario)}
+											</TableCell>
+											<TableCell className='px-3 py-2.5'>
+												<div className='flex flex-wrap gap-1'>
+													{usuario.roles.map(rol => (
+														<Badge
+															key={rol.codigo}
+															variant='pastel-sky'
+															className='text-[11px] font-semibold'
+														>
+															{rol.nombre}
+														</Badge>
+													))}
+												</div>
+											</TableCell>
+											<TableCell className='px-3 py-2.5 text-muted-foreground'>
+												{usuario.sucursal || '—'}
+											</TableCell>
+											<TableCell className='px-3 py-2.5'>
+												<div className='max-w-[200px] truncate text-sm text-muted-foreground'>
+													{usuario.correo || '—'}
+												</div>
+												<div className='text-xs text-muted-foreground'>
+													{usuario.telefono || '—'}
+												</div>
+											</TableCell>
+											<TableCell className='px-3 py-2.5'>
+												<Badge
+													variant={usuario.habilitado ? 'success' : 'destructive'}
+													className='text-[11px] font-semibold'
 												>
-													Ver detalle
-												</Button>
-												{tieneRol('GERENTE_GENERAL') && (
+													{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
+												</Badge>
+											</TableCell>
+											<TableCell className='px-3 py-2.5 text-right'>
+												<div className='flex items-center justify-end gap-1'>
 													<Button
 														size='sm'
-														variant='destructive'
-														className='h-7 text-xs'
-														onClick={() => setUsuarioAEliminar(usuario)}
+														variant='outline'
+														className='h-8 shrink-0 px-2.5 text-xs shadow-none'
+														onClick={() => setUsuarioDetalle(usuario)}
 													>
-														Eliminar
+														Ver detalle
 													</Button>
-												)}
-											</div>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					</div>
-				</>
-			)}
+													{tieneRol('GERENTE_GENERAL') && (
+														<Button
+															size='sm'
+															variant='destructive'
+															className='h-8 shrink-0 px-2.5 text-xs shadow-none'
+															onClick={() => setUsuarioAEliminar(usuario)}
+														>
+															Eliminar
+														</Button>
+													)}
+												</div>
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
+					</>
+				)}
+			</div>
 
 			<DialogEditarUsuario
 				usuario={usuarioDetalle}
@@ -416,7 +403,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 				}}
 				isPending={eliminarMutation.isPending}
 			/>
-		</div>
+		</section>
 	)
 }
 
