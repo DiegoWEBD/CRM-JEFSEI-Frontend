@@ -8,14 +8,6 @@ import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-ba
 import { Badge } from '@/components/badge'
 import { Card, CardContent } from '@/components/card'
 import Paginacion from '@/components/paginacion/paginacion'
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/table'
 import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
 import { cn } from '@/lib/utils'
 import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
@@ -28,7 +20,7 @@ const PRIORIDAD_ORDER: Record<string, number> = {
 	NO_APLICA: 3,
 }
 
-const PRIORIDAD_COLORS: Record<string, string> = {
+const PRIORIDAD_DOT: Record<string, string> = {
 	ROJO: 'bg-destructive',
 	AMARILLO: 'bg-warning',
 	VERDE: 'bg-success',
@@ -41,11 +33,6 @@ const PRIORIDAD_LABELS: Record<string, string> = {
 	VERDE: 'En plazo',
 	NO_APLICA: '—',
 }
-
-const headClass =
-	'h-9 border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-sm font-medium uppercase tracking-wide text-muted-foreground'
-
-const cellClass = 'px-3 py-2.5 align-middle text-sm'
 
 function esAbierto(
 	r: ReporteProcesoComercial,
@@ -92,6 +79,7 @@ export default function TablaProcesosComerciales({
 
 	return (
 		<>
+			{/* Mobile: cards */}
 			<div className='space-y-3 lg:hidden'>
 				{ordenadas.map((f, i) => (
 					<Card
@@ -113,7 +101,7 @@ export default function TablaProcesosComerciales({
 									<span
 										className={cn(
 											'mt-0.5 h-3 w-3 shrink-0 rounded-full',
-											PRIORIDAD_COLORS[f.estado_semaforo],
+											PRIORIDAD_DOT[f.estado_semaforo],
 										)}
 									/>
 									<div className='min-w-0'>
@@ -169,44 +157,35 @@ export default function TablaProcesosComerciales({
 				))}
 			</div>
 
+			{/* Desktop: tabla densa */}
 			<div className='hidden lg:block'>
-				<div className='max-h-[65vh] overflow-y-auto'>
-					<Table className='min-w-300 w-full border-separate border-spacing-0'>
-						<TableHeader className='sticky top-0 z-10 bg-background'>
-							<TableRow className='border-0 hover:bg-transparent'>
-								<TableHead className={cn(headClass, 'w-10')}>
-									<span className='sr-only'>Prioridad</span>
-									<span
-										aria-hidden
-										className='inline-block h-3 w-3 rounded-full bg-current opacity-30'
-									/>
-								</TableHead>
-								<TableHead className={cn(headClass, 'w-[20%]')}>
+				<div className='overflow-x-auto rounded-lg border border-border'>
+					<table className='w-full text-sm'>
+						<thead>
+							<tr className='border-b border-border bg-muted/40'>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Cliente
-								</TableHead>
-								<TableHead className={cn(headClass, 'w-[11%]')}>
-									Producto
-								</TableHead>
-								<TableHead className={cn(headClass, 'w-[11%]')}>
+								</th>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Ejecutivo
-								</TableHead>
-								<TableHead className={cn(headClass, 'w-[9%]')}>Etapa</TableHead>
-								<TableHead className={cn(headClass, 'w-[9%]')}>Estado</TableHead>
-								<TableHead className={cn(headClass, 'w-[9%]')}>
-									Tiempo etapa
-								</TableHead>
-								<TableHead className={cn(headClass, 'w-16')}>
-									SLA límite
-								</TableHead>
-								<TableHead className={cn(headClass, 'w-16')}>% SLA</TableHead>
-								<TableHead className={cn(headClass, 'w-[18%]')}>
-									Mensaje
-								</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
+								</th>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Etapa
+								</th>
+								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Estado
+								</th>
+								<th className='px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									SLA
+								</th>
+								<th className='px-4 py-2.5 text-center text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									Semáforo
+								</th>
+							</tr>
+						</thead>
+						<tbody>
 							{ordenadas.map((f, i) => (
-								<TableRow
+								<tr
 									key={`${f.proceso.id}-${i}`}
 									role='button'
 									tabIndex={0}
@@ -217,41 +196,23 @@ export default function TablaProcesosComerciales({
 											onSeleccionar(f)
 										}
 									}}
-									className='cursor-pointer border-0 border-b border-border/60 transition-colors last:border-b-0 hover:bg-accent/40'
+									className='cursor-pointer border-b border-border/50 transition-colors hover:bg-accent/50 last:border-b-0'
 								>
-									<TableCell className={cn(cellClass, 'p-1.5 text-center')}>
-										<span
-											className={cn(
-												'inline-block h-3 w-3 rounded-full',
-												PRIORIDAD_COLORS[f.estado_semaforo],
-											)}
-										/>
-									</TableCell>
-									<TableCell
-										className={cn(cellClass, 'font-medium text-foreground')}
-									>
-										<span className='wrap-break-words text-xs leading-snug'>
+									<td className='px-4 py-2.5'>
+										<p className='font-semibold text-foreground truncate max-w-[200px]'>
 											{f.proceso.nombre_cliente}
-										</span>
-									</TableCell>
-									<TableCell
-										className={cn(cellClass, 'text-sm text-muted-foreground')}
-									>
-										<span className='line-clamp-2 leading-snug'>
+										</p>
+										<p className='text-xs text-muted-foreground truncate max-w-[200px]'>
 											{f.proceso.producto}
-										</span>
-									</TableCell>
-									<TableCell
-										className={cn(cellClass, 'text-sm text-muted-foreground')}
-									>
+										</p>
+									</td>
+									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-[140px]'>
 										{f.proceso.ejecutivo_comercial?.nombre ?? '—'}
-									</TableCell>
-									<TableCell
-										className={cn(cellClass, 'text-sm text-muted-foreground')}
-									>
+									</td>
+									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-[120px]'>
 										{f.proceso.etapa_actual.nombre}
-									</TableCell>
-									<TableCell className={cn(cellClass, 'p-1.5')}>
+									</td>
+									<td className='px-4 py-2.5'>
 										<Badge
 											variant={
 												ESTADO_COMERCIAL_BADGE[
@@ -259,55 +220,46 @@ export default function TablaProcesosComerciales({
 														.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
 												] ?? 'outline'
 											}
-											className='shrink-0 font-semibold text-xs'
+											className='text-[11px] font-semibold'
 										>
 											{ESTADO_PROSPECTO_LABELS[
 												f.proceso.estado_actual
 													.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
 											] ?? f.proceso.estado_actual.nombre}
 										</Badge>
-									</TableCell>
-									<TableCell
-										className={cn(
-											cellClass,
-											'text-sm tabular-nums text-muted-foreground',
-										)}
-									>
-										{esAbierto(f) ? `${f.dias_transcurridos} días` : '—'}
-									</TableCell>
-									<TableCell
-										className={cn(
-											cellClass,
-											'text-sm tabular-nums text-muted-foreground',
-										)}
-									>
-										{esAbierto(f) && f.proceso.etapa_actual.dias_limite != null
-											? `${f.proceso.etapa_actual.dias_limite} días`
-											: '—'}
-									</TableCell>
-									<TableCell className={cn(cellClass, 'p-1.5')}>
-										{esAbierto(f) ? (
-											<Badge
-												variant={SEMAFORO_VARIANT[f.estado_semaforo]}
-												className='text-xs font-medium tabular-nums'
-											>
-												{(f.porentaje_sla_consumido * 100).toFixed(0)}%
-											</Badge>
-										) : (
-											<span className='text-xs text-muted-foreground'>—</span>
-										)}
-									</TableCell>
-									<TableCell
-										className={cn(cellClass, 'text-sm text-muted-foreground')}
-									>
-										<span className='line-clamp-2 leading-snug'>
-											{esAbierto(f) ? f.mensaje_semaforo : '—'}
-										</span>
-									</TableCell>
-								</TableRow>
+									</td>
+								<td className='px-4 py-2.5 text-right'>
+									{esAbierto(f) ? (
+										<Badge
+											variant={
+												f.porentaje_sla_consumido >= 1
+													? 'pastel-red'
+													: f.porentaje_sla_consumido >= 0.7
+														? 'pastel-amber'
+														: 'pastel-emerald'
+											}
+											className='text-[11px] font-medium tabular-nums'
+										>
+											{(f.porentaje_sla_consumido * 100).toFixed(0)}%
+										</Badge>
+									) : (
+										<span className='text-xs text-muted-foreground'>—</span>
+									)}
+								</td>
+								<td className='px-4 py-2.5'>
+									<div className='flex justify-center'>
+										<Badge
+											variant={SEMAFORO_VARIANT[f.estado_semaforo]}
+											className='text-[11px] font-medium'
+										>
+											{PRIORIDAD_LABELS[f.estado_semaforo]}
+										</Badge>
+									</div>
+								</td>
+								</tr>
 							))}
-						</TableBody>
-					</Table>
+						</tbody>
+					</table>
 				</div>
 			</div>
 

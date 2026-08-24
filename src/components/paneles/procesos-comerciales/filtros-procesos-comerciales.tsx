@@ -10,6 +10,10 @@ import {
 } from '@/components/select'
 import { Search, X } from 'lucide-react'
 import { Button } from '@/components/button'
+import {
+	ESTADO_PROSPECTO_LABELS,
+	ESTADOS_PROSPECTO,
+} from '@/types/estados/estado-comercial-cliente'
 
 export const TODOS = '__todos__'
 
@@ -17,6 +21,7 @@ export type FiltrosPanel = {
 	busqueda: string
 	ejecutivo: string
 	etapa: string
+	estadoComercial: string
 }
 
 type FiltrosProcesosComercialesProps = {
@@ -43,13 +48,15 @@ export default function FiltrosProcesosComerciales({
 			busqueda: '',
 			ejecutivo: TODOS,
 			etapa: TODOS,
+			estadoComercial: TODOS,
 		})
 	}
 
 	const hayFiltros =
 		filtros.busqueda !== '' ||
 		filtros.ejecutivo !== TODOS ||
-		filtros.etapa !== TODOS
+		filtros.etapa !== TODOS ||
+		filtros.estadoComercial !== TODOS
 
 	return (
 		<div className='flex flex-wrap items-center gap-2'>
@@ -75,7 +82,7 @@ export default function FiltrosProcesosComerciales({
 				</SelectTrigger>
 				<SelectContent>
 					<SelectItem value={TODOS} className='text-xs'>
-						Todos
+						Todos los ejecutivos
 					</SelectItem>
 					{opcionesEjecutivo.map(op => (
 						<SelectItem key={op.rut} value={op.rut} className='text-xs'>
@@ -94,11 +101,33 @@ export default function FiltrosProcesosComerciales({
 				</SelectTrigger>
 				<SelectContent>
 					<SelectItem value={TODOS} className='text-xs'>
-						Todas
+						Todas las etapas
 					</SelectItem>
 					{opcionesEtapa.map(op => (
 						<SelectItem key={op.codigo} value={op.codigo} className='text-xs'>
 							{op.nombre}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+
+			<Select
+				value={filtros.estadoComercial}
+				onValueChange={v => actualizar('estadoComercial', v)}
+			>
+				<SelectTrigger
+					size='sm'
+					className='h-9 w-[min(100%,11rem)] text-xs shadow-none'
+				>
+					<SelectValue placeholder='Estado comercial' />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectItem value={TODOS} className='text-xs'>
+						Todos los estados
+					</SelectItem>
+					{ESTADOS_PROSPECTO.map(codigo => (
+						<SelectItem key={codigo} value={codigo} className='text-xs'>
+							{ESTADO_PROSPECTO_LABELS[codigo]}
 						</SelectItem>
 					))}
 				</SelectContent>

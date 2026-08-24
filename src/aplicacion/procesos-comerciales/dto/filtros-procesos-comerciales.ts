@@ -2,6 +2,7 @@ export interface FiltrosProcesosComerciales {
 	texto_busqueda?: string | null
 	ejecutivos?: string[] | null
 	etapas?: string[] | null
+	estados_comerciales?: string[] | null
 	estado_semaforo?: string[] | null
 	estado_proceso?: string | null
 	cerrado?: boolean | null

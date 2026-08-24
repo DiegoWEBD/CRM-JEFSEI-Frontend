@@ -26,6 +26,7 @@ const ACENTO_ICON: Record<NonNullable<KpiAcento>, string> = {
 type PanelKpiCardProps = {
 	label: string
 	value: number | string
+	subtitle?: string
 	icon?: LucideIcon
 	accent?: KpiAcento
 	activa?: boolean
@@ -35,6 +36,7 @@ type PanelKpiCardProps = {
 export function PanelKpiCard({
 	label,
 	value,
+	subtitle,
 	icon: Icon,
 	accent = null,
 	activa = false,
@@ -86,6 +88,11 @@ export function PanelKpiCard({
 					<p className='mt-0.5 text-2xl font-semibold tabular-nums leading-tight tracking-tight text-foreground'>
 						{value}
 					</p>
+					{subtitle && (
+						<p className='mt-0.5 text-xs tabular-nums text-muted-foreground'>
+							{subtitle}
+						</p>
+					)}
 				</div>
 			</CardContent>
 		</Card>
