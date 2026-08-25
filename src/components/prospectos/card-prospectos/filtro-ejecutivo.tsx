@@ -1,6 +1,5 @@
 'use client'
 
-import AuthGuard from '@/components/layouts/guards/auth-guard'
 import {
 	Select,
 	SelectContent,
@@ -10,8 +9,6 @@ import {
 } from '@/components/select'
 import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { useMemo } from 'react'
-
-const ROLES_GUARD = ['GERENTE_GENERAL', 'GERENTE_COMERCIAL', 'GERENTE_OPERACIONES']
 
 const ROLES_FILTRO = [
 	'EJECUTIVO_COMERCIAL',
@@ -26,7 +23,10 @@ type FiltroEjecutivoProps = {
 	onChange: (value: string) => void
 }
 
-export default function FiltroEjecutivo({ value, onChange }: FiltroEjecutivoProps) {
+export default function FiltroEjecutivo({
+	value,
+	onChange,
+}: FiltroEjecutivoProps) {
 	const { data: usuarios, isLoading } = useUsuarios()
 
 	const ejecutivos = useMemo(() => {
@@ -37,33 +37,34 @@ export default function FiltroEjecutivo({ value, onChange }: FiltroEjecutivoProp
 	}, [usuarios])
 
 	return (
-		<AuthGuard allowedRoles={ROLES_GUARD} fallback={null}>
-			<div className='flex-1 space-y-1.5'>
-				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-					Ejecutivo
-				</p>
-				<Select value={value || '__all__'} onValueChange={v => onChange(v === '__all__' ? '' : v)}>
-					<SelectTrigger className='h-9 w-full text-xs shadow-none'>
-						<SelectValue placeholder='Todos los ejecutivos' />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value='__all__' className='text-xs text-muted-foreground'>
-							Todos los ejecutivos
+		<div className='flex-1 space-y-1.5'>
+			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+				Ejecutivo
+			</p>
+			<Select
+				value={value || '__all__'}
+				onValueChange={v => onChange(v === '__all__' ? '' : v)}
+			>
+				<SelectTrigger className='h-9 w-full text-xs shadow-none'>
+					<SelectValue placeholder='Todos los ejecutivos' />
+				</SelectTrigger>
+				<SelectContent>
+					<SelectItem value='__all__' className='text-xs text-muted-foreground'>
+						Todos los ejecutivos
+					</SelectItem>
+					{isLoading ? (
+						<SelectItem value='__loading__' disabled className='text-xs'>
+							Cargando...
 						</SelectItem>
-						{isLoading ? (
-							<SelectItem value='__loading__' disabled className='text-xs'>
-								Cargando...
+					) : (
+						ejecutivos.map(u => (
+							<SelectItem key={u.rut} value={u.rut} className='text-xs'>
+								{u.nombre}
 							</SelectItem>
-						) : (
-							ejecutivos.map(u => (
-								<SelectItem key={u.rut} value={u.rut} className='text-xs'>
-									{u.nombre}
-								</SelectItem>
-							))
-						)}
-					</SelectContent>
-				</Select>
-			</div>
-		</AuthGuard>
+						))
+					)}
+				</SelectContent>
+			</Select>
+		</div>
 	)
 }

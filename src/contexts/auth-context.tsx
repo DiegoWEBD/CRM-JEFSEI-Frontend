@@ -9,6 +9,9 @@ type AuthContextValue = {
 	cargando: boolean
 	tieneRol: (rol: string) => boolean
 	tieneAlgunRol: (roles: string[]) => boolean
+	tienePermiso: (permiso: string) => boolean
+	tieneAlgunPermiso: (permisos: string[]) => boolean
+	tieneTodosLosPermisos: (permisos: string[]) => boolean
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -50,8 +53,23 @@ export function AuthProvider({ children, initialPayload }: AuthProviderProps) {
 		[usuario],
 	)
 
+	const tienePermiso = useCallback(
+		(permiso: string) => usuario?.codigo_permisos.includes(permiso) ?? false,
+		[usuario],
+	)
+
+	const tieneAlgunPermiso = useCallback(
+		(permisos: string[]) => permisos.some(p => usuario?.codigo_permisos.includes(p) ?? false),
+		[usuario],
+	)
+
+	const tieneTodosLosPermisos = useCallback(
+		(permisos: string[]) => permisos.every(p => usuario?.codigo_permisos.includes(p) ?? false),
+		[usuario],
+	)
+
 	return (
-		<AuthContext.Provider value={{ usuario, cargando, tieneRol, tieneAlgunRol }}>
+		<AuthContext.Provider value={{ usuario, cargando, tieneRol, tieneAlgunRol, tienePermiso, tieneAlgunPermiso, tieneTodosLosPermisos }}>
 			{children}
 		</AuthContext.Provider>
 	)

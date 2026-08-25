@@ -1,10 +1,10 @@
 'use client'
 
-import AuthGuard from '@/components/layouts/guards/auth-guard'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { Separator } from '@/components/separator'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
@@ -25,8 +25,6 @@ import { useState } from 'react'
 import AdministradorAsociado from './administrador-asociado/administrador-asociado'
 import { AsignarEjecutivoDialog } from './asignar-ejecutivo-dialog'
 
-const ROLES_GESTION = ['GERENTE_GENERAL', 'GERENTE_COMERCIAL', 'GERENTE_OPERACIONES']
-
 type PaginaProspectoHeaderProps = {
 	prospecto: Prospecto
 }
@@ -36,6 +34,7 @@ type EjecutivoItemProps = {
 	icon: LucideIcon
 	nombre?: string
 	onClick: () => void
+	allowedPermissions: string[]
 }
 
 const EjecutivoItem = ({
@@ -43,6 +42,7 @@ const EjecutivoItem = ({
 	icon: Icon,
 	nombre,
 	onClick,
+	allowedPermissions,
 }: EjecutivoItemProps) => {
 	return (
 		<div className='flex min-w-0 flex-col gap-3 overflow-hidden rounded-lg border bg-muted/30 p-3 transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:gap-3'>
@@ -59,7 +59,7 @@ const EjecutivoItem = ({
 					</p>
 				</div>
 			</div>
-			<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
+			<PermissionGuard allowedPermissions={allowedPermissions}>
 				<Button
 					type='button'
 					variant='outline'
@@ -69,7 +69,7 @@ const EjecutivoItem = ({
 				>
 					{nombre ? 'Reasignar' : 'Asignar'}
 				</Button>
-			</AuthGuard>
+			</PermissionGuard>
 		</div>
 	)
 }
@@ -89,7 +89,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 
 	const lineaNegocioLabel = prospecto.linea_negocio.nombre
 		.replace(/_/g, ' ')
-		.replace(/^\w/, (c) => c.toUpperCase())
+		.replace(/^\w/, c => c.toUpperCase())
 
 	const ejecutivos = [
 		{
@@ -98,6 +98,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 			icon: Briefcase,
 			nombre: prospecto.ejecutivo_comercial_asignado?.nombre,
 			onClick: () => setOpenAsignarComercial(true),
+			allowedPermissions: ['ASIGNAR_EJECUTIVO_COMERCIAL'],
 		},
 		{
 			key: 'evaluacion',
@@ -105,6 +106,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 			icon: ClipboardCheck,
 			nombre: prospecto.ejecutivo_evaluacion_asignado?.nombre,
 			onClick: () => setOpenAsignarEvaluacion(true),
+			allowedPermissions: ['ASIGNAR_EJECUTIVO_EVALUACION'],
 		},
 		...(tieneCliente
 			? [
@@ -114,6 +116,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 						icon: DollarSign,
 						nombre: prospecto.ejecutivo_cobranza_asignado?.nombre,
 						onClick: () => setOpenAsignarCobranza(true),
+						allowedPermissions: ['ASIGNAR_EJECUTIVO_COBRANZA'],
 					},
 					{
 						key: 'renovacion',
@@ -121,6 +124,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 						icon: RefreshCw,
 						nombre: prospecto.ejecutivo_renovacion_asignado?.nombre,
 						onClick: () => setOpenAsignarRenovacion(true),
+						allowedPermissions: ['ASIGNAR_EJECUTIVO_RENOVACION'],
 					},
 				]
 			: []),
@@ -136,7 +140,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								<Building2 className='h-5 w-5 sm:h-6 sm:w-6' aria-hidden />
 							</div>
 							<div className='min-w-0 flex-1 pt-0.5'>
-								<h1 className='text-lg font-bold leading-snug tracking-tight break-words text-foreground sm:text-xl lg:text-2xl'>
+								<h1 className='text-lg font-bold leading-snug tracking-tight wrap-break-words text-foreground sm:text-xl lg:text-2xl'>
 									{prospecto.nombre_riesgo}
 								</h1>
 								<div className='mt-1.5 space-y-2'>
@@ -161,13 +165,14 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 								Ejecutivos asignados
 							</h2>
 							<div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2'>
-								{ejecutivos.map((ejecutivo) => (
+								{ejecutivos.map(ejecutivo => (
 									<EjecutivoItem
 										key={ejecutivo.key}
 										label={ejecutivo.label}
 										icon={ejecutivo.icon}
 										nombre={ejecutivo.nombre}
 										onClick={ejecutivo.onClick}
+										allowedPermissions={ejecutivo.allowedPermissions}
 									/>
 								))}
 							</div>
@@ -200,7 +205,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 				</div>
 			</CardContent>
 
-			<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
+			<PermissionGuard allowedPermissions={['ASIGNAR_EJECUTIVO_COMERCIAL']}>
 				<AsignarEjecutivoDialog
 					open={openAsignarComercial}
 					onOpenChange={setOpenAsignarComercial}
@@ -208,9 +213,9 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 					tipo='comercial'
 					ejecutivoActual={prospecto.ejecutivo_comercial_asignado?.rut}
 				/>
-			</AuthGuard>
+			</PermissionGuard>
 
-			<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
+			<PermissionGuard allowedPermissions={['ASIGNAR_EJECUTIVO_EVALUACION']}>
 				<AsignarEjecutivoDialog
 					open={openAsignarEvaluacion}
 					onOpenChange={setOpenAsignarEvaluacion}
@@ -218,11 +223,11 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 					tipo='evaluacion'
 					ejecutivoActual={prospecto.ejecutivo_evaluacion_asignado?.rut}
 				/>
-			</AuthGuard>
+			</PermissionGuard>
 
 			{tieneCliente && (
 				<>
-					<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
+					<PermissionGuard allowedPermissions={['ASIGNAR_EJECUTIVO_COBRANZA']}>
 						<AsignarEjecutivoDialog
 							open={openAsignarCobranza}
 							onOpenChange={setOpenAsignarCobranza}
@@ -231,9 +236,11 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 							tipo='cobranza'
 							ejecutivoActual={prospecto.ejecutivo_cobranza_asignado?.rut}
 						/>
-					</AuthGuard>
+					</PermissionGuard>
 
-					<AuthGuard allowedRoles={ROLES_GESTION} fallback={null}>
+					<PermissionGuard
+						allowedPermissions={['ASIGNAR_EJECUTIVO_RENOVACION']}
+					>
 						<AsignarEjecutivoDialog
 							open={openAsignarRenovacion}
 							onOpenChange={setOpenAsignarRenovacion}
@@ -242,7 +249,7 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 							tipo='renovacion'
 							ejecutivoActual={prospecto.ejecutivo_renovacion_asignado?.rut}
 						/>
-					</AuthGuard>
+					</PermissionGuard>
 				</>
 			)}
 		</Card>

@@ -1,29 +1,28 @@
 'use client'
 
-import ItemInformacionPoliza from '@/components/item-informacion-poliza/item-informacion-poliza'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
+import ItemInformacionPoliza from '@/components/item-informacion-poliza/item-informacion-poliza'
 import { Separator } from '@/components/separator/separator'
 import { useObtenerPoliza } from '@/hooks/polizas/use-obtener-poliza'
 import {
-	ESTADO_POLIZA_PERFIL_LABELS,
 	ESTADO_POLIZA_PERFIL_BADGE,
+	ESTADO_POLIZA_PERFIL_LABELS,
 } from '@/lib/estados-cotizaciones'
 
-import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
-import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
-import { formatUF } from '@/lib/uf'
-import CardPlanPago from '@/app/polizas/[numeroPoliza]/card-plan-pago/card-plan-pago'
-import { PolizaPageSkeleton } from '@/app/polizas/[numeroPoliza]/poliza-page-skeleton'
 import CardHistorial from '@/app/polizas/[numeroPoliza]/card-historial/card-historial'
+import CardPlanPago from '@/app/polizas/[numeroPoliza]/card-plan-pago/card-plan-pago'
 import DialogActualizarPoliza from '@/app/polizas/[numeroPoliza]/dialog-actualizar-poliza/dialog-actualizar-poliza'
+import { PolizaPageSkeleton } from '@/app/polizas/[numeroPoliza]/poliza-page-skeleton'
+import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
+import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
+import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { useCancelarPoliza } from '@/hooks/polizas/use-cancelar-poliza'
 import { useReactivarPoliza } from '@/hooks/polizas/use-reactivar-poliza'
-import { useState } from 'react'
-import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
+import { formatUF } from '@/lib/uf'
 import {
 	Building2,
 	CalendarDays,
@@ -38,6 +37,7 @@ import {
 	User,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 type PolizaPageClientProps = {
 	numeroPoliza: string
@@ -57,7 +57,8 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 		useObtenerPoliza(numeroPoliza)
 	const cancelarPoliza = useCancelarPoliza(numeroPoliza)
 	const reactivarPoliza = useReactivarPoliza(numeroPoliza)
-	const isLoadingMutation = cancelarPoliza.isPending || reactivarPoliza.isPending
+	const isLoadingMutation =
+		cancelarPoliza.isPending || reactivarPoliza.isPending
 	const [confirmarCancelar, setConfirmarCancelar] = useState(false)
 	const [confirmarReactivar, setConfirmarReactivar] = useState(false)
 	const [editarPoliza, setEditarPoliza] = useState(false)
@@ -68,9 +69,8 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 
 	return (
 		<PanelLayout>
-			{polizaCargando ? (
-				<PolizaPageSkeleton />
-			) : poliza ? (
+			{polizaCargando && <PolizaPageSkeleton />}
+			{poliza ? (
 				<>
 					<PanelHeader>
 						<Card className='border-border shadow-none'>
@@ -96,7 +96,10 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 													</button>
 												</div>
 												<div className='mt-1.5 flex flex-wrap items-center gap-2'>
-													<Badge variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]} className='text-xs font-medium'>
+													<Badge
+														variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
+														className='text-xs font-medium'
+													>
 														{ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
 													</Badge>
 													<Badge variant='secondary' className='text-xs'>
@@ -164,25 +167,29 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 										</div>
 									</div>
 
-									<Separator orientation='vertical' className='hidden self-stretch lg:block' />
+									<Separator
+										orientation='vertical'
+										className='hidden self-stretch lg:block'
+									/>
 
 									<div className='flex flex-col gap-3 lg:w-56 lg:shrink-0'>
 										<div className='flex items-center justify-between gap-3 rounded-lg border bg-muted/30 p-3 sm:p-4 lg:flex-col lg:items-start lg:gap-2'>
 											<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 												Estado
 											</span>
-											<Badge variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]} className='text-xs font-medium'>
+											<Badge
+												variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
+												className='text-xs font-medium'
+											>
 												{ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
 											</Badge>
 										</div>
 										<div className='flex items-center justify-center'>
-											<AuthGuard
-												allowedRoles={[
-													'GERENTE_GENERAL',
-													'GERENTE_COMERCIAL',
-													'GERENTE_OPERACIONES',
+											<PermissionGuard
+												allowedPermissions={[
+													'ACTUALIZAR_POLIZA_TODOS',
+													'ACTUALIZAR_POLIZA_PROPIOS',
 												]}
-												fallback={null}
 											>
 												<Button
 													variant='outline'
@@ -193,19 +200,14 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 													<Pencil className='h-3.5 w-3.5' />
 													Editar póliza
 												</Button>
-											</AuthGuard>
+											</PermissionGuard>
 										</div>
 									</div>
 								</div>
 							</CardContent>
 
-							<AuthGuard
-								allowedRoles={[
-									'GERENTE_GENERAL',
-									'GERENTE_COMERCIAL',
-									'GERENTE_OPERACIONES',
-								]}
-								fallback={null}
+							<PermissionGuard
+								allowedPermissions={['CANCELAR_POLIZA', 'REACTIVAR_POLIZA']}
 							>
 								<div className='border-t border-border px-4 py-3 sm:px-5 lg:px-6'>
 									<div className='flex flex-wrap gap-2'>
@@ -266,7 +268,7 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 										)}
 									</div>
 								</div>
-							</AuthGuard>
+							</PermissionGuard>
 						</Card>
 					</PanelHeader>
 
@@ -310,28 +312,20 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 					</Card>
 
 					<PanelBody className='lg:grid-cols-[minmax(0,1fr)_30%]'>
-						<AuthGuard
-							allowedRoles={[
-								'GERENTE_GENERAL',
-								'GERENTE_COMERCIAL',
-								'GERENTE_OPERACIONES',
-								'EJECUTIVO_COBRANZA',
-								'EJECUTIVO_COMERCIAL',
+						<PermissionGuard
+							allowedPermissions={[
+								'VER_PLAN_PAGO_PROPIOS',
+								'VER_PLAN_PAGO_GLOBAL',
 							]}
-							fallback={null}
 						>
 							<CardPlanPago numeroPoliza={numeroPoliza} />
-						</AuthGuard>
-						<AuthGuard
-							allowedRoles={[
-								'GERENTE_GENERAL',
-								'GERENTE_COMERCIAL',
-								'GERENTE_OPERACIONES',
-							]}
+						</PermissionGuard>
+						<PermissionGuard
+							allowedPermissions={['ADMINISTRAR_PROCESOS_COMERCIALES']}
 							fallback={null}
 						>
 							<CardHistorial idProcesoComercial={poliza.id_proceso_comercial} />
-						</AuthGuard>
+						</PermissionGuard>
 					</PanelBody>
 
 					<DialogActualizarPoliza

@@ -1,30 +1,30 @@
 'use client'
 
-import { useComunicadosGerencia } from '@/hooks/comunicados-gerencia/use-comunicados-gerencia'
-import { useRegistrarComunicadoGerencia } from '@/hooks/comunicados-gerencia/use-registrar-comunicado-gerencia'
-import { Bell, Plus } from 'lucide-react'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import {
 	Dialog,
 	DialogContent,
-	DialogTitle,
 	DialogDescription,
+	DialogTitle,
 } from '@/components/dialog'
 import Input from '@/components/forms/input/input'
-import Textarea from '@/components/forms/text-area/text-area'
 import Select from '@/components/forms/select/select'
 import SelectContent from '@/components/forms/select/select-content/select-content'
 import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
+import Textarea from '@/components/forms/text-area/text-area'
 import { Label } from '@/components/label'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
+import { useComunicadosGerencia } from '@/hooks/comunicados-gerencia/use-comunicados-gerencia'
+import { useRegistrarComunicadoGerencia } from '@/hooks/comunicados-gerencia/use-registrar-comunicado-gerencia'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { useFormik } from 'formik'
-import * as Yup from 'yup'
+import { Bell, Plus } from 'lucide-react'
 import { useState } from 'react'
+import * as Yup from 'yup'
+import PermissionGuard from '../layouts/guards/permission-guard'
 
 const PRIORIDAD_VARIANT = {
 	media: 'pastel-blue',
@@ -74,14 +74,7 @@ export default function CardComunicadoGerencia() {
 			<CardHeader className='flex flex-row items-center justify-between border-b border-border pb-2 pt-3'>
 				<CardTitle primary>Avisos de gerencia</CardTitle>
 				<div className='flex items-center gap-2'>
-					<AuthGuard
-						allowedRoles={[
-							'GERENTE_GENERAL',
-							'GERENTE_COMERCIAL',
-							'GERENTE_OPERACIONES',
-						]}
-						fallback={null}
-					>
+					<PermissionGuard allowedPermissions={['CREAR_COMUNICADO']}>
 						<Button
 							type='button'
 							variant='outline'
@@ -92,7 +85,7 @@ export default function CardComunicadoGerencia() {
 							<Plus className='h-3.5 w-3.5' aria-hidden />
 							Nuevo aviso
 						</Button>
-					</AuthGuard>
+					</PermissionGuard>
 					<Bell className='h-4 w-4 text-muted-foreground' aria-hidden />
 				</div>
 			</CardHeader>
@@ -111,7 +104,11 @@ export default function CardComunicadoGerencia() {
 							<div className='flex items-start justify-between gap-2'>
 								<p className='font-medium text-foreground'>{aviso.titulo}</p>
 								<Badge
-									variant={(PRIORIDAD_VARIANT[aviso.prioridad as keyof typeof PRIORIDAD_VARIANT] ?? 'outline')}
+									variant={
+										PRIORIDAD_VARIANT[
+											aviso.prioridad as keyof typeof PRIORIDAD_VARIANT
+										] ?? 'outline'
+									}
 									className='h-5 shrink-0 text-xs'
 								>
 									{aviso.prioridad}
@@ -150,7 +147,9 @@ export default function CardComunicadoGerencia() {
 									className='h-9 text-sm shadow-none'
 								/>
 								{formik.touched.titulo && formik.errors.titulo && (
-									<p className='text-xs text-destructive'>{formik.errors.titulo}</p>
+									<p className='text-xs text-destructive'>
+										{formik.errors.titulo}
+									</p>
 								)}
 							</div>
 							<div className='space-y-1.5'>
@@ -160,10 +159,12 @@ export default function CardComunicadoGerencia() {
 									value={formik.values.descripcion}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									className='min-h-[80px] text-sm shadow-none'
+									className='min-h-20 text-sm shadow-none'
 								/>
 								{formik.touched.descripcion && formik.errors.descripcion && (
-									<p className='text-xs text-destructive'>{formik.errors.descripcion}</p>
+									<p className='text-xs text-destructive'>
+										{formik.errors.descripcion}
+									</p>
 								)}
 							</div>
 							<div className='grid grid-cols-2 gap-3'>
@@ -193,7 +194,9 @@ export default function CardComunicadoGerencia() {
 										className='h-9 text-sm shadow-none'
 									/>
 									{formik.touched.caducidad && formik.errors.caducidad && (
-										<p className='text-xs text-destructive'>{formik.errors.caducidad}</p>
+										<p className='text-xs text-destructive'>
+											{formik.errors.caducidad}
+										</p>
 									)}
 								</div>
 							</div>
@@ -208,11 +211,7 @@ export default function CardComunicadoGerencia() {
 							>
 								Cancelar
 							</Button>
-							<Button
-								type='submit'
-								size='sm'
-								className='h-9 text-xs'
-							>
+							<Button type='submit' size='sm' className='h-9 text-xs'>
 								Guardar
 							</Button>
 						</div>

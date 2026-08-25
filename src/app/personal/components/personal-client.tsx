@@ -1,26 +1,27 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
-import { Input } from '@/components/input'
-import { Button } from '@/components/button'
-import { Skeleton } from '@/components/skeleton'
+import { RegistrarUsuarioRequest } from '@/aplicacion/usuarios/use-cases/registrar-usuario'
 import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { Checkbox } from '@/components/checkbox'
+import { ConfirmDialog } from '@/components/confirm-dialog'
 import {
 	Dialog,
 	DialogContent,
-	DialogTitle,
 	DialogDescription,
+	DialogTitle,
 } from '@/components/dialog'
+import Campo from '@/components/forms/campo/campo'
 import Select from '@/components/forms/select/select'
 import SelectContent from '@/components/forms/select/select-content/select-content'
 import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
+import { Input } from '@/components/input'
 import { Label } from '@/components/label'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import Campo from '@/components/forms/campo/campo'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import { Skeleton } from '@/components/skeleton'
 import {
 	Table,
 	TableBody,
@@ -30,34 +31,33 @@ import {
 	TableRow,
 } from '@/components/table'
 import Usuario from '@/dominio/usuario/usuario'
-import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
-import { useRegistrarUsuario } from '@/hooks/usuarios/use-registrar-usuario'
-import { useSucursales } from '@/hooks/sucursales/use-sucursales'
-import { useControlledInput } from '@/hooks/input/use-controlled-input'
-import { RegistrarUsuarioRequest } from '@/aplicacion/usuarios/use-cases/registrar-usuario'
-import { useActualizarUsuario } from '@/hooks/usuarios/use-actualizar-usuario'
 import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useControlledInput } from '@/hooks/input/use-controlled-input'
 import { useObtenerRoles, type RolJson } from '@/hooks/roles/use-obtener-roles'
+import { useSucursales } from '@/hooks/sucursales/use-sucursales'
+import { useActualizarUsuario } from '@/hooks/usuarios/use-actualizar-usuario'
 import { useEliminarUsuario } from '@/hooks/usuarios/use-eliminar-usuario'
-import { ConfirmDialog } from '@/components/confirm-dialog'
+import { useRegistrarUsuario } from '@/hooks/usuarios/use-registrar-usuario'
+import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { classInputRut } from '@/utils/class-input-rut'
 import { formatRut } from '@/utils/format-rut'
 import {
 	rutChilenoEstadoValidacion,
 	rutChilenoEsValido,
 } from '@/utils/validar-rut'
-import { useState, useMemo } from 'react'
+import { useFormik } from 'formik'
 import {
-	Search,
-	UserPlus,
-	ExternalLink,
-	Mail,
-	Phone,
 	Building2,
+	ExternalLink,
 	Eye,
 	EyeOff,
+	Mail,
+	Phone,
+	Search,
+	UserPlus,
 } from 'lucide-react'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
+import { useMemo, useState } from 'react'
+import * as Yup from 'yup'
 
 function InicialesUsuario({ nombre }: { nombre: string }) {
 	const iniciales = nombre
@@ -126,10 +126,10 @@ function CardUsuario({
 							</div>
 						)}
 
-					<Badge
-						variant={usuario.habilitado ? 'success' : 'destructive'}
-						className='text-xs font-medium'
-					>
+						<Badge
+							variant={usuario.habilitado ? 'success' : 'destructive'}
+							className='text-xs font-medium'
+						>
 							{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
 						</Badge>
 					</div>
@@ -223,7 +223,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 		<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
 			<div className='border-b border-border/80 p-3 sm:p-4'>
 				<div className='flex flex-wrap items-center gap-2'>
-					<div className='relative min-w-[12rem] flex-1'>
+					<div className='relative min-w-48 flex-1'>
 						<Search className='absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
 						<Input
 							placeholder='Buscar por nombre, rut, correo, teléfono, sucursal o rol...'
@@ -235,7 +235,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 					<span className='text-sm text-muted-foreground'>
 						Mostrando {usuariosFiltrados.length} de {lista?.length ?? 0}
 					</span>
-					<AuthGuard allowedRoles={['GERENTE_GENERAL']}>
+					<PermissionGuard allowedPermissions={['ADMINISTRAR_USUARIOS']}>
 						<Button
 							size='sm'
 							className='h-9 text-xs'
@@ -244,7 +244,7 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 							<UserPlus className='mr-1.5 size-3.5' />
 							Registrar usuario
 						</Button>
-					</AuthGuard>
+					</PermissionGuard>
 				</div>
 			</div>
 
@@ -267,7 +267,9 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 									usuario={usuario}
 									onVerDetalle={setUsuarioDetalle}
 									onEliminar={
-										tieneRol('GERENTE_GENERAL') ? setUsuarioAEliminar : undefined
+										tieneRol('GERENTE_GENERAL')
+											? setUsuarioAEliminar
+											: undefined
 									}
 								/>
 							))}
@@ -300,7 +302,10 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 								</TableHeader>
 								<TableBody>
 									{usuariosFiltrados.map(usuario => (
-										<TableRow key={usuario.rut} className='border-b border-border/60 transition-colors hover:bg-accent/40'>
+										<TableRow
+											key={usuario.rut}
+											className='border-b border-border/60 transition-colors hover:bg-accent/40'
+										>
 											<TableCell className='px-3 py-2.5'>
 												<div className='flex items-center gap-2'>
 													<InicialesUsuario nombre={usuario.nombre} />
@@ -338,7 +343,9 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 											</TableCell>
 											<TableCell className='px-3 py-2.5'>
 												<Badge
-													variant={usuario.habilitado ? 'success' : 'destructive'}
+													variant={
+														usuario.habilitado ? 'success' : 'destructive'
+													}
 													className='text-[11px] font-semibold'
 												>
 													{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
@@ -633,16 +640,16 @@ function DialogRegistrarUsuario({
 							<div className='space-y-1.5'>
 								<Label htmlFor='password-crear'>Contraseña *</Label>
 								<div className='relative'>
-								<Input
-									id='password-crear'
-									type={showPassword ? 'text' : 'password'}
-									className='h-9 text-sm shadow-none pr-9'
-									placeholder='••••••••'
-									name='password'
-									value={formik.values.password}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-								/>
+									<Input
+										id='password-crear'
+										type={showPassword ? 'text' : 'password'}
+										className='h-9 text-sm shadow-none pr-9'
+										placeholder='••••••••'
+										name='password'
+										value={formik.values.password}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+									/>
 									<button
 										type='button'
 										className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
@@ -695,32 +702,32 @@ function DialogRegistrarUsuario({
 						<div className='grid gap-4 sm:grid-cols-3'>
 							<div className='space-y-1.5'>
 								<Label htmlFor='metaMensual-crear'>Meta mensual UF</Label>
-							<Input
-								id='metaMensual-crear'
-								type='number'
-								min='0'
-								placeholder='0'
-								name='metaMensualUf'
-								className='h-9 text-sm shadow-none'
-								value={formik.values.metaMensualUf || undefined}
-								onChange={formik.handleChange}
-							/>
+								<Input
+									id='metaMensual-crear'
+									type='number'
+									min='0'
+									placeholder='0'
+									name='metaMensualUf'
+									className='h-9 text-sm shadow-none'
+									value={formik.values.metaMensualUf || undefined}
+									onChange={formik.handleChange}
+								/>
 							</div>
 							<div className='space-y-1.5'>
 								<Label htmlFor='comision-crear'>Comisión %</Label>
-							<Input
-								id='comision-crear'
-								type='number'
-								min='0'
-								max='100'
-								step='0.01'
-								placeholder='0'
-								name='porcentajeComision'
-								className='h-9 text-sm shadow-none'
-								value={formik.values.porcentajeComision || undefined}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-							/>
+								<Input
+									id='comision-crear'
+									type='number'
+									min='0'
+									max='100'
+									step='0.01'
+									placeholder='0'
+									name='porcentajeComision'
+									className='h-9 text-sm shadow-none'
+									value={formik.values.porcentajeComision || undefined}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+								/>
 								{formik.touched.porcentajeComision &&
 									formik.errors.porcentajeComision && (
 										<p className='text-xs text-destructive'>

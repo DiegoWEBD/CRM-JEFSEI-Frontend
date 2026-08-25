@@ -19,6 +19,7 @@ import ObservacionesComercialesSection from '../observaciones-comerciales-sectio
 import SeguimientoComercialSection from '../seguimiento-comercial-section/seguimiento-comercial-section'
 import RecordatoriosClienteSection from '../recordatorios-cliente-section/recordatorios-cliente-section'
 import PaginaProspectoHeader from '../pagina-prospecto-header/pagina-prospecto-header'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 
 type PaginaProspectoClientProps = {
 	prospectoInicial: Prospecto
@@ -56,33 +57,25 @@ export default function PaginaProspectoClient({
 			)}
 
 			<PanelBody className='lg:grid-cols-2'>
-				<AuthGuard
-					allowedRoles={[
-						'EJECUTIVO_COMERCIAL',
-						'GERENTE_GENERAL',
-						'GERENTE_COMERCIAL',
-						'GERENTE_OPERACIONES',
+				<PermissionGuard
+					allowedPermissions={[
+						'OBTENER_CONTACTOS_PROPIOS',
+						'OBTENER_CONTACTOS_TODOS',
 					]}
-					fallback={null}
 				>
 					<CardContactos idProspecto={prospecto.id} />
-				</AuthGuard>
+				</PermissionGuard>
 
 				<AuthGuard>
 					<CardArchivos idProspecto={prospecto.id} />
 				</AuthGuard>
 			</PanelBody>
 
-			<AuthGuard
-				allowedRoles={[
-					'EJECUTIVO_COMERCIAL',
-					'EJECUTIVO_EVALUACION_PROYECTOS',
-					'EJECUTIVO_RENOVACION',
-					'GERENTE_GENERAL',
-					'GERENTE_COMERCIAL',
-					'GERENTE_OPERACIONES',
+			<PermissionGuard
+				allowedPermissions={[
+					'ADMINISTRAR_PROCESOS_COMERCIALES_PROPIOS',
+					'ADMINISTRAR_PROCESOS_COMERCIALES',
 				]}
-				fallback={null}
 			>
 				<CardOportunidadesComerciales
 					idProspecto={prospecto.id}
@@ -94,7 +87,7 @@ export default function PaginaProspectoClient({
 					ejecutivoEvaluacionRut={prospecto.ejecutivo_evaluacion_asignado?.rut}
 					ejecutivoRenovacionRut={prospecto.ejecutivo_renovacion_asignado?.rut}
 				/>
-			</AuthGuard>
+			</PermissionGuard>
 
 			<CardPolizas
 				idCliente={prospecto.id_cliente}

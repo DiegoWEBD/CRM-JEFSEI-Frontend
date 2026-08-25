@@ -29,6 +29,7 @@ import MetricasEjecutivoComercial from '../ejecutivo-comercial/metricas-ejecutiv
 import PanelFooter from '../panel-layout/panel-footer/panel-footer'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelLayout from '../panel-layout/panel-layout'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 
 const Acentos = {
 	info: { card: KPI_PASTEL.info.card, icon: KPI_PASTEL.info.icon },
@@ -113,9 +114,9 @@ export default function PanelHomeClient({
 				</div>
 
 				<>
-					<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_COMERCIAL']}>
+					<PermissionGuard allowedPermissions={['VER_METRICAS_EJECUTIVO']}>
 						<MetricasEjecutivoComercial />
-					</AuthGuard>
+					</PermissionGuard>
 
 					<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
 						<AuthGuard
