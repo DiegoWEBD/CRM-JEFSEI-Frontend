@@ -11,6 +11,7 @@ const PanelBody = ({ children, className }: PanelBodyProps) => {
 		<div
 			className={cn(
 				'grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_30%]',
+				'[&>*:only-child]:lg:col-span-2',
 				className,
 			)}
 		>

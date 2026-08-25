@@ -4,9 +4,9 @@ import AdministradoresClient from './components/administradores-client'
 import { AdministradoresPageSkeleton } from './components/administradores-page-skeleton'
 
 async function AdministradoresInner() {
-	const administradores = await obtenerAdministradores()
+	const resultado = await obtenerAdministradores({ pagina: 1, tamanoPagina: 10 })
 
-	return <AdministradoresClient administradoresIniciales={administradores} />
+	return <AdministradoresClient initialData={resultado} />
 }
 
 const AdministradoresPage = () => {

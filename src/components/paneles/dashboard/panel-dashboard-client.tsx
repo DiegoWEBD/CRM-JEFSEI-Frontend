@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 
-import AuthGuard from '@/components/layouts/guards/auth-guard'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { DashboardSkeleton } from '@/components/paneles/dashboard/panel-dashboard-skeleton'
 import {
 	Select,
@@ -19,14 +19,18 @@ import ProductionSection from './contents/produccion/production-section'
 import PoliciesReportsSection from './contents/reportes-polizas/policies-reports-section'
 
 const MESES = [
-	'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-	'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-]
-
-const ROLES_GERENTE = [
-	'GERENTE_COMERCIAL',
-	'GERENTE_GENERAL',
-	'GERENTE_OPERACIONES',
+	'Enero',
+	'Febrero',
+	'Marzo',
+	'Abril',
+	'Mayo',
+	'Junio',
+	'Julio',
+	'Agosto',
+	'Septiembre',
+	'Octubre',
+	'Noviembre',
+	'Diciembre',
 ]
 
 export default function PanelDashboardClient() {
@@ -34,7 +38,11 @@ export default function PanelDashboardClient() {
 	const [mes, setMes] = useState<number>(hoy.getMonth() + 1)
 	const [year, setYear] = useState<number>(hoy.getFullYear())
 
-	const { data: metricas, isLoading, error } = useMetricasDashboardGerente(mes, year)
+	const {
+		data: metricas,
+		isLoading,
+		error,
+	} = useMetricasDashboardGerente(mes, year)
 
 	const rangoYears = Array.from(
 		{ length: 5 },
@@ -56,14 +64,11 @@ export default function PanelDashboardClient() {
 	}
 
 	return (
-		<AuthGuard allowedRoles={ROLES_GERENTE} fallback={null}>
+		<PermissionGuard allowedPermissions={['VER_METRICAS_GERENCIA']}>
 			<PanelLayout>
 				<div className='flex items-center gap-3'>
-					<Select
-						value={String(mes)}
-						onValueChange={(v) => setMes(Number(v))}
-					>
-						<SelectTrigger className='w-[140px] h-8 text-xs'>
+					<Select value={String(mes)} onValueChange={v => setMes(Number(v))}>
+						<SelectTrigger className='w-35 h-8 text-xs'>
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -79,20 +84,13 @@ export default function PanelDashboardClient() {
 						</SelectContent>
 					</Select>
 
-					<Select
-						value={String(year)}
-						onValueChange={(v) => setYear(Number(v))}
-					>
-						<SelectTrigger className='w-[100px] h-8 text-xs'>
+					<Select value={String(year)} onValueChange={v => setYear(Number(v))}>
+						<SelectTrigger className='w-25 h-8 text-xs'>
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							{rangoYears.map((y) => (
-								<SelectItem
-									key={y}
-									value={String(y)}
-									className='text-xs'
-								>
+							{rangoYears.map(y => (
+								<SelectItem key={y} value={String(y)} className='text-xs'>
 									{y}
 								</SelectItem>
 							))}
@@ -104,6 +102,6 @@ export default function PanelDashboardClient() {
 				<CommercialActivitiesSection data={metricas.actividades_comerciales} />
 				<PoliciesReportsSection data={metricas.reportes_polizas} />
 			</PanelLayout>
-		</AuthGuard>
+		</PermissionGuard>
 	)
 }

@@ -29,7 +29,7 @@ export default function CardPlanPago({ numeroPoliza }: CardPlanPagoProps) {
 				<CardHeader className='border-b border-border pb-2 pt-3'>
 					<CardTitle className='text-sm font-semibold'>Plan de pago</CardTitle>
 				</CardHeader>
-				<CardContent className='h-fit p-0'>
+				<CardContent className='p-0'>
 					{planPagoCargando ? (
 						<Skeleton className='h-40 w-full rounded-none' />
 					) : planPago ? (

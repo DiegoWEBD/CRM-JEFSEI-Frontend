@@ -17,6 +17,7 @@ import FiltroEjecutivo from './filtro-ejecutivo'
 import FiltroRegionComuna from './filtro-region-comuna'
 import SkeletonFilasProspecto from './skeleton-filas-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 
 const TAMANO_PAGINA = 10
 
@@ -153,7 +154,16 @@ export default function CardProspectosClient({
 				/>
 
 				<div className='flex flex-col gap-2 sm:flex-row'>
-					<FiltroEjecutivo value={rutUsuario} onChange={onRutUsuarioChange} />
+					<AuthGuard
+						allowedRoles={[
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'GERENTE_OPERACIONES',
+						]}
+					>
+						<FiltroEjecutivo value={rutUsuario} onChange={onRutUsuarioChange} />
+					</AuthGuard>
+
 					<FiltroRegionComuna
 						region={region}
 						comuna={comuna}

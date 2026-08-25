@@ -11,15 +11,15 @@ type CardHistorialProps = {
 export default function CardHistorial({
 	idProcesoComercial,
 }: CardHistorialProps) {
-	if (idProcesoComercial === null) return null
-
 	const { data: historial, isLoading: historialCargando } =
 		useObtenerHistorialEstado(idProcesoComercial)
+
+	if (idProcesoComercial === null) return null
 
 	return (
 		<Card className='border-border shadow-none'>
 			<CardHeader className='border-b border-border pb-2 pt-3'>
-				<CardTitle className='text-sm font-semibold'>Historial</CardTitle>
+				<CardTitle className='text-sm font-semibold'>Historial de cambios</CardTitle>
 			</CardHeader>
 			<CardContent className='p-4'>
 				<HistorialPoliza

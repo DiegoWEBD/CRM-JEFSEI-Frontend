@@ -1,27 +1,19 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import { useObtenerTodasSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-todas-solicitudes-cotizacion'
 import { PanelSolicitudesEstudioSkeleton } from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-skeleton'
-import KpiSolicitudesEstudio, {
-	type TarjetaActiva,
-} from './kpi-solicitudes-estudio'
+import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/solicitud-cotizacion-resumen'
+import { useObtenerTodasSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-todas-solicitudes-cotizacion'
+import { useMemo, useState } from 'react'
 import FiltrosSolicitudesEstudio, {
 	TODOS,
 	type FiltrosSolicitudes,
 } from './filtros-solicitudes-estudio'
-import TablaSolicitudesEstudio from './tabla-solicitudes-estudio'
+import KpiSolicitudesEstudio, {
+	type TarjetaActiva,
+} from './kpi-solicitudes-estudio'
 import SheetDetalleSolicitud from './sheet-detalle-solicitud'
-import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/solicitud-cotizacion-resumen'
-
-const ROLES = [
-	'EJECUTIVO_EVALUACION_PROYECTOS',
-	'GERENTE_COMERCIAL',
-	'GERENTE_GENERAL',
-	'GERENTE_OPERACIONES',
-]
+import TablaSolicitudesEstudio from './tabla-solicitudes-estudio'
 
 function resolverEstado(s: SolicitudCotizacionResumen): string {
 	if (!s.informacion_completa) return 'informacion_incompleta'
@@ -133,7 +125,7 @@ export default function PanelSolicitudesEstudioClient() {
 		)
 
 	return (
-		<AuthGuard allowedRoles={ROLES} fallback={null}>
+		<>
 			<PanelLayout>
 				<KpiSolicitudesEstudio
 					conteos={conteos}
@@ -169,6 +161,6 @@ export default function PanelSolicitudesEstudioClient() {
 					if (!open) setDetalleAbierto(null)
 				}}
 			/>
-		</AuthGuard>
+		</>
 	)
 }

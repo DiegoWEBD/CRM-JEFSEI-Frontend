@@ -17,39 +17,30 @@ import {
 	PopoverTrigger,
 } from '@/components/popover'
 import { cn } from '@/lib/utils'
-import type AdministradorCondominio from '@/dominio/administrador-condominio/administrador-condominio'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useBuscarAdministradores } from '@/hooks/administradores/use-buscar-administradores'
 import { DialogoRegistrarAdministrador } from '@/components/dialogo-registrar-administrador'
 
 type SelectorAdministradorProps = {
 	value: number | undefined
 	onChange: (id: number | undefined) => void
-	administradores: AdministradorCondominio[]
 }
 
 export default function SelectorAdministrador({
 	value,
 	onChange,
-	administradores,
 }: SelectorAdministradorProps) {
 	const [abierto, setAbierto] = useState(false)
 	const [busqueda, setBusqueda] = useState('')
 	const [dialogoAbierto, setDialogoAbierto] = useState(false)
 
-	const seleccionado = useMemo(
-		() => administradores.find(a => a.id === value),
-		[administradores, value],
-	)
+	const debouncedBusqueda = useDebounce(busqueda, 300)
+	const { data: administradores, isLoading } =
+		useBuscarAdministradores(debouncedBusqueda)
 
-	const filtrados = useMemo(
-		() =>
-			busqueda.trim().length === 0
-				? administradores
-				: administradores.filter(a =>
-						a.nombre_administrador
-							.toLowerCase()
-							.includes(busqueda.toLowerCase()),
-					),
-		[administradores, busqueda],
+	const seleccionado = useMemo(
+		() => administradores?.find(a => a.id === value),
+		[administradores, value],
 	)
 
 	const mostrarCrear = busqueda.trim().length > 0
@@ -97,12 +88,18 @@ export default function SelectorAdministrador({
 									Sin administrador
 								</CommandItem>
 							</CommandGroup>
-							{filtrados.length === 0 && !mostrarCrear && (
-								<CommandEmpty>Sin resultados</CommandEmpty>
+							{debouncedBusqueda.trim().length === 0 && (
+								<CommandEmpty>Escriba para buscar...</CommandEmpty>
 							)}
-							{filtrados.length > 0 && (
+							{debouncedBusqueda.trim().length > 0 &&
+								!isLoading &&
+								(!administradores || administradores.length === 0) &&
+								!mostrarCrear && (
+									<CommandEmpty>Sin resultados</CommandEmpty>
+								)}
+							{administradores && administradores.length > 0 && (
 								<CommandGroup>
-									{filtrados.map(admin => (
+									{administradores.map(admin => (
 										<CommandItem
 											key={admin.id}
 											value={admin.nombre_administrador}

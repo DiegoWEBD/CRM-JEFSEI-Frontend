@@ -13,7 +13,6 @@ import {
 } from '@/components/select'
 import { SelectorAdministrador } from '@/components/selector-administrador'
 import { Textarea } from '@/components/textarea'
-import { useAdministradores } from '@/hooks/administradores/use-administradores'
 import { useFormularioRegistrarProspecto } from '@/hooks/prospectos/use-formulario-registrar-prospecto'
 import {
 	CHILE_REGIONES_NOMBRES,
@@ -40,8 +39,6 @@ export default function FormularioRegistrarProspecto({
 		onProspectoRegistrado,
 		onClose,
 	})
-
-	const { data: administradores } = useAdministradores()
 
 	const [region, setRegion] = useState(formik.values.region ?? '')
 	const comunasDeRegion = useMemo(
@@ -221,7 +218,6 @@ export default function FormularioRegistrarProspecto({
 								onChange={id =>
 									formik.setFieldValue('id_administrador', id)
 								}
-								administradores={administradores ?? []}
 							/>
 						</Campo>
 					)}

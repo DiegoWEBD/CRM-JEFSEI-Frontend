@@ -4,4 +4,5 @@ export type TokenPayload = {
 	exp: number
 	codigo_roles: string[]
 	nombre_roles: string[]
+	codigo_permisos: string[]
 }

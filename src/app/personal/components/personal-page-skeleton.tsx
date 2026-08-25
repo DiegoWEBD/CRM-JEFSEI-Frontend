@@ -1,26 +1,27 @@
 import { Skeleton } from '@/components/skeleton'
-import { Card, CardContent } from '@/components/card'
 
 export function PersonalPageSkeleton() {
 	return (
-		<div className='space-y-6'>
-			<Skeleton className='h-5 w-48 rounded-md' />
-			<Skeleton className='h-9 w-full rounded-md' />
-			<div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-				{Array.from({ length: 6 }).map((_, i) => (
-					<Card key={i}>
-						<CardContent className='flex items-start gap-3 p-4'>
-							<Skeleton className='size-10 shrink-0 rounded-full' />
-							<div className='min-w-0 flex-1 space-y-2'>
-								<Skeleton className='h-5 w-3/4 rounded-md' />
-								<Skeleton className='h-3 w-1/2 rounded-md' />
-								<Skeleton className='h-3 w-2/3 rounded-md' />
-								<Skeleton className='h-3 w-1/3 rounded-md' />
-							</div>
-						</CardContent>
-					</Card>
-				))}
+		<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
+			<div className='border-b border-border/80 p-3 sm:p-4'>
+				<div className='flex flex-wrap items-center gap-2'>
+					<Skeleton className='h-9 min-w-[12rem] flex-1 rounded-md' />
+					<Skeleton className='h-5 w-24 rounded-md' />
+					<Skeleton className='h-9 w-32 rounded-md' />
+				</div>
 			</div>
-		</div>
+			<div className='p-3 sm:p-4'>
+				<div className='grid gap-3 sm:hidden'>
+					{Array.from({ length: 4 }).map((_, i) => (
+						<Skeleton key={i} className='h-[120px] rounded-lg' />
+					))}
+				</div>
+				<div className='hidden sm:block'>
+					{Array.from({ length: 6 }).map((_, i) => (
+						<Skeleton key={i} className='mb-2 h-11 w-full rounded-md' />
+					))}
+				</div>
+			</div>
+		</section>
 	)
 }

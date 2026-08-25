@@ -25,24 +25,12 @@ function CardAdministradorSkeleton() {
 	)
 }
 
-export function AdministradoresPageSkeleton() {
+export default function SkeletonCardsAdministrador() {
 	return (
-		<div className='space-y-6'>
-			<div className='flex items-center justify-between gap-3'>
-				<Skeleton className='h-5 w-48' />
-				<Skeleton className='h-9 w-44 rounded-md' />
-			</div>
-
-			<Skeleton className='h-9 w-full rounded-md' />
-
-			<div className='space-y-2'>
-				<div className='grid gap-4 sm:grid-cols-2'>
-					{Array.from({ length: 6 }).map((_, i) => (
-						<CardAdministradorSkeleton key={i} />
-					))}
-				</div>
-				<Skeleton className='h-10 w-full rounded-lg' />
-			</div>
+		<div className='grid gap-4 sm:grid-cols-2'>
+			{Array.from({ length: 6 }).map((_, i) => (
+				<CardAdministradorSkeleton key={i} />
+			))}
 		</div>
 	)
 }
