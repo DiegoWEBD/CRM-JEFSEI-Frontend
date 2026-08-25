@@ -16,6 +16,7 @@ import { formatUF } from '@/lib/uf'
 import CardPlanPago from '@/app/polizas/[numeroPoliza]/card-plan-pago/card-plan-pago'
 import { PolizaPageSkeleton } from '@/app/polizas/[numeroPoliza]/poliza-page-skeleton'
 import CardHistorial from '@/app/polizas/[numeroPoliza]/card-historial/card-historial'
+import DialogActualizarPoliza from '@/app/polizas/[numeroPoliza]/dialog-actualizar-poliza/dialog-actualizar-poliza'
 import { useCancelarPoliza } from '@/hooks/polizas/use-cancelar-poliza'
 import { useReactivarPoliza } from '@/hooks/polizas/use-reactivar-poliza'
 import { useState } from 'react'
@@ -27,6 +28,7 @@ import {
 	FileText,
 	Loader2,
 	Package,
+	Pencil,
 	Percent,
 	User,
 } from 'lucide-react'
@@ -44,6 +46,7 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 	const isLoadingMutation = cancelarPoliza.isPending || reactivarPoliza.isPending
 	const [confirmarCancelar, setConfirmarCancelar] = useState(false)
 	const [confirmarReactivar, setConfirmarReactivar] = useState(false)
+	const [editarPoliza, setEditarPoliza] = useState(false)
 
 	return (
 		<PanelLayout>
@@ -53,9 +56,20 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 				<div className='space-y-4'>
 					<Card className='border-border shadow-none'>
 						<CardHeader className='border-b border-border pb-2 pt-3'>
-							<CardTitle className='text-sm font-semibold'>
-								Datos póliza
-							</CardTitle>
+							<div className='flex items-center justify-between'>
+								<CardTitle className='text-sm font-semibold'>
+									Datos póliza
+								</CardTitle>
+								<Button
+									variant='ghost'
+									size='sm'
+									className='h-7 gap-1.5 text-xs'
+									onClick={() => setEditarPoliza(true)}
+								>
+									<Pencil className='h-3.5 w-3.5' />
+									Editar
+								</Button>
+							</div>
 						</CardHeader>
 						<CardContent className='p-4'>
 							<div className='grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3'>
@@ -256,6 +270,12 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 					>
 						<CardHistorial idProcesoComercial={poliza.id_proceso_comercial} />
 					</AuthGuard>
+
+					<DialogActualizarPoliza
+						open={editarPoliza}
+						onOpenChange={setEditarPoliza}
+						poliza={poliza}
+					/>
 				</div>
 			) : (
 				<Card className='border-border shadow-none'>
