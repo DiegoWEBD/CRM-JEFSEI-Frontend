@@ -20,7 +20,6 @@ import {
 	UbicacionPiscinaCondominio,
 } from '@/lib/ubicacion.piscina'
 import { FormikProps } from 'formik'
-import { useAdministradores } from '@/hooks/administradores/use-administradores'
 import { SelectorAdministrador } from '@/components/selector-administrador'
 
 type CamposAdicionalesProspectoCondominioProps = {
@@ -30,15 +29,12 @@ type CamposAdicionalesProspectoCondominioProps = {
 export default function CamposAdicionalesProspectoCondominio({
 	formik,
 }: CamposAdicionalesProspectoCondominioProps) {
-	const { data: administradores } = useAdministradores()
-
 	return (
 		<>
 			<Campo label='Administrador'>
 				<SelectorAdministrador
 					value={formik.values.id_administrador}
 					onChange={id => formik.setFieldValue('id_administrador', id)}
-					administradores={administradores ?? []}
 				/>
 			</Campo>
 

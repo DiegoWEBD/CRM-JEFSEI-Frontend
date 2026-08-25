@@ -1,7 +1,7 @@
 import type { ProcesoComercialJson } from './proceso-comercial-json'
 import type { EstadoSemaforo } from './tipos'
 
-export interface ReporteProcesoComercialAbierto {
+export interface ReporteProcesoComercial {
 	proceso: ProcesoComercialJson
 	fecha_ingreso_etapa: string
 	dias_transcurridos: number
@@ -11,12 +11,3 @@ export interface ReporteProcesoComercialAbierto {
 	dias_atraso: number
 	mensaje_semaforo: string
 }
-
-export interface ReporteProcesoComercialCerrado {
-	proceso: ProcesoComercialJson
-	estado_semaforo: 'NO_APLICA'
-}
-
-export type ReporteProcesoComercial =
-	| ReporteProcesoComercialAbierto
-	| ReporteProcesoComercialCerrado

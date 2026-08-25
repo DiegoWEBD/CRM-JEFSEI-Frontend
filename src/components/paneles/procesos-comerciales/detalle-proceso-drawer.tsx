@@ -1,10 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type {
-	ReporteProcesoComercial,
-	ReporteProcesoComercialAbierto,
-} from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
+import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
 import {
 	Sheet,
 	SheetContent,
@@ -42,12 +39,7 @@ import { useAceptarProcesoComercial } from '@/hooks/procesos-comerciales/use-ace
 import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
 import HistorialEstadosTimeline from '@/components/historial-estados-timeline/historial-estados-timeline'
 import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
-
-function esAbierto(
-	r: ReporteProcesoComercial,
-): r is ReporteProcesoComercialAbierto {
-	return 'dias_transcurridos' in r
-}
+import { formatearFecha } from '@/utils/formatear-fecha'
 
 const PRIORIDAD_LABELS: Record<string, string> = {
 	ROJO: 'Atrasado',
@@ -90,7 +82,6 @@ export default function DetalleProcesoDrawer({
 	if (!reporte) return null
 
 	const { proceso } = reporte
-	const abierto = esAbierto(reporte)
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
@@ -177,7 +168,7 @@ export default function DetalleProcesoDrawer({
 					</div>
 
 					{/* Sección: SLA y Seguimiento */}
-					{abierto && (
+					{!reporte.proceso.cerrado && (
 						<div className='space-y-2.5'>
 							<div className='border-t border-border/50 pt-3'>
 								<h3 className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
@@ -192,13 +183,9 @@ export default function DetalleProcesoDrawer({
 											Ingreso etapa
 										</p>
 										<p className='text-sm font-medium tabular-nums text-foreground'>
-											{new Date(reporte.fecha_ingreso_etapa).toLocaleDateString(
-												'es-CL',
-												{
-													day: 'numeric',
-													month: 'short',
-													year: 'numeric',
-												},
+											{formatearFecha(
+												new Date(reporte.fecha_ingreso_etapa),
+												'dd MMM yyyy HH:mm',
 											)}
 										</p>
 									</div>
@@ -305,20 +292,22 @@ export default function DetalleProcesoDrawer({
 					</div>
 
 					{/* Acciones */}
-					{abierto && (
+					{!reporte.proceso.cerrado && (
 						<div className='space-y-2.5 border-t border-border/50 pt-3'>
-							<Button
-								type='button'
-								variant='outline'
-								size='sm'
-								className='w-full text-xs shadow-none'
-								disabled={aceptarMutation.isPending}
-								onClick={() => setAceptarConfirmOpen(true)}
-							>
-								{aceptarMutation.isPending
-									? 'Aceptando...'
-									: 'Marcar aceptación del cliente'}
-							</Button>
+							{proceso.etapa_actual.codigo !== 'FORMALIZACION' && (
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									className='w-full text-xs shadow-none'
+									disabled={aceptarMutation.isPending}
+									onClick={() => setAceptarConfirmOpen(true)}
+								>
+									{aceptarMutation.isPending
+										? 'Aceptando...'
+										: 'Marcar aceptación del cliente'}
+								</Button>
+							)}
 
 							{!cerrarOpen ? (
 								<Button
@@ -386,7 +375,7 @@ export default function DetalleProcesoDrawer({
 						</div>
 					)}
 
-					{!abierto && (
+					{reporte.proceso.cerrado && (
 						<div
 							className={cn(
 								'rounded-lg border p-3',

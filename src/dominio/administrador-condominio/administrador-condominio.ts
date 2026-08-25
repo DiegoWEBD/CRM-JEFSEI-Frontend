@@ -4,4 +4,5 @@ export default interface AdministradorCondominio {
 	nombre_contacto?: string
 	telefono?: string
 	correo?: string
+	cantidad_condominios: number
 }

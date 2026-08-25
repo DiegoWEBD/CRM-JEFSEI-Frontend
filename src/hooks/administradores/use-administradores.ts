@@ -1,16 +1,29 @@
-import AdministradorCondominio from '@/dominio/administrador-condominio/administrador-condominio'
-import { useQuery } from '@tanstack/react-query'
+import { ObtenerAdministradoresResponse } from '@/aplicacion/administradores/use-cases/obtener-administradores/dto/obtener-administradores-response'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
 export const useAdministradores = (
-	administradoresIniciales?: AdministradorCondominio[],
+	initialData: ObtenerAdministradoresResponse,
+	textoBusqueda: string,
+	pagina: number,
+	tamanoPagina: number,
 ) => {
-	return useQuery<AdministradorCondominio[]>({
-		queryKey: ['administradores'],
+	const esConsultaInicial =
+		textoBusqueda === '' &&
+		pagina === 1 &&
+		tamanoPagina === 10
+
+	return useQuery({
+		queryKey: ['administradores', textoBusqueda, pagina, tamanoPagina],
 		queryFn: async () => {
-			const response = await axios.get('/api/administradores')
-			return response.data
+			const params = new URLSearchParams()
+			if (textoBusqueda) params.set('texto_busqueda', textoBusqueda)
+			params.set('pagina', String(pagina))
+			params.set('tamano_pagina', String(tamanoPagina))
+			const response = await axios.get(`/api/administradores?${params.toString()}`)
+			return response.data as ObtenerAdministradoresResponse
 		},
-		initialData: administradoresIniciales,
+		...(esConsultaInicial ? { initialData } : {}),
+		placeholderData: keepPreviousData,
 	})
 }

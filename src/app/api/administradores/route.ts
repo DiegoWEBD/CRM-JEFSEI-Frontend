@@ -4,10 +4,16 @@ import axios from 'axios'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-export async function GET() {
+export async function GET(request: Request) {
 	try {
-		const administradores = await obtenerAdministradores()
-		return NextResponse.json(administradores)
+		const { searchParams } = new URL(request.url)
+
+		const resultado = await obtenerAdministradores({
+			textoBusqueda: searchParams.get('texto_busqueda'),
+			pagina: Number(searchParams.get('pagina')) || 1,
+			tamanoPagina: Number(searchParams.get('tamano_pagina')) || 10,
+		})
+		return NextResponse.json(resultado)
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			return NextResponse.json(
