@@ -76,7 +76,10 @@ export default function FormularioActualizarProspecto({
 				<Campo label='Región'>
 					<Select
 						value={formik.values.region || '__none__'}
-						onValueChange={value => formik.setFieldValue('region', value)}
+						onValueChange={value => {
+						formik.setFieldValue('region', value)
+						formik.setFieldValue('comuna', null)
+					}}
 					>
 						<SelectTrigger>
 							<SelectValue placeholder='Selecciona una región' />

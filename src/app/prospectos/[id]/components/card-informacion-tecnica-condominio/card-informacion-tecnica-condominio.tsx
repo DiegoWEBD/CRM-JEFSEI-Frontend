@@ -17,7 +17,8 @@ export default function CardInformacionTecnicaCondominio({
 }: CardInformacionTecnicaCondominioProps) {
 	const [editar, setEditar] = useState<boolean>(false)
 	const { usuario } = useUserSession()
-	const rutsCoinciden = usuario?.rut === prospecto.ejecutivo_comercial_asignado?.rut
+	const rutsCoinciden =
+		usuario?.rut === prospecto.ejecutivo_comercial_asignado?.rut
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
