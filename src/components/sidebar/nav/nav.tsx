@@ -89,6 +89,13 @@ const SECCIONES: NavSection[] = [
 				titulo: 'Administradores',
 				visible: r => r.length > 0,
 			},
+			{
+				href: '/configuracion-condominio',
+				icono: Building2,
+				titulo: 'Parámetros de condominios',
+				visible: r =>
+					r.some(c => ['GERENTE_GENERAL', 'GERENTE_COMERCIAL'].includes(c)),
+			},
 		],
 	},
 ]

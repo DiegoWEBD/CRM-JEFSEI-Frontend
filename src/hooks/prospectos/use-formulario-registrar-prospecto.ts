@@ -39,11 +39,6 @@ export const useFormularioRegistrarProspecto = ({
 				comuna: values.comuna || null,
 				observaciones: values.observaciones || null,
 				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? 0,
-				uf_por_metro_cuadrado: values.uf_por_metro_cuadrado ?? null,
-				porcentaje_depreciacion: (() => {
-					const n = n2(values.porcentaje_depreciacion)
-					return n == null ? null : n / 100
-				})(),
 				porcentaje_espacios_comunes: (() => {
 					const n = n2(values.porcentaje_espacios_comunes)
 					return n == null ? null : n / 100
@@ -112,17 +107,6 @@ export const useFormularioRegistrarProspecto = ({
 
 		metros_cuadrados: Yup.number()
 			.min(0, 'Debe ingresar un número mayor a 0')
-			.nullable()
-			.default(null),
-
-		uf_por_metro_cuadrado: Yup.number()
-			.min(0, 'Debe ingresar un número mayor a 0')
-			.nullable()
-			.default(null),
-
-		porcentaje_depreciacion: Yup.number()
-			.min(0, 'Debe ingresar un número entre 0 y 100')
-			.max(100, 'Debe ingresar un número entre 0 y 100')
 			.nullable()
 			.default(null),
 

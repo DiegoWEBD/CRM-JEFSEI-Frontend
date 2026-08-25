@@ -17,6 +17,9 @@ function extraerMensaje(data: unknown): string {
       return String(d)
     }).join(', ')
   }
+  if (data && typeof data === 'object' && 'msg' in data) {
+    return String((data as Record<string, unknown>).msg)
+  }
   return String(data)
 }
 

@@ -1,9 +1,6 @@
 'use client'
 
-import type {
-	ReporteProcesoComercial,
-	ReporteProcesoComercialAbierto,
-} from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
+import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { Badge } from '@/components/badge'
 import { Card, CardContent } from '@/components/card'
@@ -32,12 +29,6 @@ const PRIORIDAD_LABELS: Record<string, string> = {
 	AMARILLO: 'En riesgo',
 	VERDE: 'En plazo',
 	NO_APLICA: '—',
-}
-
-function esAbierto(
-	r: ReporteProcesoComercial,
-): r is ReporteProcesoComercialAbierto {
-	return 'dias_transcurridos' in r
 }
 
 type TablaProcesosComercialesProps = {
@@ -140,7 +131,7 @@ export default function TablaProcesosComerciales({
 										] ?? f.proceso.estado_actual.nombre}
 									</Badge>
 								</span>
-								{esAbierto(f) && (
+								{!f.proceso.cerrado && (
 									<>
 										<span>
 											Tiempo: {f.dias_transcurridos} /{' '}
@@ -199,17 +190,17 @@ export default function TablaProcesosComerciales({
 									className='cursor-pointer border-b border-border/50 transition-colors hover:bg-accent/50 last:border-b-0'
 								>
 									<td className='px-4 py-2.5'>
-										<p className='font-semibold text-foreground truncate max-w-[200px]'>
+										<p className='font-semibold text-foreground truncate max-w-50'>
 											{f.proceso.nombre_cliente}
 										</p>
-										<p className='text-xs text-muted-foreground truncate max-w-[200px]'>
+										<p className='text-xs text-muted-foreground truncate max-w-50'>
 											{f.proceso.producto}
 										</p>
 									</td>
-									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-[140px]'>
+									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-35'>
 										{f.proceso.ejecutivo_comercial?.nombre ?? '—'}
 									</td>
-									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-[120px]'>
+									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-30'>
 										{f.proceso.etapa_actual.nombre}
 									</td>
 									<td className='px-4 py-2.5'>
@@ -228,34 +219,34 @@ export default function TablaProcesosComerciales({
 											] ?? f.proceso.estado_actual.nombre}
 										</Badge>
 									</td>
-								<td className='px-4 py-2.5 text-right'>
-									{esAbierto(f) ? (
-										<Badge
-											variant={
-												f.porentaje_sla_consumido >= 1
-													? 'pastel-red'
-													: f.porentaje_sla_consumido >= 0.7
-														? 'pastel-amber'
-														: 'pastel-emerald'
-											}
-											className='text-[11px] font-medium tabular-nums'
-										>
-											{(f.porentaje_sla_consumido * 100).toFixed(0)}%
-										</Badge>
-									) : (
-										<span className='text-xs text-muted-foreground'>—</span>
-									)}
-								</td>
-								<td className='px-4 py-2.5'>
-									<div className='flex justify-center'>
-										<Badge
-											variant={SEMAFORO_VARIANT[f.estado_semaforo]}
-											className='text-[11px] font-medium'
-										>
-											{PRIORIDAD_LABELS[f.estado_semaforo]}
-										</Badge>
-									</div>
-								</td>
+									<td className='px-4 py-2.5 text-right'>
+										{!f.proceso.cerrado ? (
+											<Badge
+												variant={
+													f.porentaje_sla_consumido >= 1
+														? 'pastel-red'
+														: f.porentaje_sla_consumido >= 0.7
+															? 'pastel-amber'
+															: 'pastel-emerald'
+												}
+												className='text-[11px] font-medium tabular-nums'
+											>
+												{(f.porentaje_sla_consumido * 100).toFixed(0)}%
+											</Badge>
+										) : (
+											<span className='text-xs text-muted-foreground'>—</span>
+										)}
+									</td>
+									<td className='px-4 py-2.5'>
+										<div className='flex justify-center'>
+											<Badge
+												variant={SEMAFORO_VARIANT[f.estado_semaforo]}
+												className='text-[11px] font-medium'
+											>
+												{PRIORIDAD_LABELS[f.estado_semaforo]}
+											</Badge>
+										</div>
+									</td>
 								</tr>
 							))}
 						</tbody>

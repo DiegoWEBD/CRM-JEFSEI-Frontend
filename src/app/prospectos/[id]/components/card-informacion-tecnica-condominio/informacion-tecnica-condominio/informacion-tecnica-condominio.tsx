@@ -27,15 +27,19 @@ export default function InformacionTecnicaCondominio({
 			)}
 			<ItemInformacionProspecto
 				label='Valor UF / m² (sin IVA)'
-				value={prospecto.uf_por_metro_cuadrado}
-				highlightMissing={inputPendiente(prospecto.uf_por_metro_cuadrado)}
+				value={
+					prospecto.valor_uf_m2_disponible
+						? prospecto.uf_por_metro_cuadrado
+						: 'Sin especificar'
+				}
+				highlightMissing={!prospecto.valor_uf_m2_disponible}
 			/>
 			<ItemInformacionProspecto
 				label='Porcentaje de depreciación'
 				value={
 					prospecto.porcentaje_depreciacion != null
 						? `${prospecto.porcentaje_depreciacion * 100}%`
-						: undefined
+						: 'Sin especificar'
 				}
 				highlightMissing={inputPendiente(prospecto.porcentaje_depreciacion)}
 			/>

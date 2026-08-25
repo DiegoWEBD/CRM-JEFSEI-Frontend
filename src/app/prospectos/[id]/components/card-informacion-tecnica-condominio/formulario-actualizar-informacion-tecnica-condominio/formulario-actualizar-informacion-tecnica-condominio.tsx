@@ -26,24 +26,6 @@ export default function FormularioActualizarInformacionTecnicaCondominio({
 				<div className='grid gap-4 sm:grid-cols-2'>
 					<CamposAdicionalesProspectoCondominio formik={formik} />
 
-					<Campo label='Valor UF / m² (sin IVA)'>
-						<Input
-							name='uf_por_metro_cuadrado'
-							type='number'
-							value={formik.values.uf_por_metro_cuadrado}
-							onChange={formik.handleChange}
-						/>
-					</Campo>
-
-					<Campo label='Porcentaje de depreciación'>
-						<Input
-							name='porcentaje_depreciacion'
-							type='number'
-							value={formik.values.porcentaje_depreciacion}
-							onChange={formik.handleChange}
-						/>
-					</Campo>
-
 					<Campo label='Porcentaje de espacios comunes'>
 						<Input
 							name='porcentaje_espacios_comunes'

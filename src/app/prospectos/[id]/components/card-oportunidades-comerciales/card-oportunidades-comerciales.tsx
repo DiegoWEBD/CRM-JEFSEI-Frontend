@@ -74,7 +74,7 @@ export default function CardOportunidadesComerciales({
 				</CardHeader>
 
 				<CardContent className='p-3 sm:p-4'>
-					<div className='mb-3 w-full sm:w-auto sm:min-w-[8.5rem] sm:max-w-[9.5rem]'>
+					<div className='mb-3 w-full sm:w-auto sm:min-w-34 sm:max-w-38'>
 						<Label className='mb-1 block text-xs text-muted-foreground'>
 							Estado
 						</Label>

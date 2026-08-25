@@ -28,14 +28,7 @@ export default function InformacionProspecto({
 				label='Línea de negocio'
 				value={prospecto.linea_negocio.nombre}
 			/>
-			<ItemInformacionProspecto
-				label='Estado de información'
-				value={
-					prospecto.informacion_completa
-						? 'Información completa'
-						: 'Información incompleta'
-				}
-			/>
+
 			<ItemInformacionProspecto
 				label='Dirección'
 				value={prospecto.direccion}
@@ -47,7 +40,12 @@ export default function InformacionProspecto({
 				value={prospecto.region}
 				highlightMissing={inputPendiente(prospecto.region)}
 			/>
-			<ItemInformacionProspecto label='Comuna' value={prospecto.comuna} />
+
+			<ItemInformacionProspecto
+				label='Comuna'
+				value={prospecto.comuna}
+				highlightMissing={inputPendiente(prospecto.comuna)}
+			/>
 
 			<ItemInformacionProspecto
 				label='Registrado por'
