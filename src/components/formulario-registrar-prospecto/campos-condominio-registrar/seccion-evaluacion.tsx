@@ -34,21 +34,19 @@ export default function SeccionEvaluacion({ formik }: Props) {
 			</Campo>
 
 			<Campo label='Valor UF / m² (sin IVA)'>
-				<Input
-					name='uf_por_metro_cuadrado'
-					value={formik.values.uf_por_metro_cuadrado ?? ''}
-					onChange={formik.handleChange}
-					inputMode='decimal'
-				/>
+				<div className='flex h-9 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground'>
+					{formik.values.uf_por_metro_cuadrado != null
+						? formik.values.uf_por_metro_cuadrado
+						: 'Sin especificar'}
+				</div>
 			</Campo>
 
 			<Campo label='% depreciación'>
-				<Input
-					name='porcentaje_depreciacion'
-					value={formik.values.porcentaje_depreciacion ?? ''}
-					onChange={formik.handleChange}
-					inputMode='decimal'
-				/>
+				<div className='flex h-9 items-center rounded-md border border-input bg-muted px-3 text-sm text-muted-foreground'>
+					{formik.values.porcentaje_depreciacion != null
+						? `${formik.values.porcentaje_depreciacion * 100}%`
+						: 'Sin especificar'}
+				</div>
 			</Campo>
 
 			<Campo label='% espacios comunes'>

@@ -43,13 +43,6 @@ export const useFormularioActualizarProspectoCondominio = ({
 	})
 
 	const validationSchema = Yup.object({
-		uf_por_metro_cuadrado: Yup.number()
-			.min(0, 'Debe ingresar un número mayor a 0')
-			.nullable(),
-		porcentaje_depreciacion: Yup.number()
-			.min(0, 'Debe ingresar un número entre 0 y 100')
-			.max(100, 'Debe ingresar un número entre 0 y 100')
-			.nullable(),
 		porcentaje_espacios_comunes: Yup.number()
 			.min(0, 'Debe ingresar un número entre 0 y 100')
 			.max(100, 'Debe ingresar un número entre 0 y 100')
@@ -104,11 +97,6 @@ export const useFormularioActualizarProspectoCondominio = ({
 				comuna: values.comuna === '' ? null : (values.comuna ?? null),
 				observaciones: values.observaciones === '' ? null : (values.observaciones ?? null),
 				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? prospecto.linea_negocio.id,
-				uf_por_metro_cuadrado: n2(values.uf_por_metro_cuadrado),
-				porcentaje_depreciacion: (() => {
-					const n = n2(values.porcentaje_depreciacion)
-					return n == null ? null : n / 100
-				})(),
 				porcentaje_espacios_comunes: (() => {
 					const n = n2(values.porcentaje_espacios_comunes)
 					return n == null ? null : n / 100
