@@ -25,8 +25,6 @@ export default function PermissionGuard({
 	const { usuario, cargando, tieneAlgunPermiso, tieneTodosLosPermisos } =
 		useUserSession()
 
-	console.log(usuario?.codigo_permisos)
-
 	if (cargando) return <>{loadingFallback}</>
 	if (!usuario) return <>{fallback}</>
 	if (allowedPermissions.length > 0) {
