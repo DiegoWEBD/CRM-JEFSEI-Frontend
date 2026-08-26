@@ -9,12 +9,14 @@ import { ScrollBar } from './scroll-bar'
 function ScrollArea({
   className,
   children,
+  type = 'always',
   ...props
 }: React.ComponentProps<typeof ScrollAreaPrimitive.Root>) {
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
-      className={cn('relative', className)}
+      type={type}
+      className={cn('relative overflow-hidden', className)}
       {...props}
     >
       <ScrollAreaPrimitive.Viewport

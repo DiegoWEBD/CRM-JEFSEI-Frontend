@@ -9,9 +9,7 @@ export const useAdministradores = (
 	tamanoPagina: number,
 ) => {
 	const esConsultaInicial =
-		textoBusqueda === '' &&
-		pagina === 1 &&
-		tamanoPagina === 10
+		textoBusqueda === '' && pagina === 1 && tamanoPagina === 10
 
 	return useQuery({
 		queryKey: ['administradores', textoBusqueda, pagina, tamanoPagina],
@@ -20,7 +18,9 @@ export const useAdministradores = (
 			if (textoBusqueda) params.set('texto_busqueda', textoBusqueda)
 			params.set('pagina', String(pagina))
 			params.set('tamano_pagina', String(tamanoPagina))
-			const response = await axios.get(`/api/administradores?${params.toString()}`)
+			const response = await axios.get(
+				`/api/administradores?${params.toString()}`,
+			)
 			return response.data as ObtenerAdministradoresResponse
 		},
 		...(esConsultaInicial ? { initialData } : {}),

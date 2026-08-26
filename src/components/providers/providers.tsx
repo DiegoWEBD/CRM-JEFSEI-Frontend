@@ -27,9 +27,9 @@ function notificarError(error: Error) {
   if (axios.isAxiosError(error)) {
     if (error.response?.status === 401) return
     const detail = error.response?.data?.detail
-    const mensaje = Array.isArray(detail)
+    const mensaje = detail
       ? extraerMensaje(detail)
-      : error.response?.data?.error || detail || 'Ha ocurrido un error inesperado'
+      : error.response?.data?.error || 'Ha ocurrido un error inesperado'
     toast.error(mensaje)
   } else {
     toast.error(error.message || 'Ha ocurrido un error inesperado')
