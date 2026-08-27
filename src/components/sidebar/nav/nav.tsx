@@ -5,6 +5,7 @@ import {
 	ChartBar,
 	FileCheck,
 	FileSearch,
+	FileText,
 	Group,
 	Home,
 	LayoutDashboard,
@@ -59,6 +60,12 @@ const SECCIONES: NavSection[] = [
 				icono: Users,
 				titulo: 'Prospectos',
 				visible: r => r.length > 0,
+			},
+			{
+				href: '/polizas',
+				icono: FileText,
+				titulo: 'Pólizas',
+				visible: () => true,
 			},
 			{
 				href: '/solicitudes-estudio',
