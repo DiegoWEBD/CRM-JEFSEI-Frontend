@@ -42,7 +42,6 @@ type PanelKpiCardProps = {
 	subtitle?: string
 	icon?: LucideIcon
 	accent?: KpiAcento
-	iconAccent?: KpiAcento
 	activa?: boolean
 	onClick?: () => void
 }
@@ -53,7 +52,6 @@ export function PanelKpiCard({
 	subtitle,
 	icon: Icon,
 	accent = null,
-	iconAccent,
 	activa = false,
 	onClick,
 }: PanelKpiCardProps) {
@@ -80,9 +78,7 @@ export function PanelKpiCard({
 					? cn('border-l-2', ACENTO_BORDER_LEFT[accent], ACENTO_CARD[accent])
 					: activa
 						? 'border-l-2 border-l-primary bg-primary/5'
-						: accent
-							? ACENTO_CARD[accent]
-							: 'border-border/50',
+						: 'border-border/50',
 			)}
 		>
 			{Icon && (
@@ -90,12 +86,12 @@ export function PanelKpiCard({
 					className={cn(
 						'grid size-6 shrink-0 place-items-center rounded ring-1 transition-colors',
 						activa
-							? 'bg-primary/10 text-primary ring-primary/15'
+							? accent
+								? ACENTO_ICON[accent]
+								: 'bg-primary/10 text-primary ring-primary/15'
 							: accent
 								? ACENTO_ICON[accent]
-								: iconAccent
-									? ACENTO_ICON[iconAccent]
-									: 'bg-muted text-muted-foreground ring-border/40',
+								: 'bg-muted text-muted-foreground ring-border/40',
 					)}
 				>
 					<Icon className='size-3.5' aria-hidden />

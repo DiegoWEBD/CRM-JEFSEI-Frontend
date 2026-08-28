@@ -42,6 +42,7 @@ export function KpiPolizas({
 					icon={FileText}
 					onClick={() => onFiltroEstadoChange('todas')}
 					activa={filtroEstado === 'todas'}
+					accent='primary'
 				/>
 
 				<PanelKpiCard
@@ -50,7 +51,7 @@ export function KpiPolizas({
 					icon={FileText}
 					onClick={() => onFiltroEstadoChange('vigentes')}
 					activa={filtroEstado === 'vigentes'}
-					iconAccent='success'
+					accent='success'
 				/>
 
 				<PanelKpiCard
@@ -59,7 +60,7 @@ export function KpiPolizas({
 					icon={FileText}
 					onClick={() => onFiltroEstadoChange('por_vencer')}
 					activa={filtroEstado === 'por_vencer'}
-					iconAccent='warning'
+					accent='warning'
 				/>
 
 				<PanelKpiCard
@@ -68,7 +69,7 @@ export function KpiPolizas({
 					icon={FileText}
 					onClick={() => onFiltroEstadoChange('vencidas')}
 					activa={filtroEstado === 'vencidas'}
-					iconAccent='danger'
+					accent='danger'
 				/>
 
 				<PanelKpiCard
@@ -93,14 +94,14 @@ export function KpiPolizas({
 					label='Prima neta total'
 					value={formatUF(kpis.prima_neta_total)}
 					icon={DollarSign}
-					iconAccent='info'
+					accent='primary'
 				/>
 
 				<PanelKpiCard
 					label='Prima neta vigente'
 					value={formatUF(kpis.prima_vigente)}
 					icon={TrendingUp}
-					iconAccent='success'
+					accent='success'
 				/>
 				<AuthGuard
 					allowedRoles={[
@@ -113,7 +114,7 @@ export function KpiPolizas({
 						label='Comisión total'
 						value={formatUF(kpis.comision_total)}
 						icon={Percent}
-						iconAccent='info'
+						accent='primary'
 					/>
 				</AuthGuard>
 			</PanelKpiContainer>
