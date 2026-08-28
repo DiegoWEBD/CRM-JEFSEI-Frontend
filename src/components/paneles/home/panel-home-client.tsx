@@ -18,26 +18,18 @@ import { Card, CardContent } from '@/components/card'
 import CardCalendario from '@/components/card-calendario/card-calendario'
 import CardComunicadoGerencia from '@/components/card-comunicado-gerencia/card-comunicado-gerencia'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import PanelCobranzaClient from '@/components/paneles/ejecutivo-cobranza/panel-cobranza-client'
 import { DashboardCobranza } from '@/dominio/cobranza/dashboard-cobranza'
 import { useFiltrosProspectos } from '@/hooks/prospectos/use-filtros-prospectos'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
-import { KPI_PASTEL } from '@/lib/kpi-pastel'
 import CardProspectosClient from '../../prospectos/card-prospectos/card-prospectos-client'
-import CardKpi from '../ejecutivo-comercial/cards/card-kpi/card-kpi'
 import MetricasEjecutivoComercial from '../ejecutivo-comercial/metricas-ejecutivo-comercial/metricas-ejecutivo-comercial'
 import PanelFooter from '../panel-layout/panel-footer/panel-footer'
 import PanelHeader from '../panel-layout/panel-header/panel-header'
 import PanelLayout from '../panel-layout/panel-layout'
-import PermissionGuard from '@/components/layouts/guards/permission-guard'
-
-const Acentos = {
-	info: { card: KPI_PASTEL.info.card, icon: KPI_PASTEL.info.icon },
-	success: { card: KPI_PASTEL.success.card, icon: KPI_PASTEL.success.icon },
-	primary: { card: KPI_PASTEL.primary.card, icon: KPI_PASTEL.primary.icon },
-	warning: { card: KPI_PASTEL.warning.card, icon: KPI_PASTEL.warning.icon },
-	danger: { card: KPI_PASTEL.danger.card, icon: KPI_PASTEL.danger.icon },
-} as const
+import { PanelKpiCard } from '../shared/panel-kpi-card'
+import PanelKpiContainer from '../shared/panel-kpi-container/panel-kpi-container'
 
 type PanelHomeClientProps = {
 	prospectosIniciales: ObtenerProspectosResponse
@@ -118,7 +110,7 @@ export default function PanelHomeClient({
 						<MetricasEjecutivoComercial />
 					</PermissionGuard>
 
-					<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
+					<PanelKpiContainer>
 						<AuthGuard
 							fallback={null}
 							allowedRoles={[
@@ -128,70 +120,54 @@ export default function PanelHomeClient({
 								'GERENTE_OPERACIONES',
 							]}
 						>
-							<CardKpi
-								datos={{
-									key: 'prospectos',
-									label: 'Prospectos',
-									value: totalProspectos,
-									icon: UserCheck,
-								}}
-								onClick={onKpiClick}
-								activo={filtroHome === 'prospecto'}
-								accentClassName={Acentos.info.card}
-								iconClassName={Acentos.info.icon}
+							<PanelKpiCard
+								key='prospectos'
+								label='Prospectos'
+								value={totalProspectos}
+								icon={UserCheck}
+								onClick={() => onKpiClick('prospectos')}
+								activa={filtroHome === 'prospecto'}
+								accent='warning'
 							/>
 
-							<CardKpi
-								datos={{
-									key: 'activos',
-									label: 'Clientes activos',
-									value: clientesActivos,
-									icon: Users,
-								}}
-								onClick={onKpiClick}
-								activo={filtroHome === 'cliente_activo'}
-								accentClassName={Acentos.success.card}
-								iconClassName={Acentos.success.icon}
+							<PanelKpiCard
+								key='activos'
+								label='Clientes activos'
+								value={clientesActivos}
+								icon={Users}
+								onClick={() => onKpiClick('activos')}
+								activa={filtroHome === 'cliente_activo'}
+								accent='success'
 							/>
 
-							<CardKpi
-								datos={{
-									key: 'inactivos',
-									label: 'Clientes inactivos',
-									value: clientesInactivos,
-									icon: Users,
-								}}
-								onClick={onKpiClick}
-								activo={filtroHome === 'cliente_inactivo'}
-								accentClassName={Acentos.danger.card}
-								iconClassName={Acentos.danger.icon}
+							<PanelKpiCard
+								key='inactivos'
+								label='Clientes inactivos'
+								value={clientesInactivos}
+								icon={Users}
+								onClick={() => onKpiClick('inactivos')}
+								activa={filtroHome === 'cliente_inactivo'}
+								accent='danger'
 							/>
 
 							<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_COMERCIAL']}>
-								<CardKpi
-									datos={{
-										key: 'cotiz',
-										label: 'Cotizaciones solicitadas',
-										value:
-											filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
-										icon: ClipboardList,
-									}}
-									onClick={onKpiClick}
-									activo={filtroHome === 'COTIZACION_SOLICITADA_COMPANY'}
-									accentClassName={Acentos.warning.card}
-									iconClassName={Acentos.warning.icon}
+								<PanelKpiCard
+									key='cotiz'
+									label='Cotizaciones solicitadas'
+									value={
+										filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0
+									}
+									icon={ClipboardList}
+									onClick={() => onKpiClick('cotiz')}
+									activa={filtroHome === 'COTIZACION_SOLICITADA_COMPANY'}
 								/>
-								<CardKpi
-									datos={{
-										key: 'estDisp',
-										label: 'Estudios disponibles',
-										value: filtrosContados.get('ESTUDIO_DISPONIBLE') ?? 0,
-										icon: FileText,
-									}}
-									onClick={onKpiClick}
-									activo={filtroHome === 'ESTUDIO_DISPONIBLE'}
-									accentClassName={Acentos.primary.card}
-									iconClassName={Acentos.primary.icon}
+								<PanelKpiCard
+									key='estDisp'
+									label='Estudios disponibles'
+									value={filtrosContados.get('ESTUDIO_DISPONIBLE') ?? 0}
+									icon={FileText}
+									onClick={() => onKpiClick('estDisp')}
+									activa={filtroHome === 'ESTUDIO_DISPONIBLE'}
 								/>
 							</AuthGuard>
 						</AuthGuard>
@@ -200,57 +176,46 @@ export default function PanelHomeClient({
 							fallback={null}
 							allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}
 						>
-							<CardKpi
-								datos={{
-									key: 'pendRevision',
-									label: 'Cotizaciones pendientes',
-									value:
-										filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0,
-									icon: Bell,
-								}}
-								onClick={onKpiClick}
-								activo={filtroHome === 'COTIZACION_SOLICITADA_COMPANY'}
-								accentClassName={Acentos.danger.card}
-								iconClassName={Acentos.danger.icon}
+							<PanelKpiCard
+								key='pendRevision'
+								label='Cotizaciones pendientes'
+								value={
+									filtrosContados.get('COTIZACION_SOLICITADA_COMPANY') ?? 0
+								}
+								icon={Bell}
+								onClick={() => onKpiClick('pendRevision')}
+								activa={filtroHome === 'COTIZACION_SOLICITADA_COMPANY'}
+								accent='warning'
 							/>
-							<CardKpi
-								datos={{
-									key: 'infoCompleta',
-									label: 'Información completa',
-									value: 0,
-									icon: ClipboardList,
-								}}
-								onClick={onKpiClick}
-								activo={false}
-								accentClassName={Acentos.success.card}
-								iconClassName={Acentos.success.icon}
+							<PanelKpiCard
+								key='infoCompleta'
+								label='Información completa'
+								value={0}
+								icon={ClipboardList}
+								onClick={() => onKpiClick('infoCompleta')}
+								activa={false}
+								accent='success'
 							/>
-							<CardKpi
-								datos={{
-									key: 'recotizaciones',
-									label: 'Recotizaciones pendientes',
-									value: filtrosContados.get('RECOTIZACION_SOLICITADA') ?? 0,
-									icon: RefreshCw,
-								}}
-								onClick={onKpiClick}
-								activo={filtroHome === 'RECOTIZACION_SOLICITADA'}
-								accentClassName={Acentos.warning.card}
-								iconClassName={Acentos.warning.icon}
+							<PanelKpiCard
+								key='recotizaciones'
+								label='Recotizaciones pendientes'
+								value={filtrosContados.get('RECOTIZACION_SOLICITADA') ?? 0}
+								icon={RefreshCw}
+								onClick={() => onKpiClick('recotizaciones')}
+								activa={filtroHome === 'RECOTIZACION_SOLICITADA'}
+								accent='primary'
 							/>
-							<CardKpi
-								datos={{
-									key: 'estXGenerar',
-									label: 'Estudios por generar',
-									value: filtrosContados.get('COTIZACION_DISPONIBLE') ?? 0,
-									icon: Upload,
-								}}
-								onClick={onKpiClick}
-								activo={filtroHome === 'COTIZACION_DISPONIBLE'}
-								accentClassName={Acentos.info.card}
-								iconClassName={Acentos.info.icon}
+							<PanelKpiCard
+								key='estXGenerar'
+								label='Estudios por generar'
+								value={filtrosContados.get('COTIZACION_DISPONIBLE') ?? 0}
+								icon={Upload}
+								onClick={() => onKpiClick('estXGenerar')}
+								activa={filtroHome === 'COTIZACION_DISPONIBLE'}
+								accent='info'
 							/>
 						</AuthGuard>
-					</div>
+					</PanelKpiContainer>
 				</>
 
 				<AuthGuard

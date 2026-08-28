@@ -1,20 +1,14 @@
 'use client'
 
-import { PanelKpiCard } from '@/components/paneles/shared/panel-kpi-card/panel-kpi-card'
-import { PanelKpiSkeleton } from '@/components/paneles/shared/panel-kpi-card/panel-kpi-card'
 import type { KpisPoliza } from '@/aplicacion/polizas/use_cases/dto/obtener_polizas_response'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
 import {
-	FileText,
-	CheckCircle,
-	AlertTriangle,
-	XCircle,
-	Ban,
-	Clock,
-	DollarSign,
-	TrendingUp,
-	Percent,
-} from 'lucide-react'
+	PanelKpiCard,
+	PanelKpiSkeleton,
+} from '@/components/paneles/shared/panel-kpi-card/panel-kpi-card'
 import { formatUF } from '@/lib/uf'
+import { DollarSign, FileText, Percent, TrendingUp } from 'lucide-react'
+import PanelKpiContainer from '../shared/panel-kpi-container/panel-kpi-container'
 
 export type FiltroEstadoPoliza =
 	| 'todas'
@@ -25,121 +19,104 @@ export type FiltroEstadoPoliza =
 	| 'registradas'
 
 type KpiPolizasProps = {
-	kpis: KpisPoliza | undefined
-	loading: boolean
+	kpis?: KpisPoliza
 	filtroEstado: FiltroEstadoPoliza
 	onFiltroEstadoChange: (filtro: FiltroEstadoPoliza) => void
 }
 
-const KPI_LABELS: Record<FiltroEstadoPoliza, string> = {
-	todas: 'Total pólizas',
-	vigentes: 'Vigentes',
-	por_vencer: 'Por vencer',
-	vencidas: 'Vencidas',
-	canceladas: 'Canceladas',
-	registradas: 'Registradas',
-}
-
-const KPI_ICONOS: Record<FiltroEstadoPoliza, typeof FileText> = {
-	todas: FileText,
-	vigentes: CheckCircle,
-	por_vencer: AlertTriangle,
-	vencidas: XCircle,
-	canceladas: Ban,
-	registradas: Clock,
-}
-
-const KPI_ACENTOS: Record<
-	FiltroEstadoPoliza,
-	'info' | 'success' | 'warning' | 'danger' | 'primary'
-> = {
-	todas: 'info',
-	vigentes: 'success',
-	por_vencer: 'warning',
-	vencidas: 'danger',
-	canceladas: 'info',
-	registradas: 'primary',
-}
-
-const TARJETAS_ESTADO: FiltroEstadoPoliza[] = [
-	'todas',
-	'vigentes',
-	'por_vencer',
-	'vencidas',
-	'canceladas',
-	'registradas',
-]
-
 export function KpiPolizas({
 	kpis,
-	loading,
 	filtroEstado,
 	onFiltroEstadoChange,
 }: KpiPolizasProps) {
-	if (loading || !kpis) {
+	if (!kpis) {
 		return <PanelKpiSkeleton count={5} />
-	}
-
-	const obtenerValor = (key: FiltroEstadoPoliza): number => {
-		switch (key) {
-			case 'todas':
-				return kpis.total_polizas
-			case 'vigentes':
-				return kpis.vigentes
-			case 'por_vencer':
-				return kpis.por_vencer
-			case 'vencidas':
-				return kpis.vencidas
-			case 'canceladas':
-				return kpis.canceladas
-			case 'registradas':
-				return kpis.registradas
-		}
 	}
 
 	return (
 		<div className='space-y-3'>
-			<div
-				className='grid grid-cols-2 gap-3 sm:grid-cols-3'
-				style={{
-					gridTemplateColumns: `repeat(min(${TARJETAS_ESTADO.length}, 6), minmax(0, 1fr))`,
-				}}
-			>
-				{TARJETAS_ESTADO.map(key => (
-					<PanelKpiCard
-						key={key}
-						label={KPI_LABELS[key]}
-						value={obtenerValor(key)}
-						icon={KPI_ICONOS[key]}
-						accent={KPI_ACENTOS[key]}
-						activa={filtroEstado === key}
-						onClick={() =>
-							onFiltroEstadoChange(filtroEstado === key ? 'todas' : key)
-						}
-					/>
-				))}
-			</div>
+			<PanelKpiContainer className=' lg:grid'>
+				<PanelKpiCard
+					label='Total pólizas'
+					value={kpis.total_polizas}
+					icon={FileText}
+					onClick={() => onFiltroEstadoChange('todas')}
+					activa={filtroEstado === 'todas'}
+				/>
 
-			<div className='grid grid-cols-3 gap-3'>
+				<PanelKpiCard
+					label='Vigentes'
+					value={kpis.vigentes}
+					icon={FileText}
+					onClick={() => onFiltroEstadoChange('vigentes')}
+					activa={filtroEstado === 'vigentes'}
+					iconAccent='success'
+				/>
+
+				<PanelKpiCard
+					label='Por vencer'
+					value={kpis.por_vencer}
+					icon={FileText}
+					onClick={() => onFiltroEstadoChange('por_vencer')}
+					activa={filtroEstado === 'por_vencer'}
+					iconAccent='warning'
+				/>
+
+				<PanelKpiCard
+					label='Vencidas'
+					value={kpis.vencidas}
+					icon={FileText}
+					onClick={() => onFiltroEstadoChange('vencidas')}
+					activa={filtroEstado === 'vencidas'}
+					iconAccent='danger'
+				/>
+
+				<PanelKpiCard
+					label='Canceladas'
+					value={kpis.canceladas}
+					icon={FileText}
+					onClick={() => onFiltroEstadoChange('canceladas')}
+					activa={filtroEstado === 'canceladas'}
+				/>
+
+				<PanelKpiCard
+					label='Registradas'
+					value={kpis.registradas}
+					icon={FileText}
+					onClick={() => onFiltroEstadoChange('registradas')}
+					activa={filtroEstado === 'registradas'}
+				/>
+			</PanelKpiContainer>
+
+			<PanelKpiContainer>
 				<PanelKpiCard
 					label='Prima neta total'
 					value={formatUF(kpis.prima_neta_total)}
 					icon={DollarSign}
-					accent='primary'
+					iconAccent='info'
 				/>
+
 				<PanelKpiCard
-					label='Prima vigente'
+					label='Prima neta vigente'
 					value={formatUF(kpis.prima_vigente)}
 					icon={TrendingUp}
-					accent='success'
+					iconAccent='success'
 				/>
-				<PanelKpiCard
-					label='Comisión total'
-					value={formatUF(kpis.comision_total)}
-					icon={Percent}
-					accent='primary'
-				/>
-			</div>
+				<AuthGuard
+					allowedRoles={[
+						'GERENTE_GENERAL',
+						'GERENTE_COMERCIAL',
+						'GERENTE_OPERACIONES',
+					]}
+				>
+					<PanelKpiCard
+						label='Comisión total'
+						value={formatUF(kpis.comision_total)}
+						icon={Percent}
+						iconAccent='info'
+					/>
+				</AuthGuard>
+			</PanelKpiContainer>
 		</div>
 	)
 }

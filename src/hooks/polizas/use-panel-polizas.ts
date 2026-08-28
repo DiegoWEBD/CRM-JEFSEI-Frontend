@@ -39,7 +39,8 @@ export const usePanelPolizas = (filtros: FiltrosPanelPolizas) => {
 
 			if (id_company != null) params.set('id_company', String(id_company))
 			if (id_producto != null) params.set('id_producto', String(id_producto))
-			if (id_linea_negocio != null) params.set('id_linea_negocio', String(id_linea_negocio))
+			if (id_linea_negocio != null)
+				params.set('id_linea_negocio', String(id_linea_negocio))
 			if (texto_busqueda) params.set('texto_busqueda', texto_busqueda)
 			if (estado) params.set('estado', estado)
 			params.set('pagina', String(pagina))
@@ -48,6 +49,6 @@ export const usePanelPolizas = (filtros: FiltrosPanelPolizas) => {
 			const response = await axios.get(`/api/polizas?${params.toString()}`)
 			return response.data as PanelPolizasResponse
 		},
-		placeholderData: (prev) => prev,
+		placeholderData: prev => prev,
 	})
 }

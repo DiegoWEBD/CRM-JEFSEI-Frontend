@@ -1,14 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-import { useDebounce } from '@/hooks/use-debounce'
 import { usePanelPolizas } from '@/hooks/polizas/use-panel-polizas'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useState } from 'react'
+import FiltrosPolizas, {
+	TODOS,
+	type FiltrosPanelPolizas,
+} from './filtros-polizas'
 import { KpiPolizas, type FiltroEstadoPoliza } from './kpi-polizas'
-import FiltrosPolizas, { TODOS, type FiltrosPanelPolizas } from './filtros-polizas'
 import TablaPolizas from './tabla-polizas'
-import type { PanelPolizasResponse } from '@/aplicacion/polizas/use_cases/dto/obtener_polizas_response'
 
-const TAMANO_PAGINA = 20
+const TAMANO_PAGINA = 10
 
 const ESTADO_A_BACKEND: Record<string, string> = {
 	vigentes: 'VIGENTE',
@@ -18,26 +20,28 @@ const ESTADO_A_BACKEND: Record<string, string> = {
 	registradas: 'REGISTRADA',
 }
 
-type PanelPolizasClientProps = {
-	initialData?: PanelPolizasResponse
-}
-
-export default function PanelPolizasClient({ initialData }: PanelPolizasClientProps) {
+export default function PanelPolizasClient() {
 	const [filtros, setFiltros] = useState<FiltrosPanelPolizas>({
 		texto_busqueda: '',
 		id_company: TODOS,
 		id_linea_negocio: TODOS,
 	})
 	const [pagina, setPagina] = useState(1)
-	const [filtroEstado, setFiltroEstado] = useState<FiltroEstadoPoliza>('todas')
+	const [filtroEstado, setFiltroEstado] =
+		useState<FiltroEstadoPoliza>('vigentes')
 
 	const textoBusquedaDebounced = useDebounce(filtros.texto_busqueda, 300)
 
-	const estadoBackend = filtroEstado !== 'todas' ? ESTADO_A_BACKEND[filtroEstado] : undefined
+	const estadoBackend =
+		filtroEstado !== 'todas' ? ESTADO_A_BACKEND[filtroEstado] : undefined
 
 	const { data, isFetching } = usePanelPolizas({
-		id_company: filtros.id_company !== TODOS ? Number(filtros.id_company) : undefined,
-		id_linea_negocio: filtros.id_linea_negocio !== TODOS ? Number(filtros.id_linea_negocio) : undefined,
+		id_company:
+			filtros.id_company !== TODOS ? Number(filtros.id_company) : undefined,
+		id_linea_negocio:
+			filtros.id_linea_negocio !== TODOS
+				? Number(filtros.id_linea_negocio)
+				: undefined,
 		texto_busqueda: textoBusquedaDebounced || undefined,
 		estado: estadoBackend,
 		pagina,
@@ -54,20 +58,18 @@ export default function PanelPolizasClient({ initialData }: PanelPolizasClientPr
 		setPagina(1)
 	}
 
-	const datos = data ?? initialData
-
 	return (
 		<div className='space-y-6'>
-			<div>
-				<h1 className='text-xl font-semibold tracking-tight'>Pólizas</h1>
-				<p className='text-sm text-muted-foreground'>
-					Gestión y seguimiento de pólizas registradas
-				</p>
-			</div>
+			<nav className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+				<span className='hover:text-foreground cursor-default transition-colors'>
+					Comercial
+				</span>
+				<span className='text-border'>/</span>
+				<span className='font-medium text-foreground'>Pólizas</span>
+			</nav>
 
 			<KpiPolizas
-				kpis={datos?.kpis}
-				loading={isFetching && !datos}
+				kpis={data?.kpis}
 				filtroEstado={filtroEstado}
 				onFiltroEstadoChange={handleFiltroEstadoChange}
 			/>
@@ -75,14 +77,14 @@ export default function PanelPolizasClient({ initialData }: PanelPolizasClientPr
 			<FiltrosPolizas
 				filtros={filtros}
 				onChange={handleFiltrosChange}
-				total={datos?.total}
+				total={data?.total}
 			/>
 
 			<TablaPolizas
-				polizas={datos?.polizas ?? []}
+				polizas={data?.polizas || []}
 				isFetching={isFetching}
 				pagina={pagina}
-				totalPaginas={datos?.total_paginas ?? 1}
+				totalPaginas={data?.total_paginas || 0}
 				onPaginaChange={setPagina}
 			/>
 		</div>

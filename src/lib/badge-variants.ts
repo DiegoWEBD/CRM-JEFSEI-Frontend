@@ -96,8 +96,8 @@ export const ESTADO_POLIZA_PERFIL_VARIANT: Record<EstadoPoliza, BadgeVariant> =
 		REGISTRADA: 'pastel-sky',
 		VIGENTE: 'pastel-emerald',
 		POR_VENCER: 'pastel-amber',
-		VENCIDA: 'pastel-muted',
-		CANCELADA: 'pastel-red',
+		VENCIDA: 'pastel-red',
+		CANCELADA: 'pastel-violet',
 	}
 
 export const VENCIMIENTO_VARIANT: Record<string, BadgeVariant> = {

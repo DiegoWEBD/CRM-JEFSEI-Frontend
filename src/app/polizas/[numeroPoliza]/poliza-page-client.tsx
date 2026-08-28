@@ -73,17 +73,31 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 			{poliza ? (
 				<>
 					<PanelHeader>
-						<Card className='border-border shadow-none'>
+						{/* Breadcrumb */}
+						<nav className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+							<Link
+								href='/polizas'
+								className='hover:text-foreground transition-colors'
+							>
+								Pólizas
+							</Link>
+							<span className='text-border'>/</span>
+							<span className='font-medium text-foreground'>
+								{poliza.numero_poliza}
+							</span>
+						</nav>
+
+						<Card className='border-border/70 shadow-none overflow-hidden'>
 							<CardContent className='p-4 sm:p-5 lg:p-6'>
-								<div className='flex flex-col gap-6 lg:flex-row lg:items-stretch lg:gap-8'>
-									<div className='min-w-0 flex-1 space-y-5'>
-										<div className='flex items-start gap-3 sm:gap-4'>
-											<div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-12 sm:w-12'>
-												<Shield className='h-5 w-5 sm:h-6 sm:w-6' aria-hidden />
+								<div className='flex flex-col gap-5 lg:flex-row lg:items-stretch lg:gap-6'>
+									<div className='min-w-0 flex-1 space-y-4'>
+										<div className='flex items-start gap-3'>
+											<div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20'>
+												<Shield className='h-5 w-5' aria-hidden />
 											</div>
-											<div className='min-w-0 flex-1 pt-0.5'>
-												<div className='flex items-center gap-2.5'>
-													<h1 className='text-lg font-bold leading-snug tracking-tight text-foreground sm:text-xl lg:text-2xl'>
+											<div className='min-w-0 flex-1'>
+												<div className='flex items-center gap-2'>
+													<h1 className='text-xl font-bold leading-tight tracking-tight text-foreground lg:text-2xl'>
 														{poliza.numero_poliza}
 													</h1>
 													<button
@@ -95,14 +109,14 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 														<Copy className='h-3.5 w-3.5' aria-hidden />
 													</button>
 												</div>
-												<div className='mt-1.5 flex flex-wrap items-center gap-2'>
+												<div className='mt-1.5 flex flex-wrap items-center gap-1.5'>
 													<Badge
 														variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
-														className='text-xs font-medium'
+														className='text-[11px] font-semibold'
 													>
 														{ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
 													</Badge>
-													<Badge variant='secondary' className='text-xs'>
+													<Badge variant='secondary' className='text-[11px]'>
 														{poliza.tipo === 'nueva' ? 'Nueva' : 'Renovación'}
 													</Badge>
 												</div>
@@ -111,19 +125,19 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 
 										<Separator />
 
-										<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4'>
-											<div className='flex min-w-0 flex-1 items-center gap-2.5'>
-												<div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-md border bg-muted/30 text-muted-foreground'>
+										<div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
+											<div className='flex items-center gap-2'>
+												<div className='flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground'>
 													<User className='h-3.5 w-3.5' aria-hidden />
 												</div>
 												<div className='min-w-0'>
-													<p className='truncate text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+													<p className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
 														Cliente
 													</p>
-													<p className='truncate text-sm font-medium text-foreground'>
+													<p className='truncate text-xs font-medium text-foreground'>
 														<Link
 															href={`/prospectos/${poliza.id_prospecto}`}
-															className='inline-flex items-center gap-1.5 hover:underline'
+															className='inline-flex items-center gap-1 hover:underline'
 														>
 															{poliza.nombre_cliente}
 															<ExternalLink className='h-3 w-3 shrink-0 text-muted-foreground' />
@@ -131,39 +145,32 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 													</p>
 												</div>
 											</div>
-											<div className='flex min-w-0 flex-1 items-center gap-2.5'>
-												<div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-md border bg-muted/30 text-muted-foreground'>
+											<div className='flex items-center gap-2'>
+												<div className='flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground'>
 													<Building2 className='h-3.5 w-3.5' aria-hidden />
 												</div>
 												<div className='min-w-0'>
-													<p className='truncate text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+													<p className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
 														Compañía
 													</p>
-													<p className='truncate text-sm font-medium text-foreground'>
+													<p className='truncate text-xs font-medium text-foreground'>
 														{poliza.company?.nombre ?? '—'}
 													</p>
 												</div>
 											</div>
-											<div className='flex min-w-0 flex-1 items-center gap-2.5'>
-												<div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-md border bg-muted/30 text-muted-foreground'>
+											<div className='flex items-center gap-2'>
+												<div className='flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground'>
 													<Package className='h-3.5 w-3.5' aria-hidden />
 												</div>
 												<div className='min-w-0'>
-													<p className='truncate text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
+													<p className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
 														Producto
 													</p>
-													<p className='truncate text-sm font-medium text-foreground'>
+													<p className='truncate text-xs font-medium text-foreground'>
 														{poliza.nombre_producto}
 													</p>
 												</div>
 											</div>
-										</div>
-
-										<div className='flex items-center gap-2'>
-											<ItemInformacionPoliza
-												label='Renovación cotizada'
-												value={poliza.renovacion_cotizada}
-											/>
 										</div>
 									</div>
 
@@ -172,112 +179,111 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 										className='hidden self-stretch lg:block'
 									/>
 
-									<div className='flex flex-col gap-3 lg:w-56 lg:shrink-0'>
-										<div className='flex items-center justify-between gap-3 rounded-lg border bg-muted/30 p-3 sm:p-4 lg:flex-col lg:items-start lg:gap-2'>
-											<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+									<div className='flex flex-col gap-2 lg:w-48 lg:shrink-0'>
+										<div className='flex items-center justify-between gap-3 rounded-lg border bg-muted/40 px-3 py-2.5 lg:flex-col lg:items-start lg:gap-1'>
+											<span className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
 												Estado
 											</span>
 											<Badge
 												variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
-												className='text-xs font-medium'
+												className='text-[11px] font-semibold'
 											>
 												{ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
 											</Badge>
 										</div>
-										<div className='flex items-center justify-center'>
-											<PermissionGuard
-												allowedPermissions={[
-													'ACTUALIZAR_POLIZA_TODOS',
-													'ACTUALIZAR_POLIZA_PROPIOS',
-												]}
+										<PermissionGuard
+											allowedPermissions={[
+												'ACTUALIZAR_POLIZA_TODOS',
+												'ACTUALIZAR_POLIZA_PROPIOS',
+											]}
+										>
+											<Button
+												variant='outline'
+												size='sm'
+												className='h-8 w-full gap-1.5 text-xs'
+												onClick={() => setEditarPoliza(true)}
 											>
-												<Button
-													variant='outline'
-													size='sm'
-													className='h-8 w-full gap-1.5 text-xs'
-													onClick={() => setEditarPoliza(true)}
-												>
-													<Pencil className='h-3.5 w-3.5' />
-													Editar póliza
-												</Button>
-											</PermissionGuard>
-										</div>
+												<Pencil className='h-3.5 w-3.5' />
+												Editar póliza
+											</Button>
+										</PermissionGuard>
+
+										<PermissionGuard
+											allowedPermissions={[
+												'CANCELAR_POLIZA',
+												'REACTIVAR_POLIZA',
+											]}
+										>
+											{poliza.estado === 'CANCELADA' ? (
+												<>
+													<Button
+														variant='outline'
+														size='sm'
+														className='h-8 w-full gap-1.5 text-xs'
+														disabled={isLoadingMutation}
+														onClick={() => setConfirmarReactivar(true)}
+													>
+														{reactivarPoliza.isPending ? (
+															<Loader2 className='mr-1.5 h-3 w-3 animate-spin' />
+														) : null}
+														Reactivar póliza
+													</Button>
+													<ConfirmDialog
+														open={confirmarReactivar}
+														onOpenChange={setConfirmarReactivar}
+														title='¿Reactivar póliza?'
+														description={`Se reactivará la póliza ${numeroPoliza}.`}
+														confirmText='Reactivar'
+														variant='default'
+														isPending={reactivarPoliza.isPending}
+														onConfirm={() => {
+															setConfirmarReactivar(false)
+															reactivarPoliza.mutateAsync()
+														}}
+													/>
+												</>
+											) : (
+												<>
+													<Button
+														variant='outline'
+														size='sm'
+														className='h-8 w-full gap-1.5 text-xs'
+														disabled={isLoadingMutation}
+														onClick={() => setConfirmarCancelar(true)}
+													>
+														{cancelarPoliza.isPending ? (
+															<Loader2 className='mr-1.5 h-3 w-3 animate-spin' />
+														) : null}
+														Cancelar póliza
+													</Button>
+													<ConfirmDialog
+														open={confirmarCancelar}
+														onOpenChange={setConfirmarCancelar}
+														title='¿Cancelar póliza?'
+														description={`Se cancelará la póliza ${numeroPoliza}. Esta acción puede revertirse posteriormente.`}
+														confirmText='Cancelar'
+														variant='destructive'
+														isPending={cancelarPoliza.isPending}
+														onConfirm={() => {
+															setConfirmarCancelar(false)
+															cancelarPoliza.mutateAsync()
+														}}
+													/>
+												</>
+											)}
+										</PermissionGuard>
 									</div>
 								</div>
 							</CardContent>
-
-							<PermissionGuard
-								allowedPermissions={['CANCELAR_POLIZA', 'REACTIVAR_POLIZA']}
-							>
-								<div className='border-t border-border px-4 py-3 sm:px-5 lg:px-6'>
-									<div className='flex flex-wrap gap-2'>
-										{poliza.estado === 'CANCELADA' ? (
-											<>
-												<Button
-													variant='outline'
-													size='sm'
-													disabled={isLoadingMutation}
-													onClick={() => setConfirmarReactivar(true)}
-												>
-													{reactivarPoliza.isPending ? (
-														<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
-													) : null}
-													Reactivar póliza
-												</Button>
-												<ConfirmDialog
-													open={confirmarReactivar}
-													onOpenChange={setConfirmarReactivar}
-													title='¿Reactivar póliza?'
-													description={`Se reactivará la póliza ${numeroPoliza}.`}
-													confirmText='Reactivar'
-													variant='default'
-													isPending={reactivarPoliza.isPending}
-													onConfirm={() => {
-														setConfirmarReactivar(false)
-														reactivarPoliza.mutateAsync()
-													}}
-												/>
-											</>
-										) : (
-											<>
-												<Button
-													variant='outline'
-													size='sm'
-													disabled={isLoadingMutation}
-													onClick={() => setConfirmarCancelar(true)}
-												>
-													{cancelarPoliza.isPending ? (
-														<Loader2 className='mr-1.5 h-3.5 w-3.5 animate-spin' />
-													) : null}
-													Cancelar póliza
-												</Button>
-												<ConfirmDialog
-													open={confirmarCancelar}
-													onOpenChange={setConfirmarCancelar}
-													title='¿Cancelar póliza?'
-													description={`Se cancelará la póliza ${numeroPoliza}. Esta acción puede revertirse posteriormente.`}
-													confirmText='Cancelar'
-													variant='destructive'
-													isPending={cancelarPoliza.isPending}
-													onConfirm={() => {
-														setConfirmarCancelar(false)
-														cancelarPoliza.mutateAsync()
-													}}
-												/>
-											</>
-										)}
-									</div>
-								</div>
-							</PermissionGuard>
 						</Card>
 					</PanelHeader>
 
-					<Card className='border-border shadow-none'>
+					<Card className='border-border/70 shadow-none'>
 						<CardContent className='p-4 sm:p-5 lg:p-6'>
-							<h2 className='mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+							<h2 className='mb-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground'>
 								Datos de la póliza
 							</h2>
-							<div className='grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3'>
+							<div className='grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3'>
 								<ItemInformacionPoliza
 									label='Número póliza'
 									value={poliza.numero_poliza}
@@ -335,7 +341,7 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 					/>
 				</>
 			) : (
-				<Card className='border-border shadow-none'>
+				<Card className='border-border/70 shadow-none'>
 					<CardContent className='p-6 text-center'>
 						<p className='text-sm text-muted-foreground'>
 							No se encontró la póliza {numeroPoliza}

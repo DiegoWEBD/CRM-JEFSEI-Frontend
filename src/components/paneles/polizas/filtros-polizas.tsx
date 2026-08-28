@@ -53,78 +53,91 @@ export default function FiltrosPolizas({
 		filtros.id_linea_negocio !== TODOS
 
 	return (
-		<div className='flex flex-wrap items-center gap-2'>
-			<div className='relative min-w-[12rem] flex-1'>
-				<Search className='pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground' />
-				<Input
-					placeholder='Buscar por número de póliza o nombre de cliente…'
-					value={filtros.texto_busqueda}
-					onChange={e => actualizar('texto_busqueda', e.target.value)}
-					className='h-9 pl-8 text-xs shadow-none'
-				/>
+		<div className='rounded-lg border border-border/70 bg-card p-3'>
+			<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4'>
+				<div className='sm:col-span-2 lg:col-span-1'>
+					<label className='mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+						Búsqueda
+					</label>
+					<div className='relative'>
+						<Search className='pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground' />
+						<Input
+							placeholder='N° póliza o cliente…'
+							value={filtros.texto_busqueda}
+							onChange={e => actualizar('texto_busqueda', e.target.value)}
+							className='h-8 pl-8 text-xs shadow-none'
+						/>
+					</div>
+				</div>
+
+				<div>
+					<label className='mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+						Compañía
+					</label>
+					<Select
+						value={filtros.id_company}
+						onValueChange={v => actualizar('id_company', v)}
+					>
+						<SelectTrigger size='sm' className='h-8 w-full text-xs shadow-none'>
+							<SelectValue placeholder='Todas' />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value={TODOS} className='text-xs'>
+								Todas las compañías
+							</SelectItem>
+							{companies?.map(op => (
+								<SelectItem key={op.id} value={String(op.id)} className='text-xs'>
+									{op.nombre}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+
+				<div>
+					<label className='mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+						Línea de negocio
+					</label>
+					<Select
+						value={filtros.id_linea_negocio}
+						onValueChange={v => actualizar('id_linea_negocio', v)}
+					>
+						<SelectTrigger size='sm' className='h-8 w-full text-xs shadow-none'>
+							<SelectValue placeholder='Todas' />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value={TODOS} className='text-xs'>
+								Todas las líneas
+							</SelectItem>
+							{lineasNegocio?.map(op => (
+								<SelectItem key={op.id} value={String(op.id)} className='text-xs'>
+									{op.nombre}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
 			</div>
 
-			<Select
-				value={filtros.id_company}
-				onValueChange={v => actualizar('id_company', v)}
-			>
-				<SelectTrigger
-					size='sm'
-					className='h-9 w-[min(100%,11rem)] text-xs shadow-none'
-				>
-					<SelectValue placeholder='Compañía' />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectItem value={TODOS} className='text-xs'>
-						Todas las compañías
-					</SelectItem>
-					{companies?.map(op => (
-						<SelectItem key={op.id} value={String(op.id)} className='text-xs'>
-							{op.nombre}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-
-			<Select
-				value={filtros.id_linea_negocio}
-				onValueChange={v => actualizar('id_linea_negocio', v)}
-			>
-				<SelectTrigger
-					size='sm'
-					className='h-9 w-[min(100%,11rem)] text-xs shadow-none'
-				>
-					<SelectValue placeholder='Línea de negocio' />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectItem value={TODOS} className='text-xs'>
-						Todas las líneas
-					</SelectItem>
-					{lineasNegocio?.map(op => (
-						<SelectItem key={op.id} value={String(op.id)} className='text-xs'>
-							{op.nombre}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-
-			{hayFiltros && (
-				<Button
-					variant='ghost'
-					size='sm'
-					onClick={limpiar}
-					className='h-9 gap-1 px-2 text-xs text-muted-foreground'
-				>
-					<X className='h-3.5 w-3.5' aria-hidden />
-					Limpiar
-				</Button>
-			)}
-
-			{total != null && (
-				<span className='text-sm text-muted-foreground'>
-					Mostrando {total} pólizas
-				</span>
-			)}
+			<div className='mt-2 flex items-center justify-between'>
+				<div className='flex items-center gap-3'>
+					{hayFiltros && (
+						<button
+							type='button'
+							onClick={limpiar}
+							className='inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors'
+						>
+							<X className='h-3 w-3' aria-hidden />
+							Limpiar filtros
+						</button>
+					)}
+				</div>
+				{total != null && (
+					<span className='text-xs tabular-nums text-muted-foreground'>
+						{total} resultado{total !== 1 ? 's' : ''}
+					</span>
+				)}
+			</div>
 		</div>
 	)
 }
