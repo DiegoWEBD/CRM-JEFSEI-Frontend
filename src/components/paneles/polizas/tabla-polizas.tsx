@@ -34,7 +34,10 @@ function SkeletonTabla() {
 		<>
 			<div className='space-y-2 lg:hidden'>
 				{Array.from({ length: 5 }).map((_, i) => (
-					<div key={i} className='rounded-lg border border-border/70 bg-card overflow-hidden'>
+					<div
+						key={i}
+						className='rounded-lg border border-border/70 bg-card overflow-hidden'
+					>
 						<div className='flex items-center gap-2 px-3 py-2 bg-muted/30'>
 							<Skeleton className='h-2 w-2 rounded-full' />
 							<Skeleton className='h-4 w-28' />
@@ -156,44 +159,72 @@ export default function TablaPolizas({
 							className='cursor-pointer block w-full rounded-lg border border-border/70 bg-card text-left overflow-hidden transition-all hover:border-primary/20 hover:shadow-sm'
 						>
 							<div className='flex items-center gap-2 px-3 py-2 bg-muted/30'>
-								<div className={`h-2 w-2 rounded-full shrink-0 ${estadoColor}`} />
+								<div
+									className={`h-2 w-2 rounded-full shrink-0 ${estadoColor}`}
+								/>
 								<p className='text-sm font-semibold text-foreground truncate'>
 									{poliza.numero_poliza}
 								</p>
 								<span className='text-xs text-muted-foreground truncate'>
 									{poliza.nombre_cliente}
 								</span>
-								<Badge variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]} className='ml-auto shrink-0'>
+								<Badge
+									variant={ESTADO_POLIZA_PERFIL_BADGE[poliza.estado]}
+									className='ml-auto shrink-0'
+								>
 									{ESTADO_POLIZA_PERFIL_LABELS[poliza.estado]}
 								</Badge>
 							</div>
 							<div className='border-t border-border/50' />
 							<div className='px-3 py-2 grid grid-cols-3 gap-x-3 gap-y-1.5'>
 								<div>
-									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>Producto</p>
-									<p className='text-xs font-semibold text-foreground truncate'>{poliza.nombre_producto}</p>
-								</div>
-								<div>
-									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>Compañía</p>
-									<p className='text-xs font-semibold text-foreground truncate'>{poliza.company?.nombre ?? '—'}</p>
-								</div>
-								<div>
-									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>Tipo</p>
-									<p className='text-xs font-semibold text-foreground truncate'>{poliza.tipo}</p>
-								</div>
-								<div>
-									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>Prima UF</p>
-									<p className='text-xs font-semibold tabular-nums text-foreground'>{formatUF(poliza.prima_neta)}</p>
-								</div>
-								<div>
-									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>Vigencia</p>
-									<p className='text-xs font-semibold text-foreground whitespace-nowrap'>
-										{formatFecha(poliza.inicio_vigencia)} — {formatFecha(poliza.fin_vigencia)}
+									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
+										Producto
+									</p>
+									<p className='text-xs font-semibold text-foreground truncate'>
+										{poliza.nombre_producto}
 									</p>
 								</div>
 								<div>
-									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>Emisión</p>
-									<p className='text-xs font-semibold text-foreground whitespace-nowrap'>{formatFecha(poliza.fecha_emision)}</p>
+									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
+										Compañía
+									</p>
+									<p className='text-xs font-semibold text-foreground truncate'>
+										{poliza.company?.nombre ?? '—'}
+									</p>
+								</div>
+								<div>
+									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
+										Tipo
+									</p>
+									<p className='text-xs font-semibold text-foreground truncate'>
+										{poliza.tipo}
+									</p>
+								</div>
+								<div>
+									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
+										Prima UF
+									</p>
+									<p className='text-xs font-semibold tabular-nums text-foreground'>
+										{formatUF(poliza.prima_neta)}
+									</p>
+								</div>
+								<div>
+									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
+										Vigencia
+									</p>
+									<p className='text-xs font-semibold text-foreground whitespace-nowrap'>
+										{formatFecha(poliza.inicio_vigencia)} —{' '}
+										{formatFecha(poliza.fin_vigencia)}
+									</p>
+								</div>
+								<div>
+									<p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
+										Emisión
+									</p>
+									<p className='text-xs font-semibold text-foreground whitespace-nowrap'>
+										{formatFecha(poliza.fecha_emision)}
+									</p>
 								</div>
 							</div>
 						</Link>

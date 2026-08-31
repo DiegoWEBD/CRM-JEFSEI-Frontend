@@ -1,5 +1,6 @@
 import { HistorialEtapaResumen } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-etapa-resumen'
 import { Skeleton } from '@/components/skeleton'
+import { formatearFecha } from '@/utils/formatear-fecha'
 
 type HistorialEstadosTimelineProps = {
 	historial: Record<string, HistorialEtapaResumen> | undefined
@@ -45,7 +46,7 @@ export default function HistorialEstadosTimeline({
 						<div className='ml-4 space-y-3 border-l-2 border-border/50 pl-4'>
 							{etapaData.estados.map((estado, estIdx) => (
 								<div key={estIdx} className='relative'>
-									<div className='absolute -left-[1.35rem] top-1.5 h-2 w-2 rounded-full border-2 border-primary bg-background' />
+									<div className='absolute left-[-1.35rem] top-1.5 h-2 w-2 rounded-full border-2 border-primary bg-background' />
 									<p className='text-xs font-medium text-foreground'>
 										{estado.estado}
 									</p>
@@ -53,15 +54,9 @@ export default function HistorialEstadosTimeline({
 										Por: {estado.registrado_por}
 									</p>
 									<p className='text-sm text-muted-foreground tabular-nums'>
-										{new Date(estado.fecha_registro).toLocaleDateString(
-											'es-CL',
-											{
-												day: 'numeric',
-												month: 'short',
-												year: 'numeric',
-												hour: '2-digit',
-												minute: '2-digit',
-											},
+										{formatearFecha(
+											new Date(estado.fecha_registro),
+											'dd MMM yyyy, HH:mm',
 										)}
 									</p>
 									{estado.observacion && (
