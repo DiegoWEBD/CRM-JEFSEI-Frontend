@@ -17,7 +17,7 @@ const MainContentLayout = ({
 
 	return (
 		<main className={`flex-1 overflow-auto ${className}`}>
-			<div className='mx-auto w-full max-w-[1600px] p-6 lg:p-8'>{children}</div>
+			<div className='mx-auto w-full max-w-[1600px] p-3 lg:p-8'>{children}</div>
 		</main>
 	)
 }

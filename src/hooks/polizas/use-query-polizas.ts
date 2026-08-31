@@ -9,9 +9,7 @@ export const useQueryPolizas = (idCliente?: number) => {
 			if (!idCliente) return []
 
 			const response = await axios.get(`/api/polizas?id_cliente=${idCliente}`)
-			const data: Poliza[] = response.data
-
-			return data
+			return response.data.polizas as Poliza[]
 		},
 	})
 }

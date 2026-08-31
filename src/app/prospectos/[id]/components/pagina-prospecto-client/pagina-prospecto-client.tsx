@@ -1,25 +1,23 @@
 'use client'
 
 import AuthGuard from '@/components/layouts/guards/auth-guard'
-import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
-import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
-import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
 import { useObtenerProspecto } from '@/hooks/prospectos/use-obtener-prospecto'
-import { AlertTriangle } from 'lucide-react'
-import CardInformacionProspecto from '../card-informacion-prospecto/card-informacion-prospecto'
 import CardArchivos from '../card-archivos/card-archivos'
 import CardContactos from '../card-contactos/card-contactos'
+import CardInformacionProspecto from '../card-informacion-prospecto/card-informacion-prospecto'
 import CardInformacionTecnicaCondominio from '../card-informacion-tecnica-condominio/card-informacion-tecnica-condominio'
-import CardPolizas from '../card-polizas/card-polizas'
 import CardOportunidadesComerciales from '../card-oportunidades-comerciales/card-oportunidades-comerciales'
+import CardPolizas from '../card-polizas/card-polizas'
+import EjecutivosAsignadosCard from '../ejecutivos-asignados-card/ejecutivos-asignados-card'
 import ObservacionesComercialesSection from '../observaciones-comerciales-section'
-import SeguimientoComercialSection from '../seguimiento-comercial-section/seguimiento-comercial-section'
+import ProspectoHeroHeader from '../prospecto-hero-header/prospecto-hero-header'
 import RecordatoriosClienteSection from '../recordatorios-cliente-section/recordatorios-cliente-section'
-import PaginaProspectoHeader from '../pagina-prospecto-header/pagina-prospecto-header'
-import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import SeguimientoComercialSection from '../seguimiento-comercial-section/seguimiento-comercial-section'
+import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
 
 type PaginaProspectoClientProps = {
 	prospectoInicial: Prospecto
@@ -30,33 +28,22 @@ export default function PaginaProspectoClient({
 }: PaginaProspectoClientProps) {
 	const { data: prospecto } = useObtenerProspecto(prospectoInicial)
 
+	const esCondominio =
+		prospecto.linea_negocio.nombre.toLowerCase() === 'condominio'
+
 	return (
 		<PanelLayout>
-			<PanelHeader>
-				<PaginaProspectoHeader prospecto={prospecto} />
-			</PanelHeader>
+			<ProspectoHeroHeader prospecto={prospecto} />
 
-			{!prospecto.informacion_completa && (
-				<EstadoCompletitudInformacion
-					completa={prospecto.informacion_completa}
-					className='px-3 py-2.5 flex gap-2 w-full items-center justify-start'
-				>
-					<AlertTriangle className='mt-0.5 shrink-0 text-warning' aria-hidden />
-					<p className='font-medium'>
-						Faltan datos para la evaluación de seguros.
-					</p>
-				</EstadoCompletitudInformacion>
-			)}
-
+			<EjecutivosAsignadosCard prospecto={prospecto} />
 			<CardInformacionProspecto prospecto={prospecto} />
-
-			{prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' && (
+			{esCondominio && (
 				<CardInformacionTecnicaCondominio
 					prospecto={prospecto as ProspectoCondominio}
 				/>
 			)}
 
-			<PanelBody className='lg:grid-cols-2'>
+			<PanelBody>
 				<PermissionGuard
 					allowedPermissions={[
 						'OBTENER_CONTACTOS_PROPIOS',
@@ -98,15 +85,15 @@ export default function PaginaProspectoClient({
 				idProspecto={prospecto.id}
 				nombreCliente={prospecto.nombre_riesgo}
 			/>
-
-			<RecordatoriosClienteSection
-				idProspecto={prospecto.id}
-				nombreCliente={prospecto.nombre_riesgo}
-			/>
-
-			<ObservacionesComercialesSection
-				observaciones={prospecto.observaciones}
-			/>
+			<div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+				<RecordatoriosClienteSection
+					idProspecto={prospecto.id}
+					nombreCliente={prospecto.nombre_riesgo}
+				/>
+				<ObservacionesComercialesSection
+					observaciones={prospecto.observaciones}
+				/>
+			</div>
 		</PanelLayout>
 	)
 }

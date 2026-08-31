@@ -5,13 +5,19 @@ import { Bell } from 'lucide-react'
 
 type CardKpiProps = {
 	datos: DatosKpi
-	onClick: (key: string) => void
+	onClick?: (key: string) => void
 	accentClassName?: string
 	iconClassName?: string
 	activo?: boolean
 }
 
-export default function CardKpi({ datos, onClick, accentClassName, iconClassName, activo }: CardKpiProps) {
+export default function CardKpi({
+	datos,
+	onClick,
+	accentClassName,
+	iconClassName,
+	activo,
+}: CardKpiProps) {
 	const Icon = datos.icon
 	return (
 		<Card
@@ -23,11 +29,11 @@ export default function CardKpi({ datos, onClick, accentClassName, iconClassName
 				activo && 'ring-2 ring-primary border-primary/50',
 				accentClassName,
 			)}
-			onClick={() => onClick(datos.key)}
+			onClick={() => onClick?.(datos.key)}
 			onKeyDown={e => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault()
-					onClick(datos.key)
+					onClick?.(datos.key)
 				}
 			}}
 		>

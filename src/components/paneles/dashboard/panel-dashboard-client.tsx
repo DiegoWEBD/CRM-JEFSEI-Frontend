@@ -14,7 +14,13 @@ import {
 	SelectValue,
 } from '@/components/select'
 import { useMetricasDashboardGerente } from '@/hooks/dashboard-gerente/use-metricas-dashboard-gerente'
+import { useKpisComerciales } from '@/hooks/kpis-comerciales/use-kpis-comerciales'
 import CommercialActivitiesSection from './contents/actividades-comerciales/commercial-activities-section'
+import CobranzaKpiSection from './contents/kpis-comerciales/cobranza-kpi-section'
+import ConversionSection from './contents/kpis-comerciales/conversion-section'
+import PipelineSection from './contents/kpis-comerciales/pipeline-section'
+import ProduccionVsMetaSection from './contents/kpis-comerciales/produccion-vs-meta-section'
+import RetencionSection from './contents/kpis-comerciales/retencion-section'
 import ProductionSection from './contents/produccion/production-section'
 import PoliciesReportsSection from './contents/reportes-polizas/policies-reports-section'
 
@@ -43,6 +49,11 @@ export default function PanelDashboardClient() {
 		isLoading,
 		error,
 	} = useMetricasDashboardGerente(mes, year)
+
+	const {
+		data: kpis,
+		isLoading: isLoadingKpis,
+	} = useKpisComerciales(mes, year)
 
 	const rangoYears = Array.from(
 		{ length: 5 },
@@ -101,6 +112,41 @@ export default function PanelDashboardClient() {
 				<ProductionSection data={metricas.produccion} />
 				<CommercialActivitiesSection data={metricas.actividades_comerciales} />
 				<PoliciesReportsSection data={metricas.reportes_polizas} />
+
+				{kpis && (
+					<>
+						<div className='border-t border-border/60 pt-6'>
+							<ConversionSection
+								data={kpis.conversion_prospectos}
+								cierre={kpis.cierre_oportunidades}
+							/>
+						</div>
+
+						<ProduccionVsMetaSection data={kpis.prima_vs_meta} />
+
+						<PipelineSection
+							tiempoCierre={kpis.tiempo_promedio_cierre}
+							aging={kpis.aging_pipeline}
+						/>
+
+						<RetencionSection
+							renovacion={kpis.renovacion}
+							primaRiesgo={kpis.prima_en_riesgo}
+						/>
+
+						<CobranzaKpiSection data={kpis.morosidad} />
+					</>
+				)}
+
+				{isLoadingKpis && !kpis && (
+					<div className='space-y-4'>
+						<div className='h-6 w-28 animate-pulse rounded bg-muted' />
+						<div className='grid gap-2.5 lg:grid-cols-2'>
+							<div className='h-24 animate-pulse rounded-lg bg-muted' />
+							<div className='h-24 animate-pulse rounded-lg bg-muted' />
+						</div>
+					</div>
+				)}
 			</PanelLayout>
 		</PermissionGuard>
 	)
