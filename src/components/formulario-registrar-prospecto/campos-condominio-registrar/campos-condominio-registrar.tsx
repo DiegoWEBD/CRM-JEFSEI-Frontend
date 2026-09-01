@@ -24,10 +24,7 @@ const SECCIONES: Record<
 	seguridad: SeccionSeguridad,
 }
 
-export default function CamposCondominioRegistrar({
-	formik,
-	section,
-}: Props) {
+export default function CamposCondominioRegistrar({ formik, section }: Props) {
 	const ComponenteSeccion = SECCIONES[section]
 	return <ComponenteSeccion formik={formik} />
 }

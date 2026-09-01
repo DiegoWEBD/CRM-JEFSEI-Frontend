@@ -30,6 +30,7 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					value={formik.values.metros_cuadrados ?? ''}
 					onChange={formik.handleChange}
 					inputMode='decimal'
+					type='number'
 				/>
 			</Campo>
 
@@ -39,6 +40,7 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					value={formik.values.porcentaje_espacios_comunes ?? ''}
 					onChange={formik.handleChange}
 					inputMode='decimal'
+					type='number'
 				/>
 			</Campo>
 
@@ -48,6 +50,7 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					value={formik.values.numero_pisos ?? ''}
 					onChange={formik.handleChange}
 					inputMode='numeric'
+					type='number'
 				/>
 			</Campo>
 
@@ -57,6 +60,7 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					value={formik.values.numero_torres ?? ''}
 					onChange={formik.handleChange}
 					inputMode='numeric'
+					type='number'
 				/>
 			</Campo>
 
@@ -66,6 +70,7 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					value={formik.values.cantidad_departamentos ?? ''}
 					onChange={formik.handleChange}
 					inputMode='numeric'
+					type='number'
 				/>
 			</Campo>
 
@@ -75,6 +80,7 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					value={formik.values.cantidad_subterraneos ?? ''}
 					onChange={formik.handleChange}
 					inputMode='numeric'
+					type='number'
 				/>
 			</Campo>
 
