@@ -10,8 +10,31 @@ const publicRoutes: string[] = ['/login']
 
 const roleProtectedRoutes: RoleProtectedRoute[] = [
 	{
+		path: '/dashboard',
+		roles: [
+			'GERENTE_OPERACIONES',
+			'GERENTE_GENERAL',
+			'GERENTE_COMERCIAL',
+			'DESARROLLADOR',
+		],
+	},
+	{
+		path: '/oportunidades',
+		roles: [
+			'GERENTE_OPERACIONES',
+			'GERENTE_GENERAL',
+			'GERENTE_COMERCIAL',
+			'DESARROLLADOR',
+		],
+	},
+	{
 		path: '/personal',
-		roles: ['GERENTE_OPERACIONES', 'GERENTE_GENERAL', 'GERENTE_COMERCIAL'],
+		roles: [
+			'GERENTE_OPERACIONES',
+			'GERENTE_GENERAL',
+			'GERENTE_COMERCIAL',
+			'DESARROLLADOR',
+		],
 	},
 	{
 		path: '/solicitudes-estudio',
@@ -20,6 +43,7 @@ const roleProtectedRoutes: RoleProtectedRoute[] = [
 			'GERENTE_COMERCIAL',
 			'GERENTE_GENERAL',
 			'GERENTE_OPERACIONES',
+			'DESARROLLADOR',
 		],
 	},
 	{
@@ -29,11 +53,12 @@ const roleProtectedRoutes: RoleProtectedRoute[] = [
 			'GERENTE_COMERCIAL',
 			'GERENTE_GENERAL',
 			'GERENTE_OPERACIONES',
+			'DESARROLLADOR',
 		],
 	},
 	{
 		path: '/configuracion-condominio',
-		roles: ['GERENTE_COMERCIAL', 'GERENTE_GENERAL'],
+		roles: ['GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'DESARROLLADOR'],
 	},
 ]
 

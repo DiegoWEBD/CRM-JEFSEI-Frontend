@@ -76,9 +76,9 @@ export function PanelKpiCard({
 				clickable && 'cursor-pointer hover:bg-accent/50',
 				activa && accent
 					? cn('border-l-2', ACENTO_BORDER_LEFT[accent], ACENTO_CARD[accent])
-					: activa
-						? 'border-l-2 border-l-primary bg-primary/5'
-						: 'border-border/50',
+					: null,
+				activa && !accent ? 'border-l-2 border-l-primary bg-primary/5' : null,
+				!activa && !accent ? 'border-border/50' : null,
 			)}
 		>
 			{Icon && (

@@ -7,7 +7,7 @@ const Header = async () => {
 	if (!session) return null
 
 	return (
-		<header className='sticky top-0 z-30 border-b border-border bg-card/80 backdrop-blur-md supports-[backdrop-filter]:bg-card/70'>
+		<header className='sticky top-0 z-30 border-b border-border bg-card/80 backdrop-blur-md supports-backdrop-filter:bg-card/70'>
 			<HeaderClient
 				nombreUsuario={session.nombre}
 				nombreRoles={session.nombre_roles}

@@ -25,6 +25,7 @@ type CardOportunidadesComercialesProps = {
 	idCliente?: number
 	informacionCompleta: boolean
 	nombreCliente: string
+	lineaNegocioId: number
 	lineaNegocioNombre: string
 	ejecutivoComercialRut?: string
 	ejecutivoEvaluacionRut?: string
@@ -36,6 +37,7 @@ export default function CardOportunidadesComerciales({
 	idCliente,
 	informacionCompleta,
 	nombreCliente,
+	lineaNegocioId,
 	lineaNegocioNombre,
 	ejecutivoComercialRut,
 	ejecutivoEvaluacionRut,
@@ -148,6 +150,7 @@ export default function CardOportunidadesComerciales({
 				open={openNuevaOportunidad}
 				onOpenChange={setOpenNuevaOportunidad}
 				idProspecto={idProspecto}
+				lineaNegocioId={lineaNegocioId}
 				lineaNegocioNombre={lineaNegocioNombre}
 			/>
 		</>
