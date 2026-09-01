@@ -60,6 +60,10 @@ const roleProtectedRoutes: RoleProtectedRoute[] = [
 		path: '/configuracion-condominio',
 		roles: ['GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'DESARROLLADOR'],
 	},
+	{
+		path: '/productos',
+		roles: ['GERENTE_GENERAL', 'DESARROLLADOR'],
+	},
 ]
 
 function getUserRoles(token: string): string[] {

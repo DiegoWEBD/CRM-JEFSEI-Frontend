@@ -1,9 +1,9 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import { PanelKpiCard } from '@/components/paneles/shared/panel-kpi-card'
 import Poliza from '@/dominio/poliza/poliza'
 import { useQueryPolizas } from '@/hooks/polizas/use-query-polizas'
-import { KPI_PASTEL } from '@/lib/kpi-pastel'
 import {
 	AlertTriangle,
 	Ban,
@@ -18,7 +18,6 @@ import BarraFiltrosPolizas, {
 	type FiltrosPolizasCliente,
 	FILTROS_POLIZAS_INICIAL,
 } from './contenedor-polizas/filtros-polizas/barra-filtros-polizas'
-import KpiEstadoPoliza from './kpi-estado-poliza/kpi-estado-poliza'
 
 function diasHasta(ymd: string | undefined): number | null {
 	if (!ymd) return null
@@ -76,13 +75,9 @@ function esFiltroActivo(f: FiltrosPolizasCliente): boolean {
 
 type CardPolizasProps = {
 	idCliente?: number
-	nombreCliente: string
 }
 
-export default function CardPolizas({
-	idCliente,
-	nombreCliente,
-}: CardPolizasProps) {
+export default function CardPolizas({ idCliente }: CardPolizasProps) {
 	const { data: polizas } = useQueryPolizas(idCliente)
 	const [filtros, setFiltros] = useState<FiltrosPolizasCliente>(
 		FILTROS_POLIZAS_INICIAL,
@@ -136,44 +131,48 @@ export default function CardPolizas({
 				<Card className='border-border shadow-none'>
 					<CardContent className='space-y-2.5 p-3'>
 						<div className='grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3'>
-							<KpiEstadoPoliza
+							<PanelKpiCard
 								label='Pólizas vigentes'
-								kpi={
+								value={
 									(polizasPorEstado.get('VIGENTE') ?? 0) +
 									(polizasPorEstado.get('POR_VENCER') ?? 0)
 								}
-								className={KPI_PASTEL.success.card}
 								icon={CheckCircle2}
+								activa
+								accent='success'
 							/>
-							<KpiEstadoPoliza
+
+							<PanelKpiCard
 								label='Canceladas'
-								kpi={polizasPorEstado.get('CANCELADA') ?? 0}
+								value={polizasPorEstado.get('CANCELADA') ?? 0}
 								icon={Ban}
 							/>
 
-							<KpiEstadoPoliza
+							<PanelKpiCard
 								label='Prima vigente'
-								kpi={`UF ${primaVigente}`}
-								className={KPI_PASTEL.info.card}
+								value={`UF ${primaVigente}`}
 								icon={DollarSign}
+								activa
+								accent='primary'
 							/>
 
-							<KpiEstadoPoliza
+							<PanelKpiCard
 								label='Total pólizas'
-								kpi={polizas?.length || 0}
+								value={polizas?.length || 0}
 								icon={Shield}
 							/>
 
-							<KpiEstadoPoliza
+							<PanelKpiCard
 								label='Por vencer'
-								kpi={polizasPorEstado.get('POR_VENCER') ?? 0}
-								className={KPI_PASTEL.warning.card}
+								value={polizasPorEstado.get('POR_VENCER') ?? 0}
 								icon={Clock}
+								activa
+								accent='warning'
 							/>
 
-							<KpiEstadoPoliza
+							<PanelKpiCard
 								label='Vencidas'
-								kpi={polizasPorEstado.get('VENCIDA') ?? 0}
+								value={polizasPorEstado.get('VENCIDA') ?? 0}
 								icon={AlertTriangle}
 							/>
 						</div>

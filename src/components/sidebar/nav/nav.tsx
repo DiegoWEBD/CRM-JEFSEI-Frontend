@@ -9,6 +9,7 @@ import {
 	Group,
 	Home,
 	LayoutDashboard,
+	Package,
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
@@ -106,6 +107,15 @@ const SECCIONES: NavSection[] = [
 						['GERENTE_GENERAL', 'GERENTE_COMERCIAL', 'DESARROLLADOR'].includes(
 							c,
 						),
+					),
+			},
+			{
+				href: '/productos',
+				icono: Package,
+				titulo: 'Productos',
+				visible: r =>
+					r.some(c =>
+						['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c),
 					),
 			},
 		],

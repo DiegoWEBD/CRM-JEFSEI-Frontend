@@ -66,7 +66,7 @@ export default function DialogNuevaOportunidad({
               </SelectTrigger>
               <SelectContent>
                 {productos?.map((p) => (
-                  <SelectItem key={p.id} value={p.codigo} className='text-sm'>
+                  <SelectItem key={p.id} value={p.codigo ?? ''} className='text-sm'>
                     {p.nombre}
                   </SelectItem>
                 ))}

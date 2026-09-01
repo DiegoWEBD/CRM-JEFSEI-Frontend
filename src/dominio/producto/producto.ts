@@ -2,6 +2,8 @@ export default class Producto {
 	constructor(
 		public id: number,
 		public nombre: string,
-		public codigo: string,
+		public id_linea_negocio: number,
+		public codigo: string | null,
+		public eliminado: boolean,
 	) {}
 }

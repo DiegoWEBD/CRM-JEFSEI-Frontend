@@ -77,10 +77,7 @@ export default function PaginaProspectoClient({
 				/>
 			</PermissionGuard>
 
-			<CardPolizas
-				idCliente={prospecto.id_cliente}
-				nombreCliente={prospecto.nombre_riesgo}
-			/>
+			<CardPolizas idCliente={prospecto.id_cliente} />
 
 			<SeguimientoComercialSection
 				idProspecto={prospecto.id}
