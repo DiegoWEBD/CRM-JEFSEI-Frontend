@@ -32,12 +32,13 @@ import {
 } from '@/components/table'
 import Usuario from '@/dominio/usuario/usuario'
 import { useUserSession } from '@/hooks/auth/use-user-session'
-import { useControlledInput } from '@/hooks/input/use-controlled-input'
+import { useDebounce } from '@/hooks/use-debounce'
 import { useObtenerRoles, type RolJson } from '@/hooks/roles/use-obtener-roles'
 import { useSucursales } from '@/hooks/sucursales/use-sucursales'
 import { useActualizarUsuario } from '@/hooks/usuarios/use-actualizar-usuario'
 import { useEliminarUsuario } from '@/hooks/usuarios/use-eliminar-usuario'
 import { useRegistrarUsuario } from '@/hooks/usuarios/use-registrar-usuario'
+import Paginacion from '@/components/paginacion/paginacion'
 import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { classInputRut } from '@/utils/class-input-rut'
 import { formatRut } from '@/utils/format-rut'
@@ -56,7 +57,7 @@ import {
 	Search,
 	UserPlus,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import * as Yup from 'yup'
 
 function InicialesUsuario({ nombre }: { nombre: string }) {
@@ -159,13 +160,19 @@ function CardUsuario({
 	)
 }
 
-type Props = {
-	usuariosIniciales: Usuario[]
-}
+const TAMANO_PAGINA = 7
 
-export default function PersonalClient({ usuariosIniciales }: Props) {
-	const { data: usuarios, isLoading } = useUsuarios(usuariosIniciales)
-	const { value: busqueda, handleChange } = useControlledInput()
+export default function PersonalClient() {
+	const [pagina, setPagina] = useState(1)
+	const [inputValue, setInputValue] = useState('')
+	const textoBusqueda = useDebounce(inputValue, 300)
+
+	const { data: response, isFetching } = useUsuarios({
+		texto_busqueda: textoBusqueda || undefined,
+		pagina,
+		tamano_pagina: TAMANO_PAGINA,
+	})
+
 	const { data: roles } = useObtenerRoles()
 	const rolesList = roles ?? []
 	const { tieneRol } = useUserSession()
@@ -175,48 +182,9 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 	const [usuarioAEliminar, setUsuarioAEliminar] = useState<Usuario | null>(null)
 	const [registrarAbierto, setRegistrarAbierto] = useState(false)
 
-	const lista = usuarios ?? usuariosIniciales
-
-	const usuariosFiltrados = useMemo(() => {
-		if (!lista) return []
-		if (!busqueda.trim()) return lista
-
-		const q = busqueda.trim().toLowerCase()
-		return lista.filter(
-			u =>
-				u.nombre.toLowerCase().includes(q) ||
-				u.rut.toLowerCase().includes(q) ||
-				(u.correo ?? '').toLowerCase().includes(q) ||
-				(u.telefono ?? '').includes(q) ||
-				u.sucursal.toLowerCase().includes(q) ||
-				u.roles.some(r => r.nombre.toLowerCase().includes(q)),
-		)
-	}, [lista, busqueda])
-
-	if (isLoading) {
-		return (
-			<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
-				<div className='border-b border-border/80 p-3 sm:p-4'>
-					<div className='flex flex-wrap items-center gap-2'>
-						<Skeleton className='h-9 min-w-[12rem] flex-1 rounded-md' />
-						<Skeleton className='h-5 w-24 rounded-md' />
-						<Skeleton className='h-9 w-32 rounded-md' />
-					</div>
-				</div>
-				<div className='p-3 sm:p-4'>
-					<div className='grid gap-3 sm:hidden'>
-						{Array.from({ length: 4 }).map((_, i) => (
-							<Skeleton key={i} className='h-[120px] rounded-lg' />
-						))}
-					</div>
-					<div className='hidden sm:block'>
-						{Array.from({ length: 6 }).map((_, i) => (
-							<Skeleton key={i} className='mb-2 h-11 w-full rounded-md' />
-						))}
-					</div>
-				</div>
-			</section>
-		)
+	const onBusquedaChange = (valor: string) => {
+		setInputValue(valor)
+		setPagina(1)
 	}
 
 	return (
@@ -228,12 +196,12 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 						<Input
 							placeholder='Buscar por nombre, rut, correo, teléfono, sucursal o rol...'
 							className='h-9 pl-8 text-xs shadow-none'
-							value={busqueda}
-							onChange={handleChange}
+							value={inputValue}
+							onChange={e => onBusquedaChange(e.target.value)}
 						/>
 					</div>
 					<span className='text-sm text-muted-foreground'>
-						Mostrando {usuariosFiltrados.length} de {lista?.length ?? 0}
+						Mostrando {response?.data?.length ?? 0} de {response?.total ?? 0}
 					</span>
 					<PermissionGuard allowedPermissions={['ADMINISTRAR_USUARIOS']}>
 						<Button
@@ -249,136 +217,169 @@ export default function PersonalClient({ usuariosIniciales }: Props) {
 			</div>
 
 			<div className='p-3 sm:p-4'>
-				{usuariosFiltrados.length === 0 ? (
-					<div className='flex items-center justify-center py-12'>
+				{/* Cards: mobile */}
+				<div className='grid gap-3 sm:hidden'>
+					{isFetching
+						? Array.from({ length: 4 }).map((_, i) => (
+								<Skeleton key={i} className='h-[120px] rounded-lg' />
+							))
+						: response?.data && response.data.length > 0
+							? response.data.map(usuario => (
+									<CardUsuario
+										key={usuario.rut}
+										usuario={usuario}
+										onVerDetalle={setUsuarioDetalle}
+										onEliminar={
+											tieneRol('GERENTE_GENERAL')
+												? setUsuarioAEliminar
+												: undefined
+										}
+									/>
+								))
+							: null}
+				</div>
+
+				{!isFetching && !response?.data?.length && (
+					<div className='flex items-center justify-center py-12 sm:hidden'>
 						<p className='text-sm text-muted-foreground'>
-							{busqueda.trim()
+							{inputValue.trim()
 								? 'No se encontraron usuarios que coincidan con la búsqueda.'
 								: 'No hay usuarios registrados.'}
 						</p>
 					</div>
-				) : (
-					<>
-						{/* Cards: mobile */}
-						<div className='grid gap-3 sm:hidden'>
-							{usuariosFiltrados.map(usuario => (
-								<CardUsuario
-									key={usuario.rut}
-									usuario={usuario}
-									onVerDetalle={setUsuarioDetalle}
-									onEliminar={
-										tieneRol('GERENTE_GENERAL')
-											? setUsuarioAEliminar
-											: undefined
-									}
-								/>
-							))}
-						</div>
+				)}
 
-						{/* Tabla: desktop */}
-						<div className='hidden overflow-x-auto sm:block'>
-							<Table className='w-full text-sm [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap'>
-								<TableHeader>
-									<TableRow className='border-0 hover:bg-transparent'>
-										<TableHead className='h-9 min-w-[180px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-											Nombre
-										</TableHead>
-										<TableHead className='h-9 min-w-[120px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-											Cargo
-										</TableHead>
-										<TableHead className='h-9 min-w-[100px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-											Sucursal
-										</TableHead>
-										<TableHead className='h-9 min-w-[160px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-											Contacto
-										</TableHead>
-										<TableHead className='h-9 w-[96px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-											Estado
-										</TableHead>
-										<TableHead className='h-9 min-w-[140px] px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-											Acción
-										</TableHead>
+				{/* Tabla: desktop */}
+				<div className='hidden overflow-x-auto sm:block'>
+					<Table className='w-full text-sm [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap'>
+						<TableHeader>
+							<TableRow className='border-0 hover:bg-transparent'>
+								<TableHead className='h-9 min-w-[180px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									Nombre
+								</TableHead>
+								<TableHead className='h-9 min-w-[120px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									Cargo
+								</TableHead>
+								<TableHead className='h-9 min-w-[100px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									Sucursal
+								</TableHead>
+								<TableHead className='h-9 min-w-[160px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									Contacto
+								</TableHead>
+								<TableHead className='h-9 w-[96px] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									Estado
+								</TableHead>
+								<TableHead className='h-9 min-w-[140px] px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									Acción
+								</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{isFetching ? (
+								Array.from({ length: 6 }).map((_, i) => (
+									<TableRow key={i}>
+										{Array.from({ length: 6 }).map((_, j) => (
+											<TableCell key={j} className='px-3 py-2.5'>
+												<Skeleton className='h-4 w-full rounded-md' />
+											</TableCell>
+										))}
 									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{usuariosFiltrados.map(usuario => (
-										<TableRow
-											key={usuario.rut}
-											className='border-b border-border/60 transition-colors hover:bg-accent/40'
-										>
-											<TableCell className='px-3 py-2.5'>
-												<div className='flex items-center gap-2'>
-													<InicialesUsuario nombre={usuario.nombre} />
-													<div className='min-w-0'>
-														<div className='font-medium'>{usuario.nombre}</div>
-														<div className='text-xs text-muted-foreground'>
-															{usuario.rut}
-														</div>
+								))
+							) : response?.data && response.data.length > 0 ? (
+								response.data.map(usuario => (
+									<TableRow
+										key={usuario.rut}
+										className='border-b border-border/60 transition-colors hover:bg-accent/40'
+									>
+										<TableCell className='px-3 py-2.5'>
+											<div className='flex items-center gap-2'>
+												<InicialesUsuario nombre={usuario.nombre} />
+												<div className='min-w-0'>
+													<div className='font-medium'>{usuario.nombre}</div>
+													<div className='text-xs text-muted-foreground'>
+														{usuario.rut}
 													</div>
 												</div>
-											</TableCell>
-											<TableCell className='px-3 py-2.5'>
-												<div className='flex flex-wrap gap-1'>
-													{usuario.roles.map(rol => (
-														<Badge
-															key={rol.codigo}
-															variant='pastel-sky'
-															className='text-[11px] font-semibold'
-														>
-															{rol.nombre}
-														</Badge>
-													))}
-												</div>
-											</TableCell>
-											<TableCell className='px-3 py-2.5 text-muted-foreground'>
-												{usuario.sucursal || '—'}
-											</TableCell>
-											<TableCell className='px-3 py-2.5'>
-												<div className='max-w-[200px] truncate text-sm text-muted-foreground'>
-													{usuario.correo || '—'}
-												</div>
-												<div className='text-xs text-muted-foreground'>
-													{usuario.telefono || '—'}
-												</div>
-											</TableCell>
-											<TableCell className='px-3 py-2.5'>
-												<Badge
-													variant={
-														usuario.habilitado ? 'success' : 'destructive'
-													}
-													className='text-[11px] font-semibold'
+											</div>
+										</TableCell>
+										<TableCell className='px-3 py-2.5'>
+											<div className='flex flex-wrap gap-1'>
+												{usuario.roles.map(rol => (
+													<Badge
+														key={rol.codigo}
+														variant='pastel-sky'
+														className='text-[11px] font-semibold'
+													>
+														{rol.nombre}
+													</Badge>
+												))}
+											</div>
+										</TableCell>
+										<TableCell className='px-3 py-2.5 text-muted-foreground'>
+											{usuario.sucursal || '—'}
+										</TableCell>
+										<TableCell className='px-3 py-2.5'>
+											<div className='max-w-[200px] truncate text-sm text-muted-foreground'>
+												{usuario.correo || '—'}
+											</div>
+											<div className='text-xs text-muted-foreground'>
+												{usuario.telefono || '—'}
+											</div>
+										</TableCell>
+										<TableCell className='px-3 py-2.5'>
+											<Badge
+												variant={usuario.habilitado ? 'success' : 'destructive'}
+												className='text-[11px] font-semibold'
+											>
+												{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
+											</Badge>
+										</TableCell>
+										<TableCell className='px-3 py-2.5 text-right'>
+											<div className='flex items-center justify-end gap-1'>
+												<Button
+													size='sm'
+													variant='outline'
+													className='h-8 shrink-0 px-2.5 text-xs shadow-none'
+													onClick={() => setUsuarioDetalle(usuario)}
 												>
-													{usuario.habilitado ? 'Habilitado' : 'Deshabilitado'}
-												</Badge>
-											</TableCell>
-											<TableCell className='px-3 py-2.5 text-right'>
-												<div className='flex items-center justify-end gap-1'>
+													Ver detalle
+												</Button>
+												{tieneRol('GERENTE_GENERAL') && (
 													<Button
 														size='sm'
-														variant='outline'
+														variant='destructive'
 														className='h-8 shrink-0 px-2.5 text-xs shadow-none'
-														onClick={() => setUsuarioDetalle(usuario)}
+														onClick={() => setUsuarioAEliminar(usuario)}
 													>
-														Ver detalle
+														Eliminar
 													</Button>
-													{tieneRol('GERENTE_GENERAL') && (
-														<Button
-															size='sm'
-															variant='destructive'
-															className='h-8 shrink-0 px-2.5 text-xs shadow-none'
-															onClick={() => setUsuarioAEliminar(usuario)}
-														>
-															Eliminar
-														</Button>
-													)}
-												</div>
-											</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							</Table>
-						</div>
-					</>
+												)}
+											</div>
+										</TableCell>
+									</TableRow>
+								))
+							) : (
+								<TableRow>
+									<TableCell
+										colSpan={6}
+										className='h-24 text-center text-sm text-muted-foreground'
+									>
+										{inputValue.trim()
+											? 'No se encontraron usuarios que coincidan con la búsqueda.'
+											: 'No hay usuarios registrados.'}
+									</TableCell>
+								</TableRow>
+							)}
+						</TableBody>
+					</Table>
+				</div>
+
+				{response?.data && response.data.length > 0 && !isFetching && (
+					<Paginacion
+						pagina={response.pagina}
+						totalPaginas={response.total_paginas}
+						onPaginaChange={setPagina}
+					/>
 				)}
 			</div>
 

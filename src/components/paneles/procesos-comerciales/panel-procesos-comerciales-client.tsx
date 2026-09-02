@@ -101,7 +101,8 @@ export default function PanelProcesosComercialesClient({
 		TAMANO_PAGINA,
 	)
 
-	const { data: usuarios } = useUsuarios()
+	const { data: usuariosData } = useUsuarios({ pagina: 1, tamano_pagina: 100 })
+	const usuarios = usuariosData?.data
 	const { data: etapas } = useEtapasProcesoComerciales()
 
 	const [drawerAbierto, setDrawerAbierto] = useState(false)

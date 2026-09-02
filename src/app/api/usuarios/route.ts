@@ -1,14 +1,18 @@
 import { obtenerUsuarios } from '@/aplicacion/usuarios/use-cases/obtener-usuarios'
 import { axiosClient } from '@/infraestructura/axios/axios-client'
 import axios from 'axios'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-export async function GET() {
+export async function GET(request: Request) {
 	try {
-		const cookieStore = await cookies()
-		const usuarios = await obtenerUsuarios(cookieStore.toString())
-		return NextResponse.json(usuarios)
+		const { searchParams } = new URL(request.url)
+
+		const resultado = await obtenerUsuarios({
+			textoBusqueda: searchParams.get('texto_busqueda'),
+			pagina: Number(searchParams.get('pagina')) || 1,
+			tamanoPagina: Number(searchParams.get('tamano_pagina')) || 15,
+		})
+		return NextResponse.json(resultado)
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			return NextResponse.json(
@@ -26,7 +30,8 @@ export async function GET() {
 export async function POST(request: Request) {
 	try {
 		const body = await request.json()
-		const cookieStore = await cookies()
+		const cookiesModule = await import('next/headers')
+		const cookieStore = await cookiesModule.cookies()
 
 		const response = await axiosClient.post('/usuarios', body, {
 			headers: { Cookie: cookieStore.toString() },

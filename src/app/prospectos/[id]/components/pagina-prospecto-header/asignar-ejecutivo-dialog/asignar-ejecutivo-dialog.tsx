@@ -70,7 +70,8 @@ export default function AsignarEjecutivoDialog({
 	tipo,
 	ejecutivoActual,
 }: AsignarEjecutivoDialogProps) {
-	const { data: usuarios, isLoading } = useUsuarios()
+	const { data: usuariosData, isLoading } = useUsuarios({ pagina: 1, tamano_pagina: 100 })
+	const usuarios = usuariosData?.data
 
 	const mutationComercial = useAsignarEjecutivoComercial(idProspecto)
 	const mutationEvaluacion = useAsignarEjecutivoEvaluacion(idProspecto)

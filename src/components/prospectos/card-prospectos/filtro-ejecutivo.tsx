@@ -27,7 +27,8 @@ export default function FiltroEjecutivo({
 	value,
 	onChange,
 }: FiltroEjecutivoProps) {
-	const { data: usuarios, isLoading } = useUsuarios()
+	const { data: usuariosData, isLoading } = useUsuarios({ pagina: 1, tamano_pagina: 100 })
+	const usuarios = usuariosData?.data
 
 	const ejecutivos = useMemo(() => {
 		if (!usuarios) return []
