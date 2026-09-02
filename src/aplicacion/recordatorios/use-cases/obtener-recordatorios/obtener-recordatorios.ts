@@ -1,20 +1,23 @@
 import { axiosClient } from '@/infraestructura/axios/axios-client'
 import { cookies } from 'next/headers'
 import { ObtenerRecordatoriosResponse } from './dto/obtener-recordatorios-response'
-import Recordatorio from '@/dominio/recordatorio/recordatorio'
 
 type ObtenerRecordatoriosProps = {
 	fecha: string
 	id_prospecto: number | null
+	pagina: number
+	tamano_pagina: number
 }
 
 export const obtenerRecordatorios = async ({
 	fecha,
 	id_prospecto,
-}: ObtenerRecordatoriosProps): Promise<Recordatorio[]> => {
+	pagina,
+	tamano_pagina,
+}: ObtenerRecordatoriosProps): Promise<ObtenerRecordatoriosResponse> => {
 	const cookieStore = await cookies()
 
-	let endpoint = `/recordatorios?fecha=${fecha}`
+	let endpoint = `/recordatorios?fecha=${fecha}&pagina=${pagina}&tamano_pagina=${tamano_pagina}`
 
 	if (id_prospecto) endpoint = `${endpoint}&id_prospecto=${id_prospecto}`
 
@@ -23,7 +26,6 @@ export const obtenerRecordatorios = async ({
 			Cookie: cookieStore.toString(),
 		},
 	})
-	const data: ObtenerRecordatoriosResponse = response.data
 
-	return data.recordatorios
+	return response.data
 }

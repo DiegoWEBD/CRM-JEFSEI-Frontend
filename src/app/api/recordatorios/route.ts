@@ -10,13 +10,17 @@ export async function GET(request: Request) {
 
 		const fecha = searchParams.get('fecha')
 		const idProspecto = searchParams.get('id_prospecto')
+		const pagina = searchParams.get('pagina')
+		const tamanoPagina = searchParams.get('tamano_pagina')
 
-		const recordatorios = await obtenerRecordatorios({
+		const resultado = await obtenerRecordatorios({
 			fecha: fecha ?? '',
 			id_prospecto: idProspecto ? Number(idProspecto) : null,
+			pagina: pagina ? Number(pagina) : 1,
+			tamano_pagina: tamanoPagina ? Number(tamanoPagina) : 15,
 		})
 
-		return NextResponse.json(recordatorios)
+		return NextResponse.json(resultado)
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			return NextResponse.json(

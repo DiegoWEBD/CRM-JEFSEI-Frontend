@@ -51,10 +51,11 @@ export default function RecordatoriosClienteSection({
 	const [verCompletados, setVerCompletados] = useState(false)
 	const [verTodosPendientes, setVerTodosPendientes] = useState(false)
 
-	const { data: recordatorios } = useRecordatorios({
+	const { data: dataRecordatorios } = useRecordatorios({
 		fecha: fechaQuery,
 		id_prospecto: idProspecto,
 	})
+	const recordatorios = dataRecordatorios?.data
 
 	const completarMutation = useCompletarRecordatorio()
 	const eliminarMutation = useEliminarRecordatorio()
