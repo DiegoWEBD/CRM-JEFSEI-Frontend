@@ -9,11 +9,7 @@ type UseUsuariosParams = {
 }
 
 export const useUsuarios = (filtros: UseUsuariosParams) => {
-	const {
-		texto_busqueda,
-		pagina = 1,
-		tamano_pagina = 15,
-	} = filtros
+	const { texto_busqueda, pagina = 1, tamano_pagina = 7 } = filtros
 
 	return useQuery<ObtenerUsuariosResponse>({
 		queryKey: ['usuarios', texto_busqueda, pagina, tamano_pagina],

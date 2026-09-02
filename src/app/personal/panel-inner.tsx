@@ -10,9 +10,8 @@ export async function PanelInner() {
 	const queryClient = new QueryClient()
 
 	await queryClient.query({
-		queryKey: ['usuarios', '', 1, 15],
-		queryFn: () =>
-			obtenerUsuarios({ textoBusqueda: '', pagina: 1, tamanoPagina: 15 }),
+		queryKey: ['usuarios', undefined, 1, 7],
+		queryFn: () => obtenerUsuarios({ pagina: 1, tamanoPagina: 7 }),
 	})
 
 	return (

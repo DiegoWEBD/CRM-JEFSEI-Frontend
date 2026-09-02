@@ -160,7 +160,7 @@ function CardUsuario({
 	)
 }
 
-const TAMANO_PAGINA = 15
+const TAMANO_PAGINA = 7
 
 export default function PersonalClient() {
 	const [pagina, setPagina] = useState(1)
