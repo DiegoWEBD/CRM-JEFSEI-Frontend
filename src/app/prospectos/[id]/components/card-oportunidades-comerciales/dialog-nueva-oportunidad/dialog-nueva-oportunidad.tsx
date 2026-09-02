@@ -4,11 +4,9 @@ import { Button } from '@/components/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/dialog'
 import { Label } from '@/components/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/select'
+import { Skeleton } from '@/components/skeleton'
 import { useCrearProcesoComercial } from '@/hooks/procesos-comerciales/use-crear-proceso-comercial'
-import {
-  inferirTipoClienteSolicitud,
-  lineasSolicitudParaTipo,
-} from '@/lib/solicitud-cotizacion-catalogo'
+import { useProductosLineaNegocio } from '@/hooks/lineas-negocio/use-productos-linea-negocio'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -17,6 +15,7 @@ type DialogNuevaOportunidadProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   idProspecto: number
+  lineaNegocioId: number
   lineaNegocioNombre: string
 }
 
@@ -24,12 +23,11 @@ export default function DialogNuevaOportunidad({
   open,
   onOpenChange,
   idProspecto,
-  lineaNegocioNombre,
+  lineaNegocioId,
 }: DialogNuevaOportunidadProps) {
   const [tipo, setTipo] = useState('')
   const mutation = useCrearProcesoComercial(idProspecto)
-  const tipoCliente = inferirTipoClienteSolicitud(lineaNegocioNombre)
-  const lineasOpciones = lineasSolicitudParaTipo(tipoCliente)
+  const { data: productos, isLoading } = useProductosLineaNegocio(lineaNegocioId)
 
   async function handleSubmit() {
     if (!tipo) return
@@ -59,18 +57,22 @@ export default function DialogNuevaOportunidad({
 
         <div className='space-y-1.5'>
           <Label className='text-xs'>Tipo de seguro</Label>
-          <Select value={tipo} onValueChange={setTipo}>
-            <SelectTrigger className='h-9 w-full text-sm'>
-              <SelectValue placeholder='Seleccione tipo' />
-            </SelectTrigger>
-            <SelectContent>
-              {lineasOpciones.map((l) => (
-                <SelectItem key={l.key} value={l.key} className='text-sm'>
-                  {l.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {isLoading ? (
+            <Skeleton className='h-9 w-full' />
+          ) : (
+            <Select value={tipo} onValueChange={setTipo}>
+              <SelectTrigger className='h-9 w-full text-sm'>
+                <SelectValue placeholder='Seleccione tipo' />
+              </SelectTrigger>
+              <SelectContent>
+                {productos?.map((p) => (
+                  <SelectItem key={p.id} value={p.codigo ?? ''} className='text-sm'>
+                    {p.nombre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
 
         {mutation.isError && (

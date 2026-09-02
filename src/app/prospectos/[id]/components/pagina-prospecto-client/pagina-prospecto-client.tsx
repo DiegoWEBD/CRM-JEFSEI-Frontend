@@ -69,6 +69,7 @@ export default function PaginaProspectoClient({
 					idCliente={prospecto.id_cliente}
 					informacionCompleta={prospecto.informacion_completa}
 					nombreCliente={prospecto.nombre_riesgo}
+					lineaNegocioId={prospecto.linea_negocio.id}
 					lineaNegocioNombre={prospecto.linea_negocio.nombre}
 					ejecutivoComercialRut={prospecto.ejecutivo_comercial_asignado?.rut}
 					ejecutivoEvaluacionRut={prospecto.ejecutivo_evaluacion_asignado?.rut}
@@ -76,10 +77,7 @@ export default function PaginaProspectoClient({
 				/>
 			</PermissionGuard>
 
-			<CardPolizas
-				idCliente={prospecto.id_cliente}
-				nombreCliente={prospecto.nombre_riesgo}
-			/>
+			<CardPolizas idCliente={prospecto.id_cliente} />
 
 			<SeguimientoComercialSection
 				idProspecto={prospecto.id}

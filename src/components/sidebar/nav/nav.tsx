@@ -9,6 +9,7 @@ import {
 	Group,
 	Home,
 	LayoutDashboard,
+	Package,
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
@@ -18,6 +19,7 @@ const ROLES_GERENTE = [
 	'GERENTE_COMERCIAL',
 	'GERENTE_GENERAL',
 	'GERENTE_OPERACIONES',
+	'DESARROLLADOR',
 ]
 const ROLES_EVALUACION = ['EJECUTIVO_EVALUACION_PROYECTOS', ...ROLES_GERENTE]
 
@@ -101,7 +103,20 @@ const SECCIONES: NavSection[] = [
 				icono: Building2,
 				titulo: 'Parámetros de condominios',
 				visible: r =>
-					r.some(c => ['GERENTE_GENERAL', 'GERENTE_COMERCIAL'].includes(c)),
+					r.some(c =>
+						['GERENTE_GENERAL', 'GERENTE_COMERCIAL', 'DESARROLLADOR'].includes(
+							c,
+						),
+					),
+			},
+			{
+				href: '/productos',
+				icono: Package,
+				titulo: 'Productos',
+				visible: r =>
+					r.some(c =>
+						['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c),
+					),
 			},
 		],
 	},

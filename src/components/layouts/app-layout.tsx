@@ -1,8 +1,8 @@
+import { getSession } from '@/lib/auth'
 import Header from '../header/header'
 import SideBar from '../sidebar/sidebar'
+import AuthGuard from './guards/auth-guard'
 import MainContentLayout from './main-content-layout/main-content-layout'
-import SessionWatcher from './session-watcher'
-import { getSession } from '@/lib/auth'
 
 export default async function AppLayout({
 	children,
@@ -15,12 +15,14 @@ export default async function AppLayout({
 
 	return (
 		<>
-			<SessionWatcher autenticado={autenticado} />
-
-			{autenticado && <SideBar />}
+			<AuthGuard>
+				<SideBar />
+			</AuthGuard>
 
 			<div className='flex flex-col flex-1 min-w-0'>
-				{autenticado && <Header />}
+				<AuthGuard>
+					<Header />
+				</AuthGuard>
 
 				<MainContentLayout
 					bare={!autenticado}

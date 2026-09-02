@@ -106,10 +106,7 @@ export default function FormularioRegistrarProspecto({
 							name='rut_riesgo'
 							value={formik.values.rut_riesgo ?? ''}
 							onChange={e =>
-								formik.setFieldValue(
-									'rut_riesgo',
-									formatRut(e.target.value),
-								)
+								formik.setFieldValue('rut_riesgo', formatRut(e.target.value))
 							}
 						/>
 						{formik.touched.rut_riesgo && formik.errors.rut_riesgo ? (
@@ -215,9 +212,7 @@ export default function FormularioRegistrarProspecto({
 						<Campo label='Administrador'>
 							<SelectorAdministrador
 								value={formik.values.id_administrador}
-								onChange={id =>
-									formik.setFieldValue('id_administrador', id)
-								}
+								onChange={id => formik.setFieldValue('id_administrador', id)}
 							/>
 						</Campo>
 					)}
