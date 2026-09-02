@@ -5,17 +5,29 @@ import axios from 'axios'
 type UseRecordatoriosProps = {
 	fecha: string
 	id_prospecto?: number
+	pagina?: number
+	tamano_pagina?: number
+}
+
+type RecordatoriosPaginadosResponse = {
+	data: Recordatorio[]
+	total: number
+	pagina: number
+	tamano_pagina: number
+	total_paginas: number
 }
 
 export const useRecordatorios = ({
 	fecha,
 	id_prospecto,
+	pagina = 1,
+	tamano_pagina = 15,
 }: UseRecordatoriosProps) => {
 	return useQuery({
-		queryKey: ['recordatorios', fecha, id_prospecto],
+		queryKey: ['recordatorios', fecha, id_prospecto, pagina, tamano_pagina],
 
 		queryFn: async () => {
-			let endpoint = `/api/recordatorios?fecha=${fecha}`
+			let endpoint = `/api/recordatorios?fecha=${fecha}&pagina=${pagina}&tamano_pagina=${tamano_pagina}`
 
 			if (id_prospecto) {
 				endpoint += `&id_prospecto=${id_prospecto}`
@@ -25,7 +37,7 @@ export const useRecordatorios = ({
 				withCredentials: true,
 			})
 
-			const data: Recordatorio[] = response.data
+			const data: RecordatoriosPaginadosResponse = response.data
 			return data
 		},
 	})
