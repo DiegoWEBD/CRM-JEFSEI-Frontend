@@ -128,7 +128,7 @@ export default function TablaProductos({
 									className='border-b border-border/50 transition-colors hover:bg-accent/50 last:border-b-0'
 								>
 									<td className='px-4 py-2.5'>
-										<p className='font-semibold text-foreground truncate max-w-50'>
+										<p className='font-semibold text-foreground max-w-60'>
 											{producto.nombre}
 										</p>
 									</td>

@@ -1,26 +1,25 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/solicitud-cotizacion-resumen'
-import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
+import { Badge } from '@/components/badge'
+import BadgePrioridad from '@/components/badge-prioridad/badge-prioridad'
+import { Button } from '@/components/button'
+import { ScrollArea } from '@/components/scroll-area/scroll-area'
+import { Separator } from '@/components/separator'
 import {
 	Sheet,
 	SheetContent,
 	SheetHeader,
 	SheetTitle,
 } from '@/components/sheet'
-import { Separator } from '@/components/separator'
-import { ScrollArea } from '@/components/scroll-area/scroll-area'
-import { formatFechaCorta } from '@/utils/format-fecha-corta'
-import { Button } from '@/components/button'
-import { Badge } from '@/components/badge'
 import { Skeleton } from '@/components/skeleton'
-import BadgePrioridad from '@/components/badge-prioridad/badge-prioridad'
-import BadgeEstadoSolicitud from './badge-estado-solicitud'
+import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/solicitud-cotizacion-resumen'
+import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
 import { labelCampo } from '@/lib/etiquetas-campos-prospecto'
-import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
+import { formatearFecha } from '@/utils/formatear-fecha'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { CircleAlert } from 'lucide-react'
+import BadgeEstadoSolicitud from './badge-estado-solicitud'
 
 function FilaDetalle({
 	label,
@@ -89,9 +88,7 @@ export default function SheetDetalleSolicitud({
 					<SheetTitle className='text-base leading-snug'>
 						{solicitud.nombre_riesgo}
 					</SheetTitle>
-					<p className='text-xs text-muted-foreground'>
-						{full?.producto || solicitud.producto}
-					</p>
+					<p className='text-xs text-muted-foreground'>{solicitud.producto}</p>
 					<div className='mt-2'>
 						<BadgeEstadoSolicitud estado={estado} />
 					</div>
@@ -99,97 +96,78 @@ export default function SheetDetalleSolicitud({
 
 				<ScrollArea className='flex-1 overflow-y-auto px-4 py-3'>
 					<div className='space-y-4 pr-2'>
-						<FilaDetalle label='Producto'>
-							{TIPO_LINEA_LABELS[full?.tipo ?? solicitud.tipo] ||
-								full?.tipo ||
-								solicitud.tipo}
-						</FilaDetalle>
+						<FilaDetalle label='Producto'>{solicitud.producto}</FilaDetalle>
 
-						{cargandoDetalle ? (
-							<DetallesSkeleton />
-						) : full ? (
-							<>
-								{full.rut_ejecutivo_comercial || full.nombre_ejecutivo_comercial ? (
-									<FilaDetalle label='Ejecutivo comercial'>
-										{full.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial}
-										{full.rut_ejecutivo_comercial
-											? ` (${full.rut_ejecutivo_comercial})`
-											: null}
-									</FilaDetalle>
-								) : (
-									<FilaDetalle label='Ejecutivo comercial'>
-										{solicitud.ejecutivo_comercial}
-									</FilaDetalle>
-								)}
+						{cargandoDetalle && <DetallesSkeleton />}
 
-								{full.tipo === 'vida_guardia' && full.numero_guardias != null ? (
-									<FilaDetalle label='Número de guardias'>
-										{full.numero_guardias}
-									</FilaDetalle>
-								) : null}
-
-								{full.tipo === 'unidades' && full.monto_asegurado_total != null ? (
-									<FilaDetalle label='Monto asegurado total'>
-										{full.monto_asegurado_total.toLocaleString('es-CL')}
-									</FilaDetalle>
-								) : null}
-
-								{full.tipo === 'unidades' && full.nombre_excel ? (
-									<FilaDetalle label='Archivo Excel'>
-										{full.nombre_excel}
-									</FilaDetalle>
-								) : null}
-
-								{full.tipo === 'accidentes_personales' &&
-								full.actividades &&
-								full.actividades.length > 0 ? (
-									<div className='space-y-1.5'>
-										<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-											Actividades aseguradas
-										</p>
-										<div className='space-y-1'>
-											{full.actividades.map((act, i) => (
-												<div
-													key={i}
-													className='flex items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'
-												>
-													<span className='text-sm text-foreground'>
-														{act.actividad}
-													</span>
-													<Badge variant='outline' className='shrink-0 text-xs'>
-														{act.numero_asegurados} asegurado
-														{act.numero_asegurados !== 1 ? 's' : ''}
-													</Badge>
-												</div>
-											))}
-										</div>
-									</div>
-								) : null}
-
-								{full.tipo === 'rc_condominio' ? (
-									<>
-										{full.actividad_del_condominio ? (
-											<FilaDetalle label='Actividad del condominio'>
-												{full.actividad_del_condominio}
-											</FilaDetalle>
-										) : null}
-										{full.limite != null ? (
-											<FilaDetalle label='Límite RC'>
-												{full.limite.toLocaleString('es-CL')}
-											</FilaDetalle>
-										) : null}
-									</>
-								) : null}
-							</>
-						) : (
-							<FilaDetalle label='Ejecutivo comercial'>
+						<>
+							<FilaDetalle label='Gestión comercial'>
 								{solicitud.ejecutivo_comercial}
 							</FilaDetalle>
-						)}
+
+							{full?.tipo === 'vida_guardia' && (
+								<FilaDetalle label='Número de guardias'>
+									{full?.numero_guardias || '-'}
+								</FilaDetalle>
+							)}
+
+							{full?.tipo === 'unidades' && (
+								<>
+									<FilaDetalle label='Monto asegurado total'>
+										{full?.monto_asegurado_total?.toLocaleString('es-CL') ||
+											'-'}
+									</FilaDetalle>
+
+									<FilaDetalle label='Archivo Excel'>
+										{full?.nombre_excel || '-'}
+									</FilaDetalle>
+								</>
+							)}
+
+							{full?.tipo === 'accidentes_personales' &&
+							full.actividades &&
+							full.actividades.length > 0 ? (
+								<div className='space-y-1.5'>
+									<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+										Actividades aseguradas
+									</p>
+									<div className='space-y-1'>
+										{full.actividades.map((act, i) => (
+											<div
+												key={i}
+												className='flex items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/20 px-2 py-1.5'
+											>
+												<span className='text-sm text-foreground'>
+													{act.actividad}
+												</span>
+												<Badge variant='outline' className='shrink-0 text-xs'>
+													{act.numero_asegurados} asegurado
+													{act.numero_asegurados !== 1 ? 's' : ''}
+												</Badge>
+											</div>
+										))}
+									</div>
+								</div>
+							) : null}
+
+							{full?.tipo === 'rc_condominio' && (
+								<>
+									<FilaDetalle label='Actividad del condominio'>
+										{full.actividad_del_condominio || '-'}
+									</FilaDetalle>
+									<FilaDetalle label='Límite RC'>
+										{full.limite ? full.limite.toLocaleString('es-CL') : '-'}
+									</FilaDetalle>
+								</>
+							)}
+						</>
 
 						<FilaDetalle label='Fecha de solicitud'>
 							<span className='tabular-nums'>
-								{formatFechaCorta(solicitud.fecha)}
+								{formatearFecha(
+									new Date(solicitud.fecha),
+									'dd MMM yyyy, HH:mm',
+								)}
 							</span>
 						</FilaDetalle>
 
@@ -200,7 +178,9 @@ export default function SheetDetalleSolicitud({
 						{full?.recotizacion ? (
 							<FilaDetalle label='Motivo de recotización'>
 								{full.motivo_recotizacion || (
-									<span className='italic text-muted-foreground'>Sin motivo registrado</span>
+									<span className='italic text-muted-foreground'>
+										Sin motivo registrado
+									</span>
 								)}
 							</FilaDetalle>
 						) : null}
