@@ -3,6 +3,7 @@ import {
 	ChartBar,
 	FileCheck,
 	FileSearch,
+	FileText,
 	Group,
 	Home,
 	LayoutDashboard,
@@ -35,6 +36,16 @@ export const RUTAS_PRINCIPALES: RouteMeta[] = [
 	{ href: '/personal', titulo: 'Personal', icono: Group },
 	{ href: '/productos', titulo: 'Productos', icono: Package },
 	{ href: '/administradores', titulo: 'Administradores', icono: Building2 },
+	{
+		href: '/configuracion-condominio',
+		titulo: 'Parámetros de condominios',
+		icono: Building2,
+	},
+	{
+		href: '/polizas',
+		titulo: 'Pólizas',
+		icono: FileText,
+	},
 ]
 
 /** Devuelve el título de ruta visible en el header según el pathname. */
