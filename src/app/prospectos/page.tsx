@@ -1,16 +1,12 @@
-import { Suspense } from 'react'
-import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import CardProspectos from '@/components/prospectos/card-prospectos/card-prospectos'
 import { CardProspectosSkeleton } from '@/components/prospectos/card-prospectos/card-prospectos-skeleton'
+import { Suspense } from 'react'
+import { ProspectosPageInner } from './prospectos-page-inner'
+
 const ProspectosPage = () => {
 	return (
-		<>
-			<PanelLayout>
-				<Suspense fallback={<CardProspectosSkeleton />}>
-					<CardProspectos />
-				</Suspense>
-			</PanelLayout>
-		</>
+		<Suspense fallback={<CardProspectosSkeleton />}>
+			<ProspectosPageInner />
+		</Suspense>
 	)
 }
 

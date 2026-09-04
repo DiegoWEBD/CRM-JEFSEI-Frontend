@@ -1,6 +1,5 @@
 'use client'
 
-import { ObtenerProspectosResponse } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/obtener-prospectos-response'
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { Dialog, DialogContent, DialogTitle } from '@/components/dialog'
@@ -17,28 +16,26 @@ import FiltroEjecutivo from './filtro-ejecutivo'
 import FiltroRegionComuna from './filtro-region-comuna'
 import SkeletonFilasProspecto from './skeleton-filas-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
+import { CardProspectosSkeleton } from '@/components/prospectos/card-prospectos/card-prospectos-skeleton'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
+import { ProspectosFiltros } from '@/app/prospectos/components/dto/prospectos-filtros'
 
 const TAMANO_PAGINA = 10
 
 type CardProspectosClientProps = {
-	initialData: ObtenerProspectosResponse
 	filtroExterno?: string | null
 	onFiltroChange?: (valor: string) => void
+	filtros: ProspectosFiltros
+	setFiltros: (filtros: ProspectosFiltros) => void
 }
 
 export default function CardProspectosClient({
-	initialData,
 	filtroExterno,
 	onFiltroChange: onFiltroChangeProp,
+	filtros,
+	setFiltros,
 }: CardProspectosClientProps) {
-	const [filtroInterno, setFiltroInterno] = useState<string>('todos')
-	const [pagina, setPagina] = useState(1)
-	const [inputValue, setInputValue] = useState('')
-	const [rutUsuario, setRutUsuario] = useState<string>('')
-	const [region, setRegion] = useState<string>('')
-	const [comuna, setComuna] = useState<string>('')
-	const textoBusqueda = useDebounce(inputValue, 300)
+	const textoBusqueda = useDebounce(filtros.inputValue, 300)
 
 	const queryClient = useQueryClient()
 
@@ -47,59 +44,55 @@ export default function CardProspectosClient({
 		setOpenFormularioRegistrarProspecto,
 	] = useState<boolean>(false)
 
-	const filtro = filtroExterno ?? filtroInterno
+	const filtro = filtroExterno ?? filtros.filtroInterno
 
 	const { data, isFetching } = useObtenerProspectos(
-		initialData,
 		filtro === 'todos' ? null : filtro,
 		textoBusqueda,
-		pagina,
+		filtros.pagina,
 		TAMANO_PAGINA,
-		rutUsuario || null,
-		region || null,
-		comuna || null,
+		filtros.rutUsuario || null,
+		filtros.region || null,
+		filtros.comuna || null,
 	)
 
-	const response = data ?? initialData
+	const response = data
+
+	if (!response) return <CardProspectosSkeleton />
 
 	const esConsultaInicial =
 		filtro === 'todos' &&
 		textoBusqueda === '' &&
-		pagina === 1 &&
-		!rutUsuario &&
-		!region &&
-		!comuna
-	const buscandoEnDebounce = inputValue !== textoBusqueda
+		filtros.pagina === 1 &&
+		!filtros.rutUsuario &&
+		!filtros.region &&
+		!filtros.comuna
+	const buscandoEnDebounce = filtros.inputValue !== textoBusqueda
 	const mostrandoEsqueleto = isFetching && !esConsultaInicial
 
 	const onFiltroChange = (valor: string) => {
 		if (onFiltroChangeProp) {
 			onFiltroChangeProp(valor)
 		} else {
-			setFiltroInterno(valor)
+			setFiltros({ ...filtros, filtroInterno: valor })
 		}
-		setPagina(1)
+		setFiltros({ ...filtros, pagina: 1 })
 	}
 
 	const onBusquedaChange = (valor: string) => {
-		setInputValue(valor)
-		setPagina(1)
+		setFiltros({ ...filtros, inputValue: valor, pagina: 1 })
 	}
 
 	const onRutUsuarioChange = (valor: string) => {
-		setRutUsuario(valor)
-		setPagina(1)
+		setFiltros({ ...filtros, rutUsuario: valor, pagina: 1 })
 	}
 
 	const onRegionChange = (valor: string) => {
-		setRegion(valor)
-		setComuna('')
-		setPagina(1)
+		setFiltros({ ...filtros, region: valor, comuna: '', pagina: 1 })
 	}
 
 	const onComunaChange = (valor: string) => {
-		setComuna(valor)
-		setPagina(1)
+		setFiltros({ ...filtros, comuna: valor, pagina: 1 })
 	}
 
 	const onProspectoRegistrado = () => {
@@ -130,10 +123,10 @@ export default function CardProspectosClient({
 					<Input
 						placeholder='Nombre, rut, estado comercial, correo, teléfono o contacto'
 						className='h-9 pr-9 pl-9 text-sm shadow-none'
-						value={inputValue}
+						value={filtros.inputValue}
 						onChange={e => onBusquedaChange(e.target.value)}
 					/>
-					{inputValue && (
+					{filtros.inputValue && (
 						<Button
 							type='button'
 							variant='ghost'
@@ -161,12 +154,15 @@ export default function CardProspectosClient({
 							'GERENTE_OPERACIONES',
 						]}
 					>
-						<FiltroEjecutivo value={rutUsuario} onChange={onRutUsuarioChange} />
+						<FiltroEjecutivo
+							value={filtros.rutUsuario}
+							onChange={onRutUsuarioChange}
+						/>
 					</AuthGuard>
 
 					<FiltroRegionComuna
-						region={region}
-						comuna={comuna}
+						region={filtros.region}
+						comuna={filtros.comuna}
 						onRegionChange={onRegionChange}
 						onComunaChange={onComunaChange}
 					/>
@@ -216,7 +212,7 @@ export default function CardProspectosClient({
 					<Paginacion
 						pagina={response.pagina}
 						totalPaginas={response.total_paginas}
-						onPaginaChange={setPagina}
+						onPaginaChange={pagina => setFiltros({ ...filtros, pagina })}
 					/>
 				</div>
 			</CardContent>

@@ -66,7 +66,7 @@ export default function RecordatoriosUsuario({
 
 	return (
 		<>
-			<div className='min-w-0 space-y-2 border-t border-border/60 pt-3 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0'>
+			<div className='min-w-0 space-y-2 border-t border-border/60 pt-3 lg:border-t-0 lg:pt-0'>
 				<div className='flex flex-wrap items-baseline justify-between gap-2'>
 					<p className='text-xs font-medium text-foreground'>
 						Recordatorios del {formatearFecha(new Date(fecha), 'dd/MM/yyyy')}

@@ -67,7 +67,7 @@ export default function CardCalendario({ prospectos }: CardCalendarioProps) {
 					Nuevo recordatorio
 				</Button>
 			</CardHeader>
-			<CardContent className='grid min-w-0 gap-4 p-3 sm:p-4 lg:grid-cols-2 lg:gap-5'>
+			<CardContent className='grid min-w-0 gap-0 p-3 sm:p-4 lg:grid-cols-[1fr_auto] lg:gap-6'>
 				<div className='min-w-0 space-y-2'>
 					<div className='flex items-center justify-between gap-2'>
 						<div className='flex items-center gap-1'>

@@ -1,22 +1,23 @@
+import { ObtenerProspectosResponse } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/obtener-prospectos-response'
 import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/obtener-prospectos'
 import {
-	QueryClient,
 	dehydrate,
 	HydrationBoundary,
+	QueryClient,
 } from '@tanstack/react-query'
-import CardProspectosClient from './card-prospectos-client'
+import ProspectosPageClient from './components/prospectos-page-client/prospectos-page-client'
 
-export default async function CardProspectos() {
+export async function ProspectosPageInner() {
 	const queryClient = new QueryClient()
 
-	await queryClient.query({
+	await queryClient.query<ObtenerProspectosResponse>({
 		queryKey: ['prospectos', null, '', 1, 10, null, null, null],
 		queryFn: () => obtenerProspectos({ pagina: 1, tamanoPagina: 10 }),
 	})
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<CardProspectosClient />
+			<ProspectosPageClient />
 		</HydrationBoundary>
 	)
 }

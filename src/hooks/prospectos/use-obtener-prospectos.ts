@@ -3,7 +3,6 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
 export const useObtenerProspectos = (
-	initialData: ObtenerProspectosResponse,
 	filtro: string | null,
 	textoBusqueda: string,
 	pagina: number,
@@ -12,17 +11,17 @@ export const useObtenerProspectos = (
 	region: string | null,
 	comuna: string | null,
 ) => {
-	const esConsultaInicial =
-		filtro === null &&
-		textoBusqueda === '' &&
-		pagina === 1 &&
-		tamanoPagina === 10 &&
-		rutUsuario === null &&
-		region === null &&
-		comuna === null
-
-	return useQuery({
-		queryKey: ['prospectos', filtro, textoBusqueda, pagina, tamanoPagina, rutUsuario, region, comuna],
+	return useQuery<ObtenerProspectosResponse>({
+		queryKey: [
+			'prospectos',
+			filtro,
+			textoBusqueda,
+			pagina,
+			tamanoPagina,
+			rutUsuario,
+			region,
+			comuna,
+		],
 		queryFn: async () => {
 			const params = new URLSearchParams()
 			if (filtro) params.set('filtro', filtro)
@@ -33,9 +32,8 @@ export const useObtenerProspectos = (
 			if (region) params.set('region', region)
 			if (comuna) params.set('comuna', comuna)
 			const response = await axios.get(`/api/prospectos?${params.toString()}`)
-			return response.data as ObtenerProspectosResponse
+			return response.data
 		},
-		...(esConsultaInicial ? { initialData } : {}),
 		placeholderData: keepPreviousData,
 	})
 }

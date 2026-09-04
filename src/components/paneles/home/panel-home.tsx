@@ -2,10 +2,21 @@ import { obtenerDashboardCobranza } from '@/aplicacion/cobranza/use-cases/obtene
 import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/obtener-prospectos'
 import { cookies } from 'next/headers'
 import { getSession } from '@/lib/auth'
+import {
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
+} from '@tanstack/react-query'
 import PanelHomeClient from './panel-home-client'
 
 const PanelHome = async () => {
-	const prospectos = await obtenerProspectos({ pagina: 1, tamanoPagina: 10 })
+	const queryClient = new QueryClient()
+
+	await queryClient.query({
+		queryKey: ['prospectos', null, '', 1, 10, null, null, null],
+		queryFn: () => obtenerProspectos({ pagina: 1, tamanoPagina: 10 }),
+	})
+
 	const session = await getSession()
 	const codigoRoles = session?.codigo_roles ?? []
 
@@ -20,12 +31,13 @@ const PanelHome = async () => {
 	}
 
 	return (
-		<PanelHomeClient
-			prospectosIniciales={prospectos}
-			codigoRoles={codigoRoles}
-			nombreUsuario={session?.nombre ?? ''}
-			dashboardCobranzaInicial={dashboardInicial}
-		/>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<PanelHomeClient
+				codigoRoles={codigoRoles}
+				nombreUsuario={session?.nombre ?? ''}
+				dashboardCobranzaInicial={dashboardInicial}
+			/>
+		</HydrationBoundary>
 	)
 }
 
