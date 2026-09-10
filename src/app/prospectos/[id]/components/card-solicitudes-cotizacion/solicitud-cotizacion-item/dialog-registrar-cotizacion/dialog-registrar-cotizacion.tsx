@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/select'
+import { RadioGroup, RadioGroupItem } from '@/components/radio-group'
 import { useCompaniesSeguros } from '@/hooks/companies-seguros/use-companies-seguros'
 import { useRegistrarCotizacion } from '@/hooks/cotizaciones/use-registrar-cotizacion'
 import type { RegistrarCotizacionRequest } from '@/aplicacion/cotizaciones/use-cases/registrar-cotizacion/dto/registrar-cotizacion-request'
@@ -32,11 +33,14 @@ type DialogRegistrarCotizacionProps = {
 }
 
 type FormValues = {
+  tipo: 'tasa' | 'prima'
   id_company: string
   monto_total_asegurado: string
   tasa_afecta: string
   tasa_excenta: string
   tasa_politica: string
+  prima_afecta: string
+  prima_excenta: string
   prima_adicional_asistencia: string
   fecha_emision: string
   fecha_vencimiento: string
@@ -44,11 +48,14 @@ type FormValues = {
 }
 
 const initialValues: FormValues = {
+  tipo: 'tasa',
   id_company: '',
   monto_total_asegurado: '',
   tasa_afecta: '',
   tasa_excenta: '',
   tasa_politica: '',
+  prima_afecta: '',
+  prima_excenta: '',
   prima_adicional_asistencia: '',
   fecha_emision: '',
   fecha_vencimiento: '',
@@ -56,16 +63,29 @@ const initialValues: FormValues = {
 }
 
 function transformarARequest(values: FormValues): RegistrarCotizacionRequest {
-  return {
+  const base: RegistrarCotizacionRequest = {
+    tipo: values.tipo,
     id_company: Number(values.id_company),
     monto_total_asegurado: Number(values.monto_total_asegurado),
-    tasa_afecta: Number(values.tasa_afecta),
-    tasa_excenta: Number(values.tasa_excenta),
-    tasa_politica: Number(values.tasa_politica),
     prima_adicional_asistencia: Number(values.prima_adicional_asistencia),
     fecha_emision: values.fecha_emision,
     fecha_vencimiento: values.fecha_vencimiento,
     archivo: values.archivo ?? undefined,
+  }
+
+  if (values.tipo === 'tasa') {
+    return {
+      ...base,
+      tasa_afecta: Number(values.tasa_afecta),
+      tasa_excenta: Number(values.tasa_excenta),
+      tasa_politica: Number(values.tasa_politica),
+    }
+  }
+
+  return {
+    ...base,
+    prima_afecta: Number(values.prima_afecta),
+    prima_excenta: Number(values.prima_excenta),
   }
 }
 
@@ -85,12 +105,19 @@ export default function DialogRegistrarCotizacion({
       const errors: Record<string, string> = {}
       if (!values.id_company) errors.id_company = 'Seleccione una compañía'
       if (values.monto_total_asegurado === '' || Number(values.monto_total_asegurado) <= 0) errors.monto_total_asegurado = 'Debe ser mayor a cero'
-      if (values.tasa_afecta === '' || Number(values.tasa_afecta) < 0) errors.tasa_afecta = 'No puede ser negativo'
-      if (values.tasa_excenta === '' || Number(values.tasa_excenta) < 0) errors.tasa_excenta = 'No puede ser negativo'
-      if (values.tasa_politica === '' || Number(values.tasa_politica) < 0) errors.tasa_politica = 'No puede ser negativo'
       if (values.prima_adicional_asistencia === '' || Number(values.prima_adicional_asistencia) < 0) errors.prima_adicional_asistencia = 'No puede ser negativo'
       if (!values.fecha_emision) errors.fecha_emision = 'Requerido'
       if (!values.fecha_vencimiento) errors.fecha_vencimiento = 'Requerido'
+
+      if (values.tipo === 'tasa') {
+        if (values.tasa_afecta === '' || Number(values.tasa_afecta) < 0) errors.tasa_afecta = 'No puede ser negativo'
+        if (values.tasa_excenta === '' || Number(values.tasa_excenta) < 0) errors.tasa_excenta = 'No puede ser negativo'
+        if (values.tasa_politica === '' || Number(values.tasa_politica) < 0) errors.tasa_politica = 'No puede ser negativo'
+      } else {
+        if (values.prima_afecta === '' || Number(values.prima_afecta) < 0) errors.prima_afecta = 'No puede ser negativo'
+        if (values.prima_excenta === '' || Number(values.prima_excenta) < 0) errors.prima_excenta = 'No puede ser negativo'
+      }
+
       return errors
     },
     onSubmit: async (values) => {
@@ -148,47 +175,96 @@ export default function DialogRegistrarCotizacion({
             )}
           </div>
 
-          <div className='grid gap-3 sm:grid-cols-3'>
-            <div className='space-y-1.5'>
-              <Label className='text-xs'>Tasa afecta</Label>
-              <Input
-                type='number'
-                min={0}
-                step='0.01'
-                className='h-9 text-sm shadow-none'
-                {...formik.getFieldProps('tasa_afecta')}
-              />
-              {formik.errors.tasa_afecta && formik.touched.tasa_afecta && (
-                <p className='text-xs text-destructive'>{formik.errors.tasa_afecta}</p>
-              )}
-            </div>
-            <div className='space-y-1.5'>
-              <Label className='text-xs'>Tasa excenta</Label>
-              <Input
-                type='number'
-                min={0}
-                step='0.01'
-                className='h-9 text-sm shadow-none'
-                {...formik.getFieldProps('tasa_excenta')}
-              />
-              {formik.errors.tasa_excenta && formik.touched.tasa_excenta && (
-                <p className='text-xs text-destructive'>{formik.errors.tasa_excenta}</p>
-              )}
-            </div>
-            <div className='space-y-1.5'>
-              <Label className='text-xs'>Tasa política</Label>
-              <Input
-                type='number'
-                min={0}
-                step='0.01'
-                className='h-9 text-sm shadow-none'
-                {...formik.getFieldProps('tasa_politica')}
-              />
-              {formik.errors.tasa_politica && formik.touched.tasa_politica && (
-                <p className='text-xs text-destructive'>{formik.errors.tasa_politica}</p>
-              )}
-            </div>
+          <div className='space-y-1.5'>
+            <Label className='text-xs'>Tipo de registro</Label>
+            <RadioGroup
+              value={formik.values.tipo}
+              onValueChange={(v) => formik.setFieldValue('tipo', v)}
+              className='flex gap-4'
+            >
+              <div className='flex items-center gap-2'>
+                <RadioGroupItem value='tasa' id='tipo-tasa' />
+                <Label htmlFor='tipo-tasa' className='text-sm font-normal'>Indicar tasas</Label>
+              </div>
+              <div className='flex items-center gap-2'>
+                <RadioGroupItem value='prima' id='tipo-prima' />
+                <Label htmlFor='tipo-prima' className='text-sm font-normal'>Indicar primas</Label>
+              </div>
+            </RadioGroup>
           </div>
+
+          {formik.values.tipo === 'tasa' ? (
+            <div className='grid gap-3 sm:grid-cols-3'>
+              <div className='space-y-1.5'>
+                <Label className='text-xs'>Tasa afecta</Label>
+                <Input
+                  type='number'
+                  min={0}
+                  step='0.01'
+                  className='h-9 text-sm shadow-none'
+                  {...formik.getFieldProps('tasa_afecta')}
+                />
+                {formik.errors.tasa_afecta && formik.touched.tasa_afecta && (
+                  <p className='text-xs text-destructive'>{formik.errors.tasa_afecta}</p>
+                )}
+              </div>
+              <div className='space-y-1.5'>
+                <Label className='text-xs'>Tasa excenta</Label>
+                <Input
+                  type='number'
+                  min={0}
+                  step='0.01'
+                  className='h-9 text-sm shadow-none'
+                  {...formik.getFieldProps('tasa_excenta')}
+                />
+                {formik.errors.tasa_excenta && formik.touched.tasa_excenta && (
+                  <p className='text-xs text-destructive'>{formik.errors.tasa_excenta}</p>
+                )}
+              </div>
+              <div className='space-y-1.5'>
+                <Label className='text-xs'>Tasa política</Label>
+                <Input
+                  type='number'
+                  min={0}
+                  step='0.01'
+                  className='h-9 text-sm shadow-none'
+                  {...formik.getFieldProps('tasa_politica')}
+                />
+                {formik.errors.tasa_politica && formik.touched.tasa_politica && (
+                  <p className='text-xs text-destructive'>{formik.errors.tasa_politica}</p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className='grid gap-3 sm:grid-cols-2'>
+              <div className='space-y-1.5'>
+                <Label className='text-xs'>Prima afecta (UF)</Label>
+                <Input
+                  type='number'
+                  min={0}
+                  step='0.01'
+                  className='h-9 text-sm shadow-none'
+                  {...formik.getFieldProps('prima_afecta')}
+                />
+                {formik.errors.prima_afecta && formik.touched.prima_afecta && (
+                  <p className='text-xs text-destructive'>{formik.errors.prima_afecta}</p>
+                )}
+              </div>
+              <div className='space-y-1.5'>
+                <Label className='text-xs'>Prima excenta (UF)</Label>
+                <Input
+                  type='number'
+                  min={0}
+                  step='0.01'
+                  className='h-9 text-sm shadow-none'
+                  {...formik.getFieldProps('prima_excenta')}
+                />
+                {formik.errors.prima_excenta && formik.touched.prima_excenta && (
+                  <p className='text-xs text-destructive'>{formik.errors.prima_excenta}</p>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className='space-y-1.5'>
             <Label className='text-xs'>Prima adicional asistencia (UF)</Label>

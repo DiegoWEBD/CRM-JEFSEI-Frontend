@@ -5,4 +5,5 @@ export interface SolicitudCotizacionRequestBase {
   tipo: string
   motivo_recotizacion?: string | null
   id_solicitud_previa?: number | null
+  monto_asegurado?: number | null
 }

@@ -35,7 +35,7 @@ interface DialogNuevaSolicitudFormValues {
   lineaSeguro: LineaSeguroSolicitudKey | ''
   observaciones: string
   prioridad: PrioridadSolicitud
-  monto_asegurado_total: string
+  monto_asegurado: string
   numero_guardias: string
   actividades: ActividadFila[]
   actividad_del_condominio: string
@@ -47,7 +47,7 @@ function valoresIniciales(tipo?: string): DialogNuevaSolicitudFormValues {
     lineaSeguro: (tipo as LineaSeguroSolicitudKey) ?? '',
     observaciones: '',
     prioridad: 'normal',
-    monto_asegurado_total: '',
+    monto_asegurado: '',
     numero_guardias: '',
     actividades: [{ actividad: '', numero_asegurados: '' }],
     actividad_del_condominio: '',
@@ -120,6 +120,7 @@ export default function DialogNuevaSolicitudCotizacion({
       observaciones: values.observaciones || null,
       motivo_recotizacion: null,
       id_solicitud_previa: null,
+      monto_asegurado: values.monto_asegurado ? Number(values.monto_asegurado) : null,
     }
 
     const tipo = values.lineaSeguro
@@ -128,7 +129,6 @@ export default function DialogNuevaSolicitudCotizacion({
       return {
         ...base,
         tipo,
-        monto_asegurado_total: Number(values.monto_asegurado_total),
         nombre_excel: '',
       }
     }
@@ -168,7 +168,7 @@ export default function DialogNuevaSolicitudCotizacion({
   }
 
   function reiniciarCamposDinamicos(setFieldValue: (field: string, value: unknown) => void) {
-    setFieldValue('monto_asegurado_total', '')
+    setFieldValue('monto_asegurado', '')
     setFieldValue('numero_guardias', '')
     setFieldValue('actividades', [nuevaActividadFila()])
     setFieldValue('actividad_del_condominio', '')
@@ -368,6 +368,19 @@ export default function DialogNuevaSolicitudCotizacion({
               onBlur={formik.handleBlur}
               name='observaciones'
               placeholder='Indicación breve para la solicitud…'
+            />
+          </div>
+
+          <div className='space-y-1.5'>
+            <Label className='text-xs'>Monto asegurado (opcional)</Label>
+            <Input
+              type='number'
+              min={0}
+              className='h-9 text-sm shadow-none'
+              placeholder='Monto a cotizar'
+              value={formik.values.monto_asegurado}
+              onChange={formik.handleChange}
+              name='monto_asegurado'
             />
           </div>
 
