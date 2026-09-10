@@ -40,8 +40,9 @@ export default function SheetRegistrarPoliza({
 	nombreCliente,
 	producto,
 }: SheetRegistrarPolizaProps) {
-	const { data: companies, isLoading: cargandoCompanies } =
-		useCompaniesSeguros()
+	const { data: companies, isLoading: cargandoCompanies } = useCompaniesSeguros(
+		{ enabled: open },
+	)
 
 	const { formik, cargando } = useFormularioRegistrarPoliza({
 		idProceso,
@@ -156,9 +157,7 @@ export default function SheetRegistrarPoliza({
 								</SelectContent>
 							</Select>
 							{formik.touched.tipo && formik.errors.tipo && (
-								<p className='text-xs text-destructive'>
-									{formik.errors.tipo}
-								</p>
+								<p className='text-xs text-destructive'>{formik.errors.tipo}</p>
 							)}
 						</div>
 

@@ -6,6 +6,7 @@ type UseUsuariosParams = {
 	texto_busqueda?: string
 	pagina?: number
 	tamano_pagina?: number
+	enabled?: boolean
 }
 
 export const useUsuarios = (filtros: UseUsuariosParams) => {
@@ -22,5 +23,6 @@ export const useUsuarios = (filtros: UseUsuariosParams) => {
 			const response = await axios.get(`/api/usuarios?${params.toString()}`)
 			return response.data as ObtenerUsuariosResponse
 		},
+		enabled: filtros.enabled ?? true,
 	})
 }
