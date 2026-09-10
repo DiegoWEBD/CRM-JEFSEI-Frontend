@@ -8,10 +8,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/select'
-import { Search, X } from 'lucide-react'
-import { Button } from '@/components/button'
 import { useCompaniesSeguros } from '@/hooks/companies-seguros/use-companies-seguros'
 import { useLineasNegocio } from '@/hooks/lineas-negocio/use-lineas-negocio'
+import { Search, X } from 'lucide-react'
 
 export const TODOS = '__todos__'
 
@@ -32,7 +31,7 @@ export default function FiltrosPolizas({
 	onChange,
 	total,
 }: FiltrosPolizasProps) {
-	const { data: companies } = useCompaniesSeguros()
+	const { data: companies } = useCompaniesSeguros({ enabled: true })
 	const { data: lineasNegocio } = useLineasNegocio()
 
 	const actualizar = (key: keyof FiltrosPanelPolizas, value: string) => {
@@ -86,7 +85,11 @@ export default function FiltrosPolizas({
 								Todas las compañías
 							</SelectItem>
 							{companies?.map(op => (
-								<SelectItem key={op.id} value={String(op.id)} className='text-xs'>
+								<SelectItem
+									key={op.id}
+									value={String(op.id)}
+									className='text-xs'
+								>
 									{op.nombre}
 								</SelectItem>
 							))}
@@ -110,7 +113,11 @@ export default function FiltrosPolizas({
 								Todas las líneas
 							</SelectItem>
 							{lineasNegocio?.map(op => (
-								<SelectItem key={op.id} value={String(op.id)} className='text-xs'>
+								<SelectItem
+									key={op.id}
+									value={String(op.id)}
+									className='text-xs'
+								>
 									{op.nombre}
 								</SelectItem>
 							))}

@@ -27,4 +27,7 @@ export interface ProspectoCondominio extends Prospecto {
 	tiene_sprinklers?: boolean
 	year_construccion?: number
 	metros_cuadrados?: number
+	valor_reconstruccion?: number
+	valor_reconstruccion_depreciacion?: number
+	valor_reconstruccion_espacio_comun?: number
 }

@@ -5,11 +5,13 @@ import {
 	MATERIALIDAD_PRINCIPAL_LABELS,
 } from '@/lib/materialidades'
 import { UBICACION_PISCINA_LABELS } from '@/lib/ubicacion.piscina'
+import { formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import {
 	Building2,
 	Calendar,
+	DollarSign,
 	FireExtinguisher,
 	Flame,
 	Home,
@@ -243,6 +245,38 @@ export default function InformacionTecnicaCondominio({
 							: null
 					}
 					missing={inputPendiente(prospecto.porcentaje_espacios_comunes)}
+				/>
+
+				<div className='col-span-full border-t border-border/60' />
+
+				<TecnicaKpiCard
+					icon={DollarSign}
+					label='Valor de reconstrucción'
+					value={
+						prospecto.valor_reconstruccion
+							? formatUF(prospecto.valor_reconstruccion)
+							: '—'
+					}
+				/>
+
+				<TecnicaKpiCard
+					icon={DollarSign}
+					label='Valor de reconstrucción con depreciación'
+					value={
+						prospecto.valor_reconstruccion_depreciacion
+							? formatUF(prospecto.valor_reconstruccion_depreciacion)
+							: '—'
+					}
+				/>
+
+				<TecnicaKpiCard
+					icon={DollarSign}
+					label='Valor de reconstrucción de espacios comunes'
+					value={
+						prospecto.valor_reconstruccion_espacio_comun
+							? formatUF(prospecto.valor_reconstruccion_espacio_comun)
+							: '—'
+					}
 				/>
 			</div>
 		</CardContent>

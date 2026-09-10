@@ -33,8 +33,9 @@ export default function DialogActualizarPoliza({
 	onOpenChange,
 	poliza,
 }: DialogActualizarPolizaProps) {
-	const { data: companies, isLoading: cargandoCompanies } =
-		useCompaniesSeguros()
+	const { data: companies, isLoading: cargandoCompanies } = useCompaniesSeguros(
+		{ enabled: open },
+	)
 
 	const { formik, cargando } = useFormularioActualizarPoliza({
 		poliza,
