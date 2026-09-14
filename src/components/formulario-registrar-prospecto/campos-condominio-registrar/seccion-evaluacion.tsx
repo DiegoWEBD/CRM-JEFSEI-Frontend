@@ -29,7 +29,6 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					name='metros_cuadrados'
 					value={formik.values.metros_cuadrados ?? ''}
 					onChange={formik.handleChange}
-					inputMode='decimal'
 					type='number'
 				/>
 			</Campo>
@@ -39,7 +38,6 @@ export default function SeccionEvaluacion({ formik }: Props) {
 					name='porcentaje_espacios_comunes'
 					value={formik.values.porcentaje_espacios_comunes ?? ''}
 					onChange={formik.handleChange}
-					inputMode='decimal'
 					type='number'
 				/>
 			</Campo>
