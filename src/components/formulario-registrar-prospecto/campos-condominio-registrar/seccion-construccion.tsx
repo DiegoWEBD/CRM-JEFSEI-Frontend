@@ -53,11 +53,7 @@ export default function SeccionConstruccion({ formik }: Props) {
 							Seleccionar uso
 						</SelectItem>
 						{USO_CONDOMINIO_OPTIONS.map(opt => (
-							<SelectItem
-								key={opt.value}
-								value={opt.value}
-								className='text-xs'
-							>
+							<SelectItem key={opt.value} value={opt.value} className='text-xs'>
 								{opt.label}
 							</SelectItem>
 						))}
@@ -70,7 +66,7 @@ export default function SeccionConstruccion({ formik }: Props) {
 					name='year_construccion'
 					value={formik.values.year_construccion ?? ''}
 					onChange={formik.handleChange}
-					inputMode='numeric'
+					type='number'
 				/>
 			</Campo>
 
@@ -131,8 +127,8 @@ export default function SeccionConstruccion({ formik }: Props) {
 					aria-label='Clasificación preliminar incendio (calculada automáticamente)'
 				/>
 				<p className='mt-1 text-xs leading-snug text-muted-foreground'>
-					Valor preliminar según materialidad. La validación final
-					corresponde a evaluación/proyectos.
+					Valor preliminar según materialidad. La validación final corresponde a
+					evaluación/proyectos.
 				</p>
 			</Campo>
 
@@ -147,9 +143,7 @@ export default function SeccionConstruccion({ formik }: Props) {
 			<SiNoSelect
 				label='Procesos productivos'
 				value={formik.values.procesos_productivos}
-				onChange={value =>
-					formik.setFieldValue('procesos_productivos', value)
-				}
+				onChange={value => formik.setFieldValue('procesos_productivos', value)}
 			/>
 		</>
 	)
