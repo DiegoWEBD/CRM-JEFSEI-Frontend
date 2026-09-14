@@ -116,6 +116,7 @@ export default function CamposAdicionalesProspectoCondominio({
 			<Campo label='Año de construcción'>
 				<Input
 					name='year_construccion'
+					type='number'
 					value={formik.values.year_construccion}
 					onChange={formik.handleChange}
 				/>
@@ -138,6 +139,7 @@ export default function CamposAdicionalesProspectoCondominio({
 			<Campo label='Total m² construidos'>
 				<Input
 					name='metros_cuadrados'
+					type='number'
 					value={formik.values.metros_cuadrados}
 					onChange={formik.handleChange}
 				/>
@@ -146,6 +148,7 @@ export default function CamposAdicionalesProspectoCondominio({
 			<Campo label='Número de pisos'>
 				<Input
 					name='numero_pisos'
+					type='number'
 					value={formik.values.numero_pisos}
 					onChange={formik.handleChange}
 				/>
@@ -154,6 +157,7 @@ export default function CamposAdicionalesProspectoCondominio({
 			<Campo label='Número de torres'>
 				<Input
 					name='numero_torres'
+					type='number'
 					value={formik.values.numero_torres}
 					onChange={formik.handleChange}
 				/>
@@ -162,6 +166,7 @@ export default function CamposAdicionalesProspectoCondominio({
 			<Campo label='Cantidad de departamentos'>
 				<Input
 					name='cantidad_departamentos'
+					type='number'
 					value={formik.values.cantidad_departamentos}
 					onChange={formik.handleChange}
 				/>
@@ -170,6 +175,7 @@ export default function CamposAdicionalesProspectoCondominio({
 			<Campo label='Cantidad de subterráneos'>
 				<Input
 					name='cantidad_subterraneos'
+					type='number'
 					value={formik.values.cantidad_subterraneos}
 					onChange={formik.handleChange}
 				/>
