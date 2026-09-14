@@ -6,7 +6,6 @@ import {
 } from '@/lib/materialidades'
 import { UBICACION_PISCINA_LABELS } from '@/lib/ubicacion.piscina'
 import { formatUF } from '@/lib/uf'
-import { cn } from '@/lib/utils'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import {
 	Building2,
@@ -21,79 +20,20 @@ import {
 	Ruler,
 	Shield,
 	Waves,
-	type LucideIcon,
 } from 'lucide-react'
+import DataItemProspecto from './data-item-prospecto/data-item-prospecto'
 
 type InformacionTecnicaCondominioProps = {
 	prospecto: ProspectoCondominio
-}
-
-function TecnicaKpiCard({
-	icon: Icon,
-	label,
-	value,
-	missing,
-	className,
-}: {
-	icon: LucideIcon
-	label: string
-	value: string | number | undefined | null | boolean
-	missing?: boolean
-	className?: string
-}) {
-	const displayValue =
-		value === undefined || value === null || value === ''
-			? '—'
-			: typeof value === 'boolean'
-				? value
-					? 'Sí'
-					: 'No'
-				: String(value)
-
-	return (
-		<div
-			className={cn(
-				'flex items-center gap-3 rounded-lg border px-3 py-2.5',
-				missing
-					? 'border-amber-300 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-950/30'
-					: 'border-border/60 bg-muted/15',
-				className,
-			)}
-		>
-			<div
-				className={cn(
-					'flex h-9 w-9 shrink-0 items-center justify-center rounded-md',
-					missing
-						? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
-						: 'bg-primary/10 text-primary',
-				)}
-			>
-				<Icon className='h-4 w-4' aria-hidden />
-			</div>
-			<div className='min-w-0'>
-				<p className='truncate text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
-					{label}
-				</p>
-				<p
-					className={cn(
-						'truncate text-sm font-semibold',
-						missing ? 'text-amber-700 dark:text-amber-300' : 'text-foreground',
-					)}
-				>
-					{displayValue}
-				</p>
-			</div>
-		</div>
-	)
 }
 
 export default function InformacionTecnicaCondominio({
 	prospecto,
 }: InformacionTecnicaCondominioProps) {
 	return (
-		<CardContent className='p-4'>
+		<CardContent className='p-4 space-y-2.5'>
 			<div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Ruler}
 					label='Administrador asociado'
 					value={prospecto.administrador?.nombre_administrador}
@@ -102,21 +42,21 @@ export default function InformacionTecnicaCondominio({
 					)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Ruler}
 					label='Uso del condominio'
 					value={prospecto.uso_del_condominio}
 					missing={inputPendiente(prospecto.uso_del_condominio)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Calendar}
 					label='Año construcción'
 					value={prospecto.year_construccion}
 					missing={inputPendiente(prospecto.year_construccion)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Ruler}
 					label='Materialidad'
 					value={
@@ -127,7 +67,7 @@ export default function InformacionTecnicaCondominio({
 					missing={inputPendiente(prospecto.materialidad)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Flame}
 					label='Clasificación preliminar incendio'
 					value={
@@ -140,56 +80,56 @@ export default function InformacionTecnicaCondominio({
 					missing={inputPendiente(prospecto.clasificacion_preliminar_incendio)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Calendar}
 					label='Cuenta con locales comerciales'
 					value={prospecto.tiene_locales_comerciales}
 					missing={inputPendiente(prospecto.tiene_locales_comerciales)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Calendar}
 					label='Procesos productivos'
 					value={prospecto.procesos_productivos}
 					missing={inputPendiente(prospecto.procesos_productivos)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={LayoutGrid}
 					label='Total m² construidos'
 					value={prospecto.metros_cuadrados?.toLocaleString('es-CL')}
 					missing={inputPendiente(prospecto.metros_cuadrados)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Layers}
 					label='Número de pisos'
 					value={prospecto.numero_pisos}
 					missing={inputPendiente(prospecto.numero_pisos)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Building2}
 					label='Número de torres'
 					value={prospecto.numero_torres}
 					missing={inputPendiente(prospecto.numero_torres)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Home}
 					label='Cantidad de departamentos'
 					value={prospecto.cantidad_departamentos}
 					missing={inputPendiente(prospecto.cantidad_departamentos)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={MapPin}
 					label='Cantidad de subterráneos'
 					value={prospecto.cantidad_subterraneos}
 					missing={inputPendiente(prospecto.cantidad_subterraneos)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Waves}
 					label='Piscina'
 					value={
@@ -204,28 +144,39 @@ export default function InformacionTecnicaCondominio({
 					missing={inputPendiente(prospecto.tiene_piscina)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={FireExtinguisher}
 					label='Alarma incendio'
 					value={prospecto.tiene_alarma_incendio}
 					missing={inputPendiente(prospecto.tiene_alarma_incendio)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Shield}
 					label='Sprinklers'
 					value={prospecto.tiene_sprinklers}
 					missing={inputPendiente(prospecto.tiene_sprinklers)}
 				/>
+			</div>
 
-				<TecnicaKpiCard
+			<div className='col-span-full border-t border-border/60' />
+
+			<div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+				<DataItemProspecto
+					icon={LayoutGrid}
+					label='Total m² construidos'
+					value={prospecto.metros_cuadrados?.toLocaleString('es-CL')}
+					missing={inputPendiente(prospecto.metros_cuadrados)}
+				/>
+
+				<DataItemProspecto
 					icon={Shield}
 					label='Valor UF / m² (sin IVA)'
 					value={prospecto.uf_por_metro_cuadrado}
 					missing={inputPendiente(prospecto.uf_por_metro_cuadrado)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Shield}
 					label='Porcentaje de depreciación'
 					value={
@@ -236,7 +187,7 @@ export default function InformacionTecnicaCondominio({
 					missing={inputPendiente(prospecto.porcentaje_depreciacion)}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={Shield}
 					label='Porcentaje de espacios comunes'
 					value={
@@ -247,9 +198,7 @@ export default function InformacionTecnicaCondominio({
 					missing={inputPendiente(prospecto.porcentaje_espacios_comunes)}
 				/>
 
-				<div className='col-span-full border-t border-border/60' />
-
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={DollarSign}
 					label='Valor de reconstrucción'
 					value={
@@ -259,9 +208,9 @@ export default function InformacionTecnicaCondominio({
 					}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={DollarSign}
-					label='Valor de reconstrucción con depreciación'
+					label='Reconstrucción con depreciación'
 					value={
 						prospecto.valor_reconstruccion_depreciacion
 							? formatUF(prospecto.valor_reconstruccion_depreciacion)
@@ -269,9 +218,9 @@ export default function InformacionTecnicaCondominio({
 					}
 				/>
 
-				<TecnicaKpiCard
+				<DataItemProspecto
 					icon={DollarSign}
-					label='Valor de reconstrucción de espacios comunes'
+					label='Reconstrucción de espacios comunes'
 					value={
 						prospecto.valor_reconstruccion_espacio_comun
 							? formatUF(prospecto.valor_reconstruccion_espacio_comun)

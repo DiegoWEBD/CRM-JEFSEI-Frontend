@@ -10,10 +10,11 @@ import { useDebounce } from '@/hooks/use-debounce'
 import { useAdministradoresInfinite } from '@/hooks/administradores/use-administradores-infinite'
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 import { DialogoRegistrarAdministrador } from '@/components/dialogo-registrar-administrador'
+import AdministradorCondominio from '@/dominio/administrador-condominio/administrador-condominio'
 
 type SelectorAdministradorProps = {
-	value: number | undefined
-	onChange: (id: number | undefined) => void
+	value?: AdministradorCondominio
+	onChange: (administrador?: AdministradorCondominio) => void
 }
 
 export default function SelectorAdministrador({
@@ -21,20 +22,25 @@ export default function SelectorAdministrador({
 	onChange,
 }: SelectorAdministradorProps) {
 	const [abierto, setAbierto] = useState(false)
-	const [busqueda, setBusqueda] = useState('')
+	const [busqueda, setBusqueda] = useState(value?.nombre_administrador ?? '')
 	const [dialogoAbierto, setDialogoAbierto] = useState(false)
 
 	const debouncedBusqueda = useDebounce(busqueda, 300)
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
 		useAdministradoresInfinite(debouncedBusqueda)
 
-	const administradores = useMemo(
-		() => data?.pages.flatMap(page => page.data) ?? [],
-		[data],
-	)
+	const administradores = useMemo(() => {
+		const obtenidos = data?.pages.flatMap(page => page.data) ?? []
+
+		if (!value) {
+			return obtenidos
+		}
+
+		return [value, ...obtenidos.filter(admin => admin.id !== value.id)]
+	}, [data, value])
 
 	const seleccionado = useMemo(
-		() => administradores.find(a => a.id === value),
+		() => administradores.find(a => a.id === value?.id),
 		[administradores, value],
 	)
 
@@ -56,8 +62,8 @@ export default function SelectorAdministrador({
 		rootSelector: '[data-radix-scroll-area-viewport]',
 	})
 
-	const handleSelect = (id: number | undefined) => {
-		onChange(id)
+	const handleSelect = (administrador?: AdministradorCondominio) => {
+		onChange(administrador)
 		setAbierto(false)
 	}
 
@@ -127,7 +133,7 @@ export default function SelectorAdministrador({
 								<button
 									type='button'
 									key={admin.id}
-									onClick={() => handleSelect(admin.id)}
+									onClick={() => handleSelect(admin)}
 									className={cn(
 										'relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none hover:bg-accent hover:text-accent-foreground',
 									)}
@@ -135,7 +141,7 @@ export default function SelectorAdministrador({
 									<Check
 										className={cn(
 											'mr-2 h-4 w-4',
-											value === admin.id ? 'opacity-100' : 'opacity-0',
+											value?.id === admin.id ? 'opacity-100' : 'opacity-0',
 										)}
 									/>
 									{admin.nombre_administrador}
@@ -173,7 +179,7 @@ export default function SelectorAdministrador({
 				onOpenChange={setDialogoAbierto}
 				nombreSugerido={busqueda}
 				onAdministradorCreado={admin => {
-					onChange(admin.id)
+					onChange(admin)
 					setDialogoAbierto(false)
 					setAbierto(false)
 				}}

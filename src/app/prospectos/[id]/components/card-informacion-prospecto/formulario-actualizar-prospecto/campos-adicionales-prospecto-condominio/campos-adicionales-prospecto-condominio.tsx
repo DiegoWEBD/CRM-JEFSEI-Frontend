@@ -29,12 +29,15 @@ type CamposAdicionalesProspectoCondominioProps = {
 export default function CamposAdicionalesProspectoCondominio({
 	formik,
 }: CamposAdicionalesProspectoCondominioProps) {
+	console.log(formik.values)
 	return (
 		<>
 			<Campo label='Administrador'>
 				<SelectorAdministrador
-					value={formik.values.id_administrador}
-					onChange={id => formik.setFieldValue('id_administrador', id)}
+					value={formik.values.administrador}
+					onChange={administrador =>
+						formik.setFieldValue('administrador', administrador)
+					}
 				/>
 			</Campo>
 

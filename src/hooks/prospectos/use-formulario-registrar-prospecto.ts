@@ -30,7 +30,7 @@ export const useFormularioRegistrarProspecto = ({
 		mutationFn: async (values: FormularioInitialValues) => {
 			const request = {
 				rut_riesgo: values.rut_riesgo || null,
-				id_administrador: values.id_administrador ?? null,
+				id_administrador: values.administrador?.id ?? null,
 				nombre_riesgo: values.nombre_riesgo,
 				telefono_contacto: values.telefono_contacto || null,
 				correo_contacto: values.correo_contacto || null,
@@ -138,7 +138,7 @@ export const useFormularioRegistrarProspecto = ({
 			comuna: '',
 			observaciones: '',
 			linea_negocio: 'lineas_personales',
-			id_administrador: undefined,
+			administrador: undefined,
 			tiene_locales_comerciales: undefined,
 			uso_del_condominio: '',
 			materialidad: '',
