@@ -33,6 +33,7 @@ const PRIORIDAD_VARIANT = {
 
 export default function CardComunicadoGerencia() {
 	const { data: comunicados } = useComunicadosGerencia()
+
 	const mutation = useRegistrarComunicadoGerencia()
 	const [dialogAbierto, setDialogAbierto] = useState(false)
 
