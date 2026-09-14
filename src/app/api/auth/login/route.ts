@@ -1,6 +1,6 @@
 import { iniciarSesion } from '@/aplicacion/auth/use-cases/iniciar-sesion'
 import { TokenPayload } from '@/dtos/token-payload'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
@@ -32,15 +32,6 @@ export async function POST(req: Request) {
 
 		return res
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{ error: error.response?.data?.error || error.response?.data?.detail || error.message },
-				{ status: error.response?.status ?? 401 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Credenciales inválidas' },
-			{ status: 401 },
-		)
+		return normalizarErrorServidor(error, 'Credenciales inválidas')
 	}
 }

@@ -1,7 +1,7 @@
 import { ActualizarProspectoCondominioRequest } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto-condominio/dto/requests/actualizar-prospecto-condominio-request'
 import { ActualizarProspectoCondominioResponse } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto-condominio/dto/responses/actualizar-prospecto-condominio-response'
 import { axiosClient } from '@/infraestructura/axios/axios-client'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -29,23 +29,6 @@ export async function PUT(
 
 		return NextResponse.json({ status: response.status, message: data.message })
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{
-					error:
-						error.response?.data?.message ||
-						error.response?.data?.error ||
-						error.message,
-				},
-				{
-					status: error.response?.status ?? 500,
-				},
-			)
-		}
-
-		return NextResponse.json(
-			{ error: 'Error al actualizar la información del prospecto' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error al actualizar la información del prospecto')
 	}
 }

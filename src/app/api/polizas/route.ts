@@ -1,5 +1,5 @@
 import { obtenerPolizas } from '@/aplicacion/polizas/use_cases/obtener_polizas/obtener_polizas'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -28,15 +28,6 @@ export async function GET(request: Request) {
 
 		return NextResponse.json(data)
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{ error: error.response?.data?.error || error.response?.data?.detail || error.message },
-				{ status: error.response?.status ?? 500 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Error obteniendo polizas' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error obteniendo polizas')
 	}
 }

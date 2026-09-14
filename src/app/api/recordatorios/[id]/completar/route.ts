@@ -1,5 +1,5 @@
 import { axiosClient } from '@/infraestructura/axios/axios-client'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -18,20 +18,6 @@ export async function PATCH(_request: Request, props: Props) {
 
 		return NextResponse.json(response.data)
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{
-					error:
-						error.response?.data?.error ||
-						error.response?.data?.detail ||
-						error.message,
-				},
-				{ status: error.response?.status ?? 500 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Error completando recordatorio' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error completando recordatorio')
 	}
 }
