@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from '@/components/button'
+import { Input } from '@/components/input'
 import { Label } from '@/components/label'
 import {
 	Select,
@@ -8,12 +10,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/select'
-import { Input } from '@/components/input'
-import { Button } from '@/components/button'
-import { Search } from 'lucide-react'
-import type { FiltroEstadoPoliza } from '@/components/paneles/polizas/kpi-polizas'
 import type CompanySeguro from '@/dominio/company-seguro/company-seguro'
 import type { FiltrosPolizasState } from '@/hooks/polizas/use-filtros-polizas'
+import { Search } from 'lucide-react'
 
 type BarraFiltrosPolizasProps = {
 	filtros: FiltrosPolizasState
@@ -26,15 +25,6 @@ type BarraFiltrosPolizasProps = {
 	onLimpiar: () => void
 }
 
-const OPCIONES_ESTADO: { value: FiltroEstadoPoliza; label: string }[] = [
-	{ value: 'todas', label: 'Todas' },
-	{ value: 'vigentes', label: 'Vigentes' },
-	{ value: 'por_vencer', label: 'Por vencer' },
-	{ value: 'vencidas', label: 'Vencidas' },
-	{ value: 'canceladas', label: 'Canceladas' },
-	{ value: 'registradas', label: 'Registradas' },
-]
-
 export default function BarraFiltrosPolizas({
 	filtros,
 	companias,
@@ -45,27 +35,6 @@ export default function BarraFiltrosPolizas({
 	return (
 		<div className='rounded-lg border border-border/80 bg-muted/10 p-2.5'>
 			<div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end'>
-				<div className='w-full sm:w-auto sm:min-w-34 sm:max-w-38'>
-					<Label className='mb-1 block text-xs text-muted-foreground'>
-						Estado
-					</Label>
-					<Select
-						value={filtros.estado}
-						onValueChange={v => onCambiar('estado', v as FiltroEstadoPoliza)}
-					>
-						<SelectTrigger className='h-8 w-full text-xs shadow-none'>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							{OPCIONES_ESTADO.map(o => (
-								<SelectItem key={o.value} value={o.value} className='text-xs'>
-									{o.label}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
-
 				<div className='w-full sm:w-auto sm:min-w-34 sm:max-w-40'>
 					<Label className='mb-1 block text-xs text-muted-foreground'>
 						Compañía
