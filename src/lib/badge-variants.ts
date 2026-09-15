@@ -4,6 +4,7 @@ import type {
 	SharedReminderStatus,
 	SharedReminderPriority,
 } from '@/types/shared/shared-reminders'
+import type { EstadoCotizacionBackend } from '@/dominio/cotizacion/cotizacion'
 import type {
 	EstadoGeneralCliente,
 	EstadoGeneralClientePerfil,
@@ -105,6 +106,24 @@ export const VENCIMIENTO_VARIANT: Record<string, BadgeVariant> = {
 	por_vencer: 'pastel-amber',
 	vencida: 'pastel-red',
 }
+
+export const ESTADO_COTIZACION_VARIANT: Record<
+	EstadoCotizacionBackend,
+	BadgeVariant
+> = {
+	REGISTRADA: 'pastel-sky',
+	VIGENTE: 'pastel-emerald',
+	POR_VENCER: 'pastel-amber',
+	VENCIDA: 'pastel-red',
+}
+
+export const ESTADO_COTIZACION_LABELS: Record<EstadoCotizacionBackend, string> =
+	{
+		REGISTRADA: 'Registrada',
+		VIGENTE: 'Vigente',
+		POR_VENCER: 'Por vencer',
+		VENCIDA: 'Vencida',
+	}
 
 export const REMINDER_STATUS_VARIANT: Record<
 	SharedReminderStatus,

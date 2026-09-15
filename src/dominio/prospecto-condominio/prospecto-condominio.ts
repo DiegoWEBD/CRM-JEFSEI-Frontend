@@ -9,6 +9,7 @@ import { UbicacionPiscinaCondominio } from '@/lib/ubicacion.piscina'
 export interface ProspectoCondominio extends Prospecto {
 	administrador?: AdministradorCondominio
 	uf_por_metro_cuadrado?: number
+	valor_uf_m2_personalizado?: number
 	valor_uf_m2_disponible?: boolean
 	porcentaje_depreciacion?: number
 	porcentaje_espacios_comunes?: number
@@ -30,4 +31,5 @@ export interface ProspectoCondominio extends Prospecto {
 	valor_reconstruccion?: number
 	valor_reconstruccion_depreciacion?: number
 	valor_reconstruccion_espacio_comun?: number
+	valor_reconstruccion_unidades?: number
 }

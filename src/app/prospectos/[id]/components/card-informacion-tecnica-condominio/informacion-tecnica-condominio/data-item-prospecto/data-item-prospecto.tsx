@@ -1,3 +1,4 @@
+import { Badge } from '@/components/badge'
 import { cn } from '@/lib/utils'
 import { LucideIcon } from 'lucide-react'
 
@@ -7,12 +8,14 @@ export default function DataItemProspecto({
 	value,
 	missing,
 	className,
+	badge,
 }: {
 	icon: LucideIcon
 	label: string
 	value: string | number | undefined | null | boolean
 	missing?: boolean
 	className?: string
+	badge?: string
 }) {
 	const displayValue =
 		value === undefined || value === null || value === ''
@@ -46,6 +49,11 @@ export default function DataItemProspecto({
 			<div className='min-w-0'>
 				<p className='text-[10px] font-semibold uppercase tracking-wide text-muted-foreground'>
 					{label}
+					{badge && (
+						<Badge variant='pastel-violet' className='ml-2 text-[9px]'>
+							{badge}
+						</Badge>
+					)}
 				</p>
 				<p
 					className={cn(

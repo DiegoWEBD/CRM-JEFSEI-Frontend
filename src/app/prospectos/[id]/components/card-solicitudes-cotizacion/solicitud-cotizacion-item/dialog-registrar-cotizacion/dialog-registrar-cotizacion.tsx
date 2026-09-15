@@ -41,7 +41,8 @@ type FormValues = {
 	tasa_politica: string
 	prima_afecta: string
 	prima_excenta: string
-	prima_adicional_asistencia: string
+	asistencia_afecta: string
+	asistencia_excenta: string
 	fecha_emision: string
 	fecha_vencimiento: string
 	archivo: File | null
@@ -56,18 +57,23 @@ const initialValues: FormValues = {
 	tasa_politica: '',
 	prima_afecta: '',
 	prima_excenta: '',
-	prima_adicional_asistencia: '',
+	asistencia_afecta: '',
+	asistencia_excenta: '',
 	fecha_emision: '',
 	fecha_vencimiento: '',
 	archivo: null,
 }
 
-function transformarARequest(values: FormValues): RegistrarCotizacionRequest {
+function transformarARequest(
+	values: FormValues,
+	esFID: boolean,
+): RegistrarCotizacionRequest {
 	const base: RegistrarCotizacionRequest = {
 		tipo: values.tipo,
 		id_company: Number(values.id_company),
 		monto_total_asegurado: Number(values.monto_total_asegurado),
-		prima_adicional_asistencia: Number(values.prima_adicional_asistencia),
+		asistencia_afecta: Number(values.asistencia_afecta),
+		asistencia_excenta: esFID ? Number(values.asistencia_excenta) : 0,
 		fecha_emision: values.fecha_emision,
 		fecha_vencimiento: values.fecha_vencimiento,
 		archivo: values.archivo ?? undefined,
@@ -105,6 +111,11 @@ export default function DialogRegistrarCotizacion({
 		initialValues,
 		validate: values => {
 			const errors: Record<string, string> = {}
+			const companyActual = companies?.find(
+				c => String(c.id) === values.id_company,
+			)
+			const esFIDActual = companyActual?.nombre === 'FID'
+
 			if (!values.id_company) errors.id_company = 'Seleccione una compañía'
 			if (
 				values.monto_total_asegurado === '' ||
@@ -112,10 +123,16 @@ export default function DialogRegistrarCotizacion({
 			)
 				errors.monto_total_asegurado = 'Debe ser mayor a cero'
 			if (
-				values.prima_adicional_asistencia === '' ||
-				Number(values.prima_adicional_asistencia) < 0
+				values.asistencia_afecta === '' ||
+				Number(values.asistencia_afecta) < 0
 			)
-				errors.prima_adicional_asistencia = 'No puede ser negativo'
+				errors.asistencia_afecta = 'No puede ser negativo'
+			if (
+				esFIDActual &&
+				(values.asistencia_excenta === '' ||
+					Number(values.asistencia_excenta) < 0)
+			)
+				errors.asistencia_excenta = 'No puede ser negativo'
 			if (!values.fecha_emision) errors.fecha_emision = 'Requerido'
 			if (!values.fecha_vencimiento) errors.fecha_vencimiento = 'Requerido'
 
@@ -136,13 +153,22 @@ export default function DialogRegistrarCotizacion({
 			return errors
 		},
 		onSubmit: async values => {
-			const request = transformarARequest(values)
+			const companySubmit = companies?.find(
+				c => String(c.id) === values.id_company,
+			)
+			const esFIDSubmit = companySubmit?.nombre === 'FID Seguros'
+			const request = transformarARequest(values, esFIDSubmit)
 			await mutation.mutateAsync(request)
 			formik.resetForm()
 			onOpenChange(false)
 		},
 		enableReinitialize: false,
 	})
+
+	const companySeleccionada = companies?.find(
+		c => String(c.id) === formik.values.id_company,
+	)
+	const esFID = companySeleccionada?.nombre === 'FID Seguros'
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
@@ -312,22 +338,60 @@ export default function DialogRegistrarCotizacion({
 						</div>
 					)}
 
-					<div className='space-y-1.5'>
-						<Label className='text-xs'>Prima adicional asistencia (UF)</Label>
-						<Input
-							type='number'
-							min={0}
-							step='0.01'
-							className='h-9 text-sm shadow-none'
-							{...formik.getFieldProps('prima_adicional_asistencia')}
-						/>
-						{formik.errors.prima_adicional_asistencia &&
-							formik.touched.prima_adicional_asistencia && (
-								<p className='text-xs text-destructive'>
-									{formik.errors.prima_adicional_asistencia}
-								</p>
-							)}
-					</div>
+					{esFID ? (
+						<div className='grid gap-3 sm:grid-cols-2'>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>Asistencia afecta (UF)</Label>
+								<Input
+									type='number'
+									min={0}
+									step='0.01'
+									className='h-9 text-sm shadow-none'
+									{...formik.getFieldProps('asistencia_afecta')}
+								/>
+								{formik.errors.asistencia_afecta &&
+									formik.touched.asistencia_afecta && (
+										<p className='text-xs text-destructive'>
+											{formik.errors.asistencia_afecta}
+										</p>
+									)}
+							</div>
+							<div className='space-y-1.5'>
+								<Label className='text-xs'>Asistencia exenta (UF)</Label>
+								<Input
+									type='number'
+									min={0}
+									step='0.01'
+									className='h-9 text-sm shadow-none'
+									{...formik.getFieldProps('asistencia_excenta')}
+								/>
+								{formik.errors.asistencia_excenta &&
+									formik.touched.asistencia_excenta && (
+										<p className='text-xs text-destructive'>
+											{formik.errors.asistencia_excenta}
+										</p>
+									)}
+							</div>
+						</div>
+					) : (
+						<div className='space-y-1.5'>
+							<Label className='text-xs'>Adicional asistencia (UF)</Label>
+							<Input
+								type='number'
+								min={0}
+								step='0.01'
+								className='h-9 text-sm shadow-none'
+								placeholder='0'
+								{...formik.getFieldProps('asistencia_afecta')}
+							/>
+							{formik.errors.asistencia_afecta &&
+								formik.touched.asistencia_afecta && (
+									<p className='text-xs text-destructive'>
+										{formik.errors.asistencia_afecta}
+									</p>
+								)}
+						</div>
+					)}
 
 					<div className='grid gap-3 sm:grid-cols-2'>
 						<div className='space-y-1.5'>
@@ -409,7 +473,7 @@ export default function DialogRegistrarCotizacion({
 						</p>
 					)}
 
-					<DialogFooter className='gap-2 sm:gap-0'>
+					<DialogFooter className='gap-2'>
 						<Button
 							type='button'
 							variant='outline'

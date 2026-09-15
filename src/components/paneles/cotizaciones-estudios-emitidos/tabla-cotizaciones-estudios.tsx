@@ -19,18 +19,12 @@ import BadgePrioridad from '@/components/badge-prioridad/badge-prioridad'
 import VencimientoCell from './vencimiento-cell'
 import { SkeletonTabla } from './skeleton-tabla'
 import { cn } from '@/lib/utils'
-import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
+import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
 
 const headClass =
   'h-9 border-b border-border/50 bg-muted/40 px-3 py-2 text-left text-sm font-medium uppercase tracking-wide text-muted-foreground'
 
 const cellClass = 'px-3 py-2.5 align-middle text-sm'
-
-const ESTADO_VENCIMIENTO_LABELS: Record<string, string> = {
-  vigente: 'Vigente',
-  por_vencer: 'Por vencer',
-  vencida: 'Vencida',
-}
 
 type TablaCotizacionesEstudiosProps = {
   filas: PanelEstudioFila[]
@@ -78,12 +72,12 @@ export default function TablaCotizacionesEstudios({
               <div className='mt-3 flex flex-wrap items-center gap-2'>
                 <BadgeEstadoEstudio tieneEstudio={f.tiene_estudio} />
                 <BadgePrioridad prioridad={f.prioridad} />
-                {f.estado_vencimiento && (
+                {f.estado && (
                   <Badge
-                    variant={VENCIMIENTO_VARIANT[f.estado_vencimiento]}
+                    variant={ESTADO_COTIZACION_VARIANT[f.estado]}
                     className='text-xs font-medium'
                   >
-                    {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}
+                    {ESTADO_COTIZACION_LABELS[f.estado]}
                   </Badge>
                 )}
               </div>
@@ -186,16 +180,16 @@ export default function TablaCotizacionesEstudios({
                     idSolicitud={f.id}
                     cantidadCotizaciones={f.cantidad_cotizaciones}
                     vencimientoMasProximo={f.vencimiento_mas_proximo}
-                    estadoVencimiento={f.estado_vencimiento}
+                    estado={f.estado}
                   />
                 </TableCell>
                 <TableCell className={cn(cellClass, 'p-1.5')}>
-                  {f.estado_vencimiento ? (
+                  {f.estado ? (
                     <Badge
-                      variant={VENCIMIENTO_VARIANT[f.estado_vencimiento]}
+                      variant={ESTADO_COTIZACION_VARIANT[f.estado]}
                       className='text-xs font-medium'
                     >
-                      {ESTADO_VENCIMIENTO_LABELS[f.estado_vencimiento]}
+                      {ESTADO_COTIZACION_LABELS[f.estado]}
                     </Badge>
                   ) : (
                     <span className='text-xs text-muted-foreground'>—</span>

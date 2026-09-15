@@ -174,6 +174,7 @@ export default function InformacionTecnicaCondominio({
 					label='Valor UF / m² (sin IVA)'
 					value={prospecto.uf_por_metro_cuadrado}
 					missing={inputPendiente(prospecto.uf_por_metro_cuadrado)}
+					badge={prospecto.valor_uf_m2_personalizado != null ? 'Personalizado' : undefined}
 				/>
 
 				<DataItemProspecto
@@ -224,6 +225,16 @@ export default function InformacionTecnicaCondominio({
 					value={
 						prospecto.valor_reconstruccion_espacio_comun
 							? formatUF(prospecto.valor_reconstruccion_espacio_comun)
+							: '—'
+					}
+				/>
+
+				<DataItemProspecto
+					icon={DollarSign}
+					label='Reconstrucción de unidades'
+					value={
+						prospecto.valor_reconstruccion_unidades
+							? formatUF(prospecto.valor_reconstruccion_unidades)
 							: '—'
 					}
 				/>

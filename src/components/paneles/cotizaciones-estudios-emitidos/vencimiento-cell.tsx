@@ -43,20 +43,20 @@ function formatFechaCelda(iso: string) {
   })
 }
 
-import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
+import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
 
 type VencimientoCellProps = {
   idSolicitud: number
   cantidadCotizaciones: number
   vencimientoMasProximo: string | null
-  estadoVencimiento: string | null
+  estado: string | null
 }
 
 export default function VencimientoCell({
   idSolicitud,
   cantidadCotizaciones,
   vencimientoMasProximo,
-  estadoVencimiento,
+  estado,
 }: VencimientoCellProps) {
   const { data: cotizaciones, isLoading } = useCotizaciones(idSolicitud)
   const ahora = useMemo(() => new Date(), [])
@@ -157,14 +157,12 @@ export default function VencimientoCell({
                       <span className='text-muted-foreground'> · {plazo}</span>
                     </p>
                     <div className='shrink-0'>
-                      {estadoVencimiento && (
+                      {op.estado && (
                         <Badge
-                          variant={VENCIMIENTO_VARIANT[estadoVencimiento]}
+                          variant={ESTADO_COTIZACION_VARIANT[op.estado]}
                           className='text-xs font-medium'
                         >
-                          {estadoVencimiento === 'vigente' && 'Vigente'}
-                          {estadoVencimiento === 'por_vencer' && 'Por vencer'}
-                          {estadoVencimiento === 'vencida' && 'Vencida'}
+                          {ESTADO_COTIZACION_LABELS[op.estado]}
                         </Badge>
                       )}
                     </div>

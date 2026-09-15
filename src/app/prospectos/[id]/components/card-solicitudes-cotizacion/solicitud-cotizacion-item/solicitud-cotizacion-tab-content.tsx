@@ -13,6 +13,7 @@ import {
 	ESTADO_ESTUDIO_PERFIL_BADGE,
 	ESTADO_ESTUDIO_PERFIL_LABELS,
 } from '@/lib/estados-cotizaciones'
+import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
@@ -49,27 +50,6 @@ function descargarPDF(base64: string, nombreArchivo: string) {
 	a.download = nombreArchivo
 	a.click()
 	URL.revokeObjectURL(url)
-}
-
-const ESTADO_VENC_COLORS: Record<string, string> = {
-	vigente: 'bg-success/12 text-success dark:bg-success/20',
-	por_vencer: 'bg-warning/15 text-warning dark:bg-warning/20',
-	vencida: 'bg-destructive/12 text-destructive dark:bg-destructive/20',
-}
-
-const ESTADO_VENC_LABELS: Record<string, string> = {
-	vigente: 'Vigente',
-	por_vencer: 'Por vencer',
-	vencida: 'Vencida',
-}
-
-function calcularEstadoVenc(fechaStr: string): string {
-	const hoy = new Date()
-	const venc = new Date(fechaStr)
-	const diffDias = (venc.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24)
-	if (diffDias < 0) return 'vencida'
-	if (diffDias <= 30) return 'por_vencer'
-	return 'vigente'
 }
 
 export default function SolicitudCotizacionTabContent({
@@ -325,7 +305,6 @@ export default function SolicitudCotizacionTabContent({
 				) : cotizaciones && cotizaciones.length > 0 ? (
 					<div className='space-y-2'>
 						{cotizaciones.map(cotizacion => {
-							const ev = calcularEstadoVenc(cotizacion.fecha_vencimiento)
 							return (
 								<div
 									key={cotizacion.id}
@@ -335,14 +314,16 @@ export default function SolicitudCotizacionTabContent({
 										<span className='font-medium text-foreground'>
 											{cotizacion.company}
 										</span>
-										<span
-											className={cn(
-												'inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-semibold leading-none',
-												ESTADO_VENC_COLORS[ev],
-											)}
-										>
-											{ESTADO_VENC_LABELS[ev]}
-										</span>
+										{cotizacion.estado && (
+											<Badge
+												variant={
+													ESTADO_COTIZACION_VARIANT[cotizacion.estado]
+												}
+												className='text-xs font-medium'
+											>
+												{ESTADO_COTIZACION_LABELS[cotizacion.estado]}
+											</Badge>
+										)}
 									</div>
 									<div className='mt-1 grid grid-cols-2 gap-x-3 gap-y-1 text-muted-foreground sm:grid-cols-4'>
 										<span>

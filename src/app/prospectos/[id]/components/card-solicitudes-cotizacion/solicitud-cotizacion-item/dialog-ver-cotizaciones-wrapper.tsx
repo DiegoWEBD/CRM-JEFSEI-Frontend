@@ -33,7 +33,7 @@ export default function DialogVerCotizacionesWrapper({
     tiene_estudio: false,
     id_estudio: null,
     vencimiento_mas_proximo: null,
-    estado_vencimiento: null,
+    estado: null,
   }
 
   return (

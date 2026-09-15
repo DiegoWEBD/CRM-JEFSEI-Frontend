@@ -6,19 +6,6 @@ import { EstudioComercialCondominioResumen } from '@/aplicacion/estudio-comercia
 import { PanelEstudioFila } from '../../dto/panel-estudio-fila'
 import { listarEstudiosComerciales } from '@/aplicacion/estudio-comercial/use-cases/listar-estudios-comerciales/listar-estudios-comerciales'
 
-function calcularEstadoVencimiento(
-	fechaStr: string | null,
-): PanelEstudioFila['estado_vencimiento'] {
-	if (!fechaStr) return null
-	const hoy = new Date()
-	const vencimiento = new Date(fechaStr)
-	const diffMs = vencimiento.getTime() - hoy.getTime()
-	const diffDias = diffMs / (1000 * 60 * 60 * 24)
-	if (diffDias < 0) return 'vencida'
-	if (diffDias <= 30) return 'por_vencer'
-	return 'vigente'
-}
-
 export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 	const cookieStore = await cookies()
 	const cookie = cookieStore.toString()
@@ -70,12 +57,16 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 
 	const filas: PanelEstudioFila[] = solicitudes.map(s => {
 		const cotizaciones = cotizacionesPorSolicitud.get(s.id) ?? []
-		const fechasVencimiento = cotizaciones
-			.map(c => c.fecha_vencimiento)
-			.filter(Boolean)
+		const cotizacionesConVencimiento = cotizaciones
+			.filter(c => c.fecha_vencimiento)
+			.sort((a, b) => (a.fecha_vencimiento < b.fecha_vencimiento ? -1 : 1))
 		const vencimientoMasProximo =
-			fechasVencimiento.length > 0
-				? fechasVencimiento.reduce((a, b) => (a < b ? a : b))
+			cotizacionesConVencimiento.length > 0
+				? cotizacionesConVencimiento[0].fecha_vencimiento
+				: null
+		const estado =
+			cotizacionesConVencimiento.length > 0
+				? cotizacionesConVencimiento[0].estado
 				: null
 
 		const estudio = estudiosPorSolicitud.get(s.id) ?? null
@@ -90,7 +81,7 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 			cantidad_cotizaciones: s.cantidad_cotizaciones,
 			fecha: s.fecha,
 			vencimiento_mas_proximo: vencimientoMasProximo,
-			estado_vencimiento: calcularEstadoVencimiento(vencimientoMasProximo),
+			estado,
 			tiene_estudio: s.estudio_disponible,
 			id_estudio: estudio?.id ?? null,
 		}

@@ -39,7 +39,7 @@ export default function DialogGenerarEstudioWrapper({
     tiene_estudio: false,
     id_estudio: null,
     vencimiento_mas_proximo: null,
-    estado_vencimiento: null,
+    estado: null,
   }
 
   return (
