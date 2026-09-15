@@ -30,4 +30,5 @@ export interface ProspectoCondominio extends Prospecto {
 	valor_reconstruccion?: number
 	valor_reconstruccion_depreciacion?: number
 	valor_reconstruccion_espacio_comun?: number
+	valor_reconstruccion_unidades?: number
 }

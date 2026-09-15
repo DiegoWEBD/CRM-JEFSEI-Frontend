@@ -227,6 +227,16 @@ export default function InformacionTecnicaCondominio({
 							: '—'
 					}
 				/>
+
+				<DataItemProspecto
+					icon={DollarSign}
+					label='Reconstrucción de unidades'
+					value={
+						prospecto.valor_reconstruccion_unidades
+							? formatUF(prospecto.valor_reconstruccion_unidades)
+							: '—'
+					}
+				/>
 			</div>
 		</CardContent>
 	)
