@@ -39,8 +39,8 @@ export const KPI_PASTEL: Record<KpiPastelColor, KpiPastelClasses> = {
 		icon: 'bg-info/10 text-info ring-info/15',
 	},
 	violet: {
-		card: 'border-l-2 border-l-primary bg-primary/5',
-		icon: 'bg-primary/10 text-primary ring-primary/15',
+		card: 'border-l-2 border-l-violet-600 bg-violet-600/5',
+		icon: 'bg-violet-600/10 text-violet-600 ring-violet-600/15',
 	},
 	slate: {
 		card: 'border-l-2 border-l-border/50 bg-muted/50',

@@ -2,8 +2,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { PanelKpiCard } from '@/components/paneles/shared/panel-kpi-card'
-import Poliza from '@/dominio/poliza/poliza'
-import { useQueryPolizas } from '@/hooks/polizas/use-query-polizas'
+import { useCompaniesSeguros } from '@/hooks/companies-seguros/use-companies-seguros'
+import { useFiltrosPolizas } from '@/hooks/polizas/use-filtros-polizas'
+import { usePanelPolizas } from '@/hooks/polizas/use-panel-polizas'
 import {
 	AlertTriangle,
 	Ban,
@@ -12,112 +13,30 @@ import {
 	DollarSign,
 	Shield,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
 import ContenedorPolizas from './contenedor-polizas/contenedor-polizas'
-import BarraFiltrosPolizas, {
-	type FiltrosPolizasCliente,
-	FILTROS_POLIZAS_INICIAL,
-} from './contenedor-polizas/filtros-polizas/barra-filtros-polizas'
-
-function diasHasta(ymd: string | undefined): number | null {
-	if (!ymd) return null
-	const hoy = new Date()
-	hoy.setHours(0, 0, 0, 0)
-	const fin = new Date(`${ymd}T12:00:00`)
-	const diff = fin.getTime() - hoy.getTime()
-	return Math.ceil(diff / (1000 * 60 * 60 * 24))
-}
-
-function filtrarPolizas(
-	polizas: Poliza[],
-	filtros: FiltrosPolizasCliente,
-): Poliza[] {
-	return polizas.filter(p => {
-		if (filtros.estado !== 'todas' && p.estado !== filtros.estado) return false
-
-		if (
-			filtros.compania !== 'todas' &&
-			(p.company?.nombre ?? '—') !== filtros.compania
-		)
-			return false
-
-		if (filtros.rangoVencimiento !== 'todas') {
-			const dias = diasHasta(p.fin_vigencia)
-			if (filtros.rangoVencimiento === 'vencidas') {
-				if (dias === null || dias > 0) return false
-			} else {
-				const limite = Number(filtros.rangoVencimiento)
-				if (dias === null || dias < 0 || dias > limite) return false
-			}
-		}
-
-		if (filtros.busqueda) {
-			const q = filtros.busqueda.toLowerCase()
-			const numero = p.numero_poliza.toLowerCase()
-			const compania = (p.company?.nombre ?? '').toLowerCase()
-			const producto = p.nombre_producto.toLowerCase()
-			if (!numero.includes(q) && !compania.includes(q) && !producto.includes(q))
-				return false
-		}
-
-		return true
-	})
-}
-
-function esFiltroActivo(f: FiltrosPolizasCliente): boolean {
-	return (
-		f.estado !== 'todas' ||
-		f.compania !== 'todas' ||
-		f.rangoVencimiento !== 'todas' ||
-		f.busqueda !== ''
-	)
-}
+import BarraFiltrosPolizas from './contenedor-polizas/filtros-polizas/barra-filtros-polizas'
 
 type CardPolizasProps = {
 	idCliente?: number
 }
 
 export default function CardPolizas({ idCliente }: CardPolizasProps) {
-	const { data: polizas } = useQueryPolizas(idCliente)
-	const [filtros, setFiltros] = useState<FiltrosPolizasCliente>(
-		FILTROS_POLIZAS_INICIAL,
-	)
+	const { data: companias } = useCompaniesSeguros({ enabled: true })
 
-	const polizasFiltradas = useMemo(
-		() => filtrarPolizas(polizas ?? [], filtros),
-		[polizas, filtros],
-	)
+	const {
+		filtros,
+		handleCambiarFiltro,
+		handleCambiarEstado,
+		handleLimpiarFiltros,
+		hayFiltrosActivos,
+		filtrosParaBackend,
+	} = useFiltrosPolizas({ id_cliente: idCliente, tamanoPagina: 50 })
 
-	const companias = useMemo(() => {
-		if (!polizas) return []
-		const set = new Set<string>()
-		polizas.forEach(p => {
-			if (p.company?.nombre) set.add(p.company.nombre)
-		})
-		return Array.from(set).sort()
-	}, [polizas])
+	const { data, isFetching } = usePanelPolizas(filtrosParaBackend, {
+		enabled: Boolean(idCliente),
+	})
 
-	const hayFiltrosActivos = esFiltroActivo(filtros)
-
-	const polizasPorEstado = useMemo(() => {
-		const map = new Map<string, number>()
-		if (!polizas) return map
-		for (const p of polizas) {
-			map.set(p.estado, (map.get(p.estado) ?? 0) + 1)
-		}
-		return map
-	}, [polizas])
-
-	const primaVigente = useMemo(() => {
-		if (!polizas) return 0
-		return polizas.reduce(
-			(sum, p) =>
-				p.estado !== 'VENCIDA' && p.estado !== 'CANCELADA'
-					? sum + p.prima_neta
-					: sum,
-			0,
-		)
-	}, [polizas])
+	const kpis = data?.kpis
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
@@ -133,61 +52,65 @@ export default function CardPolizas({ idCliente }: CardPolizasProps) {
 						<div className='grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3'>
 							<PanelKpiCard
 								label='Pólizas vigentes'
-								value={
-									(polizasPorEstado.get('VIGENTE') ?? 0) +
-									(polizasPorEstado.get('POR_VENCER') ?? 0)
-								}
+								value={(kpis?.vigentes ?? 0) + (kpis?.por_vencer ?? 0)}
 								icon={CheckCircle2}
-								activa
+								activa={filtros.estado === 'vigentes'}
+								onClick={() => handleCambiarEstado('vigentes')}
 								accent='success'
 							/>
 
 							<PanelKpiCard
 								label='Canceladas'
-								value={polizasPorEstado.get('CANCELADA') ?? 0}
+								value={kpis?.canceladas ?? 0}
 								icon={Ban}
+								activa={filtros.estado === 'canceladas'}
+								onClick={() => handleCambiarEstado('canceladas')}
+								accent='violet'
 							/>
 
 							<PanelKpiCard
 								label='Prima vigente'
-								value={`UF ${primaVigente}`}
+								value={`UF ${kpis?.prima_vigente ?? 0}`}
 								icon={DollarSign}
-								activa
 								accent='primary'
 							/>
 
 							<PanelKpiCard
 								label='Total pólizas'
-								value={polizas?.length || 0}
+								value={kpis?.total_polizas ?? 0}
+								activa={filtros.estado === 'todas'}
+								onClick={() => handleCambiarEstado('todas')}
 								icon={Shield}
 							/>
 
 							<PanelKpiCard
 								label='Por vencer'
-								value={polizasPorEstado.get('POR_VENCER') ?? 0}
+								value={kpis?.por_vencer ?? 0}
 								icon={Clock}
-								activa
+								activa={filtros.estado === 'por_vencer'}
+								onClick={() => handleCambiarEstado('por_vencer')}
 								accent='warning'
 							/>
 
 							<PanelKpiCard
 								label='Vencidas'
-								value={polizasPorEstado.get('VENCIDA') ?? 0}
+								value={kpis?.vencidas ?? 0}
 								icon={AlertTriangle}
+								activa={filtros.estado === 'vencidas'}
+								onClick={() => handleCambiarEstado('vencidas')}
+								accent='danger'
 							/>
 						</div>
 
 						<BarraFiltrosPolizas
 							filtros={filtros}
-							companias={companias}
+							companias={companias ?? []}
 							hayFiltrosActivos={hayFiltrosActivos}
-							onCambiar={(key, value) =>
-								setFiltros(prev => ({ ...prev, [key]: value }))
-							}
-							onLimpiar={() => setFiltros(FILTROS_POLIZAS_INICIAL)}
+							onCambiar={handleCambiarFiltro}
+							onLimpiar={handleLimpiarFiltros}
 						/>
 
-						<ContenedorPolizas polizas={polizasFiltradas} />
+						<ContenedorPolizas polizas={data?.polizas} isLoading={isFetching} />
 					</CardContent>
 				</Card>
 			</CardContent>

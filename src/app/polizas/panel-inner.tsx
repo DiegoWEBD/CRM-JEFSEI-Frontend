@@ -16,6 +16,7 @@ export async function PanelInner() {
 			undefined,
 			undefined,
 			undefined,
+			undefined,
 			'VIGENTE',
 			1,
 			10,

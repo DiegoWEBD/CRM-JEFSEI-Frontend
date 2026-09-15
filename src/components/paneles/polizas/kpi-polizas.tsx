@@ -78,6 +78,7 @@ export function KpiPolizas({
 					icon={FileText}
 					onClick={() => onFiltroEstadoChange('canceladas')}
 					activa={filtroEstado === 'canceladas'}
+					accent='violet'
 				/>
 
 				<PanelKpiCard
