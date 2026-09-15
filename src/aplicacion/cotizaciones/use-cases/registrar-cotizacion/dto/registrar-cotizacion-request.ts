@@ -1,7 +1,8 @@
 export interface RegistrarCotizacionRequest {
   tipo: 'tasa' | 'prima'
   monto_total_asegurado: number
-  prima_adicional_asistencia: number
+  asistencia_afecta: number
+  asistencia_excenta: number
   id_company: number
   fecha_emision: string
   fecha_vencimiento: string

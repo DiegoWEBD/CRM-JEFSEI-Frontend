@@ -101,24 +101,29 @@ export default function FilaProspecto({
 					{prospecto.nombre_administrador && (
 						<span className='flex items-center gap-1'>
 							<User size={14} />
-							Admin: {resaltarTexto(prospecto.nombre_administrador, textoBusqueda)}
+							Admin:{' '}
+							{resaltarTexto(prospecto.nombre_administrador, textoBusqueda)}
 						</span>
 					)}
 					{prospecto.ejecutivo_comercial && (
 						<span className='flex items-center gap-1'>
 							<UserCheck size={14} />
-							Ejec: {resaltarTexto(prospecto.ejecutivo_comercial, textoBusqueda)}
+							Ejec:{' '}
+							{resaltarTexto(prospecto.ejecutivo_comercial, textoBusqueda)}
 						</span>
 					)}
 				</div>
 			</div>
-			<Button
-				size='sm'
-				variant='outline'
-				className='h-8 shrink-0 px-3 text-xs transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground'
-			>
-				<Link href={`/prospectos/${prospecto.id}`}>Ver</Link>
-			</Button>
+
+			<Link href={`/prospectos/${prospecto.id}`}>
+				<Button
+					size='sm'
+					variant='outline'
+					className='h-8 px-3 shrink-0 text-xs transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground'
+				>
+					<Link href={`/prospectos/${prospecto.id}`}>Ver</Link>
+				</Button>
+			</Link>
 		</div>
 	)
 }
