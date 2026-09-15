@@ -54,7 +54,7 @@ export function useFiltrosPolizas(params?: UseFiltrosPolizasParams) {
 		(estado: FiltroEstadoPoliza) =>
 			handleCambiarFiltro(
 				'estado',
-				filtros.estado === estado ? 'todas' : estado,
+				filtros.estado === estado ? 'vigentes' : estado,
 			),
 		[handleCambiarFiltro, filtros.estado],
 	)
