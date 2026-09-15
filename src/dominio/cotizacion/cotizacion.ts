@@ -1,3 +1,9 @@
+export type EstadoCotizacionBackend =
+	| 'REGISTRADA'
+	| 'VIGENTE'
+	| 'POR_VENCER'
+	| 'VENCIDA'
+
 export default class Cotizacion {
 	constructor(
 		public id: number,
@@ -15,6 +21,7 @@ export default class Cotizacion {
 		public prima_neta: number,
 		public prima_iva: number,
 		public prima_bruta: number,
+		public estado: EstadoCotizacionBackend,
 		public nombre_archivo?: string,
 		public archivo_base64?: string,
 	) {}

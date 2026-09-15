@@ -21,7 +21,7 @@ import {
 	TableRow,
 } from '@/components/table'
 import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
-import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
+import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
 import { formatUF } from '@/lib/uf'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { Download } from 'lucide-react'
@@ -41,21 +41,6 @@ function FilaResumen({
 			<dd className='mt-0.5 text-sm text-foreground'>{children}</dd>
 		</div>
 	)
-}
-
-function calcularEstado(fechaStr: string): string {
-	const hoy = new Date()
-	const venc = new Date(fechaStr)
-	const diffDias = (venc.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24)
-	if (diffDias < 0) return 'vencida'
-	if (diffDias <= 30) return 'por_vencer'
-	return 'vigente'
-}
-
-const ESTADO_LABEL: Record<string, string> = {
-	vigente: 'Vigente',
-	por_vencer: 'Por vencer',
-	vencida: 'Vencida',
 }
 
 function descargarPDF(base64: string, nombreArchivo: string) {
@@ -132,7 +117,6 @@ export default function DialogVerCotizaciones({
 						{/* Mobile: cards */}
 						<div className='space-y-2 overflow-y-auto px-3 py-3 lg:hidden'>
 							{cotizaciones.map(cotizacion => {
-								const ev = calcularEstado(cotizacion.fecha_vencimiento)
 								return (
 									<div
 										key={cotizacion.id}
@@ -142,12 +126,14 @@ export default function DialogVerCotizaciones({
 											<span className='text-sm font-medium text-foreground'>
 												{cotizacion.company}
 											</span>
-											<Badge
-												variant={VENCIMIENTO_VARIANT[ev]}
-												className='text-xs font-medium'
-											>
-												{ESTADO_LABEL[ev]}
-											</Badge>
+											{cotizacion.estado && (
+												<Badge
+													variant={ESTADO_COTIZACION_VARIANT[cotizacion.estado]}
+													className='text-xs font-medium'
+												>
+													{ESTADO_COTIZACION_LABELS[cotizacion.estado]}
+												</Badge>
+											)}
 										</div>
 										<div className='grid grid-cols-2 gap-x-3 gap-y-1.5 text-muted-foreground'>
 											<div>
@@ -274,7 +260,6 @@ export default function DialogVerCotizaciones({
 								</TableHeader>
 								<TableBody>
 									{cotizaciones.map(cotizacion => {
-										const ev = calcularEstado(cotizacion.fecha_vencimiento)
 										return (
 											<TableRow
 												key={cotizacion.id}
@@ -324,12 +309,14 @@ export default function DialogVerCotizaciones({
 													)}
 												</TableCell>
 												<TableCell className='py-2'>
-													<Badge
-														variant={VENCIMIENTO_VARIANT[ev]}
-														className='text-xs font-medium'
-													>
-														{ESTADO_LABEL[ev]}
-													</Badge>
+													{cotizacion.estado && (
+														<Badge
+															variant={ESTADO_COTIZACION_VARIANT[cotizacion.estado]}
+															className='text-xs font-medium'
+														>
+															{ESTADO_COTIZACION_LABELS[cotizacion.estado]}
+														</Badge>
+													)}
 												</TableCell>
 												<TableCell className='py-2'>
 													{cotizacion.nombre_archivo &&

@@ -25,7 +25,7 @@ import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
 import { useArmarEstudioComercial } from '@/hooks/estudio-comercial/use-armar-estudio-comercial'
 import { useUfValue } from '@/hooks/uf/use-uf-value'
 import { cn } from '@/lib/utils'
-import { VENCIMIENTO_VARIANT } from '@/lib/badge-variants'
+import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
 import { useFormik } from 'formik'
 import { Loader2, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -37,15 +37,6 @@ function formatFecha(iso: string) {
 		month: 'short',
 		year: 'numeric',
 	})
-}
-
-function calcularEstadoVenc(fechaStr: string): string {
-	const hoy = new Date()
-	const venc = new Date(fechaStr)
-	const diffDias = (venc.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24)
-	if (diffDias < 0) return 'vencida'
-	if (diffDias <= 30) return 'por_vencer'
-	return 'vigente'
 }
 
 export type ConfiguracionEstudio = {
@@ -281,7 +272,6 @@ export default function DialogGenerarEstudio({
 								) : (
 									<div className='space-y-2'>
 										{opciones.map(op => {
-											const ev = calcularEstadoVenc(op.fecha_vencimiento)
 											const checked = idsSeleccionados.includes(op.id)
 											return (
 												<label
@@ -313,14 +303,14 @@ export default function DialogGenerarEstudio({
 															Recepción: {formatFecha(op.fecha_emision)} ·
 															Vence: {formatFecha(op.fecha_vencimiento)}
 														</p>
-														<Badge
-															variant={VENCIMIENTO_VARIANT[ev]}
-															className='text-xs font-medium'
-														>
-															{ev === 'vigente' && 'Vigente'}
-															{ev === 'por_vencer' && 'Por vencer'}
-															{ev === 'vencida' && 'Vencida'}
-														</Badge>
+														{op.estado && (
+															<Badge
+																variant={ESTADO_COTIZACION_VARIANT[op.estado]}
+																className='text-xs font-medium'
+															>
+																{ESTADO_COTIZACION_LABELS[op.estado]}
+															</Badge>
+														)}
 													</div>
 												</label>
 											)

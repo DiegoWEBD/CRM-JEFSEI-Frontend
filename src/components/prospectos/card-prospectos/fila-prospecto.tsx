@@ -121,7 +121,7 @@ export default function FilaProspecto({
 					variant='outline'
 					className='h-8 px-3 shrink-0 text-xs transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground'
 				>
-					<Link href={`/prospectos/${prospecto.id}`}>Ver</Link>
+					Ver
 				</Button>
 			</Link>
 		</div>

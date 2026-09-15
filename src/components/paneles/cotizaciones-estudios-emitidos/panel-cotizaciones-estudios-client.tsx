@@ -25,9 +25,9 @@ function buildConteos(filas: PanelEstudioFila[]): Record<string, number> {
 		estudios_finales_emitidos: 0,
 	}
 	for (const f of filas) {
-		if (f.estado_vencimiento === 'vigente') conteos.vigentes++
-		else if (f.estado_vencimiento === 'por_vencer') conteos.por_vencer++
-		else if (f.estado_vencimiento === 'vencida') conteos.vencidas++
+		if (f.estado === 'VIGENTE') conteos.vigentes++
+		else if (f.estado === 'POR_VENCER') conteos.por_vencer++
+		else if (f.estado === 'VENCIDA') conteos.vencidas++
 		if (f.tiene_estudio) conteos.estudios_finales_emitidos++
 		else conteos.estudios_pendientes++
 	}
@@ -82,14 +82,14 @@ export default function PanelCotizacionesEstudiosClient({
 		return data.filter(f => {
 			if (!filaMatchesBusqueda(f, filtros.busqueda)) return false
 			if (tarjetaActiva !== 'todas') {
-				if (tarjetaActiva === 'vigentes' && f.estado_vencimiento !== 'vigente')
+				if (tarjetaActiva === 'vigentes' && f.estado !== 'VIGENTE')
 					return false
 				if (
 					tarjetaActiva === 'por_vencer' &&
-					f.estado_vencimiento !== 'por_vencer'
+					f.estado !== 'POR_VENCER'
 				)
 					return false
-				if (tarjetaActiva === 'vencidas' && f.estado_vencimiento !== 'vencida')
+				if (tarjetaActiva === 'vencidas' && f.estado !== 'VENCIDA')
 					return false
 				if (tarjetaActiva === 'estudios_pendientes' && f.tiene_estudio)
 					return false
