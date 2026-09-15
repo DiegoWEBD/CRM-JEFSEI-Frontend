@@ -1,5 +1,5 @@
 import { obtenerProductosLineaNegocio } from '@/aplicacion/linea-negocio/use-cases/obtener-productos-linea-negocio'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { NextResponse } from 'next/server'
 
 export async function GET(
@@ -21,15 +21,6 @@ export async function GET(
 
 		return NextResponse.json(productos)
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{ error: error.response?.data?.error || error.response?.data?.detail || error.message },
-				{ status: error.response?.status ?? 500 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Error obteniendo productos de la línea de negocio' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error obteniendo productos de la línea de negocio')
 	}
 }

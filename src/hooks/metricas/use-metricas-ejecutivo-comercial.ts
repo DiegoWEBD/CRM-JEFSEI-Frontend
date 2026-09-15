@@ -6,7 +6,6 @@ export const useMetricasEjecutivoComercial = () => {
 	return useQuery<MetricasEjecutivoComercialJson>({
 		queryKey: ['metricas-ejecutivo-comercial'],
 		queryFn: async () => {
-			console.log('obteniendo metricas')
 			const response = await axios.get('/api/metricas/ejecutivos-comerciales')
 			const data: MetricasEjecutivoComercialJson = response.data
 			return data

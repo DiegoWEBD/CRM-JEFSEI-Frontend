@@ -3,7 +3,7 @@
 import { Badge } from '@/components/badge'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import { useObtenerContactos } from '@/hooks/contactos/use-obtener-contactos'
-import { useQueryPolizas } from '@/hooks/polizas/use-query-polizas'
+import { usePanelPolizas } from '@/hooks/polizas/use-panel-polizas'
 import {
 	ESTADO_GENERAL_CLIENTE_BADGE,
 	ESTADO_GENERAL_CLIENTE_LABELS,
@@ -69,25 +69,23 @@ export default function ProspectoHeroHeader({
 
 	const lineaNegocioLabel = prospecto.linea_negocio.nombre
 
-	const { data: polizas } = useQueryPolizas(
-		tieneCliente ? prospecto.id_cliente : undefined,
+	const { data: polizasData } = usePanelPolizas(
+		{ id_cliente: prospecto.id_cliente, tamano_pagina: 1 },
+		{ enabled: tieneCliente },
 	)
 	const { data: contactos } = useObtenerContactos(prospecto.id)
 
 	const kpis = useMemo(() => {
-		const polizasVigentes =
-			polizas?.filter(p => p.estado === 'VIGENTE' || p.estado === 'POR_VENCER')
-				.length ?? 0
+		const polizasVigentes = polizasData?.kpis
+			? polizasData.kpis.vigentes + polizasData.kpis.por_vencer
+			: 0
 
-		const primaVigente =
-			polizas
-				?.filter(p => p.estado !== 'VENCIDA' && p.estado !== 'CANCELADA')
-				.reduce((sum, p) => sum + p.prima_neta, 0) ?? 0
+		const primaVigente = polizasData?.kpis?.prima_vigente ?? 0
 
 		const contactosCount = contactos?.length ?? 0
 
 		return { polizasVigentes, primaVigente, contactosCount }
-	}, [polizas, contactos])
+	}, [polizasData, contactos])
 
 	return (
 		<section className='rounded-xl border border-border bg-card'>

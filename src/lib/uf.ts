@@ -12,10 +12,10 @@ export function formatUfAmount(uf: number): string {
 	return `${intFormatted},${decPart} UF`
 }
 
-export function formatUF(value: unknown): string {
+export function formatUF(value: number): string {
 	return formatUfAmount(toSafeNumber(value))
 }
 
-export function chartAxisTickUf(uf: unknown): string {
+export function chartAxisTickUf(uf: number): string {
 	return formatUfAmount(toSafeNumber(uf))
 }

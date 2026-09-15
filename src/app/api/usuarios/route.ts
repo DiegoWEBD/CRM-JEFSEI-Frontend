@@ -1,6 +1,6 @@
 import { obtenerUsuarios } from '@/aplicacion/usuarios/use-cases/obtener-usuarios'
 import { axiosClient } from '@/infraestructura/axios/axios-client'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -14,16 +14,7 @@ export async function GET(request: Request) {
 		})
 		return NextResponse.json(resultado)
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{ error: error.response?.data?.error || error.response?.data?.detail || error.message },
-				{ status: error.response?.status ?? 500 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Error obteniendo usuarios' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error obteniendo usuarios')
 	}
 }
 
@@ -39,15 +30,6 @@ export async function POST(request: Request) {
 
 		return NextResponse.json(response.data, { status: 201 })
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{ error: error.response?.data?.error || error.response?.data?.detail || error.message },
-				{ status: error.response?.status ?? 500 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Error registrando usuario' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error registrando usuario')
 	}
 }

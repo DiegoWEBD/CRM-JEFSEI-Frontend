@@ -71,7 +71,6 @@ export default function NetPremiumByCompanyChart({
 	}
 
 	const alturaGrafico = Math.max(200, chartData.length * 36)
-	console.log(chartData)
 
 	return (
 		<Card className={cn('border-border bg-card shadow-none', className)}>

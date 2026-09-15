@@ -59,8 +59,9 @@ export const useFormularioActualizarProspectoCondominio = ({
 			region: prospecto.region,
 			comuna: prospecto.comuna,
 			observaciones: prospecto.observaciones,
-			linea_negocio: prospecto.linea_negocio.nombre?.toLowerCase() || 'condominio',
-			id_administrador: prospecto.administrador?.id,
+			linea_negocio:
+				prospecto.linea_negocio.nombre?.toLowerCase() || 'condominio',
+			administrador: prospecto.administrador,
 			tiene_locales_comerciales: prospecto.tiene_locales_comerciales,
 			uso_del_condominio: prospecto.uso_del_condominio,
 			materialidad: prospecto.materialidad,
@@ -78,40 +79,61 @@ export const useFormularioActualizarProspectoCondominio = ({
 			year_construccion: prospecto.year_construccion,
 			metros_cuadrados: prospecto.metros_cuadrados,
 			uf_por_metro_cuadrado: prospecto.uf_por_metro_cuadrado ?? undefined,
-			porcentaje_depreciacion: prospecto.porcentaje_depreciacion == null
-				? undefined
-				: prospecto.porcentaje_depreciacion * 100,
-			porcentaje_espacios_comunes: prospecto.porcentaje_espacios_comunes == null
-				? undefined
-				: prospecto.porcentaje_espacios_comunes * 100,
+			porcentaje_depreciacion:
+				prospecto.porcentaje_depreciacion == null
+					? undefined
+					: prospecto.porcentaje_depreciacion * 100,
+			porcentaje_espacios_comunes:
+				prospecto.porcentaje_espacios_comunes == null
+					? undefined
+					: prospecto.porcentaje_espacios_comunes * 100,
 		},
 		onSubmit: async values => {
 			await mutation.mutateAsync({
-				id_administrador: values.id_administrador ?? null,
-				rut_riesgo: values.rut_riesgo === '' ? null : (values.rut_riesgo ?? null),
+				id_administrador: values.administrador?.id ?? null,
+				rut_riesgo:
+					values.rut_riesgo === '' ? null : (values.rut_riesgo ?? null),
 				nombre_riesgo: values.nombre_riesgo,
-				telefono_contacto: values.telefono_contacto === '' ? null : (values.telefono_contacto ?? null),
-				correo_contacto: values.correo_contacto === '' ? null : (values.correo_contacto ?? null),
+				telefono_contacto:
+					values.telefono_contacto === ''
+						? null
+						: (values.telefono_contacto ?? null),
+				correo_contacto:
+					values.correo_contacto === ''
+						? null
+						: (values.correo_contacto ?? null),
 				direccion: values.direccion === '' ? null : (values.direccion ?? null),
 				region: values.region === '' ? null : (values.region ?? null),
 				comuna: values.comuna === '' ? null : (values.comuna ?? null),
-				observaciones: values.observaciones === '' ? null : (values.observaciones ?? null),
-				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? prospecto.linea_negocio.id,
+				observaciones:
+					values.observaciones === '' ? null : (values.observaciones ?? null),
+				id_linea_negocio:
+					LINEA_TO_ID[values.linea_negocio] ?? prospecto.linea_negocio.id,
 				porcentaje_espacios_comunes: (() => {
 					const n = n2(values.porcentaje_espacios_comunes)
 					return n == null ? null : n / 100
 				})(),
 				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
-				uso_del_condominio: values.uso_del_condominio === '' ? null : (values.uso_del_condominio ?? null),
-				materialidad: values.materialidad === '' ? null : (values.materialidad ?? null),
-				clasificacion_preliminar_incendio: values.clasificacion_preliminar_incendio === '' ? null : (values.clasificacion_preliminar_incendio ?? null),
+				uso_del_condominio:
+					values.uso_del_condominio === ''
+						? null
+						: (values.uso_del_condominio ?? null),
+				materialidad:
+					values.materialidad === '' ? null : (values.materialidad ?? null),
+				clasificacion_preliminar_incendio:
+					values.clasificacion_preliminar_incendio === ''
+						? null
+						: (values.clasificacion_preliminar_incendio ?? null),
 				procesos_productivos: values.procesos_productivos ?? null,
 				numero_pisos: n2(values.numero_pisos),
 				numero_torres: n2(values.numero_torres),
 				cantidad_departamentos: n2(values.cantidad_departamentos),
 				cantidad_subterraneos: n2(values.cantidad_subterraneos),
 				tiene_piscina: values.tiene_piscina ?? null,
-				ubicacion_piscina: values.ubicacion_piscina === '' ? null : (values.ubicacion_piscina ?? null),
+				ubicacion_piscina:
+					values.ubicacion_piscina === ''
+						? null
+						: (values.ubicacion_piscina ?? null),
 				tiene_alarma_incendio: values.tiene_alarma_incendio ?? null,
 				tiene_sprinklers: values.tiene_sprinklers ?? null,
 				year_construccion: n2(values.year_construccion),

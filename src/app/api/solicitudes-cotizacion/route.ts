@@ -1,5 +1,5 @@
 import { obtenerTodasSolicitudesCotizacion } from '@/aplicacion/solicitudes-cotizacion/use-cases/obtener-todas-solicitudes-cotizacion/obtener-todas-solicitudes-cotizacion'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -7,15 +7,6 @@ export async function GET() {
     const solicitudes = await obtenerTodasSolicitudesCotizacion()
     return NextResponse.json(solicitudes)
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return NextResponse.json(
-        { error: error.response?.data?.error || error.response?.data?.detail || error.message },
-        { status: error.response?.status ?? 500 },
-      )
-    }
-    return NextResponse.json(
-      { error: 'Error obteniendo solicitudes' },
-      { status: 500 },
-    )
+    return normalizarErrorServidor(error, 'Error obteniendo solicitudes')
   }
 }

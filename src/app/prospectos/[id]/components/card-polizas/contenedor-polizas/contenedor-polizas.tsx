@@ -13,6 +13,7 @@ const ALTURA_MAX_LISTA = 'max-h-[min(320px,42vh)]'
 
 type ContenedorPolizasProps = {
   polizas?: Poliza[]
+  isLoading?: boolean
 }
 
 function EncabezadoFilas() {
@@ -35,6 +36,7 @@ function EncabezadoFilas() {
 
 export default function ContenedorPolizas({
   polizas,
+  isLoading,
 }: ContenedorPolizasProps) {
   const { polizasPorProductos } = useAgruparPolizasPorProducto(polizas)
   const [gruposExpandidos, setGruposExpandidos] = useState<Set<string>>(
@@ -65,6 +67,14 @@ export default function ContenedorPolizas({
 
   const contraerTodos = () => {
     setGruposExpandidos(new Set())
+  }
+
+  if (isLoading && !polizas) {
+    return (
+      <p className='rounded-md border border-dashed border-border/70 bg-muted/10 px-2.5 py-2 text-xs text-muted-foreground'>
+        Cargando pólizas…
+      </p>
+    )
   }
 
   if (gruposVisibles.length === 0) {

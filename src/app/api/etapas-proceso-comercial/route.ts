@@ -1,4 +1,5 @@
 import { axiosClient } from '@/infraestructura/axios/axios-client'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -9,10 +10,7 @@ export async function GET() {
 			headers: { Cookie: cookieStore.toString() },
 		})
 		return NextResponse.json(response.data)
-	} catch {
-		return NextResponse.json(
-			{ error: 'Error obteniendo etapas' },
-			{ status: 500 },
-		)
+	} catch (error) {
+		return normalizarErrorServidor(error, 'Error al obtener etapas comerciales')
 	}
 }

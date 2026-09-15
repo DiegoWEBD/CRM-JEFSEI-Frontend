@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Skeleton } from '@/components/skeleton'
-import { useUserSession } from '@/hooks/auth/use-user-session'
 import type SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
+import { useUserSession } from '@/hooks/auth/use-user-session'
 import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
 import { useListarEstudiosComerciales } from '@/hooks/estudio-comercial/use-listar-estudios-comerciales'
 import {
@@ -15,13 +14,15 @@ import {
 	ESTADO_ESTUDIO_PERFIL_LABELS,
 } from '@/lib/estados-cotizaciones'
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
-import { formatearFecha } from '@/utils/formatear-fecha'
+import { formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
+import { formatearFecha } from '@/utils/formatear-fecha'
 import { Download, FileText } from 'lucide-react'
-import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-registrar-cotizacion'
-import DialogVerCotizacionesWrapper from './dialog-ver-cotizaciones-wrapper'
+import { useState } from 'react'
 import DialogGenerarEstudioWrapper from './dialog-generar-estudio-wrapper'
+import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-registrar-cotizacion'
 import DialogSubirEstudio from './dialog-subir-estudio/dialog-subir-estudio'
+import DialogVerCotizacionesWrapper from './dialog-ver-cotizaciones-wrapper'
 
 type TabId = 'solicitud' | 'cotizaciones' | 'estudio' | 'observaciones'
 
@@ -32,21 +33,6 @@ type SolicitudCotizacionTabContentProps = {
 	nombreCliente: string
 	lineaNegocioNombre: string
 	ejecutivoEvaluacionRut?: string
-}
-
-function formatNum(n: number) {
-	return n.toLocaleString('es-CL', {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
-	})
-}
-
-function formatFecha(iso: string) {
-	return new Date(iso).toLocaleDateString('es-CL', {
-		day: 'numeric',
-		month: 'short',
-		year: 'numeric',
-	})
 }
 
 function descargarPDF(base64: string, nombreArchivo: string) {
@@ -112,9 +98,8 @@ export default function SolicitudCotizacionTabContent({
 
 	const hasDetalles =
 		(solicitud.tipo === 'vida_guardia' && solicitud.numero_guardias != null) ||
-		(solicitud.tipo === 'unidades' &&
-			(solicitud.monto_asegurado_total != null ||
-				solicitud.nombre_excel != null)) ||
+		(solicitud.tipo === 'unidades' && solicitud.nombre_excel != null) ||
+		solicitud.monto_asegurado != null ||
 		(solicitud.tipo === 'accidentes_personales' &&
 			solicitud.actividades &&
 			solicitud.actividades.length > 0) ||
@@ -175,14 +160,13 @@ export default function SolicitudCotizacionTabContent({
 							</div>
 						) : null}
 
-						{solicitud.tipo === 'unidades' &&
-						solicitud.monto_asegurado_total != null ? (
+						{solicitud.monto_asegurado != null ? (
 							<div>
 								<dt className='text-xs text-muted-foreground'>
-									Monto asegurado total
+									Monto asegurado
 								</dt>
 								<dd className='font-medium text-foreground'>
-									{solicitud.monto_asegurado_total.toLocaleString('es-CL')}
+									{solicitud.monto_asegurado.toLocaleString('es-CL')}
 								</dd>
 							</div>
 						) : null}
@@ -340,16 +324,16 @@ export default function SolicitudCotizacionTabContent({
 					</div>
 				) : cotizaciones && cotizaciones.length > 0 ? (
 					<div className='space-y-2'>
-						{cotizaciones.map(c => {
-							const ev = calcularEstadoVenc(c.fecha_vencimiento)
+						{cotizaciones.map(cotizacion => {
+							const ev = calcularEstadoVenc(cotizacion.fecha_vencimiento)
 							return (
 								<div
-									key={c.id}
+									key={cotizacion.id}
 									className='rounded-md border border-border/70 bg-card p-2.5 text-xs'
 								>
 									<div className='flex items-start justify-between gap-2'>
 										<span className='font-medium text-foreground'>
-											{c.company}
+											{cotizacion.company}
 										</span>
 										<span
 											className={cn(
@@ -361,25 +345,65 @@ export default function SolicitudCotizacionTabContent({
 										</span>
 									</div>
 									<div className='mt-1 grid grid-cols-2 gap-x-3 gap-y-1 text-muted-foreground sm:grid-cols-4'>
-										<span>Monto: {formatNum(c.monto_total_asegurado)} UF</span>
-										<span>Tasa afecta: {formatNum(c.tasa_afecta)}</span>
-										<span>Tasa excenta: {formatNum(c.tasa_excenta)}</span>
-										<span>Tasa política: {formatNum(c.tasa_politica)}</span>
 										<span>
-											Prima adicional: {formatNum(c.prima_adicional_asistencia)}{' '}
-											UF
+											Monto: {formatUF(cotizacion.monto_total_asegurado)}
 										</span>
-										<span>Emisión: {formatFecha(c.fecha_emision)}</span>
-										<span>Vence: {formatFecha(c.fecha_vencimiento)}</span>
+										<span>
+											Prima afecta:{' '}
+											{cotizacion.prima_afecta
+												? formatUF(cotizacion.prima_afecta)
+												: '—'}
+										</span>
+										<span>
+											Prima excenta:{' '}
+											{cotizacion.prima_excenta
+												? formatUF(cotizacion.prima_excenta)
+												: '—'}
+										</span>
+										<span>
+											Prima neta:{' '}
+											{cotizacion.prima_neta
+												? formatUF(cotizacion.prima_neta)
+												: '—'}
+										</span>
+										<span>
+											Prima IVA:{' '}
+											{cotizacion.prima_iva
+												? formatUF(cotizacion.prima_iva)
+												: '—'}
+										</span>
+										<span>
+											Prima bruta:{' '}
+											{cotizacion.prima_bruta
+												? formatUF(cotizacion.prima_bruta)
+												: '—'}
+										</span>
+										<span>
+											Emisión:{' '}
+											{formatearFecha(
+												new Date(cotizacion.fecha_emision),
+												'dd-MM-yyyy',
+											)}
+										</span>
+										<span>
+											Vence:{' '}
+											{formatearFecha(
+												new Date(cotizacion.fecha_vencimiento),
+												'dd-MM-yyyy',
+											)}
+										</span>
 									</div>
-									{c.nombre_archivo && c.archivo_base64 && (
+									{cotizacion.nombre_archivo && cotizacion.archivo_base64 && (
 										<Button
 											type='button'
 											variant='outline'
 											size='sm'
 											className='mt-2 h-7 text-xs'
 											onClick={() =>
-												descargarPDF(c.archivo_base64!, c.nombre_archivo!)
+												descargarPDF(
+													cotizacion.archivo_base64!,
+													cotizacion.nombre_archivo!,
+												)
 											}
 										>
 											<Download className='mr-1 h-3 w-3' />

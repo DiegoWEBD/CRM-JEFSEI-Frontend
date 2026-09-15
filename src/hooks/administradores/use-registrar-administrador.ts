@@ -10,6 +10,7 @@ export const useRegistrarAdministrador = () => {
 			registrarAdministrador(request),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['administradores'] })
+			queryClient.invalidateQueries({ queryKey: ['administradores-infinite'] })
 		},
 	})
 }

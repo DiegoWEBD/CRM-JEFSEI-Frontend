@@ -33,9 +33,7 @@ export const useRecordatorios = ({
 				endpoint += `&id_prospecto=${id_prospecto}`
 			}
 
-			const response = await axios.get(endpoint, {
-				withCredentials: true,
-			})
+			const response = await axios.get(endpoint)
 
 			const data: RecordatoriosPaginadosResponse = response.data
 			return data

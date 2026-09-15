@@ -1,9 +1,15 @@
 import { EstadoComercialProspecto } from '@/types/estados/estado-comercial-cliente'
 
 /** Estado general del prospecto/cliente devuelto por el backend. */
-export type EstadoGeneralCliente = 'prospecto' | 'cliente_activo' | 'cliente_inactivo'
+export type EstadoGeneralCliente =
+	| 'prospecto'
+	| 'cliente_activo'
+	| 'cliente_inactivo'
 
-export const ESTADO_GENERAL_CLIENTE_LABELS: Record<EstadoGeneralCliente, string> = {
+export const ESTADO_GENERAL_CLIENTE_LABELS: Record<
+	EstadoGeneralCliente,
+	string
+> = {
 	prospecto: 'Prospecto',
 	cliente_activo: 'Cliente activo',
 	cliente_inactivo: 'Cliente inactivo',
@@ -131,25 +137,6 @@ export const ESTADO_ESTUDIO_PERFIL_LABELS: Record<
 
 export { ESTADO_ESTUDIO_PERFIL_VARIANT as ESTADO_ESTUDIO_PERFIL_BADGE } from '@/lib/badge-variants'
 
-/*export function estadoEstudioPerfilDesdeLinea(
-	line: LineaSeguroClienteMock,
-	opts?: { solicitudTieneEstudioEmitido?: (solicitudId: string) => boolean },
-): EstadoEstudioPerfilVisual | null {
-	const estado = resolverEstadoCotizacionLinea(line, opts)
-	switch (estado) {
-		case 'estudio_disponible':
-			return 'estudio_disponible'
-		case 'estudio_enviado_cliente':
-			return 'estudio_enviado_cliente'
-		case 'recotizacion_solicitada':
-			return 'recotizacion_solicitada'
-		case 'perdido':
-			return 'perdido'
-		default:
-			return null
-	}
-}*/
-
 /** Estado de póliza en el listado del perfil. */
 export type EstadoPoliza =
 	| 'REGISTRADA'
@@ -167,33 +154,3 @@ export const ESTADO_POLIZA_PERFIL_LABELS: Record<EstadoPoliza, string> = {
 }
 
 export { ESTADO_POLIZA_PERFIL_VARIANT as ESTADO_POLIZA_PERFIL_BADGE } from '@/lib/badge-variants'
-
-/*export function estadoPolizaPerfilDesdeMostrado(
-	estado: EstadoPolizaCliente,
-): EstadoPoliza {
-	switch (estado) {
-		case 'En trámite':
-			return 'REGISTRADA'
-		case 'Vigente':
-			return 'VIGENTE'
-		case 'Por vencer':
-			return 'POR_VENCER'
-		case 'Vencida':
-			return 'VENCIDA'
-		case 'Cancelada':
-			return 'CANCELADA'
-		default:
-			return 'REGISTRADA'
-	}
-}
-
-export function resolverEstadosSolicitudLineaPerfil(
-	line: LineaSeguroClienteMock,
-	opts?: { solicitudTieneEstudioEmitido?: (solicitudId: string) => boolean },
-) {
-	const estadoSolicitud = estadoSolicitudCotizacionPerfil(line, opts)
-	const estadoCotizacion = estadoCotizacionPerfilDesdeSolicitud(estadoSolicitud)
-	const estadoEstudio = estadoEstudioPerfilDesdeLinea(line, opts)
-	return { estadoSolicitud, estadoCotizacion, estadoEstudio }
-}
-*/

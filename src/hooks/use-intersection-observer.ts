@@ -1,4 +1,4 @@
-import { type RefObject, useEffect } from 'react'
+import { type RefObject, useEffect, useRef } from 'react'
 
 export function useIntersectionObserver(
 	ref: RefObject<HTMLElement | null>,
@@ -10,11 +10,22 @@ export function useIntersectionObserver(
 		rootMargin?: string
 	},
 ) {
-	const { onIntersect, enabled, rootRef, rootSelector, rootMargin = '0px' } = options
+	const {
+		onIntersect,
+		enabled,
+		rootRef,
+		rootSelector,
+		rootMargin = '0px',
+	} = options
+
+	const prevIntersectingRef = useRef(false)
 
 	useEffect(() => {
 		const element = ref.current
-		if (!element || !enabled) return
+		if (!element || !enabled) {
+			prevIntersectingRef.current = false
+			return
+		}
 
 		let root: Element | null = null
 		if (rootRef?.current) {
@@ -25,15 +36,12 @@ export function useIntersectionObserver(
 
 		const observer = new IntersectionObserver(
 			([entry]) => {
-				if (entry.isIntersecting) {
+				if (entry.isIntersecting && !prevIntersectingRef.current) {
 					onIntersect()
 				}
+				prevIntersectingRef.current = entry.isIntersecting
 			},
-			{
-				root,
-				threshold: 0,
-				rootMargin,
-			},
+			{ root, threshold: 0, rootMargin },
 		)
 
 		observer.observe(element)

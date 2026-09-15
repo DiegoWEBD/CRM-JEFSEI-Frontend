@@ -26,6 +26,9 @@ export const ETIQUETAS_CAMPOS_PROSPECTO: Record<string, string> = {
   tiene_sprinklers: '¿Tiene sprinklers?',
   year_construccion: 'Año de construcción',
   metros_cuadrados: 'Metros cuadrados',
+  valor_reconstruccion: 'Valor de reconstrucción',
+  valor_reconstruccion_depreciacion: 'Valor reconstrucción con depreciación',
+  valor_reconstruccion_espacio_comun: 'Valor espacio común',
 }
 
 export function labelCampo(key: string): string {

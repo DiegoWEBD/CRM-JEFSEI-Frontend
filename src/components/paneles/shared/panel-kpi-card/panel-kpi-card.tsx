@@ -10,6 +10,7 @@ export type KpiAcento =
 	| 'primary'
 	| 'warning'
 	| 'danger'
+	| 'violet'
 	| null
 
 const ACENTO_CARD: Record<NonNullable<KpiAcento>, string> = {
@@ -18,6 +19,7 @@ const ACENTO_CARD: Record<NonNullable<KpiAcento>, string> = {
 	primary: KPI_PASTEL.primary.card,
 	warning: KPI_PASTEL.warning.card,
 	danger: KPI_PASTEL.danger.card,
+	violet: KPI_PASTEL.violet.card,
 }
 
 const ACENTO_ICON: Record<NonNullable<KpiAcento>, string> = {
@@ -26,6 +28,7 @@ const ACENTO_ICON: Record<NonNullable<KpiAcento>, string> = {
 	primary: KPI_PASTEL.primary.icon,
 	warning: KPI_PASTEL.warning.icon,
 	danger: KPI_PASTEL.danger.icon,
+	violet: KPI_PASTEL.violet.icon,
 }
 
 const ACENTO_BORDER_LEFT: Record<NonNullable<KpiAcento>, string> = {
@@ -34,6 +37,7 @@ const ACENTO_BORDER_LEFT: Record<NonNullable<KpiAcento>, string> = {
 	primary: 'border-l-primary',
 	warning: 'border-l-warning',
 	danger: 'border-l-destructive',
+	violet: 'border-l-destructive',
 }
 
 type PanelKpiCardProps = {

@@ -1,5 +1,5 @@
 import { axiosClient } from '@/infraestructura/axios/axios-client'
-import axios from 'axios'
+import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -12,21 +12,7 @@ export async function GET() {
 
 		return NextResponse.json(response.data)
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{
-					error:
-						error.response?.data?.detail ||
-						error.response?.data?.error ||
-						error.message,
-				},
-				{ status: error.response?.status ?? 500 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Error obteniendo parámetros de depreciación' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error obteniendo parámetros de depreciación')
 	}
 }
 
@@ -41,20 +27,6 @@ export async function PUT(request: Request) {
 
 		return NextResponse.json(response.data)
 	} catch (error) {
-		if (axios.isAxiosError(error)) {
-			return NextResponse.json(
-				{
-					error:
-						error.response?.data?.detail ||
-						error.response?.data?.error ||
-						error.message,
-				},
-				{ status: error.response?.status ?? 500 },
-			)
-		}
-		return NextResponse.json(
-			{ error: 'Error guardando parámetros de depreciación' },
-			{ status: 500 },
-		)
+		return normalizarErrorServidor(error, 'Error guardando parámetros de depreciación')
 	}
 }

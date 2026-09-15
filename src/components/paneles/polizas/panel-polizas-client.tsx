@@ -1,62 +1,37 @@
 'use client'
 
+import { useFiltrosPolizas } from '@/hooks/polizas/use-filtros-polizas'
 import { usePanelPolizas } from '@/hooks/polizas/use-panel-polizas'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useState } from 'react'
-import FiltrosPolizas, {
-	TODOS,
-	type FiltrosPanelPolizas,
-} from './filtros-polizas'
-import { KpiPolizas, type FiltroEstadoPoliza } from './kpi-polizas'
+import FiltrosPolizas from './filtros-polizas'
+import { KpiPolizas } from './kpi-polizas'
 import TablaPolizas from './tabla-polizas'
 
 const TAMANO_PAGINA = 10
 
-const ESTADO_A_BACKEND: Record<string, string> = {
-	vigentes: 'VIGENTE',
-	por_vencer: 'POR_VENCER',
-	vencidas: 'VENCIDA',
-	canceladas: 'CANCELADA',
-	registradas: 'REGISTRADA',
-}
-
 export default function PanelPolizasClient() {
-	const [filtros, setFiltros] = useState<FiltrosPanelPolizas>({
-		texto_busqueda: '',
-		id_company: TODOS,
-		id_linea_negocio: TODOS,
+	const {
+		filtros,
+		pagina,
+		setPagina,
+		handleCambiarFiltro,
+		handleCambiarEstado,
+		handleLimpiarFiltros,
+		hayFiltrosActivos,
+		filtrosParaBackend,
+	} = useFiltrosPolizas({
+		tamanoPagina: TAMANO_PAGINA,
+		filtrosIniciales: { estado: 'vigentes' },
 	})
-	const [pagina, setPagina] = useState(1)
-	const [filtroEstado, setFiltroEstado] =
-		useState<FiltroEstadoPoliza>('vigentes')
 
 	const textoBusquedaDebounced = useDebounce(filtros.texto_busqueda, 300)
 
-	const estadoBackend =
-		filtroEstado !== 'todas' ? ESTADO_A_BACKEND[filtroEstado] : undefined
-
-	const { data, isFetching } = usePanelPolizas({
-		id_company:
-			filtros.id_company !== TODOS ? Number(filtros.id_company) : undefined,
-		id_linea_negocio:
-			filtros.id_linea_negocio !== TODOS
-				? Number(filtros.id_linea_negocio)
-				: undefined,
+	const filtrosConDebounce = {
+		...filtrosParaBackend,
 		texto_busqueda: textoBusquedaDebounced || undefined,
-		estado: estadoBackend,
-		pagina,
-		tamano_pagina: TAMANO_PAGINA,
-	})
-
-	const handleFiltrosChange = (nuevosFiltros: FiltrosPanelPolizas) => {
-		setFiltros(nuevosFiltros)
-		setPagina(1)
 	}
 
-	const handleFiltroEstadoChange = (estado: FiltroEstadoPoliza) => {
-		setFiltroEstado(estado)
-		setPagina(1)
-	}
+	const { data, isFetching } = usePanelPolizas(filtrosConDebounce)
 
 	return (
 		<div className='space-y-6'>
@@ -70,13 +45,15 @@ export default function PanelPolizasClient() {
 
 			<KpiPolizas
 				kpis={data?.kpis}
-				filtroEstado={filtroEstado}
-				onFiltroEstadoChange={handleFiltroEstadoChange}
+				filtroEstado={filtros.estado}
+				onFiltroEstadoChange={handleCambiarEstado}
 			/>
 
 			<FiltrosPolizas
 				filtros={filtros}
-				onChange={handleFiltrosChange}
+				onActualizar={handleCambiarFiltro}
+				onLimpiar={handleLimpiarFiltros}
+				hayFiltrosActivos={hayFiltrosActivos}
 				total={data?.total}
 			/>
 
