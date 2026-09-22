@@ -174,7 +174,11 @@ export default function InformacionTecnicaCondominio({
 					label='Valor UF / m² (sin IVA)'
 					value={prospecto.uf_por_metro_cuadrado}
 					missing={inputPendiente(prospecto.uf_por_metro_cuadrado)}
-					badge={prospecto.valor_uf_m2_personalizado != null ? 'Personalizado' : undefined}
+					badge={
+						prospecto.valor_uf_m2_personalizado != null
+							? 'Personalizado'
+							: undefined
+					}
 				/>
 
 				<DataItemProspecto
