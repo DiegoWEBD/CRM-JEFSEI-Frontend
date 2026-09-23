@@ -6,6 +6,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current Summary
 
+**Notificaciones / campana header: DONE**
+
+- **Tipos**: `src/types/notificaciones/notificacion.ts` (Notificacion, paginado, contador, responses).
+- **BFF**: `/api/notificaciones` (GET), `/api/notificaciones/contador`, `/api/notificaciones/[id]/leer` (PATCH), `/api/notificaciones/leer-todas` (POST).
+- **Use cases server**: `src/aplicacion/notificaciones/use-cases/*` con cookies → axiosClient al backend.
+- **Hooks**: `use-notificaciones`, `use-contador-no-leidas` (refetch 60s), `use-marcar-notificacion-leida`, `use-marcar-notificaciones-leidas`.
+- **Campana**: `src/components/header/campana-notificaciones/campana-notificaciones.tsx` — popover con badge de contador, lista no leídas (nivel, mensaje, tiempo relativo), click marca leída y navega a `url_destino`, "Marcar todas".
+- **Header**: montada en `header-client.tsx` junto al usuario.
+- Backend: router `/notificaciones` registrado, APScheduler (`CRM_INICIAR_SCHEDULER`, intervalo `CRM_SCHEDULER_INTERVALO_MINUTOS`) genera alertas SLA.
+
 **E3 Frontend — Cotizaciones/Estudios Emitidos panel: DONE**
 
 All components are built:
