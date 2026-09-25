@@ -14,6 +14,7 @@ import { useUserSession } from '@/hooks/auth/use-user-session'
 import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
 import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/dialog-nueva-solicitud-cotizacion'
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
+import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
 
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
@@ -146,13 +147,21 @@ export default function OportunidadItem({
 									/>
 								) : null}
 							</div>
-						) : (
-							<p className='py-2 text-center text-xs text-muted-foreground'>
-								No hay solicitudes de cotización para esta oportunidad.
-							</p>
-						)}
+					) : (
+						<p className='py-2 text-center text-xs text-muted-foreground'>
+							No hay solicitudes de cotización para esta oportunidad.
+						</p>
+					)}
 
-						{(!proceso.cerrado && usuario?.rut === ejecutivoComercialRut) ||
+					<div className='mt-2 border-t border-border/30 pt-2'>
+						<FechaEstimadaCierreCell
+							proceso={proceso}
+							idProspecto={idProspecto}
+							ejecutivoComercialRut={ejecutivoComercialRut}
+						/>
+					</div>
+
+					{(!proceso.cerrado && usuario?.rut === ejecutivoComercialRut) ||
 						usuario?.rut === ejecutivoRenovacionRut ? (
 							<div className='mt-2 flex flex-col gap-2 border-t border-border/30 pt-2 sm:flex-row sm:items-center'>
 								<Button
