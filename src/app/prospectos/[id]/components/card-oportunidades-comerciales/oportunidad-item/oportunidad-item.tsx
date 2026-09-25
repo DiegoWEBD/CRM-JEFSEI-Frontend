@@ -8,13 +8,14 @@ import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-client
 import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
 import { cn } from '@/lib/utils'
 import { ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useObtenerSolicitudesPorProceso } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-por-proceso'
 import { useUserSession } from '@/hooks/auth/use-user-session'
 import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
 import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/dialog-nueva-solicitud-cotizacion'
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
 import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
+import ProbabilidadCierreCell from './probabilidad-cierre-cell'
 
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
@@ -49,6 +50,16 @@ export default function OportunidadItem({
 	)
 
 	const esDualRol = ejecutivoComercialRut === ejecutivoEvaluacionRut
+	const probabilidadEjecutivo = proceso.probabilidad_cierre_ejecutivo
+	const probabilidadEfectiva =
+		probabilidadEjecutivo ?? proceso.probabilidad_cierre_sistema
+
+	const probabilidadCierreBadgeVariant = useMemo(() => {
+		if (probabilidadEfectiva < 0.5) return 'destructive'
+		if (probabilidadEfectiva >= 0.5 && probabilidadEfectiva < 0.7)
+			return 'pastel-amber'
+		return 'pastel-emerald'
+	}, [probabilidadEfectiva])
 
 	return (
 		<>
@@ -89,6 +100,18 @@ export default function OportunidadItem({
 							] ?? proceso.estado_actual.nombre}
 						</Badge>
 
+						<Badge
+							variant={probabilidadCierreBadgeVariant}
+							title={
+								probabilidadEjecutivo !== null
+									? 'Probabilidad de cierre estimada por el ejecutivo'
+									: 'Probabilidad de cierre estimada por el sistema'
+							}
+							className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
+						>
+							{Math.round(probabilidadEfectiva * 100)}%
+						</Badge>
+
 						{proceso.cerrado && (
 							<Badge
 								variant='outline'
@@ -106,6 +129,19 @@ export default function OportunidadItem({
 
 				{expandido && (
 					<div className='border-t border-border/50 px-3 pb-3 pt-2'>
+						<div className='grid gap-3 border-b border-border/30 pb-3 sm:grid-cols-2'>
+							<ProbabilidadCierreCell
+								proceso={proceso}
+								idProspecto={idProspecto}
+								ejecutivoComercialRut={ejecutivoComercialRut}
+							/>
+							<FechaEstimadaCierreCell
+								proceso={proceso}
+								idProspecto={idProspecto}
+								ejecutivoComercialRut={ejecutivoComercialRut}
+							/>
+						</div>
+
 						{isLoading ? (
 							<div className='space-y-2'>
 								<Skeleton className='h-12 w-full' />
@@ -147,21 +183,13 @@ export default function OportunidadItem({
 									/>
 								) : null}
 							</div>
-					) : (
-						<p className='py-2 text-center text-xs text-muted-foreground'>
-							No hay solicitudes de cotización para esta oportunidad.
-						</p>
-					)}
+						) : (
+							<p className='py-2 text-center text-xs text-muted-foreground'>
+								No hay solicitudes de cotización para esta oportunidad.
+							</p>
+						)}
 
-					<div className='mt-2 border-t border-border/30 pt-2'>
-						<FechaEstimadaCierreCell
-							proceso={proceso}
-							idProspecto={idProspecto}
-							ejecutivoComercialRut={ejecutivoComercialRut}
-						/>
-					</div>
-
-					{(!proceso.cerrado && usuario?.rut === ejecutivoComercialRut) ||
+						{(!proceso.cerrado && usuario?.rut === ejecutivoComercialRut) ||
 						usuario?.rut === ejecutivoRenovacionRut ? (
 							<div className='mt-2 flex flex-col gap-2 border-t border-border/30 pt-2 sm:flex-row sm:items-center'>
 								<Button
