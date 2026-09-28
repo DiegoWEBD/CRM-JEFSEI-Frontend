@@ -3,6 +3,7 @@
 import { tituloDeRuta } from '@/lib/route-titles'
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
+import CampanaNotificaciones from '../campana-notificaciones/campana-notificaciones'
 import HeaderUsuario from '../header-usuario/header-usuario'
 import ToggleSidebarButton from '../toggle-sidebar-button/toggle-sidebar-button'
 
@@ -26,8 +27,9 @@ const HeaderClient = ({ nombreUsuario, nombreRoles }: HeaderClientProps) => {
 				</h1>
 			</div>
 
-			{/* Derecha: tema + usuario */}
+			{/* Derecha: campana + tema + usuario */}
 			<div className='flex items-center gap-1.5 sm:gap-2'>
+				<CampanaNotificaciones />
 				<div
 					className='hidden h-6 w-px bg-border sm:block'
 					aria-hidden='true'

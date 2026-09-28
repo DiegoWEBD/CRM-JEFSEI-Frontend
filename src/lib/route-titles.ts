@@ -6,6 +6,7 @@ import {
 	FileText,
 	Group,
 	Home,
+	Landmark,
 	LayoutDashboard,
 	Package,
 	Users,
@@ -45,6 +46,11 @@ export const RUTAS_PRINCIPALES: RouteMeta[] = [
 		href: '/polizas',
 		titulo: 'Pólizas',
 		icono: FileText,
+	},
+	{
+		href: '/companies-seguros',
+		titulo: 'Compañías de seguros',
+		icono: Landmark,
 	},
 ]
 
