@@ -9,6 +9,7 @@ import {
 	Group,
 	Home,
 	LayoutDashboard,
+	Landmark,
 	Package,
 	Users,
 	type LucideIcon,
@@ -117,6 +118,12 @@ const SECCIONES: NavSection[] = [
 					r.some(c =>
 						['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c),
 					),
+			},
+			{
+				href: '/companies-seguros',
+				icono: Landmark,
+				titulo: 'Compañías de seguros',
+				visible: r => r.some(c => ROLES_GERENTE.includes(c)),
 			},
 		],
 	},

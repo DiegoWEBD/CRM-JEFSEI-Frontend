@@ -186,7 +186,7 @@ export default function InformacionTecnicaCondominio({
 					label='Porcentaje de depreciación'
 					value={
 						prospecto.porcentaje_depreciacion != undefined
-							? `${prospecto.porcentaje_depreciacion * 100}%`
+							? `${Math.round(prospecto.porcentaje_depreciacion * 100)}%`
 							: null
 					}
 					missing={inputPendiente(prospecto.porcentaje_depreciacion)}
@@ -197,7 +197,7 @@ export default function InformacionTecnicaCondominio({
 					label='Porcentaje de espacios comunes'
 					value={
 						prospecto.porcentaje_espacios_comunes != undefined
-							? `${prospecto.porcentaje_espacios_comunes * 100}%`
+							? `${Math.round(prospecto.porcentaje_espacios_comunes * 100)}%`
 							: null
 					}
 					missing={inputPendiente(prospecto.porcentaje_espacios_comunes)}
