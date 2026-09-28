@@ -11,4 +11,7 @@ export interface ProcesoComercial {
 	estado_actual: { codigo: EstadoComercialProspecto; nombre: string }
 	etapa_actual: { id: number; nombre: string; dias_limite: number | null }
 	cerrado: boolean
+	fecha_estimada_cierre: string | null
+	probabilidad_cierre_sistema: number
+	probabilidad_cierre_ejecutivo: number | null
 }
