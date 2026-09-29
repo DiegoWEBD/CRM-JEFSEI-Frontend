@@ -1,13 +1,14 @@
 'use client'
 
 import { Button } from '@/components/button'
-import { Badge } from '@/components/badge'
 import { Card, CardContent } from '@/components/card'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import Paginacion from '@/components/paginacion/paginacion'
 import CompanySeguro from '@/dominio/company-seguro/company-seguro'
 import { Calculator, Pencil, Trash2 } from 'lucide-react'
 import { Skeleton } from '@/components/skeleton'
+
+import ResumenFactoresCuotas from './resumen-factores-cuotas'
 
 type TablaCompaniesProps = {
 	companies: CompanySeguro[]
@@ -18,22 +19,6 @@ type TablaCompaniesProps = {
 	onEditar: (company: CompanySeguro) => void
 	onFactores: (company: CompanySeguro) => void
 	onEliminar: (company: CompanySeguro) => void
-}
-
-function resumenFactores(company: CompanySeguro) {
-	if (company.factores_cuotas.length === 0) {
-		return <span className='text-xs text-muted-foreground'>Sin factores</span>
-	}
-
-	return (
-		<div className='flex flex-wrap gap-1'>
-			{company.factores_cuotas.map(factor => (
-				<Badge key={factor.numero_cuotas} variant='pastel-blue'>
-					{factor.numero_cuotas} cuotas · {factor.factor}
-				</Badge>
-			))}
-		</div>
-	)
 }
 
 function Acciones({
@@ -136,7 +121,7 @@ export default function TablaCompanies({
 									<p className='truncate text-sm font-semibold text-foreground'>
 										{company.nombre}
 									</p>
-									{resumenFactores(company)}
+									<ResumenFactoresCuotas factores={company.factores_cuotas} />
 								</div>
 								<div className='flex shrink-0 gap-1'>
 									<Acciones
@@ -161,19 +146,16 @@ export default function TablaCompanies({
 				/>
 
 				<div className='overflow-x-auto rounded-lg border border-border'>
-					<table className='w-full text-sm'>
+					<table className='w-full table-fixed text-sm'>
 						<thead>
 							<tr className='border-b border-border bg-muted/40'>
-								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[26%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Nombre
 								</th>
-								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-									Cuotas
-								</th>
-								<th className='px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[56%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Factores de cuotas
 								</th>
-								<th className='px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[18%] px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Acciones
 								</th>
 							</tr>
@@ -185,14 +167,16 @@ export default function TablaCompanies({
 									className='border-b border-border/50 transition-colors hover:bg-accent/50 last:border-b-0'
 								>
 									<td className='px-4 py-2.5'>
-										<p className='font-semibold text-foreground max-w-60'>
+										<p className='truncate font-semibold text-foreground'>
 											{company.nombre}
 										</p>
 									</td>
-									<td className='px-4 py-2.5 text-xs text-muted-foreground'>
-										{company.factores_cuotas.length}
+									<td className='px-4 py-2.5'>
+										<ResumenFactoresCuotas
+											compacto
+											factores={company.factores_cuotas}
+										/>
 									</td>
-									<td className='px-4 py-2.5'>{resumenFactores(company)}</td>
 									<td className='px-4 py-2.5'>
 										<Acciones
 											company={company}
