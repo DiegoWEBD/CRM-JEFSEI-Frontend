@@ -11,6 +11,7 @@ import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@/components/sonner'
 import { AuthProvider } from '@/contexts/auth-context'
 import type { TokenPayload } from '@/dtos/token-payload'
+import CanalNotificaciones from '@/components/providers/canal-notificaciones'
 import axios from 'axios'
 import { toast } from 'sonner'
 
@@ -62,11 +63,6 @@ export default function Providers({
 				mutationCache: new MutationCache({
 					onError: notificarError,
 				}),
-				defaultOptions: {
-					queries: {
-						staleTime: 1000 * 60,
-					},
-				},
 			}),
 	)
 
@@ -83,6 +79,7 @@ export default function Providers({
 					initialPayload={initialPayload}
 				>
 					{children}
+					<CanalNotificaciones />
 				</AuthProvider>
 			</ThemeProvider>
 			<Toaster />
