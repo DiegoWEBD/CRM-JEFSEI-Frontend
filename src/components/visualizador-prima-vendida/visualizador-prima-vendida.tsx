@@ -18,7 +18,7 @@ export default function VisualizadorPrimaVendida({
 		<MetricaSmall
 			icon={TrendingUp}
 			label='Prima vendida del mes'
-			className='min-w-34.5'
+			className='min-w-37'
 		>
 			<span>
 				UF{' '}

@@ -51,18 +51,20 @@ export default function PanelHomeClient({
 		<PanelLayout>
 			<PanelHeader>
 				{/* Encabezado de bienvenida */}
-				<div className='flex flex-col gap-1'>
-					<h1 className='text-xl font-semibold tracking-tight text-foreground sm:text-2xl'>
-						Bienvenido{nombreUsuario ? `, ${nombreUsuario.split(' ')[0]}` : ''}
-					</h1>
-					<p className='text-sm text-muted-foreground'>
-						Resumen de tu actividad comercial.
-					</p>
+				<div className='flex flex-col gap-4 md:flex-row md:justify-between'>
+					<div className='flex flex-col gap-1'>
+						<h1 className='text-xl font-semibold tracking-tight text-foreground sm:text-2xl'>
+							Bienvenido
+							{nombreUsuario ? `, ${nombreUsuario.split(' ')[0]}` : ''}
+						</h1>
+						<p className='text-sm text-muted-foreground'>
+							Resumen de tu actividad comercial.
+						</p>
+					</div>
+					<PermissionGuard allowedPermissions={['VER_METRICAS_EJECUTIVO']}>
+						<MetricasEjecutivoComercial />
+					</PermissionGuard>
 				</div>
-
-				<PermissionGuard allowedPermissions={['VER_METRICAS_EJECUTIVO']}>
-					<MetricasEjecutivoComercial />
-				</PermissionGuard>
 
 				<AuthGuard
 					fallback={null}
