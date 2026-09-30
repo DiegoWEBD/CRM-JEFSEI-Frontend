@@ -28,6 +28,19 @@ export interface ObtenerContadorNoLeidasResponse {
 	contador: number
 }
 
+/** Ticket efímero que autoriza abrir el WebSocket de notificaciones. */
+export interface TicketWebSocketResponse {
+	ticket: string
+	/** Segundos de vida útil del ticket. */
+	expira_en: number
+}
+
+/** Mensaje que envía el backend por el WebSocket. */
+export interface EventoCanalNotificaciones {
+	evento: string
+	motivo?: string
+}
+
 export interface MarcarLeidaResponse {
 	message: string
 }

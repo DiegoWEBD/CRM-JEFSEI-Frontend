@@ -1,7 +1,8 @@
 import { obtenerProspectos } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/obtener-prospectos'
-import CardProspectosClient from './card-prospectos-client'
+import PanelProspectosClient from './panel-prospectos-client'
 
-export default async function CardProspectos() {
+export default async function PanelProspectos() {
 	const resultado = await obtenerProspectos({ pagina: 1, tamanoPagina: 10 })
-	return <CardProspectosClient initialData={resultado} />
+
+	return <PanelProspectosClient inicial={resultado} />
 }

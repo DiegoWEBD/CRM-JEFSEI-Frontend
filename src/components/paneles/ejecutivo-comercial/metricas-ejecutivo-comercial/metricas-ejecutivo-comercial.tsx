@@ -9,7 +9,7 @@ export default function MetricasEjecutivoComercial() {
 
 	return (
 		<div
-			className='flex shrink-0 flex-wrap justify-end gap-2'
+			className='flex shrink-0 flex-wrap gap-2'
 			aria-label='Resumen mensual del ejecutivo'
 		>
 			<VisualizadorPrimaVendida

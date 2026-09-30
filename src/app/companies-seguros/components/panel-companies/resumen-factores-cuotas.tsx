@@ -57,6 +57,10 @@ export default function ResumenFactoresCuotas({
 		const contenedor = contenedorRef.current
 		if (!contenedor || !compacto || factores.length === 0) return
 
+		// Celda sin layout (por ejemplo, la tabla está oculta en móvil):
+		// todavía no hay nada que medir.
+		if (contenedor.clientWidth === 0) return
+
 		const faltaMedir =
 			firmaRef.current !== firma || anchosRef.current.length !== factores.length
 
@@ -72,6 +76,10 @@ export default function ResumenFactoresCuotas({
 			for (let i = 0; i < factores.length; i++) {
 				anchos.push(badgesRef.current[i]?.offsetWidth ?? 0)
 			}
+
+			// Algún badge sin medir: se reintenta en el próximo disparo.
+			if (anchos.some(ancho => ancho === 0)) return
+
 			anchosRef.current = anchos
 			firmaRef.current = firma
 		}

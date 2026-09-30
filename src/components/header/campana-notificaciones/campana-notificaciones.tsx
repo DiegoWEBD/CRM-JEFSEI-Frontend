@@ -1,7 +1,7 @@
 'use client'
 
-import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import ItemNotificacion from '@/components/notificaciones/item-notificacion/item-notificacion'
 import {
 	Popover,
 	PopoverContent,
@@ -12,28 +12,10 @@ import { useContadorNoLeidas } from '@/hooks/notificaciones/use-contador-no-leid
 import { useMarcarNotificacionLeida } from '@/hooks/notificaciones/use-marcar-notificacion-leida'
 import { useMarcarNotificacionesLeidas } from '@/hooks/notificaciones/use-marcar-notificaciones-leidas'
 import { useNotificaciones } from '@/hooks/notificaciones/use-notificaciones'
-import { NivelNotificacion } from '@/types/notificaciones/notificacion'
-import { cn } from '@/lib/utils'
-import { formatDistanceToNow } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { Notificacion } from '@/types/notificaciones/notificacion'
 import { Bell, CheckCheck, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-
-const NIVEL_DOT: Record<NivelNotificacion, string> = {
-	INFO: 'bg-info',
-	AVISO: 'bg-warning',
-	CRITICO: 'bg-destructive',
-}
-
-const NIVEL_BADGE: Record<
-	NivelNotificacion,
-	'pastel-blue' | 'pastel-amber' | 'pastel-red'
-> = {
-	INFO: 'pastel-blue',
-	AVISO: 'pastel-amber',
-	CRITICO: 'pastel-red',
-}
 
 const CampanaNotificaciones = () => {
 	const [abierto, setAbierto] = useState(false)
@@ -56,19 +38,12 @@ const CampanaNotificaciones = () => {
 		setAbierto(open)
 	}
 
-	const handleMarcarLeida = (
-		event: React.MouseEvent,
-		id: number,
-		url: string | null,
-	) => {
-		event.preventDefault()
-		event.stopPropagation()
-
-		marcarLeida.mutate(id, {
+	const handleSeleccionar = (notificacion: Notificacion) => {
+		marcarLeida.mutate(notificacion.id, {
 			onSuccess: () => {
-				if (url) {
+				if (notificacion.url_destino) {
 					setAbierto(false)
-					router.push(url)
+					router.push(notificacion.url_destino)
 				}
 			},
 		})
@@ -129,49 +104,13 @@ const CampanaNotificaciones = () => {
 						</div>
 					) : (
 						<ul className='divide-y divide-border'>
-							{notificaciones.map((notificacion) => (
+							{notificaciones.map(notificacion => (
 								<li key={notificacion.id}>
-									<button
-										type='button'
-										onClick={(e) =>
-											handleMarcarLeida(
-												e,
-												notificacion.id,
-												notificacion.url_destino,
-											)
-										}
-										disabled={marcarLeida.isPending}
-										className='flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent disabled:opacity-60'
-									>
-										<span
-											className={cn(
-												'mt-1.5 size-2 shrink-0 rounded-full',
-												NIVEL_DOT[notificacion.nivel],
-											)}
-										/>
-										<span className='min-w-0 flex-1 space-y-1'>
-											<span className='flex items-center gap-2'>
-												<span className='truncate text-sm font-medium text-foreground'>
-													{notificacion.titulo}
-												</span>
-												<Badge
-													variant={NIVEL_BADGE[notificacion.nivel]}
-													className='shrink-0'
-												>
-													{notificacion.nivel}
-												</Badge>
-											</span>
-											<span className='line-clamp-2 text-xs text-muted-foreground'>
-												{notificacion.mensaje}
-											</span>
-											<span className='block text-[11px] text-muted-foreground/70'>
-												{formatDistanceToNow(new Date(notificacion.created_at), {
-													addSuffix: true,
-													locale: es,
-												})}
-											</span>
-										</span>
-									</button>
+									<ItemNotificacion
+										notificacion={notificacion}
+										pendiente={marcarLeida.isPending}
+										onSeleccionar={handleSeleccionar}
+									/>
 								</li>
 							))}
 						</ul>
