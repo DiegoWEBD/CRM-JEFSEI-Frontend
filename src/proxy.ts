@@ -73,6 +73,10 @@ const roleProtectedRoutes: RoleProtectedRoute[] = [
 			'DESARROLLADOR',
 		],
 	},
+	{
+		path: '/auditoria',
+		roles: ['GERENTE_GENERAL', 'DESARROLLADOR'],
+	},
 ]
 
 function getUserRoles(token: string): string[] {

@@ -43,7 +43,7 @@ export default function PaginaProspectoClient({
 				/>
 			)}
 
-			<PanelBody>
+			<PanelBody className='lg:grid-cols-2'>
 				<PermissionGuard
 					allowedPermissions={[
 						'OBTENER_CONTACTOS_PROPIOS',

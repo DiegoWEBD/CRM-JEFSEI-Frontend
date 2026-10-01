@@ -11,6 +11,7 @@ import {
 	LayoutDashboard,
 	Landmark,
 	Package,
+	ScrollText,
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
@@ -114,6 +115,15 @@ const SECCIONES: NavSection[] = [
 				href: '/productos',
 				icono: Package,
 				titulo: 'Productos',
+				visible: r =>
+					r.some(c =>
+						['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c),
+					),
+			},
+			{
+				href: '/auditoria',
+				icono: ScrollText,
+				titulo: 'Auditoría',
 				visible: r =>
 					r.some(c =>
 						['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c),

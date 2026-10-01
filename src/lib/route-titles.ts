@@ -9,6 +9,7 @@ import {
 	Landmark,
 	LayoutDashboard,
 	Package,
+	ScrollText,
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
@@ -36,6 +37,11 @@ export const RUTAS_PRINCIPALES: RouteMeta[] = [
 	},
 	{ href: '/personal', titulo: 'Personal', icono: Group },
 	{ href: '/productos', titulo: 'Productos', icono: Package },
+	{
+		href: '/auditoria',
+		titulo: 'Auditoría',
+		icono: ScrollText,
+	},
 	{ href: '/administradores', titulo: 'Administradores', icono: Building2 },
 	{
 		href: '/configuracion-condominio',
