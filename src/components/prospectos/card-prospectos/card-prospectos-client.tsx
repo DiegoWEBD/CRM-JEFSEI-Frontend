@@ -18,6 +18,7 @@ import FiltroRegionComuna from './filtro-region-comuna'
 import SkeletonFilasProspecto from './skeleton-filas-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 
 const TAMANO_PAGINA = 10
 
@@ -110,16 +111,18 @@ export default function CardProspectosClient({
 		<Card className='border-border bg-card shadow-none'>
 			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
 				<CardTitle primary>Búsqueda de prospectos</CardTitle>
-				<div className='flex shrink-0 flex-wrap gap-1.5'>
-					<Button
-						size='sm'
-						className='h-9 text-xs'
-						onClick={() => setOpenFormularioRegistrarProspecto(true)}
-					>
-						<Plus className='mr-1.5 h-3.5 w-3.5' aria-hidden />
-						Cliente
-					</Button>
-				</div>
+				<PermissionGuard allowedPermissions={['REGISTRAR_PROSPECTO']}>
+					<div className='flex shrink-0 flex-wrap gap-1.5'>
+						<Button
+							size='sm'
+							className='h-9 text-xs'
+							onClick={() => setOpenFormularioRegistrarProspecto(true)}
+						>
+							<Plus className='mr-1.5 h-3.5 w-3.5' aria-hidden />
+							Cliente
+						</Button>
+					</div>
+				</PermissionGuard>
 			</CardHeader>
 			<CardContent className='space-y-3 p-4'>
 				<div className='relative'>
