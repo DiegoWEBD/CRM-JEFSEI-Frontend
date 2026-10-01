@@ -146,7 +146,7 @@ export default function TablaRegistrosAuditoria({
 											{formatearFechaRegistro(registro.fecha_registro)}
 										</td>
 										<td className='px-4 py-2.5'>
-											<Badge variant='pastel-violet'>
+											<Badge variant='pastel-blue'>
 												{etiquetaEvento(registro.evento)}
 											</Badge>
 										</td>
