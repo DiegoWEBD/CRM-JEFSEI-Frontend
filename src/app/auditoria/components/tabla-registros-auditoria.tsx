@@ -64,12 +64,6 @@ export default function TablaRegistrosAuditoria({
 		<>
 			{/* Mobile: cards */}
 			<div className='space-y-3 lg:hidden'>
-				<Paginacion
-					pagina={pagina}
-					totalPaginas={totalPaginas}
-					onPaginaChange={onPaginaChange}
-				/>
-
 				{registros.map(registro => (
 					<Card
 						key={registro.id}
@@ -101,16 +95,15 @@ export default function TablaRegistrosAuditoria({
 						</CardContent>
 					</Card>
 				))}
-			</div>
-
-			{/* Desktop: tabla única acotada (los detalles técnicos van al dialog) */}
-			<div className='hidden lg:block'>
 				<Paginacion
 					pagina={pagina}
 					totalPaginas={totalPaginas}
 					onPaginaChange={onPaginaChange}
 				/>
+			</div>
 
+			{/* Desktop: tabla única acotada (los detalles técnicos van al dialog) */}
+			<div className='hidden lg:block'>
 				<div
 					className={`overflow-x-auto rounded-lg border border-border ${
 						isFetching ? 'opacity-60' : ''
@@ -141,8 +134,7 @@ export default function TablaRegistrosAuditoria({
 						</thead>
 						<tbody>
 							{registros.map(registro => {
-								const esAccionNegocio =
-									registro.categoria === 'ACCION_NEGOCIO'
+								const esAccionNegocio = registro.categoria === 'ACCION_NEGOCIO'
 
 								return (
 									<tr
@@ -154,7 +146,7 @@ export default function TablaRegistrosAuditoria({
 											{formatearFechaRegistro(registro.fecha_registro)}
 										</td>
 										<td className='px-4 py-2.5'>
-											<Badge variant='secondary'>
+											<Badge variant='pastel-violet'>
 												{etiquetaEvento(registro.evento)}
 											</Badge>
 										</td>
@@ -168,14 +160,14 @@ export default function TablaRegistrosAuditoria({
 										</td>
 										<td className='px-4 py-2.5'>
 											<p
-												className='max-w-72 truncate text-xs text-foreground'
+												className='max-w-125  wrap-break-words text-xs text-foreground'
 												title={
 													esAccionNegocio
-														? registro.detalle ?? undefined
+														? (registro.detalle ?? undefined)
 														: undefined
 												}
 											>
-												{esAccionNegocio ? registro.detalle ?? '-' : '-'}
+												{esAccionNegocio ? (registro.detalle ?? '-') : '-'}
 											</p>
 										</td>
 										<td className='px-4 py-2.5'>
@@ -190,6 +182,11 @@ export default function TablaRegistrosAuditoria({
 						</tbody>
 					</table>
 				</div>
+				<Paginacion
+					pagina={pagina}
+					totalPaginas={totalPaginas}
+					onPaginaChange={onPaginaChange}
+				/>
 			</div>
 		</>
 	)
