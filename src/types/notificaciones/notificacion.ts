@@ -9,7 +9,7 @@ export interface Notificacion {
 	mensaje: string
 	entidad_tipo: string | null
 	entidad_id: number | null
-	url_destino: string | null
+	id_prospecto: number | null
 	dedupe_key: string
 	leida: boolean
 	fecha_leida: string | null

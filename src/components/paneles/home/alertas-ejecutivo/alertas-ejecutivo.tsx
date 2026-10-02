@@ -157,8 +157,8 @@ export default function AlertasEjecutivo() {
 
 		marcarLeida.mutate(notificacion.id, {
 			onSuccess: () => {
-				if (notificacion.url_destino) {
-					router.push(notificacion.url_destino)
+				if (notificacion.id_prospecto) {
+					router.push(`/prospectos/${notificacion.id_prospecto}`)
 				}
 			},
 		})

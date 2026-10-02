@@ -1,8 +1,10 @@
 'use client'
 
+import { Bell, Plus } from 'lucide-react'
+import { useState } from 'react'
+
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import {
 	Dialog,
 	DialogContent,
@@ -17,25 +19,29 @@ import SelectTrigger from '@/components/forms/select/select-trigger/select-trigg
 import SelectValue from '@/components/forms/select/select-value/select-value'
 import Textarea from '@/components/forms/text-area/text-area'
 import { Label } from '@/components/label'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { useComunicadosGerencia } from '@/hooks/comunicados-gerencia/use-comunicados-gerencia'
 import { useRegistrarComunicadoGerencia } from '@/hooks/comunicados-gerencia/use-registrar-comunicado-gerencia'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { useFormik } from 'formik'
-import { Bell, Plus } from 'lucide-react'
-import { useState } from 'react'
 import * as Yup from 'yup'
-import PermissionGuard from '../layouts/guards/permission-guard'
+import HomeSeccion from '../home-seccion/home-seccion'
 
 const PRIORIDAD_VARIANT = {
 	media: 'pastel-blue',
 	alta: 'pastel-red',
 } as const
 
-export default function CardComunicadoGerencia() {
-	const { data: comunicados } = useComunicadosGerencia()
+const MAX_VISIBLE = 4
 
+export default function HomeAvisosGerencia() {
+	const { data: comunicados } = useComunicadosGerencia()
 	const mutation = useRegistrarComunicadoGerencia()
 	const [dialogAbierto, setDialogAbierto] = useState(false)
+
+	const avisos = comunicados ?? []
+	const total = avisos.length
+	const visibles = avisos.slice(0, MAX_VISIBLE)
 
 	const formik = useFormik({
 		initialValues: {
@@ -71,60 +77,65 @@ export default function CardComunicadoGerencia() {
 	})
 
 	return (
-		<Card className='border-border bg-card'>
-			<CardHeader className='flex flex-row items-center justify-between border-b border-border pb-2 pt-3'>
-				<CardTitle primary>Avisos de gerencia</CardTitle>
-				<div className='flex items-center gap-2'>
+		<>
+			<HomeSeccion
+				icono={Bell}
+				titulo='Avisos de gerencia'
+				contador={total > 0 ? total : undefined}
+				accion={
 					<PermissionGuard allowedPermissions={['CREAR_COMUNICADO']}>
 						<Button
 							type='button'
 							variant='outline'
 							size='sm'
-							className='h-8 gap-1 text-xs'
+							className='h-7 gap-1 text-xs'
 							onClick={() => setDialogAbierto(true)}
 						>
-							<Plus className='h-3.5 w-3.5' aria-hidden />
-							Nuevo aviso
+							<Plus className='h-3 w-3' aria-hidden />
+							Nuevo
 						</Button>
 					</PermissionGuard>
-					<Bell className='h-4 w-4 text-muted-foreground' aria-hidden />
-				</div>
-			</CardHeader>
-			<CardContent className='space-y-2 p-3 sm:p-4'>
-				{comunicados?.length === 0 && (
-					<p className='py-3 text-center text-xs text-muted-foreground'>
+				}
+			>
+				{total === 0 ? (
+					<p className='py-4 text-center text-xs text-muted-foreground'>
 						Sin avisos relevantes por ahora.
 					</p>
-				)}
-				<div className='grid gap-2 sm:grid-cols-2 lg:grid-cols-3'>
-					{comunicados?.map(aviso => (
-						<div
-							key={aviso.id}
-							className='rounded-md border border-border/80 px-3 py-2 text-xs'
-						>
-							<div className='flex items-start justify-between gap-2'>
-								<p className='font-medium text-foreground'>{aviso.titulo}</p>
-								<Badge
-									variant={
-										PRIORIDAD_VARIANT[
-											aviso.prioridad as keyof typeof PRIORIDAD_VARIANT
-										] ?? 'outline'
-									}
-									className='h-5 shrink-0 text-xs'
-								>
-									{aviso.prioridad}
-								</Badge>
+				) : (
+					<div className='space-y-1.5'>
+						{visibles.map(aviso => (
+							<div
+								key={aviso.id}
+								className='rounded-md border border-border/80 px-2.5 py-1.5 text-xs'
+							>
+								<div className='flex items-start justify-between gap-1.5'>
+									<p className='font-medium leading-snug text-foreground'>
+										{aviso.titulo}
+									</p>
+									<Badge
+										variant={
+											PRIORIDAD_VARIANT[
+												aviso.prioridad as keyof typeof PRIORIDAD_VARIANT
+											] ?? 'outline'
+										}
+										className='h-4 shrink-0 text-[10px]'
+									>
+										{aviso.prioridad}
+									</Badge>
+								</div>
+								<p className='mt-0.5 text-[11px] text-muted-foreground'>
+									{formatearFecha(new Date(aviso.fecha), 'dd/MM/yyyy')}
+								</p>
 							</div>
-							<p className='mt-1 leading-snug text-muted-foreground'>
-								{aviso.descripcion}
+						))}
+						{total > MAX_VISIBLE && (
+							<p className='pt-1 text-center text-[11px] text-muted-foreground'>
+								+{total - MAX_VISIBLE} más
 							</p>
-							<p className='mt-1 text-xs tabular-nums text-muted-foreground'>
-								{formatearFecha(new Date(aviso.fecha), 'dd/MM/yyyy')}
-							</p>
-						</div>
-					))}
-				</div>
-			</CardContent>
+						)}
+					</div>
+				)}
+			</HomeSeccion>
 
 			<Dialog open={dialogAbierto} onOpenChange={setDialogAbierto}>
 				<DialogContent className='p-0 sm:max-w-md'>
@@ -173,7 +184,9 @@ export default function CardComunicadoGerencia() {
 									<Label className='text-xs'>Prioridad</Label>
 									<Select
 										value={formik.values.prioridad}
-										onValueChange={v => formik.setFieldValue('prioridad', v)}
+										onValueChange={v =>
+											formik.setFieldValue('prioridad', v)
+										}
 									>
 										<SelectTrigger className='h-9 text-sm shadow-none'>
 											<SelectValue />
@@ -219,6 +232,6 @@ export default function CardComunicadoGerencia() {
 					</form>
 				</DialogContent>
 			</Dialog>
-		</Card>
+		</>
 	)
 }

@@ -41,9 +41,9 @@ const CampanaNotificaciones = () => {
 	const handleSeleccionar = (notificacion: Notificacion) => {
 		marcarLeida.mutate(notificacion.id, {
 			onSuccess: () => {
-				if (notificacion.url_destino) {
+				if (notificacion.id_prospecto) {
 					setAbierto(false)
-					router.push(notificacion.url_destino)
+					router.push(`/prospectos/${notificacion.id_prospecto}`)
 				}
 			},
 		})
