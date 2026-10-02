@@ -1,25 +1,18 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-
 import { ObtenerProspectosResponse } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/obtener-prospectos-response'
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import PanelCobranzaClient from '@/components/paneles/ejecutivo-cobranza/panel-cobranza-client'
 import AlertasEjecutivo from '@/components/paneles/home/alertas-ejecutivo/alertas-ejecutivo'
 import HomeAvisosGerencia from '@/components/paneles/home/home-avisos-gerencia/home-avisos-gerencia'
-import HomeCalendarioMes from '@/components/paneles/home/home-calendario-mes/home-calendario-mes'
 import HomeKpiStrip from '@/components/paneles/home/home-kpi-strip/home-kpi-strip'
 import HomePageHeader from '@/components/paneles/home/home-page-header/home-page-header'
 import HomeRecordatoriosHoy from '@/components/paneles/home/home-recordatorios-hoy/home-recordatorios-hoy'
 import HomeSolicitudesRecientes from '@/components/paneles/home/home-solicitudes-recientes/home-solicitudes-recientes'
-import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
-import PanelBodyMainContent from '@/components/paneles/panel-layout/panel-body/panel-body-main-content/panel-body-main-content'
-import PanelBodySidebar from '@/components/paneles/panel-layout/panel-body/panel-body-sidebar/panel-body-sidebar'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { DashboardCobranza } from '@/dominio/cobranza/dashboard-cobranza'
 import { useObtenerProspectos } from '@/hooks/prospectos/use-obtener-prospectos'
-import { formatearFecha } from '@/utils/formatear-fecha'
 
 type PanelHomeClientProps = {
 	prospectosIniciales: ObtenerProspectosResponse
@@ -50,9 +43,6 @@ export default function PanelHomeClient({
 
 	const esEjecutivoCobranza = codigoRoles.includes('EJECUTIVO_COBRANZA')
 
-	const hoyIso = useMemo(() => formatearFecha(new Date(), 'yyyy-MM-dd'), [])
-	const [diaSeleccionado, setDiaSeleccionado] = useState(hoyIso)
-
 	return (
 		<PanelLayout>
 			<HomePageHeader
@@ -62,34 +52,29 @@ export default function PanelHomeClient({
 
 			<HomeKpiStrip />
 
-			<PanelBody>
-				<PanelBodyMainContent>
-					<PermissionGuard allowedPermissions={['VER_ALERTAS']}>
-						<AlertasEjecutivo />
-					</PermissionGuard>
+			<div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
+				<PermissionGuard allowedPermissions={['VER_ALERTAS']}>
+					<AlertasEjecutivo className='lg:col-span-2' />
+				</PermissionGuard>
 
-					<HomeAvisosGerencia />
+				<HomeRecordatoriosHoy
+					className='lg:col-span-1'
+					prospectos={prospectos}
+				/>
 
-					{esEjecutivoCobranza && (
-						<PanelCobranzaClient dashboardInicial={dashboardCobranzaInicial} />
-					)}
+				<HomeAvisosGerencia className='lg:col-span-3' />
+			</div>
 
-					<AuthGuard
-						fallback={null}
-						allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}
-					>
-						<HomeSolicitudesRecientes />
-					</AuthGuard>
-				</PanelBodyMainContent>
+			{esEjecutivoCobranza && (
+				<PanelCobranzaClient dashboardInicial={dashboardCobranzaInicial} />
+			)}
 
-				<PanelBodySidebar>
-					<HomeRecordatoriosHoy fecha={diaSeleccionado} prospectos={prospectos} />
-					<HomeCalendarioMes
-						diaSeleccionado={diaSeleccionado}
-						onDiaSeleccionadoChange={setDiaSeleccionado}
-					/>
-				</PanelBodySidebar>
-			</PanelBody>
+			<AuthGuard
+				fallback={null}
+				allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}
+			>
+				<HomeSolicitudesRecientes />
+			</AuthGuard>
 		</PanelLayout>
 	)
 }

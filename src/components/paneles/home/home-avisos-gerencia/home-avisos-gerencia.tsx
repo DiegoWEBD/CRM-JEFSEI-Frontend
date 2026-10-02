@@ -34,7 +34,7 @@ const PRIORIDAD_VARIANT = {
 
 const MAX_VISIBLE = 4
 
-export default function HomeAvisosGerencia() {
+export default function HomeAvisosGerencia({ className }: { className?: string }) {
 	const { data: comunicados } = useComunicadosGerencia()
 	const mutation = useRegistrarComunicadoGerencia()
 	const [dialogAbierto, setDialogAbierto] = useState(false)
@@ -79,6 +79,7 @@ export default function HomeAvisosGerencia() {
 	return (
 		<>
 			<HomeSeccion
+				className={className}
 				icono={Bell}
 				titulo='Avisos de gerencia'
 				contador={total > 0 ? total : undefined}
@@ -102,14 +103,14 @@ export default function HomeAvisosGerencia() {
 						Sin avisos relevantes por ahora.
 					</p>
 				) : (
-					<div className='space-y-1.5'>
+					<div className='space-y-2'>
 						{visibles.map(aviso => (
 							<div
 								key={aviso.id}
-								className='rounded-md border border-border/80 px-2.5 py-1.5 text-xs'
+								className='rounded-md border border-border/80 px-3 py-2.5'
 							>
-								<div className='flex items-start justify-between gap-1.5'>
-									<p className='font-medium leading-snug text-foreground'>
+								<div className='flex items-start justify-between gap-2'>
+									<p className='text-sm font-semibold leading-snug text-foreground'>
 										{aviso.titulo}
 									</p>
 									<Badge
@@ -118,14 +119,34 @@ export default function HomeAvisosGerencia() {
 												aviso.prioridad as keyof typeof PRIORIDAD_VARIANT
 											] ?? 'outline'
 										}
-										className='h-4 shrink-0 text-[10px]'
+										className='h-5 shrink-0 px-1.5 text-[11px]'
 									>
 										{aviso.prioridad}
 									</Badge>
 								</div>
-								<p className='mt-0.5 text-[11px] text-muted-foreground'>
-									{formatearFecha(new Date(aviso.fecha), 'dd/MM/yyyy')}
+								<p className='mt-1 text-xs leading-snug text-muted-foreground'>
+									{aviso.descripcion}
 								</p>
+								<div className='mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground'>
+									<span>
+										Creado por{' '}
+										<span className='font-medium text-foreground'>
+											{aviso.nombre_gerente}
+										</span>
+									</span>
+									<span>
+										Creado{' '}
+										<span className='font-medium text-foreground'>
+											{formatearFecha(new Date(aviso.fecha), 'dd/MM/yyyy')}
+										</span>
+									</span>
+									<span>
+										Caduca{' '}
+										<span className='font-medium text-foreground'>
+											{formatearFecha(new Date(aviso.caducidad), 'dd/MM/yyyy')}
+										</span>
+									</span>
+								</div>
 							</div>
 						))}
 						{total > MAX_VISIBLE && (

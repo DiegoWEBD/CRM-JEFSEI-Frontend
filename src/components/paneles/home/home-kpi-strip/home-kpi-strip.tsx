@@ -4,7 +4,6 @@ import { Bell, CalendarClock, Coins, TrendingUp } from 'lucide-react'
 import { useMemo } from 'react'
 
 import { PanelKpiCard } from '@/components/paneles/shared/panel-kpi-card'
-import PanelKpiContainer from '@/components/paneles/shared/panel-kpi-container/panel-kpi-container'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { useMetricasEjecutivoComercial } from '@/hooks/metricas/use-metricas-ejecutivo-comercial'
 import { useContadorNoLeidas } from '@/hooks/notificaciones/use-contador-no-leidas'
@@ -14,7 +13,7 @@ import { normalizarNumeroFormatoChileno } from '@/utils/normalizar-numero-format
 
 export default function HomeKpiStrip() {
 	return (
-		<PanelKpiContainer className='xl:grid-cols-4'>
+		<div className='grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-2 sm:gap-3'>
 			<PermissionGuard allowedPermissions={['VER_METRICAS_EJECUTIVO']}>
 				<KpiPrimaVendida />
 				<KpiComision />
@@ -23,7 +22,7 @@ export default function HomeKpiStrip() {
 				<KpiAlertas />
 			</PermissionGuard>
 			<KpiRecordatoriosHoy />
-		</PanelKpiContainer>
+		</div>
 	)
 }
 

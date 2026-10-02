@@ -95,7 +95,7 @@ function GrupoAlertas({
 					))}
 				</div>
 			) : total === 0 ? (
-				<p className='px-4 py-8 text-center text-xs text-muted-foreground'>
+				<p className='px-4 py-5 text-center text-xs text-muted-foreground'>
 					{nivel === 'CRITICO'
 						? 'Sin alertas críticas. ¡Todo bajo control!'
 						: 'Sin avisos pendientes.'}
@@ -123,7 +123,7 @@ function GrupoAlertas({
 	)
 }
 
-export default function AlertasEjecutivo() {
+export default function AlertasEjecutivo({ className }: { className?: string }) {
 	const router = useRouter()
 
 	const [paginaCriticas, setPaginaCriticas] = useState(1)
@@ -165,7 +165,7 @@ export default function AlertasEjecutivo() {
 	}
 
 	return (
-		<Card className='border-border bg-card shadow-none'>
+		<Card className={cn('border-border bg-card shadow-none', className)}>
 			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
 				<div className='flex items-center gap-2'>
 					<CardTitle primary>Alertas</CardTitle>

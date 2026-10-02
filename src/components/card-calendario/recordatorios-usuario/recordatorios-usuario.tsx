@@ -66,7 +66,7 @@ export default function RecordatoriosUsuario({
 
 	return (
 		<>
-			<div className='min-w-0 space-y-2 border-t border-border/60 pt-3 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0'>
+			<div className='min-w-0 space-y-2'>
 				<div className='flex flex-wrap items-baseline justify-between gap-2'>
 					<p className='text-xs font-medium text-foreground'>
 						Recordatorios del {formatearFecha(new Date(fecha), 'dd/MM/yyyy')}
@@ -85,7 +85,7 @@ export default function RecordatoriosUsuario({
 						No hay recordatorios para esta fecha.
 					</p>
 				) : (
-					<div className='max-h-[min(52vh,420px)] space-y-2 overflow-y-auto pr-0.5'>
+					<div className='max-h-[min(38vh,320px)] space-y-2 overflow-y-auto pr-0.5'>
 						{recordatorios?.map(recordatorio => (
 							<CardRecordatorio
 								key={recordatorio.id}
