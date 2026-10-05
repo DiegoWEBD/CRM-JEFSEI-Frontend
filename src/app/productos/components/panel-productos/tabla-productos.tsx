@@ -48,12 +48,6 @@ export default function TablaProductos({
 		<>
 			{/* Mobile: cards */}
 			<div className='space-y-3 lg:hidden'>
-				<Paginacion
-					pagina={pagina}
-					totalPaginas={totalPaginas}
-					onPaginaChange={onPaginaChange}
-				/>
-
 				{productos.map(producto => (
 					<Card key={producto.id} className='border-border bg-card shadow-none'>
 						<CardContent className='p-4'>
@@ -96,16 +90,15 @@ export default function TablaProductos({
 						</CardContent>
 					</Card>
 				))}
-			</div>
-
-			{/* Desktop: tabla densa */}
-			<div className='hidden lg:block'>
 				<Paginacion
 					pagina={pagina}
 					totalPaginas={totalPaginas}
 					onPaginaChange={onPaginaChange}
 				/>
+			</div>
 
+			{/* Desktop: tabla densa */}
+			<div className='hidden lg:block'>
 				<div className='overflow-x-auto rounded-lg border border-border'>
 					<table className='w-full text-sm'>
 						<thead>
@@ -170,6 +163,11 @@ export default function TablaProductos({
 						</tbody>
 					</table>
 				</div>
+				<Paginacion
+					pagina={pagina}
+					totalPaginas={totalPaginas}
+					onPaginaChange={onPaginaChange}
+				/>
 			</div>
 		</>
 	)
