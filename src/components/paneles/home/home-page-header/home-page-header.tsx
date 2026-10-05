@@ -1,13 +1,12 @@
 'use client'
 
+import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
+import { Button } from '@/components/button'
+import DialogCrearRecordatorio from '@/components/dialog-crear-recordatorio/dialog-crear-recordatorio'
+import AuthGuard from '@/components/layouts/guards/auth-guard'
+import { formatearFecha } from '@/utils/formatear-fecha'
 import { Plus } from 'lucide-react'
 import { ReactNode, useState } from 'react'
-import { Button } from '@/components/button'
-import AuthGuard from '@/components/layouts/guards/auth-guard'
-import PermissionGuard from '@/components/layouts/guards/permission-guard'
-import DialogCrearRecordatorio from '@/components/dialog-crear-recordatorio/dialog-crear-recordatorio'
-import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
-import { formatearFecha } from '@/utils/formatear-fecha'
 
 type HomePageHeaderProps = {
 	nombreUsuario: string
@@ -43,7 +42,10 @@ export default function HomePageHeader({
 						{fechaLarga}
 					</p>
 					{accionesExtra}
-					<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}>
+					<AuthGuard
+						fallback={null}
+						allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}
+					>
 						<Button
 							asChild
 							variant='outline'
@@ -58,21 +60,21 @@ export default function HomePageHeader({
 							size='sm'
 							className='h-8 gap-1 text-xs'
 						>
-							<a href='/cotizaciones-estudios-emitidos'>Cotizaciones emitidas</a>
+							<a href='/cotizaciones-estudios-emitidos'>
+								Cotizaciones emitidas
+							</a>
 						</Button>
 					</AuthGuard>
-					<PermissionGuard allowedPermissions={['CREAR_COMUNICADO']}>
-						<Button
-							type='button'
-							variant='outline'
-							size='sm'
-							className='h-8 gap-1 text-xs'
-							onClick={() => setOpenCrearRecordatorio(true)}
-						>
-							<Plus className='h-3.5 w-3.5' aria-hidden />
-							Nuevo recordatorio
-						</Button>
-					</PermissionGuard>
+					<Button
+						type='button'
+						variant='outline'
+						size='sm'
+						className='h-8 gap-1 text-xs'
+						onClick={() => setOpenCrearRecordatorio(true)}
+					>
+						<Plus className='h-3.5 w-3.5' aria-hidden />
+						Nuevo recordatorio
+					</Button>
 				</div>
 			</div>
 
