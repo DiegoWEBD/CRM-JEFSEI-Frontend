@@ -9,6 +9,7 @@ import {
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Loader2 } from 'lucide-react'
+import Link from 'next/link'
 
 export const NIVEL_DOT: Record<NivelNotificacion, string> = {
 	INFO: 'bg-info',
@@ -37,10 +38,9 @@ export default function ItemNotificacion({
 	onSeleccionar,
 }: ItemNotificacionProps) {
 	return (
-		<button
-			type='button'
+		<Link
+			href={`/prospectos/${notificacion.id_prospecto}`}
 			onClick={() => onSeleccionar(notificacion)}
-			disabled={pendiente}
 			className='cursor-pointer flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent disabled:opacity-60'
 		>
 			<span
@@ -72,6 +72,6 @@ export default function ItemNotificacion({
 			{pendiente && (
 				<Loader2 className='mt-1 size-3.5 shrink-0 animate-spin text-muted-foreground' />
 			)}
-		</button>
+		</Link>
 	)
 }

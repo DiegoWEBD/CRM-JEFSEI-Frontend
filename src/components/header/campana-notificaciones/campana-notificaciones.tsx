@@ -10,12 +10,10 @@ import { useMarcarNotificacionesLeidas } from '@/hooks/notificaciones/use-marcar
 import { useNotificaciones } from '@/hooks/notificaciones/use-notificaciones'
 import { Notificacion } from '@/types/notificaciones/notificacion'
 import { Bell, CheckCheck, Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 
 const CampanaNotificaciones = () => {
 	const [abierto, setAbierto] = useState(false)
-	const router = useRouter()
 
 	const { data: contadorData, isLoading: cargandoContador } =
 		useContadorNoLeidas()
@@ -41,16 +39,8 @@ const CampanaNotificaciones = () => {
 	const navegarAProspecto = (notificacion: Notificacion) => {
 		if (notificacion.id_prospecto) {
 			setAbierto(false)
-			router.push(`/prospectos/${notificacion.id_prospecto}`)
+			marcarLeida.mutate(notificacion.id)
 		}
-	}
-
-	const handleSeleccionar = (notificacion: Notificacion) => {
-		navegarAProspecto(notificacion)
-
-		if (!notificacion.leible) return
-
-		marcarLeida.mutate(notificacion.id)
 	}
 
 	return (
@@ -113,7 +103,7 @@ const CampanaNotificaciones = () => {
 									<ItemNotificacion
 										notificacion={notificacion}
 										pendiente={marcarLeida.isPending}
-										onSeleccionar={handleSeleccionar}
+										onSeleccionar={navegarAProspecto}
 									/>
 								</li>
 							))}

@@ -1,7 +1,6 @@
 'use client'
 
 import { AlertCircle, AlertTriangle } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
@@ -124,8 +123,6 @@ export default function AlertasEjecutivo({
 }: {
 	className?: string
 }) {
-	const router = useRouter()
-
 	const [paginaCriticas, setPaginaCriticas] = useState(1)
 	const [paginaAvisos, setPaginaAvisos] = useState(1)
 
@@ -149,10 +146,6 @@ export default function AlertasEjecutivo({
 	const totalPendientes = totalCriticas + totalAvisos
 
 	const onSeleccionar = (notificacion: Notificacion) => {
-		if (notificacion.id_prospecto) {
-			router.push(`/prospectos/${notificacion.id_prospecto}`)
-		}
-
 		if (notificacion.leible) {
 			marcarLeida.mutate(notificacion.id)
 		}
