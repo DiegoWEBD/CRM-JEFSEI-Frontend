@@ -5,13 +5,17 @@ import axios from 'axios'
 export const useObtenerContactos = (
 	idProspecto: number,
 	contactosIniciales?: Contacto[],
+	enabled: boolean = true,
 ) => {
 	return useQuery<Contacto[]>({
 		queryKey: ['contactos', idProspecto],
 		queryFn: async () => {
-			const response = await axios.get(`/api/prospectos/${idProspecto}/contactos`)
+			const response = await axios.get(
+				`/api/prospectos/${idProspecto}/contactos`,
+			)
 			return response.data.data
 		},
 		initialData: contactosIniciales,
+		enabled,
 	})
 }

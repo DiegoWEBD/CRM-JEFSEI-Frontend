@@ -22,6 +22,8 @@ import {
 import Link from 'next/link'
 import AdministradorAsociado from '../pagina-prospecto-header/administrador-asociado/administrador-asociado'
 import { useMemo } from 'react'
+import { useUserSession } from '@/hooks/auth/use-user-session'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 
 type ProspectoHeroHeaderProps = {
 	prospecto: Prospecto
@@ -60,6 +62,10 @@ function KpiSummaryCard({
 export default function ProspectoHeroHeader({
 	prospecto,
 }: ProspectoHeroHeaderProps) {
+	const authContext = useUserSession()
+	const puedeVerContactos =
+		authContext.tienePermiso('OBTENER_CONTACTOS_PROPIOS') ||
+		authContext.tienePermiso('OBTENER_CONTACTOS_TODOS')
 	const esCondominio =
 		prospecto.linea_negocio.nombre.toLowerCase() === 'condominio'
 	const tieneCliente = Boolean(prospecto.id_cliente)
@@ -73,7 +79,11 @@ export default function ProspectoHeroHeader({
 		{ id_cliente: prospecto.id_cliente, tamano_pagina: 1 },
 		{ enabled: tieneCliente },
 	)
-	const { data: contactos } = useObtenerContactos(prospecto.id)
+	const { data: contactos } = useObtenerContactos(
+		prospecto.id,
+		undefined,
+		puedeVerContactos,
+	)
 
 	const kpis = useMemo(() => {
 		const polizasVigentes = polizasData?.kpis
@@ -166,12 +176,19 @@ export default function ProspectoHeroHeader({
 									: 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
 							}
 						/>
-						<KpiSummaryCard
-							icon={Users}
-							label='Contactos'
-							value={kpis.contactosCount}
-							color='bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300'
-						/>
+						<PermissionGuard
+							allowedPermissions={[
+								'OBTENER_CONTACTOS_PROPIOS',
+								'OBTENER_CONTACTOS_TODOS',
+							]}
+						>
+							<KpiSummaryCard
+								icon={Users}
+								label='Contactos'
+								value={kpis.contactosCount}
+								color='bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300'
+							/>
+						</PermissionGuard>
 					</div>
 				</div>
 			</div>
