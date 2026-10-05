@@ -83,7 +83,20 @@ export default function DialogDetalleRegistro({
 						<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 							{registro.categoria === 'ACCION_NEGOCIO' ? 'Acción' : 'Detalle'}
 						</p>
-						<p className='text-sm text-foreground'>{registro.detalle}</p>
+						{registro.resultado === 'FALLIDO' &&
+						registro.detalle.includes(' — Error: ') ? (
+							<div className='space-y-1'>
+								<p className='text-sm text-foreground'>
+									{registro.detalle.split(' — Error: ')[0]}
+								</p>
+								<p className='text-sm font-medium text-destructive'>
+									⚠ Error:{' '}
+									{registro.detalle.split(' — Error: ').slice(1).join(' — Error: ')}
+								</p>
+							</div>
+						) : (
+							<p className='text-sm text-foreground'>{registro.detalle}</p>
+						)}
 					</div>
 				)}
 

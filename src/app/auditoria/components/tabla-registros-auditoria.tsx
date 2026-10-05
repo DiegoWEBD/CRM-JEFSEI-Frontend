@@ -86,7 +86,7 @@ export default function TablaRegistrosAuditoria({
 									</p>
 									{registro.categoria === 'ACCION_NEGOCIO' && (
 										<p className='truncate text-xs text-foreground'>
-											{registro.detalle ?? '-'}
+											{registro.detalle}
 										</p>
 									)}
 								</div>
@@ -167,7 +167,7 @@ export default function TablaRegistrosAuditoria({
 														: undefined
 												}
 											>
-												{esAccionNegocio ? (registro.detalle ?? '-') : '-'}
+												{esAccionNegocio ? registro.detalle : '-'}
 											</p>
 										</td>
 										<td className='px-4 py-2.5'>

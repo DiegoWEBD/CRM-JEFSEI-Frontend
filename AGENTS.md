@@ -12,7 +12,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **BFF**: `/api/notificaciones` (GET), `/api/notificaciones/contador`, `/api/notificaciones/[id]/leer` (PATCH), `/api/notificaciones/leer-todas` (POST), `/api/auth/ws-ticket` (POST).
 - **Use cases server**: `src/aplicacion/notificaciones/use-cases/*` con cookies → axiosClient al backend. El del ticket: `obtener-ticket-websocket`.
 - **Hooks**: `use-notificaciones`, `use-contador-no-leidas` (**sin `refetchInterval`**), `use-marcar-notificacion-leida`, `use-marcar-notificaciones-leidas`, **`use-canal-notificaciones`**.
-- **Campana**: `src/components/header/campana-notificaciones/campana-notificaciones.tsx` — popover con badge de contador, lista no leídas, click marca leída y navega a `url_destino`, "Marcar todas". Usa el item compartido `src/components/notificaciones/item-notificacion/item-notificacion.tsx`.
+- **Campana**: `src/components/header/campana-notificaciones/campana-notificaciones.tsx` — popover con badge de contador, lista no leídas, click marca leída y navega a `/prospectos/${id_prospecto}`, "Marcar todas". Usa el item compartido `src/components/notificaciones/item-notificacion/item-notificacion.tsx`.
 - **Header**: montada en `header-client.tsx` junto al usuario.
 - **Sin polling**: el backend avisa por **WebSocket** (`ws://…/ws/notificaciones?ticket=…`) con `{"evento":"notificaciones_actualizadas"}` y el cliente hace `invalidateQueries(['notificaciones'])`.
   - Canal: `src/hooks/notificaciones/use-canal-notificaciones.ts` + `src/components/providers/canal-notificaciones.tsx`, montado en `providers.tsx` dentro de `AuthProvider` (solo con `VER_ALERTAS`).

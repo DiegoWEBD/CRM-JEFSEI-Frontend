@@ -2,11 +2,7 @@
 
 import { Button } from '@/components/button'
 import ItemNotificacion from '@/components/notificaciones/item-notificacion/item-notificacion'
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/popover'
 import { Skeleton } from '@/components/skeleton'
 import { useContadorNoLeidas } from '@/hooks/notificaciones/use-contador-no-leidas'
 import { useMarcarNotificacionLeida } from '@/hooks/notificaciones/use-marcar-notificacion-leida'
@@ -14,12 +10,10 @@ import { useMarcarNotificacionesLeidas } from '@/hooks/notificaciones/use-marcar
 import { useNotificaciones } from '@/hooks/notificaciones/use-notificaciones'
 import { Notificacion } from '@/types/notificaciones/notificacion'
 import { Bell, CheckCheck, Loader2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const CampanaNotificaciones = () => {
 	const [abierto, setAbierto] = useState(false)
-	const router = useRouter()
 
 	const { data: contadorData, isLoading: cargandoContador } =
 		useContadorNoLeidas()
@@ -32,21 +26,21 @@ const CampanaNotificaciones = () => {
 	const marcarTodas = useMarcarNotificacionesLeidas()
 
 	const contador = contadorData?.contador ?? 0
-	const notificaciones = data?.data ?? []
+	const notificaciones = useMemo(() => {
+		if (!data) return []
+
+		return data.data.filter(notificacion => notificacion.leible)
+	}, [data])
 
 	const handleAbrir = (open: boolean) => {
 		setAbierto(open)
 	}
 
-	const handleSeleccionar = (notificacion: Notificacion) => {
-		marcarLeida.mutate(notificacion.id, {
-			onSuccess: () => {
-				if (notificacion.url_destino) {
-					setAbierto(false)
-					router.push(notificacion.url_destino)
-				}
-			},
-		})
+	const navegarAProspecto = (notificacion: Notificacion) => {
+		if (notificacion.id_prospecto) {
+			setAbierto(false)
+			marcarLeida.mutate(notificacion.id)
+		}
 	}
 
 	return (
@@ -109,7 +103,7 @@ const CampanaNotificaciones = () => {
 									<ItemNotificacion
 										notificacion={notificacion}
 										pendiente={marcarLeida.isPending}
-										onSeleccionar={handleSeleccionar}
+										onSeleccionar={navegarAProspecto}
 									/>
 								</li>
 							))}
