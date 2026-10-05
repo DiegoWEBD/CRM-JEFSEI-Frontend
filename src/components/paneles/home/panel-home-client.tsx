@@ -45,10 +45,7 @@ export default function PanelHomeClient({
 
 	return (
 		<PanelLayout>
-			<HomePageHeader
-				nombreUsuario={nombreUsuario}
-				prospectos={prospectos}
-			/>
+			<HomePageHeader nombreUsuario={nombreUsuario} prospectos={prospectos} />
 
 			<HomeKpiStrip />
 

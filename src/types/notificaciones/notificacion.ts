@@ -14,6 +14,7 @@ export interface Notificacion {
 	leida: boolean
 	fecha_leida: string | null
 	created_at: string
+	leible: boolean
 }
 
 export interface ObtenerNotificacionesResponse {

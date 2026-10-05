@@ -1,6 +1,6 @@
 'use client'
 
-import { AlertCircle, AlertTriangle, CheckCheck, Loader2 } from 'lucide-react'
+import { AlertCircle, AlertTriangle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -9,7 +9,6 @@ import ItemNotificacion from '@/components/notificaciones/item-notificacion/item
 import Paginacion from '@/components/paginacion/paginacion'
 import { Skeleton } from '@/components/skeleton'
 import { useMarcarNotificacionLeida } from '@/hooks/notificaciones/use-marcar-notificacion-leida'
-import { useMarcarNotificacionesLeidas } from '@/hooks/notificaciones/use-marcar-notificaciones-leidas'
 import { useNotificaciones } from '@/hooks/notificaciones/use-notificaciones'
 import { cn } from '@/lib/utils'
 import {
@@ -26,10 +25,7 @@ const ACENTO_NIVEL: Record<NivelNotificacion, string> = {
 	CRITICO: 'text-destructive',
 }
 
-const ICONO_NIVEL: Record<
-	NivelNotificacion,
-	typeof AlertTriangle
-> = {
+const ICONO_NIVEL: Record<NivelNotificacion, typeof AlertTriangle> = {
 	INFO: AlertTriangle,
 	AVISO: AlertTriangle,
 	CRITICO: AlertCircle,
@@ -101,7 +97,7 @@ function GrupoAlertas({
 						: 'Sin avisos pendientes.'}
 				</p>
 			) : (
-				<ul className='max-h-[22rem] divide-y divide-border overflow-y-auto'>
+				<ul className='max-h-88 divide-y divide-border overflow-y-auto'>
 					{notificaciones.map(notificacion => (
 						<li key={notificacion.id}>
 							<ItemNotificacion
@@ -123,7 +119,11 @@ function GrupoAlertas({
 	)
 }
 
-export default function AlertasEjecutivo({ className }: { className?: string }) {
+export default function AlertasEjecutivo({
+	className,
+}: {
+	className?: string
+}) {
 	const router = useRouter()
 
 	const [paginaCriticas, setPaginaCriticas] = useState(1)
@@ -143,25 +143,19 @@ export default function AlertasEjecutivo({ className }: { className?: string }) 
 	})
 
 	const marcarLeida = useMarcarNotificacionLeida()
-	const marcarTodas = useMarcarNotificacionesLeidas()
 
 	const totalCriticas = criticas.data?.total ?? 0
 	const totalAvisos = avisos.data?.total ?? 0
 	const totalPendientes = totalCriticas + totalAvisos
 
 	const onSeleccionar = (notificacion: Notificacion) => {
-		// Al leer una alerta el grupo se encoge: se vuelve a la primera página
-		// para no quedar apuntando a una página que ya no existe.
-		if (notificacion.nivel === 'CRITICO') setPaginaCriticas(1)
-		if (notificacion.nivel === 'AVISO') setPaginaAvisos(1)
+		if (notificacion.id_prospecto) {
+			router.push(`/prospectos/${notificacion.id_prospecto}`)
+		}
 
-		marcarLeida.mutate(notificacion.id, {
-			onSuccess: () => {
-				if (notificacion.id_prospecto) {
-					router.push(`/prospectos/${notificacion.id_prospecto}`)
-				}
-			},
-		})
+		if (notificacion.leible) {
+			marcarLeida.mutate(notificacion.id)
+		}
 	}
 
 	return (
@@ -175,26 +169,6 @@ export default function AlertasEjecutivo({ className }: { className?: string }) 
 						</span>
 					)}
 				</div>
-
-				{totalPendientes > 0 && (
-					<button
-						type='button'
-						onClick={() => {
-							setPaginaCriticas(1)
-							setPaginaAvisos(1)
-							marcarTodas.mutate()
-						}}
-						disabled={marcarTodas.isPending}
-						className='inline-flex items-center gap-1 self-start text-xs font-medium text-primary hover:underline disabled:opacity-50 sm:self-auto'
-					>
-						{marcarTodas.isPending ? (
-							<Loader2 className='size-3 animate-spin' />
-						) : (
-							<CheckCheck className='size-3' />
-						)}
-						Marcar todas leídas
-					</button>
-				)}
 			</CardHeader>
 
 			<CardContent className='grid grid-cols-1 gap-3 lg:grid-cols-2'>

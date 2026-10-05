@@ -85,7 +85,7 @@ export default function RecordatoriosUsuario({
 						No hay recordatorios para esta fecha.
 					</p>
 				) : (
-					<div className='max-h-[min(38vh,320px)] space-y-2 overflow-y-auto pr-0.5'>
+					<div className='max-h-100 space-y-2 overflow-y-auto pr-0.5'>
 						{recordatorios?.map(recordatorio => (
 							<CardRecordatorio
 								key={recordatorio.id}

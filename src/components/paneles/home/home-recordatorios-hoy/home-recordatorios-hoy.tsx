@@ -31,7 +31,7 @@ export default function HomeRecordatoriosHoy({
 					type='date'
 					value={fecha}
 					onChange={e => setFecha(e.target.value)}
-					className='h-8 w-[150px] text-xs shadow-none'
+					className='h-8 w-37.5 text-xs shadow-none'
 				/>
 			}
 		>

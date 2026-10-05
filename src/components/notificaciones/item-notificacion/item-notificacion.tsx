@@ -41,7 +41,7 @@ export default function ItemNotificacion({
 			type='button'
 			onClick={() => onSeleccionar(notificacion)}
 			disabled={pendiente}
-			className='flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent disabled:opacity-60'
+			className='cursor-pointer flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent disabled:opacity-60'
 		>
 			<span
 				className={cn(

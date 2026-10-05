@@ -2,11 +2,7 @@
 
 import { Button } from '@/components/button'
 import ItemNotificacion from '@/components/notificaciones/item-notificacion/item-notificacion'
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/popover'
 import { Skeleton } from '@/components/skeleton'
 import { useContadorNoLeidas } from '@/hooks/notificaciones/use-contador-no-leidas'
 import { useMarcarNotificacionLeida } from '@/hooks/notificaciones/use-marcar-notificacion-leida'
@@ -15,7 +11,7 @@ import { useNotificaciones } from '@/hooks/notificaciones/use-notificaciones'
 import { Notificacion } from '@/types/notificaciones/notificacion'
 import { Bell, CheckCheck, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const CampanaNotificaciones = () => {
 	const [abierto, setAbierto] = useState(false)
@@ -32,20 +28,31 @@ const CampanaNotificaciones = () => {
 	const marcarTodas = useMarcarNotificacionesLeidas()
 
 	const contador = contadorData?.contador ?? 0
-	const notificaciones = data?.data ?? []
+	const notificaciones = useMemo(() => {
+		if (!data) return []
+
+		return data.data.filter(notificacion => notificacion.leible)
+	}, [data])
 
 	const handleAbrir = (open: boolean) => {
 		setAbierto(open)
 	}
 
+	const navegarAProspecto = (notificacion: Notificacion) => {
+		if (notificacion.id_prospecto) {
+			setAbierto(false)
+			router.push(`/prospectos/${notificacion.id_prospecto}`)
+		}
+	}
+
 	const handleSeleccionar = (notificacion: Notificacion) => {
+		if (!notificacion.leible) {
+			navegarAProspecto(notificacion)
+			return
+		}
+
 		marcarLeida.mutate(notificacion.id, {
-			onSuccess: () => {
-				if (notificacion.id_prospecto) {
-					setAbierto(false)
-					router.push(`/prospectos/${notificacion.id_prospecto}`)
-				}
-			},
+			onSuccess: () => navegarAProspecto(notificacion),
 		})
 	}
 
