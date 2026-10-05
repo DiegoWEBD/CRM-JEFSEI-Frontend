@@ -46,14 +46,11 @@ const CampanaNotificaciones = () => {
 	}
 
 	const handleSeleccionar = (notificacion: Notificacion) => {
-		if (!notificacion.leible) {
-			navegarAProspecto(notificacion)
-			return
-		}
+		navegarAProspecto(notificacion)
 
-		marcarLeida.mutate(notificacion.id, {
-			onSuccess: () => navegarAProspecto(notificacion),
-		})
+		if (!notificacion.leible) return
+
+		marcarLeida.mutate(notificacion.id)
 	}
 
 	return (
