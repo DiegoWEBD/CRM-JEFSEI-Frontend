@@ -117,7 +117,12 @@ const SECCIONES: NavSection[] = [
 				titulo: 'Productos',
 				visible: r =>
 					r.some(c =>
-						['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c),
+						[
+							'GERENTE_OPERACIONES',
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'DESARROLLADOR',
+						].includes(c),
 					),
 			},
 			{
@@ -126,7 +131,12 @@ const SECCIONES: NavSection[] = [
 				titulo: 'Auditoría',
 				visible: r =>
 					r.some(c =>
-						['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c),
+						[
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'GERENTE_OPERACIONES',
+							'DESARROLLADOR',
+						].includes(c),
 					),
 			},
 			{

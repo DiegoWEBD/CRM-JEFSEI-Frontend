@@ -62,7 +62,12 @@ const roleProtectedRoutes: RoleProtectedRoute[] = [
 	},
 	{
 		path: '/productos',
-		roles: ['GERENTE_GENERAL', 'DESARROLLADOR'],
+		roles: [
+			'GERENTE_OPERACIONES',
+			'GERENTE_GENERAL',
+			'GERENTE_COMERCIAL',
+			'DESARROLLADOR',
+		],
 	},
 	{
 		path: '/companies-seguros',
@@ -75,7 +80,12 @@ const roleProtectedRoutes: RoleProtectedRoute[] = [
 	},
 	{
 		path: '/auditoria',
-		roles: ['GERENTE_GENERAL', 'DESARROLLADOR'],
+		roles: [
+			'GERENTE_GENERAL',
+			'GERENTE_COMERCIAL',
+			'GERENTE_OPERACIONES',
+			'DESARROLLADOR',
+		],
 	},
 ]
 

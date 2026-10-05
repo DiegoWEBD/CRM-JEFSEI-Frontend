@@ -2,7 +2,6 @@
 
 import { ObtenerRegistrosAuditoriaResponse } from '@/aplicacion/auditoria/dtos/obtener-registros-auditoria-response'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { Tabs, TabsList, TabsTrigger } from '@/components/tabs'
 import RegistroAuditoria from '@/dominio/registro-auditoria/registro-auditoria'
 import { useExportarAuditoria } from '@/hooks/auditoria/use-exportar-auditoria'
@@ -20,7 +19,7 @@ type AuditoriaClientProps = {
 }
 
 export default function AuditoriaClient({ initialData }: AuditoriaClientProps) {
-	const [tab, setTab] = useState<TabAuditoria>('AUTENTICACION')
+	const [tab, setTab] = useState<TabAuditoria>('TODAS')
 	const categoria = tab === 'TODAS' ? null : tab
 
 	const [pagina, setPagina] = useState(1)
@@ -70,78 +69,67 @@ export default function AuditoriaClient({ initialData }: AuditoriaClientProps) {
 
 	return (
 		<PanelLayout>
-			<PermissionGuard
-				allowedPermissions={['VER_AUDITORIA']}
-				fallback={
-					<div className='flex items-center justify-center py-12'>
-						<p className='text-sm text-muted-foreground'>
-							No tienes permisos para consultar la bitácora de auditoría
-						</p>
-					</div>
-				}
-			>
-				<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
-					<div className='border-b border-border/80 p-3 sm:p-4'>
-						<Tabs value={tab} onValueChange={cambiarTab}>
-							<TabsList>
-								<TabsTrigger value='AUTENTICACION'>Conexiones</TabsTrigger>
-								<TabsTrigger value='ACCION_NEGOCIO'>
-									Acciones de negocio
-								</TabsTrigger>
-								<TabsTrigger value='TODAS'>Todas</TabsTrigger>
-							</TabsList>
-						</Tabs>
+			<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
+				<div className='border-b border-border/80 p-3 sm:p-4'>
+					<Tabs value={tab} onValueChange={cambiarTab}>
+						<TabsList>
+							<TabsTrigger value='AUTENTICACION'>Conexiones</TabsTrigger>
+							<TabsTrigger value='ACCION_NEGOCIO'>
+								Acciones de negocio
+							</TabsTrigger>
+							<TabsTrigger value='TODAS'>Todas</TabsTrigger>
+						</TabsList>
+					</Tabs>
 
-						<div className='mt-3'>
-							<FiltrosAuditoria
-								categoria={categoria}
-								busqueda={inputBusqueda}
-								onBusquedaChange={valor => {
-									setInputBusqueda(valor)
-									setPagina(1)
-								}}
-								evento={evento}
-								onEventoChange={valor => {
-									setEvento(valor)
-									setPagina(1)
-								}}
-								fechaDesde={fechaDesde}
-								onFechaDesdeChange={valor => {
-									setFechaDesde(valor)
-									setPagina(1)
-								}}
-								fechaHasta={fechaHasta}
-								onFechaHastaChange={valor => {
-									setFechaHasta(valor)
-									setPagina(1)
-								}}
-								ipOrigen={inputIp}
-								onIpOrigenChange={valor => {
-									setInputIp(valor)
-									setPagina(1)
-								}}
-								total={respuesta?.total || 0}
-								totalFiltrados={respuesta?.data.length || 0}
-								onActualizar={() => refetch()}
-								actualizando={isFetching}
-								onExportar={exportarCsv}
-								exportando={exportarMutation.isPending}
-							/>
-						</div>
-					</div>
-
-					<div className='p-3 sm:p-4'>
-						<TablaRegistrosAuditoria
-							registros={respuesta?.data || []}
-							isFetching={isFetching}
-							pagina={pagina}
-							totalPaginas={respuesta?.total_paginas || 0}
-							onPaginaChange={setPagina}
-							onVerDetalle={setRegistroSeleccionado}
+					<div className='mt-3'>
+						<FiltrosAuditoria
+							categoria={categoria}
+							busqueda={inputBusqueda}
+							onBusquedaChange={valor => {
+								setInputBusqueda(valor)
+								setPagina(1)
+							}}
+							evento={evento}
+							onEventoChange={valor => {
+								setEvento(valor)
+								setPagina(1)
+							}}
+							fechaDesde={fechaDesde}
+							onFechaDesdeChange={valor => {
+								setFechaDesde(valor)
+								setPagina(1)
+							}}
+							fechaHasta={fechaHasta}
+							onFechaHastaChange={valor => {
+								setFechaHasta(valor)
+								setPagina(1)
+							}}
+							ipOrigen={inputIp}
+							onIpOrigenChange={valor => {
+								setInputIp(valor)
+								setPagina(1)
+							}}
+							total={respuesta?.total || 0}
+							totalFiltrados={respuesta?.data.length || 0}
+							onActualizar={() => refetch()}
+							actualizando={isFetching}
+							onExportar={exportarCsv}
+							exportando={exportarMutation.isPending}
 						/>
 					</div>
-				</section>
-			</PermissionGuard>
+				</div>
+
+				<div className='p-3 sm:p-4'>
+					<TablaRegistrosAuditoria
+						registros={respuesta?.data || []}
+						isFetching={isFetching}
+						pagina={pagina}
+						totalPaginas={respuesta?.total_paginas || 0}
+						onPaginaChange={setPagina}
+						onVerDetalle={setRegistroSeleccionado}
+					/>
+				</div>
+			</section>
 
 			<DialogDetalleRegistro
 				registro={registroSeleccionado}
