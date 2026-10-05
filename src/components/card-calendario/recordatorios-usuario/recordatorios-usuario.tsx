@@ -69,7 +69,7 @@ export default function RecordatoriosUsuario({
 			<div className='min-w-0 space-y-2'>
 				<div className='flex flex-wrap items-baseline justify-between gap-2'>
 					<p className='text-xs font-medium text-foreground'>
-						Recordatorios del {formatearFecha(new Date(fecha), 'dd/MM/yyyy')}
+						Recordatorios del {formatearFecha(fecha, 'dd/MM/yyyy')}
 						{fecha === hoyIso && (
 							<span className='ml-1 font-normal text-muted-foreground'>
 								· Hoy
