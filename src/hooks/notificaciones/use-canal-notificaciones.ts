@@ -42,7 +42,10 @@ export const useCanalNotificaciones = ({
 
 		function programarReintento() {
 			if (cancelado || reintento) return
-			const espera = Math.min(RETRASO_BASE_MS * 2 ** intentos, RETRASO_MAXIMO_MS)
+			const espera = Math.min(
+				RETRASO_BASE_MS * 2 ** intentos,
+				RETRASO_MAXIMO_MS,
+			)
 			intentos += 1
 			reintento = setTimeout(() => {
 				reintento = null
@@ -73,7 +76,7 @@ export const useCanalNotificaciones = ({
 			if (cancelado) return
 
 			const ws = new WebSocket(
-				`${aUrlWebSocket(process.env.NEXT_PUBLIC_API_URL)}/ws/notificaciones?ticket=${encodeURIComponent(ticket)}`,
+				`${aUrlWebSocket(process.env.NEXT_PUBLIC_WS_URL)}/ws/notificaciones?ticket=${encodeURIComponent(ticket)}`,
 			)
 			socket = ws
 
