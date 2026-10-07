@@ -40,14 +40,23 @@ export async function POST() {
 	return limpiarCookies(res)
 }
 
+function origenPublico(): string {
+	const appUrl = process.env.APP_URL
+	if (!appUrl) {
+		throw new Error('APP_URL no está configurada')
+	}
+	try {
+		return new URL(appUrl).origin
+	} catch {
+		throw new Error('APP_URL no es una URL válida')
+	}
+}
+
 export async function GET(req: NextRequest) {
 	await notificarCierreSesion()
-
+	const origen = origenPublico()
 	const redirectTo = req.nextUrl.searchParams.get('redirect') || '/login'
 
-	const res = NextResponse.redirect(
-		new URL(redirectTo, process.env.NEXT_PUBLILC_APP_URL),
-	)
-
+	const res = NextResponse.redirect(new URL(redirectTo, origen))
 	return limpiarCookies(res)
 }
