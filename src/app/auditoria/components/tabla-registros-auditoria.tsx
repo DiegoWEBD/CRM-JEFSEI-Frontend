@@ -84,11 +84,9 @@ export default function TablaRegistrosAuditoria({
 											registro.rut_usuario ??
 											'Sin usuario'}
 									</p>
-									{registro.categoria === 'ACCION_NEGOCIO' && (
-										<p className='truncate text-xs text-foreground'>
-											{registro.detalle}
-										</p>
-									)}
+									<p className='truncate text-xs text-foreground'>
+										{registro.detalle}
+									</p>
 								</div>
 								<BadgeResultado resultado={registro.resultado} />
 							</div>
@@ -134,8 +132,6 @@ export default function TablaRegistrosAuditoria({
 						</thead>
 						<tbody>
 							{registros.map(registro => {
-								const esAccionNegocio = registro.categoria === 'ACCION_NEGOCIO'
-
 								return (
 									<tr
 										key={registro.id}
@@ -161,13 +157,9 @@ export default function TablaRegistrosAuditoria({
 										<td className='px-4 py-2.5'>
 											<p
 												className='max-w-125  wrap-break-words text-xs text-foreground'
-												title={
-													esAccionNegocio
-														? (registro.detalle ?? undefined)
-														: undefined
-												}
+												title={registro.detalle ?? undefined}
 											>
-												{esAccionNegocio ? registro.detalle : '-'}
+												{registro.detalle ?? '-'}
 											</p>
 										</td>
 										<td className='px-4 py-2.5'>

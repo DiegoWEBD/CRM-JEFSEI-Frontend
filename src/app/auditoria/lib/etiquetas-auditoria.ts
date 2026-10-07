@@ -6,6 +6,8 @@ export const ETIQUETAS_EVENTO: Record<string, string> = {
 	ACTUALIZAR: 'Actualización',
 	ELIMINAR: 'Eliminación',
 	EJECUTAR_ACCION: 'Acción',
+	REVOCAR_SESION: 'Revocación de sesión',
+	REVOCAR_TODAS_SESIONES: 'Revocación de sesiones',
 }
 
 export const EVENTOS_CONEXION = ['LOGIN_EXITOSO', 'LOGIN_FALLIDO', 'LOGOUT']
@@ -17,9 +19,7 @@ export const EVENTOS_ACCION = [
 	'EJECUTAR_ACCION',
 ]
 
-export const eventosPorCategoria = (
-	categoria: string | null,
-): string[] => {
+export const eventosPorCategoria = (categoria: string | null): string[] => {
 	if (categoria === 'AUTENTICACION') return EVENTOS_CONEXION
 	if (categoria === 'ACCION_NEGOCIO') return EVENTOS_ACCION
 	return [...EVENTOS_CONEXION, ...EVENTOS_ACCION]

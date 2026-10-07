@@ -88,8 +88,8 @@ async function manejar401(error: AxiosError) {
 
 function instalarInterceptor(instancia: typeof axios | typeof clientAxios) {
 	instancia.interceptors.response.use(
-		(response) => response,
-		(error) => {
+		response => response,
+		error => {
 			if (axios.isAxiosError(error) && error.response?.status === 401) {
 				return manejar401(error)
 			}

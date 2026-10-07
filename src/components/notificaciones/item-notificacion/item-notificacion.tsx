@@ -52,14 +52,14 @@ export default function ItemNotificacion({
 			/>
 			<span className='min-w-0 flex-1 space-y-1'>
 				<span className='flex items-center gap-2'>
-					<span className='truncate text-sm font-medium text-foreground'>
+					<span className='text-sm font-medium text-foreground'>
 						{notificacion.titulo}
 					</span>
 					<Badge variant={NIVEL_BADGE[notificacion.nivel]} className='shrink-0'>
 						{notificacion.nivel}
 					</Badge>
 				</span>
-				<span className='line-clamp-2 text-xs text-muted-foreground'>
+				<span className='text-xs text-muted-foreground'>
 					{notificacion.mensaje}
 				</span>
 				<span className='block text-[11px] text-muted-foreground/70'>
