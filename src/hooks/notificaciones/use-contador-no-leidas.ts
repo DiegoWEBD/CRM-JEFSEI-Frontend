@@ -10,7 +10,5 @@ export const useContadorNoLeidas = (enabled = true) => {
 			return response.data as ObtenerContadorNoLeidasResponse
 		},
 		enabled,
-		// Sin polling: el backend avisa por WebSocket cuándo hay que refrescar
-		// (ver use-canal-notificaciones).
 	})
 }
