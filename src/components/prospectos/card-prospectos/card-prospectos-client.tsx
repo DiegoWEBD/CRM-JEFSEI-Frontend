@@ -13,7 +13,7 @@ import { Plus, Search, X } from 'lucide-react'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useState } from 'react'
 import FilaProspecto from './fila-prospecto'
-import FiltroEjecutivo from './filtro-ejecutivo'
+import FiltroUsuario from '@/components/filtro-usuario/filtro-usuario'
 import FiltroRegionComuna from './filtro-region-comuna'
 import SkeletonFilasProspecto from './skeleton-filas-prospecto'
 import { FiltrosEstadoProspecto } from './filtros-estado-prospecto/filtros-estado-prospecto'
@@ -164,7 +164,18 @@ export default function CardProspectosClient({
 							'GERENTE_OPERACIONES',
 						]}
 					>
-						<FiltroEjecutivo value={rutUsuario} onChange={onRutUsuarioChange} />
+						<FiltroUsuario
+							withLabel
+							value={rutUsuario}
+							onChange={onRutUsuarioChange}
+							filtroRoles={[
+								'EJECUTIVO_COMERCIAL',
+								'EJECUTIVO_EVALUACION_PROYECTOS',
+								'GERENTE_GENERAL',
+								'GERENTE_COMERCIAL',
+								'GERENTE_OPERACIONES',
+							]}
+						/>
 					</AuthGuard>
 
 					<FiltroRegionComuna

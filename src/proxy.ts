@@ -1,155 +1,116 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { TokenPayload } from './dtos/token-payload'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import {
+	refrescarTokensEnBackend,
+	cookieOptionsToken,
+	cookieOptionsRefresh,
+} from '@/lib/refresh-tokens'
 
-type RoleProtectedRoute = {
-	path: string
-	roles: string[]
-}
+/**
+ * Proxy (Next 16 — reemplaza a middleware).
+ *
+ * Ante un access token expirado con refresh_token válido, rota los tokens
+ * contra el backend y los setea en la respuesta (Set-Cookie) + reescribe
+ * el header Cookie downstream para que `cookies()` en Server Components
+ * vea el token nuevo en el mismo request.
+ *
+ * Esto corrige el bug original donde un self-fetch desde Server Components
+ * descartaba el Set-Cookie y dejaba al navegador con tokens viejos/expirados.
+ */
+export async function proxy(request: NextRequest) {
+	const token = request.cookies.get('token')?.value
+	const refreshToken = request.cookies.get('refresh_token')?.value
 
-const publicRoutes: string[] = ['/login']
-
-const roleProtectedRoutes: RoleProtectedRoute[] = [
-	{
-		path: '/dashboard',
-		roles: [
-			'GERENTE_OPERACIONES',
-			'GERENTE_GENERAL',
-			'GERENTE_COMERCIAL',
-			'DESARROLLADOR',
-		],
-	},
-	{
-		path: '/oportunidades',
-		roles: [
-			'GERENTE_OPERACIONES',
-			'GERENTE_GENERAL',
-			'GERENTE_COMERCIAL',
-			'DESARROLLADOR',
-		],
-	},
-	{
-		path: '/personal',
-		roles: [
-			'GERENTE_OPERACIONES',
-			'GERENTE_GENERAL',
-			'GERENTE_COMERCIAL',
-			'DESARROLLADOR',
-		],
-	},
-	{
-		path: '/solicitudes-estudio',
-		roles: [
-			'EJECUTIVO_EVALUACION_PROYECTOS',
-			'GERENTE_COMERCIAL',
-			'GERENTE_GENERAL',
-			'GERENTE_OPERACIONES',
-			'DESARROLLADOR',
-		],
-	},
-	{
-		path: '/cotizaciones-estudios-emitidos',
-		roles: [
-			'EJECUTIVO_EVALUACION_PROYECTOS',
-			'GERENTE_COMERCIAL',
-			'GERENTE_GENERAL',
-			'GERENTE_OPERACIONES',
-			'DESARROLLADOR',
-		],
-	},
-	{
-		path: '/configuracion-condominio',
-		roles: ['GERENTE_COMERCIAL', 'GERENTE_GENERAL', 'DESARROLLADOR'],
-	},
-	{
-		path: '/productos',
-		roles: [
-			'GERENTE_OPERACIONES',
-			'GERENTE_GENERAL',
-			'GERENTE_COMERCIAL',
-			'DESARROLLADOR',
-		],
-	},
-	{
-		path: '/companies-seguros',
-		roles: [
-			'GERENTE_OPERACIONES',
-			'GERENTE_GENERAL',
-			'GERENTE_COMERCIAL',
-			'DESARROLLADOR',
-		],
-	},
-	{
-		path: '/auditoria',
-		roles: [
-			'GERENTE_GENERAL',
-			'GERENTE_COMERCIAL',
-			'GERENTE_OPERACIONES',
-			'DESARROLLADOR',
-		],
-	},
-]
-
-function getUserRoles(token: string): string[] {
-	try {
-		const payload: TokenPayload = JSON.parse(
-			Buffer.from(token.split('.')[1], 'base64').toString(),
-		)
-		return payload.codigo_roles ?? []
-	} catch {
-		return []
-	}
-}
-
-function isPublicRoute(pathname: string): boolean {
-	return publicRoutes.includes(pathname)
-}
-
-function getRoleProtectedRoute(
-	pathname: string,
-): RoleProtectedRoute | undefined {
-	return roleProtectedRoutes.find(route => pathname.startsWith(route.path))
-}
-
-function hasRequiredRole(
-	userRoles: string[],
-	requiredRoles: string[],
-): boolean {
-	return userRoles.some(role => requiredRoles.includes(role))
-}
-
-export function proxy(req: NextRequest) {
-	const pathname = req.nextUrl.pathname
-
-	if (pathname.startsWith('/.well-known/')) {
+	// Sin refresh_token → no podemos hacer nada, las páginas manejan sesión null
+	if (!refreshToken) {
 		return NextResponse.next()
 	}
 
-	const token = req.cookies.get('token')?.value
+	// Verificar si el access token está expirado (o ausente)
+	const tokenValido = token ? !tokenExpirado(token) : false
 
-	if (pathname === '/login' && token) {
-		return NextResponse.redirect(new URL('/', req.url))
-	}
-
-	if (isPublicRoute(pathname)) {
+	if (tokenValido) {
 		return NextResponse.next()
 	}
 
-	if (!token) {
-		return NextResponse.redirect(new URL('/login', req.url))
+	// Token expirado o ausente: intentar refresh contra el backend
+	console.log('[proxy] Access token expirado/ausente, intentando refresh...')
+	const resultado = await refrescarTokensEnBackend(refreshToken)
+
+	if (!resultado) {
+		console.log('[proxy] Refresh falló, continuando sin sesión')
+		// No redirigimos aquí: las páginas deciden si requieren auth.
+		// Limpiamos cookies inválidas para evitar bucles.
+		const res = NextResponse.next()
+		res.cookies.set('token', '', { ...cookieOptionsToken(0), maxAge: 0 })
+		res.cookies.set('refresh_token', '', {
+			...cookieOptionsRefresh(),
+			maxAge: 0,
+		})
+		return res
 	}
 
-	const protectedRoute = getRoleProtectedRoute(pathname)
+	console.log('[proxy] Refresh exitoso, seteando nuevos cookies')
 
-	if (protectedRoute) {
-		const userRoles = getUserRoles(token)
-		if (!hasRequiredRole(userRoles, protectedRoute.roles)) {
-			return NextResponse.redirect(new URL('/', req.url))
+	// Construir Cookie header con el token nuevo para que `cookies()` en
+	// Server Components (layouts, pages, use cases) lo vea en este request.
+	const requestHeaders = new Headers(request.headers)
+	const cookieParts: string[] = []
+	const cookies = request.cookies.getAll()
+	for (const cookie of cookies) {
+		const { name, value } = cookie
+		if (name === 'token') {
+			cookieParts.push(`token=${resultado.access_token}`)
+		} else if (name === 'refresh_token') {
+			cookieParts.push(`refresh_token=${resultado.refresh_token}`)
+		} else {
+			cookieParts.push(`${name}=${value}`)
 		}
 	}
+	// Si no existían, agregarlos
+	if (!request.cookies.has('token')) {
+		cookieParts.push(`token=${resultado.access_token}`)
+	}
+	if (!request.cookies.has('refresh_token')) {
+		cookieParts.push(`refresh_token=${resultado.refresh_token}`)
+	}
+	requestHeaders.set('cookie', cookieParts.join('; '))
 
-	return NextResponse.next()
+	const response = NextResponse.next({
+		request: { headers: requestHeaders },
+	})
+
+	// Set-Cookie en la respuesta → el navegador recibe los tokens nuevos
+	response.cookies.set(
+		'token',
+		resultado.access_token,
+		cookieOptionsToken(resultado.expire_minutes),
+	)
+	response.cookies.set(
+		'refresh_token',
+		resultado.refresh_token,
+		cookieOptionsRefresh(),
+	)
+
+	return response
+}
+
+/** Decodifica el JWT y compara `exp` con ahora (sin verificar firma). */
+function tokenExpirado(token: string): boolean {
+	try {
+		const payload = JSON.parse(
+			Buffer.from(token.split('.')[1], 'base64').toString(),
+		)
+		return payload.exp <= Math.floor(Date.now() / 1000)
+	} catch {
+		return true
+	}
 }
 
 export const config = {
-	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|\\.well-known).*)'],
+	matcher: [
+		// Excluir API routes (el BFF tiene su propio refresh),
+		// assets estáticos y optimización de imágenes.
+		'/((?!api|_next/static|_next/image|favicon\\.ico|.*\\.png$).*)',
+	],
 }

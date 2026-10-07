@@ -16,9 +16,15 @@ async function notificarCierreSesion() {
 	}
 }
 
-function logout() {
-	const res = NextResponse.json({ message: 'Logout exitoso' })
+function limpiarCookies(res: NextResponse) {
 	res.cookies.set('token', '', {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'production',
+		sameSite: 'lax',
+		path: '/',
+		maxAge: 0,
+	})
+	res.cookies.set('refresh_token', '', {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax',
@@ -30,19 +36,13 @@ function logout() {
 
 export async function POST() {
 	await notificarCierreSesion()
-	return logout()
+	const res = NextResponse.json({ message: 'Logout exitoso' })
+	return limpiarCookies(res)
 }
 
 export async function GET(req: NextRequest) {
 	await notificarCierreSesion()
 	const redirectTo = req.nextUrl.searchParams.get('redirect') || '/login'
 	const res = NextResponse.redirect(new URL(redirectTo, req.url))
-	res.cookies.set('token', '', {
-		httpOnly: true,
-		secure: process.env.NODE_ENV === 'production',
-		sameSite: 'lax',
-		path: '/',
-		maxAge: 0,
-	})
-	return res
+	return limpiarCookies(res)
 }

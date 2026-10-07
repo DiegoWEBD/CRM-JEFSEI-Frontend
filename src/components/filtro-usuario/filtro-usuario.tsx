@@ -10,55 +10,58 @@ import {
 import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { useMemo } from 'react'
 
-const ROLES_FILTRO = [
-	'EJECUTIVO_COMERCIAL',
-	'EJECUTIVO_EVALUACION_PROYECTOS',
-	'GERENTE_GENERAL',
-	'GERENTE_COMERCIAL',
-	'GERENTE_OPERACIONES',
-]
-
-type FiltroEjecutivoProps = {
+type FiltroUsuarioProps = {
+	withLabel?: boolean
 	value: string
 	onChange: (value: string) => void
+	/** Si se pasa, solo muestra usuarios con alguno de estos roles. Si no, muestra todos. */
+	filtroRoles?: string[]
 }
 
-export default function FiltroEjecutivo({
+export default function FiltroUsuario({
+	withLabel = false,
 	value,
 	onChange,
-}: FiltroEjecutivoProps) {
-	const { data: usuariosData, isLoading } = useUsuarios({ pagina: 1, tamano_pagina: 100 })
+	filtroRoles,
+}: FiltroUsuarioProps) {
+	const { data: usuariosData, isLoading } = useUsuarios({
+		pagina: 1,
+		tamano_pagina: 100,
+	})
 	const usuarios = usuariosData?.data
 
-	const ejecutivos = useMemo(() => {
+	const usuariosFiltrados = useMemo(() => {
 		if (!usuarios) return []
-		return usuarios
-			.filter(u => u.roles.some(r => ROLES_FILTRO.includes(r.codigo)))
-			.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
-	}, [usuarios])
+		const lista = filtroRoles
+			? usuarios.filter(u => u.roles.some(r => filtroRoles.includes(r.codigo)))
+			: usuarios
+		return lista.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
+	}, [usuarios, filtroRoles])
 
 	return (
 		<div className='flex-1 space-y-1.5'>
-			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-				Ejecutivo
-			</p>
+			{withLabel && (
+				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+					Usuario
+				</p>
+			)}
 			<Select
 				value={value || '__all__'}
 				onValueChange={v => onChange(v === '__all__' ? '' : v)}
 			>
 				<SelectTrigger className='h-9 w-full text-xs shadow-none'>
-					<SelectValue placeholder='Todos los ejecutivos' />
+					<SelectValue placeholder='Todos los usuarios' />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectItem value='__all__' className='text-xs text-muted-foreground'>
-						Todos los ejecutivos
+						Todos los usuarios
 					</SelectItem>
 					{isLoading ? (
 						<SelectItem value='__loading__' disabled className='text-xs'>
 							Cargando...
 						</SelectItem>
 					) : (
-						ejecutivos.map(u => (
+						usuariosFiltrados.map(u => (
 							<SelectItem key={u.rut} value={u.rut} className='text-xs'>
 								{u.nombre}
 							</SelectItem>
