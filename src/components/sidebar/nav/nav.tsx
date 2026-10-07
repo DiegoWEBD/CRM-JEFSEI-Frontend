@@ -10,6 +10,7 @@ import {
 	Home,
 	LayoutDashboard,
 	Landmark,
+	Monitor,
 	Package,
 	ScrollText,
 	Users,
@@ -129,6 +130,20 @@ const SECCIONES: NavSection[] = [
 				href: '/auditoria',
 				icono: ScrollText,
 				titulo: 'Auditoría',
+				visible: r =>
+					r.some(c =>
+						[
+							'GERENTE_GENERAL',
+							'GERENTE_COMERCIAL',
+							'GERENTE_OPERACIONES',
+							'DESARROLLADOR',
+						].includes(c),
+					),
+			},
+			{
+				href: '/sesiones',
+				icono: Monitor,
+				titulo: 'Sesiones',
 				visible: r =>
 					r.some(c =>
 						[

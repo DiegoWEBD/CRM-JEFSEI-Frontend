@@ -18,10 +18,12 @@ export async function POST(req: Request) {
 
 		const maxAge = payload.exp - nowInSeconds
 
-		const res = NextResponse.json({
-			...response,
-		})
+		// No exponer refresh_token al cliente: solo va en cookie httpOnly
+		const { refresh_token, ...responseData } = response
 
+		const res = NextResponse.json(responseData)
+
+		// Access token: corta duración, path global
 		res.cookies.set('token', response.access_token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
@@ -29,6 +31,17 @@ export async function POST(req: Request) {
 			path: '/',
 			maxAge,
 		})
+
+		// Refresh token: larga duración, path global para que proxy.ts pueda leerlo
+		if (refresh_token) {
+			res.cookies.set('refresh_token', refresh_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				path: '/',
+				maxAge: 30 * 24 * 60 * 60, // 30 días
+			})
+		}
 
 		return res
 	} catch (error) {

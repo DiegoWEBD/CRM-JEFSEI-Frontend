@@ -1,11 +1,11 @@
-import axios from 'axios'
+import { axiosClient } from '@/infraestructura/axios/axios-client'
 import { IniciarSesionResponse } from '../dtos/iniciar-sesion-response'
 
 export const iniciarSesion = async (
 	rut: string,
 	password: string,
 ): Promise<IniciarSesionResponse> => {
-	const response = await axios.post(
+	const response = await axiosClient.post(
 		`${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
 		{
 			rut,

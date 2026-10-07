@@ -39,8 +39,17 @@ export function AuthProvider({ children, initialPayload }: AuthProviderProps) {
 		function onSessionExpired() {
 			setUsuario(null)
 		}
+		function onSessionRefreshed(event: Event) {
+			// El interceptor despacha el payload decodificado como CustomEvent detail
+			const payload = (event as CustomEvent<TokenPayload>).detail
+			if (payload) setUsuario(payload)
+		}
 		window.addEventListener('session-expired', onSessionExpired)
-		return () => window.removeEventListener('session-expired', onSessionExpired)
+		window.addEventListener('session-refreshed', onSessionRefreshed)
+		return () => {
+			window.removeEventListener('session-expired', onSessionExpired)
+			window.removeEventListener('session-refreshed', onSessionRefreshed)
+		}
 	}, [])
 
 	const tieneRol = useCallback(

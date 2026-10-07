@@ -1,7 +1,13 @@
 import { cookies } from 'next/headers'
 import { TokenPayload } from '@/dtos/token-payload'
 
-export async function getSession() {
+/**
+ * Obtiene la sesión del usuario decodificando el JWT del access token.
+ *
+ * Solo lectura: NO refresca tokens (eso lo hace proxy.ts en page loads
+ * y /api/auth/refresh en SPA). Si el token expiró devuelve null.
+ */
+export async function getSession(): Promise<TokenPayload | null> {
 	const cookieStore = await cookies()
 
 	const token = cookieStore.get('token')?.value
@@ -14,9 +20,14 @@ export async function getSession() {
 		)
 
 		const nowInSeconds = Math.floor(Date.now() / 1000)
-		if (payload.exp < nowInSeconds) return null
 
-		return payload
+		if (payload.exp > nowInSeconds) {
+			return payload
+		}
+
+		// Token expirado: el proxy ya se encargó de refrescar en page loads.
+		// Si llegamos aquí, no había refresh_token válido.
+		return null
 	} catch {
 		return null
 	}

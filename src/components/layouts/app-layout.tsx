@@ -15,14 +15,18 @@ export default async function AppLayout({
 
 	return (
 		<>
-			<AuthGuard>
-				<SideBar />
-			</AuthGuard>
+			{autenticado && (
+				<AuthGuard>
+					<SideBar />
+				</AuthGuard>
+			)}
 
 			<div className='flex flex-col flex-1 min-w-0'>
-				<AuthGuard>
-					<Header />
-				</AuthGuard>
+				{autenticado && (
+					<AuthGuard>
+						<Header />
+					</AuthGuard>
+				)}
 
 				<MainContentLayout
 					bare={!autenticado}
