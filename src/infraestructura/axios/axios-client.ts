@@ -2,7 +2,7 @@ import axios from 'axios'
 import { headers } from 'next/headers'
 
 export const axiosClient = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL,
+	baseURL: process.env.API_URL,
 })
 
 // Reenvía al backend la IP real, el user-agent y el id de trazabilidad de la
@@ -29,8 +29,8 @@ axiosClient.interceptors.request.use(async config => {
 })
 
 axiosClient.interceptors.response.use(
-	(response) => response,
-	(error) => {
+	response => response,
+	error => {
 		return Promise.reject(error)
 	},
 )

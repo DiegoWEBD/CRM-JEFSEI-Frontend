@@ -19,7 +19,7 @@ export async function refrescarTokensEnBackend(
 	refreshToken: string,
 ): Promise<RefreshTokensResult | null> {
 	try {
-		const apiUrl = process.env.NEXT_PUBLIC_API_URL
+		const apiUrl = process.env.API_URL
 		if (!apiUrl) return null
 
 		const res = await fetch(`${apiUrl}/auth/refresh`, {
@@ -42,9 +42,7 @@ export async function refrescarTokensEnBackend(
  */
 export function decodificarAccessToken(token: string): TokenPayload | null {
 	try {
-		return JSON.parse(
-			Buffer.from(token.split('.')[1], 'base64').toString(),
-		)
+		return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
 	} catch {
 		return null
 	}
