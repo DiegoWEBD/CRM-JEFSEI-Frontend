@@ -1,3 +1,0 @@
-type ClientesPorContactarProps = {
-	className?: string
-}

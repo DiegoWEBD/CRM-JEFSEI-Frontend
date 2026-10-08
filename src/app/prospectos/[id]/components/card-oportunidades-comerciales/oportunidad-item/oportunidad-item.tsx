@@ -16,6 +16,7 @@ import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/di
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
 import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
 import ProbabilidadCierreCell from './probabilidad-cierre-cell'
+import SelectorEstadoOportunidad from './selector-estado-oportunidad'
 
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
@@ -141,6 +142,12 @@ export default function OportunidadItem({
 								ejecutivoComercialRut={ejecutivoComercialRut}
 							/>
 						</div>
+
+						<SelectorEstadoOportunidad
+							proceso={proceso}
+							idProspecto={idProspecto}
+							ejecutivoComercialRut={ejecutivoComercialRut}
+						/>
 
 						{isLoading ? (
 							<div className='space-y-2'>

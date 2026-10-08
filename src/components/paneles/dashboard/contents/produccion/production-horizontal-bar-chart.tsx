@@ -45,16 +45,15 @@ export function ProductionHorizontalBarChart({
   axisWidth?: number
   variant?: 'prima' | 'count'
 }) {
-  const safeItems = Array.isArray(items) ? items : []
   const chartData = useMemo(
     () =>
-      safeItems.map((item) => ({
+      (Array.isArray(items) ? items : []).map((item) => ({
         label: item.nombre,
         name: truncarLabel(item.nombre),
         prima_neta_total: item.valor,
         valorGrafico: item.valor,
       })),
-    [safeItems],
+    [items],
   )
 
   if (chartData.length === 0) {

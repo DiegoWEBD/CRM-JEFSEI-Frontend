@@ -54,9 +54,7 @@ type VencimientoCellProps = {
 
 export default function VencimientoCell({
   idSolicitud,
-  cantidadCotizaciones,
   vencimientoMasProximo,
-  estado,
 }: VencimientoCellProps) {
   const { data: cotizaciones, isLoading } = useCotizaciones(idSolicitud)
   const ahora = useMemo(() => new Date(), [])
