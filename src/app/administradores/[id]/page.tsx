@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 import { obtenerAdministradorPorId } from '@/aplicacion/administradores/use-cases/obtener-administrador-por-id/obtener-administrador-por-id'
-import { cookies } from 'next/headers'
 import AdministradorClient from './components/administrador-client'
 import { AdministradorPageSkeleton } from './components/administrador-page-skeleton'
 import { redirect } from 'next/navigation'
@@ -10,12 +9,13 @@ type PageProps = {
 }
 
 async function AdministradorInner({ id }: { id: string }) {
+	let administrador
 	try {
-		const administrador = await obtenerAdministradorPorId(Number(id))
-		return <AdministradorClient administradorInicial={administrador} />
+		administrador = await obtenerAdministradorPorId(Number(id))
 	} catch {
 		redirect('/')
 	}
+	return <AdministradorClient administradorInicial={administrador} />
 }
 
 export default async function AdministradorPage({ params }: PageProps) {

@@ -6,25 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { cn } from '@/lib/utils'
 import { colorSegmento } from '@/lib/paleta-dashboard'
 
-function TooltipGestiones({
-  active,
-  payload,
-}: {
-  active?: boolean
-  payload?: { payload: { label: string; value: number } }[]
-}) {
-  if (!active || !payload?.[0]?.payload) return null
-  const p = payload[0].payload
-  return (
-    <div className='rounded-lg border border-border/60 bg-popover px-3 py-2 text-xs shadow-md'>
-      <p className='font-semibold text-foreground'>{p.label}</p>
-      <p className='mt-0.5 tabular-nums font-medium text-primary'>
-        {p.value.toLocaleString('es-CL')} gestiones
-      </p>
-    </div>
-  )
-}
-
 export default function CommercialActivitiesBarChart({
   data,
   className,

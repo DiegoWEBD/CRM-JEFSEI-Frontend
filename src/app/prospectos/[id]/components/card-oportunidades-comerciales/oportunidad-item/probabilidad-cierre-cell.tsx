@@ -81,7 +81,7 @@ export default function ProbabilidadCierreCell({
 
 	return (
 		<div className='flex flex-wrap items-center justify-between gap-2'>
-			<div className='min-w-0 space-y-1.5'>
+			<div className='min-w-0 space-y-3'>
 				<div>
 					<p className='text-xs text-muted-foreground'>
 						Probabilidad de cierre (sistema)

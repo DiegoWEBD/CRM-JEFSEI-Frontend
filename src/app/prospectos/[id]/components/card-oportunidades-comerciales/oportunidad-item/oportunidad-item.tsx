@@ -16,6 +16,8 @@ import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/di
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
 import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
 import ProbabilidadCierreCell from './probabilidad-cierre-cell'
+import SelectorEstadoOportunidad from './selector-estado-oportunidad'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
@@ -85,20 +87,22 @@ export default function OportunidadItem({
 							{proceso.producto}
 						</span>
 
-						<Badge
-							variant={
-								ESTADO_COMERCIAL_BADGE[
+						{!expandido && (
+							<Badge
+								variant={
+									ESTADO_COMERCIAL_BADGE[
+										proceso.estado_actual
+											.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
+									] ?? 'outline'
+								}
+								className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
+							>
+								{ESTADO_PROSPECTO_LABELS[
 									proceso.estado_actual
-										.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-								] ?? 'outline'
-							}
-							className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
-						>
-							{ESTADO_PROSPECTO_LABELS[
-								proceso.estado_actual
-									.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-							] ?? proceso.estado_actual.nombre}
-						</Badge>
+										.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
+								] ?? proceso.estado_actual.nombre}
+							</Badge>
+						)}
 
 						<Badge
 							variant={probabilidadCierreBadgeVariant}
@@ -128,20 +132,34 @@ export default function OportunidadItem({
 				</button>
 
 				{expandido && (
-					<div className='border-t border-border/50 px-3 pb-3 pt-2'>
-						<div className='grid gap-3 border-b border-border/30 pb-3 sm:grid-cols-2'>
-							<ProbabilidadCierreCell
-								proceso={proceso}
-								idProspecto={idProspecto}
-								ejecutivoComercialRut={ejecutivoComercialRut}
-							/>
-							<FechaEstimadaCierreCell
-								proceso={proceso}
-								idProspecto={idProspecto}
-								ejecutivoComercialRut={ejecutivoComercialRut}
-							/>
-						</div>
+					<div className='border-t border-border/50 px-3 pb-3'>
+						<div className='space-y-3 my-3'>
+							<PermissionGuard
+								allowedPermissions={[
+									'ADMINISTRAR_PROCESOS_COMERCIALES_PROPIOS',
+								]}
+								fallback={null}
+							>
+								<SelectorEstadoOportunidad
+									proceso={proceso}
+									idProspecto={idProspecto}
+									ejecutivoComercialRut={ejecutivoComercialRut}
+								/>
+							</PermissionGuard>
 
+							<div className='grid gap-3 sm:grid-cols-2'>
+								<ProbabilidadCierreCell
+									proceso={proceso}
+									idProspecto={idProspecto}
+									ejecutivoComercialRut={ejecutivoComercialRut}
+								/>
+								<FechaEstimadaCierreCell
+									proceso={proceso}
+									idProspecto={idProspecto}
+									ejecutivoComercialRut={ejecutivoComercialRut}
+								/>
+							</div>
+						</div>
 						{isLoading ? (
 							<div className='space-y-2'>
 								<Skeleton className='h-12 w-full' />
