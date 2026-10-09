@@ -49,12 +49,15 @@ export function estadoGeneralClientePerfilDesdeComercial(
 		case 'EJECUTIVO_COMERCIAL_ASIGNADO':
 		case 'CONTACTADO':
 		case 'COTIZACION_DISPONIBLE':
+		case 'DOCUMENTACION_PENDIENTE':
 			return 'en_seguimiento'
 		case 'COTIZACION_SOLICITADA_COMPANY':
 		case 'ESTUDIO_DISPONIBLE':
 		case 'ESTUDIO_ENVIADO_CLIENTE':
 		case 'RECOTIZACION_SOLICITADA':
 		case 'PROPUESTA_ACEPTADA':
+		case 'EN_NEGOCIACION':
+		case 'EMISION_PENDIENTE':
 			return 'en_proceso_comercial'
 		case 'GANADO':
 		case 'POLIZA_REGISTRADA':
