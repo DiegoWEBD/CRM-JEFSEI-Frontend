@@ -65,7 +65,7 @@ function KpiComision() {
 
 function KpiAlertas() {
 	const { data, isLoading } = useContadorNoLeidas()
-	const total = data?.contador ?? 0
+	const total = data?.no_leibles ?? 0
 
 	return (
 		<PanelKpiCard

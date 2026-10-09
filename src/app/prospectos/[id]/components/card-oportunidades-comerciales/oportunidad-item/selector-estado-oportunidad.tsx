@@ -1,22 +1,21 @@
 'use client'
 
-import { Button } from '@/components/button'
-import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import { Badge } from '@/components/badge'
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/select'
-import { useCambiarEstadoManual } from '@/hooks/procesos-comerciales/use-cambiar-estado-manual'
-import { useTransicionesManuales } from '@/hooks/procesos-comerciales/use-transiciones-manuales'
-import { useUserSession } from '@/hooks/auth/use-user-session'
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/dropdown-menu'
+import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
+import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useCambiarEstadoManual } from '@/hooks/procesos-comerciales/use-cambiar-estado-manual'
+import { useTransicionesManuales } from '@/hooks/estados/use-transiciones-manuales'
 import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
-import { ArrowRight, Check, Loader2, X } from 'lucide-react'
-import { useState } from 'react'
+import { ChevronDown, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import type { TransicionManual } from '@/aplicacion/estados/use-cases/obtener-transiciones-manuales/dto/transicion-manual'
 
 type SelectorEstadoOportunidadProps = {
 	proceso: ProcesoComercial
@@ -24,9 +23,20 @@ type SelectorEstadoOportunidadProps = {
 	ejecutivoComercialRut?: string
 }
 
-// Radix Select no admite items con value vacío; se usa un centinela para
-// representar "sin selección"
-const VALOR_INICIAL = '__ninguno__'
+function labelEstado(codigo: string, nombre?: string) {
+	return (
+		ESTADO_PROSPECTO_LABELS[codigo as keyof typeof ESTADO_PROSPECTO_LABELS] ??
+		nombre ??
+		codigo
+	)
+}
+
+function variantEstado(codigo: string) {
+	return (
+		ESTADO_COMERCIAL_BADGE[codigo as keyof typeof ESTADO_COMERCIAL_BADGE] ??
+		'outline'
+	)
+}
 
 export default function SelectorEstadoOportunidad({
 	proceso,
@@ -34,148 +44,92 @@ export default function SelectorEstadoOportunidad({
 	ejecutivoComercialRut,
 }: SelectorEstadoOportunidadProps) {
 	const { usuario } = useUserSession()
-	const [editando, setEditando] = useState(false)
-	const [valorSeleccionado, setValorSeleccionado] = useState(VALOR_INICIAL)
 	const { data: transiciones, isLoading: cargandoTransiciones } =
-		useTransicionesManuales(proceso.id)
+		useTransicionesManuales(proceso.estado_actual.codigo)
 	const cambiarEstado = useCambiarEstadoManual(idProspecto)
 
 	const puedeEditar = !proceso.cerrado && usuario?.rut === ejecutivoComercialRut
-
-	function iniciarEdicion() {
-		setValorSeleccionado(VALOR_INICIAL)
-		setEditando(true)
-	}
-
-	function cancelarEdicion() {
-		setEditando(false)
-		setValorSeleccionado(VALOR_INICIAL)
-	}
-
-	async function guardar() {
-		if (valorSeleccionado === VALOR_INICIAL) return
-
-		const transicionSeleccionada = transiciones?.find(
-			t => t.codigo === valorSeleccionado,
-		)
-
-		try {
-			await cambiarEstado.mutateAsync({
-				idProceso: proceso.id,
-				request: {
-					codigo_estado_destino: valorSeleccionado,
-					observacion: transicionSeleccionada?.accion_requerida ?? null,
-				},
-			})
-			toast.success('Estado de la oportunidad actualizado')
-			setEditando(false)
-			setValorSeleccionado(VALOR_INICIAL)
-		} catch {
-			toast.error('Error al cambiar el estado de la oportunidad')
-		}
-	}
 
 	if (!puedeEditar) {
 		return null
 	}
 
-	const nombreEstadoActual =
-		ESTADO_PROSPECTO_LABELS[
-			proceso.estado_actual.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-		] ?? proceso.estado_actual.nombre
+	const codigoEstadoActual = proceso.estado_actual.codigo
+	const tieneTransiciones = (transiciones?.length ?? 0) > 0
+	const pendiente = cambiarEstado.isPending
+
+	async function cambiarEstadoA(transicion: TransicionManual) {
+		try {
+			await cambiarEstado.mutateAsync({
+				idProceso: proceso.id,
+				request: {
+					codigo_estado_destino: transicion.codigo,
+					observacion: transicion.accion_requerida ?? null,
+				},
+			})
+			toast.success('Estado de la oportunidad actualizado')
+		} catch {
+			toast.error('Error al cambiar el estado de la oportunidad')
+		}
+	}
 
 	return (
-		<PermissionGuard
-			allowedPermissions={['ADMINISTRAR_PROCESOS_COMERCIALES_PROPIOS']}
-			fallback={null}
-		>
-			<div className='flex flex-wrap items-center justify-between gap-2 border-t border-border/30 pt-2'>
-				<div className='min-w-0 space-y-1.5'>
-					<div>
-						<p className='text-xs text-muted-foreground'>Estado actual</p>
-						<p className='text-sm font-medium text-foreground'>
-							{nombreEstadoActual}
-						</p>
-					</div>
+		<>
+			<p className='mb-1.5 text-xs text-muted-foreground'>Estado actual</p>
 
-					{editando && (
-						<div>
-							<p className='text-xs text-muted-foreground'>Cambiar a</p>
-							<Select
-								value={valorSeleccionado}
-								onValueChange={setValorSeleccionado}
+			{tieneTransiciones ? (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Badge
+							asChild
+							variant={variantEstado(codigoEstadoActual)}
+							className='cursor-pointer gap-1 transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60'
+						>
+							<button type='button' disabled={pendiente}>
+								{labelEstado(codigoEstadoActual, proceso.estado_actual.nombre)}
+								{pendiente ? (
+									<Loader2 className='h-3 w-3 animate-spin' aria-hidden />
+								) : (
+									<ChevronDown className='h-3 w-3' aria-hidden />
+								)}
+							</button>
+						</Badge>
+					</DropdownMenuTrigger>
+
+					<DropdownMenuContent align='start' className='w-64'>
+						{transiciones?.map(transicion => (
+							<DropdownMenuItem
+								key={transicion.codigo}
+								disabled={pendiente}
+								onSelect={() => void cambiarEstadoA(transicion)}
+								className='flex-col items-start gap-1 cursor-pointer'
 							>
-								<SelectTrigger
-									size='sm'
-									className='mt-1 h-8 w-56 gap-1 text-xs'
+								<Badge
+									variant={variantEstado(transicion.codigo)}
+									className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
 								>
-									<SelectValue placeholder='Seleccione estado' />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value={VALOR_INICIAL} disabled>
-										Seleccione un estado
-									</SelectItem>
-									{transiciones?.map(transicion => (
-										<SelectItem
-											key={transicion.codigo}
-											value={transicion.codigo}
-										>
-											{transicion.nombre}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
+									{labelEstado(transicion.codigo, transicion.nombre)}
+								</Badge>
+							</DropdownMenuItem>
+						))}
+					</DropdownMenuContent>
+				</DropdownMenu>
+			) : (
+				<div className='inline-flex items-center gap-1'>
+					<Badge
+						variant={variantEstado(codigoEstadoActual)}
+						className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
+					>
+						{labelEstado(codigoEstadoActual, proceso.estado_actual.nombre)}
+					</Badge>
+					{cargandoTransiciones && (
+						<Loader2
+							className='h-3.5 w-3.5 animate-spin text-muted-foreground'
+							aria-hidden
+						/>
 					)}
 				</div>
-
-				{editando ? (
-					<div className='flex items-center gap-2'>
-						<Button
-							type='button'
-							size='sm'
-							className='h-8 gap-1 text-xs shadow-none'
-							onClick={guardar}
-							disabled={
-								valorSeleccionado === VALOR_INICIAL || cambiarEstado.isPending
-							}
-						>
-							{cambiarEstado.isPending ? (
-								<Loader2 className='h-3.5 w-3.5 animate-spin' aria-hidden />
-							) : (
-								<Check className='h-3.5 w-3.5' aria-hidden />
-							)}
-							Guardar
-						</Button>
-						<Button
-							type='button'
-							variant='outline'
-							size='sm'
-							className='h-8 gap-1 text-xs shadow-none'
-							onClick={cancelarEdicion}
-							disabled={cambiarEstado.isPending}
-						>
-							<X className='h-3.5 w-3.5' aria-hidden />
-							Cancelar
-						</Button>
-					</div>
-				) : (
-					<Button
-						type='button'
-						variant='outline'
-						size='sm'
-						className='h-7 gap-1 text-xs shadow-none'
-						onClick={iniciarEdicion}
-					>
-						{cargandoTransiciones ? (
-							<Loader2 className='h-3 w-3 animate-spin' aria-hidden />
-						) : (
-							<ArrowRight className='h-3 w-3' aria-hidden />
-						)}
-						Cambiar estado
-					</Button>
-				)}
-			</div>
-		</PermissionGuard>
+			)}
+		</>
 	)
 }

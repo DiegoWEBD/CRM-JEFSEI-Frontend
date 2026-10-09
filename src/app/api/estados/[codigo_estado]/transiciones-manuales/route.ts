@@ -5,14 +5,14 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ codigo_estado: string }> },
 ) {
   try {
-    const { id } = await params
+    const { codigo_estado } = await params
     const cookieStore = await cookies()
 
     const response = await axiosClient.get(
-      `/procesos-comerciales/${id}/transiciones-manuales`,
+      `/estados/${encodeURIComponent(codigo_estado)}/transiciones-manuales`,
       { headers: { Cookie: cookieStore.toString() } },
     )
 

@@ -26,7 +26,8 @@ export interface ObtenerNotificacionesResponse {
 }
 
 export interface ObtenerContadorNoLeidasResponse {
-	contador: number
+	no_leidas: number
+	no_leibles: number
 }
 
 /** Ticket efímero que autoriza abrir el WebSocket de notificaciones. */
