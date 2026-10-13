@@ -13,6 +13,7 @@ import {
 	Monitor,
 	Package,
 	ScrollText,
+	SlidersHorizontal,
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
@@ -158,6 +159,12 @@ const SECCIONES: NavSection[] = [
 				href: '/companies-seguros',
 				icono: Landmark,
 				titulo: 'Compañías de seguros',
+				visible: r => r.some(c => ROLES_GERENTE.includes(c)),
+			},
+			{
+				href: '/configuracion-estados',
+				icono: SlidersHorizontal,
+				titulo: 'Configuración de estados',
 				visible: r => r.some(c => ROLES_GERENTE.includes(c)),
 			},
 		],

@@ -16,7 +16,6 @@ import {
 import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatUF } from '@/lib/uf'
-import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { Download, FileText } from 'lucide-react'
 import { useState } from 'react'

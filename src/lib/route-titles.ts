@@ -10,6 +10,7 @@ import {
 	LayoutDashboard,
 	Package,
 	ScrollText,
+	SlidersHorizontal,
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
@@ -57,6 +58,11 @@ export const RUTAS_PRINCIPALES: RouteMeta[] = [
 		href: '/companies-seguros',
 		titulo: 'Compañías de seguros',
 		icono: Landmark,
+	},
+	{
+		href: '/configuracion-estados',
+		titulo: 'Configuración de estados',
+		icono: SlidersHorizontal,
 	},
 ]
 

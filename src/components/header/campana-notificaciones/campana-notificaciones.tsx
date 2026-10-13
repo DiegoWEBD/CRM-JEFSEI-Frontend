@@ -25,7 +25,7 @@ const CampanaNotificaciones = () => {
 	const marcarLeida = useMarcarNotificacionLeida()
 	const marcarTodas = useMarcarNotificacionesLeidas()
 
-	const contador = contadorData?.contador ?? 0
+	const contador = contadorData?.no_leidas ?? 0
 	const notificaciones = useMemo(() => {
 		if (!data) return []
 

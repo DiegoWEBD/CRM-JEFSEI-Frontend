@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { colorDonut, colorSegmento } from '@/lib/paleta-dashboard'
-import { cn } from '@/lib/utils'
 
 type ComunaAnalysisCardProps = {
   porComuna: { nombre: string; cantidad: number }[]
@@ -41,7 +40,7 @@ export default function ComunaAnalysisCard({
     () =>
       porRamo
         .filter((d) => d.cantidad > 0)
-        .map((d, i) => ({
+        .map((d) => ({
           name: d.nombre,
           linea: d.nombre,
           lineaCorta: d.nombre.length > 20 ? d.nombre.slice(0, 18) + '...' : d.nombre,

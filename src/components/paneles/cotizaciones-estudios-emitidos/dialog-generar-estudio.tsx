@@ -82,7 +82,6 @@ export default function DialogGenerarEstudio({
 	const opciones = useMemo(() => cotizaciones ?? [], [cotizaciones])
 
 	const [idsSeleccionados, setIdsSeleccionados] = useState<number[]>([])
-	const [archivo, setArchivo] = useState<File | null>(null)
 	const [secciones, setSecciones] = useState<SeccionForm[]>([])
 
 	const { cargando: cargandoUf, refrescar: fetchUf } = useUfValue()
@@ -192,7 +191,6 @@ export default function DialogGenerarEstudio({
 		} else {
 			formik.resetForm()
 			setIdsSeleccionados([])
-			setArchivo(null)
 			setSecciones([])
 		}
 		onOpenChange(next)
@@ -217,7 +215,6 @@ export default function DialogGenerarEstudio({
 			},
 		})
 		setIdsSeleccionados([])
-		setArchivo(null)
 		setSecciones([])
 	}
 
