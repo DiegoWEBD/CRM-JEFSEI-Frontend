@@ -23,6 +23,7 @@ import { useState } from 'react'
 
 import DialogEditarTransicion from './dialog-editar-transicion'
 import DialogRegistrarTransicion from './dialog-registrar-transicion'
+import { formatearDiasLimite } from './formato-estados'
 
 type TransicionesEstadoProps = {
 	/** Estado de origen cuyas transiciones se administran. */
@@ -36,10 +37,21 @@ function ChipTransicion({ transicion }: { transicion: TransicionAdmin }) {
 	return (
 		<div className='flex flex-wrap items-center gap-1.5'>
 			{transicion.es_principal ? (
-				<Badge variant='pastel-indigo'>
-					<Lock className='size-3' />
-					Principal
-				</Badge>
+				<>
+					<Badge variant='pastel-indigo'>
+						<Lock className='size-3' />
+						Principal
+					</Badge>
+					<Badge
+						variant={
+							transicion.dias_limite === null
+								? 'pastel-muted'
+								: 'pastel-amber'
+						}
+					>
+						{formatearDiasLimite(transicion.dias_limite)}
+					</Badge>
+				</>
 			) : null}
 			<Badge variant={transicion.es_manual ? 'pastel-sky' : 'pastel-muted'}>
 				{transicion.es_manual ? 'Manual' : 'Automática'}
@@ -138,10 +150,9 @@ export default function TransicionesEstado({
 													variant='ghost'
 													size='icon'
 													className='size-8'
-													disabled={transicion.es_principal}
 													title={
 														transicion.es_principal
-															? 'Las transiciones principales no se pueden editar'
+															? 'Configurar días límite (SLA)'
 															: 'Editar transición'
 													}
 													onClick={() => setTransicionAEditar(transicion)}

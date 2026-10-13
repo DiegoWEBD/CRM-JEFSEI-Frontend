@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/skeleton'
 import { ArrowRightLeft, Settings2 } from 'lucide-react'
 
 import { probabilidadCierreBadgeVariant } from '@/components/badge/variants/probabilidad-cierre-variants'
-import { formatearDiasLimite, formatearProbabilidad } from './formato-estados'
+import { formatearProbabilidad } from './formato-estados'
 
 type TablaEstadosProps = {
 	/** Etapas ya ordenadas, cada una con sus estados por probabilidad ascendente. */
@@ -50,7 +50,7 @@ function Acciones({
 					variant='ghost'
 					size='icon'
 					className='size-8'
-					title='Definir días límite y probabilidad de cierre'
+					title='Configurar probabilidad de cierre'
 					onClick={() => onConfigurar(estado)}
 				>
 					<Settings2 className='size-4' />
@@ -109,15 +109,6 @@ function ListadoEstados({
 										>
 											{formatearProbabilidad(estado.probabilidad_cierre)}
 										</Badge>
-										<Badge
-											variant={
-												estado.dias_limite === null
-													? 'pastel-muted'
-													: 'pastel-amber'
-											}
-										>
-											{formatearDiasLimite(estado.dias_limite)}
-										</Badge>
 										<Badge variant='pastel-slate'>
 											{estado.cantidad_transiciones}{' '}
 											{estado.cantidad_transiciones === 1
@@ -149,13 +140,10 @@ function ListadoEstados({
 								<th className='w-[34%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Estado
 								</th>
-								<th className='w-[20%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[30%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Prob. cierre
 								</th>
-								<th className='w-[20%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-									Días límite
-								</th>
-								<th className='w-[26%] px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[36%] px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Acciones
 								</th>
 							</tr>
@@ -174,9 +162,6 @@ function ListadoEstados({
 										<p className='truncate font-semibold text-foreground'>
 											{estado.nombre}
 										</p>
-										<p className='truncate text-xs text-muted-foreground'>
-											{estado.codigo}
-										</p>
 									</td>
 									<td className='px-4 py-2.5'>
 										<Badge
@@ -185,17 +170,6 @@ function ListadoEstados({
 											)}
 										>
 											{formatearProbabilidad(estado.probabilidad_cierre)}
-										</Badge>
-									</td>
-									<td className='px-4 py-2.5'>
-										<Badge
-											variant={
-												estado.dias_limite === null
-													? 'pastel-muted'
-													: 'pastel-amber'
-											}
-										>
-											{formatearDiasLimite(estado.dias_limite)}
 										</Badge>
 									</td>
 									<td className='px-4 py-2.5'>

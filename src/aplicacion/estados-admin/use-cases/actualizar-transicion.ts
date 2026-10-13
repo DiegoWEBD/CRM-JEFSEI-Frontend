@@ -5,6 +5,11 @@ export interface ActualizarTransicionRequest {
 	codigo_estado_destino: string
 	es_manual: boolean
 	accion_requerida: string | null
+	/**
+	 * SLA de permanencia (días). Solo aplica a la transición principal;
+	 * para las secundarias se envía null.
+	 */
+	dias_limite: number | null
 }
 
 export const actualizarTransicion = async (

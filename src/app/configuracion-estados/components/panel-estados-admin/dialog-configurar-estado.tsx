@@ -22,8 +22,10 @@ type DialogConfigurarEstadoProps = {
 }
 
 /**
- * Edita los dos atributos configurables de un estado:
- * los días límite de permanencia (SLA) y la probabilidad de cierre.
+ * Edita la probabilidad de cierre de un estado.
+ *
+ * Los días límite de permanencia (SLA) ya no se configuran acá: viven en la
+ * transición principal del estado y se editan desde el panel de transiciones.
  *
  * La probabilidad se ingresa en la UI como porcentaje (0-100) y se envía
  * al backend como decimal (0-1).
@@ -36,13 +38,6 @@ export default function DialogConfigurarEstado({
 	const actualizarMutation = useActualizarEstadoConfiguracion()
 
 	const validationSchema = Yup.object({
-		diasLimite: Yup.string()
-			.trim()
-			.test(
-				'entero-no-negativo',
-				'Los días límite deben ser un número entero no negativo',
-				value => !value || /^\d+$/.test(value),
-			),
 		probabilidadPorcentaje: Yup.number()
 			.typeError('La probabilidad debe ser un número')
 			.min(0, 'La probabilidad no puede ser menor a 0%')
@@ -52,10 +47,6 @@ export default function DialogConfigurarEstado({
 
 	const formik = useFormik({
 		initialValues: {
-			diasLimite:
-				estado?.dias_limite === null || estado?.dias_limite === undefined
-					? ''
-					: String(estado.dias_limite),
 			probabilidadPorcentaje: estado
 				? String(Math.round(estado.probabilidad_cierre * 100))
 				: '',
@@ -68,9 +59,6 @@ export default function DialogConfigurarEstado({
 			try {
 				await actualizarMutation.mutateAsync({
 					codigo: estado.codigo,
-					dias_limite: values.diasLimite
-						? Number(values.diasLimite)
-						: null,
 					probabilidad_cierre: Number(values.probabilidadPorcentaje) / 100,
 				})
 				cerrarDialog()
@@ -87,36 +75,11 @@ export default function DialogConfigurarEstado({
 				<DialogTitle>Configurar estado</DialogTitle>
 				<DialogDescription>
 					{estado
-						? `Define los días límite de permanencia y la probabilidad de cierre de "${estado.nombre}".`
-						: 'Define los días límite de permanencia y la probabilidad de cierre del estado.'}
+						? `Define la probabilidad de cierre de "${estado.nombre}".`
+						: 'Define la probabilidad de cierre del estado.'}
 				</DialogDescription>
 
 				<form onSubmit={formik.handleSubmit} className='space-y-4'>
-					<div className='space-y-2'>
-						<Label htmlFor='diasLimite'>Días límite</Label>
-						<Input
-							id='diasLimite'
-							name='diasLimite'
-							type='number'
-							min={0}
-							step={1}
-							value={formik.values.diasLimite}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							placeholder='Sin límite'
-						/>
-						<p className='text-xs text-muted-foreground'>
-							Cantidad máxima de días que una oportunidad puede permanecer en
-							este estado antes de generar alertas SLA. Déjalo vacío para no
-							tener límite.
-						</p>
-						{formik.touched.diasLimite && formik.errors.diasLimite && (
-							<p className='text-xs text-destructive'>
-								{formik.errors.diasLimite}
-							</p>
-						)}
-					</div>
-
 					<div className='space-y-2'>
 						<Label htmlFor='probabilidadPorcentaje'>
 							Probabilidad de cierre (%)

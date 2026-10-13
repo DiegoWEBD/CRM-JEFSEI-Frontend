@@ -35,6 +35,12 @@ type DialogRegistrarTransicionProps = {
 
 const VALOR_NINGUNO = '__ninguno__'
 
+/**
+ * Registra una transición SECUNDARIA.
+ *
+ * Las transiciones principales (camino feliz + SLA del estado) no se crean
+ * desde la aplicación: se siembran por migración de base de datos.
+ */
 export default function DialogRegistrarTransicion({
 	estado,
 	destinos,
@@ -48,7 +54,6 @@ export default function DialogRegistrarTransicion({
 			.required('Debes seleccionar un estado destino')
 			.notOneOf([VALOR_NINGUNO], 'Debes seleccionar un estado destino'),
 		esManual: Yup.boolean(),
-		esPrincipal: Yup.boolean(),
 		accionRequerida: Yup.string().when('esManual', {
 			is: true,
 			then: schema =>
@@ -64,7 +69,6 @@ export default function DialogRegistrarTransicion({
 		initialValues: {
 			codigoEstadoDestino: VALOR_NINGUNO,
 			esManual: true,
-			esPrincipal: false,
 			accionRequerida: '',
 		},
 		validationSchema,
@@ -75,7 +79,6 @@ export default function DialogRegistrarTransicion({
 					codigo_estado_origen: estado.codigo,
 					codigo_estado_destino: values.codigoEstadoDestino,
 					es_manual: values.esManual,
-					es_principal: values.esPrincipal,
 					accion_requerida: values.accionRequerida.trim()
 						? values.accionRequerida.trim()
 						: null,
@@ -140,28 +143,6 @@ export default function DialogRegistrarTransicion({
 							}
 						/>
 					</div>
-
-					<div className='flex items-center justify-between gap-3 rounded-lg border border-border p-3'>
-						<div className='min-w-0'>
-							<Label htmlFor='esPrincipal'>Transición principal</Label>
-							<p className='text-xs text-muted-foreground'>
-								Define el flujo feliz del estado y fija el rol que recibe las
-								alertas SLA. Reemplaza a la principal actual.
-							</p>
-						</div>
-						<Switch
-							id='esPrincipal'
-							checked={formik.values.esPrincipal}
-							onCheckedChange={valor =>
-								formik.setFieldValue('esPrincipal', valor)
-							}
-						/>
-					</div>
-					{formik.touched.esPrincipal && formik.errors.esPrincipal && (
-						<p className='text-xs text-destructive'>
-							{formik.errors.esPrincipal}
-						</p>
-					)}
 
 					<div className='space-y-2'>
 						<Label htmlFor='accionRequerida'>Acción requerida</Label>

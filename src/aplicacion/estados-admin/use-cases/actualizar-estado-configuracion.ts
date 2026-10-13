@@ -2,8 +2,6 @@ import axios from 'axios'
 
 export interface ActualizarEstadoConfiguracionRequest {
 	codigo: string
-	/** null = sin límite de permanencia */
-	dias_limite: number | null
 	/** 0..1 */
 	probabilidad_cierre: number
 }
