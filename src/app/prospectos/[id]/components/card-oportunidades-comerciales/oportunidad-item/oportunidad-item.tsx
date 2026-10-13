@@ -1,23 +1,24 @@
 'use client'
 
-import { Badge } from '@/components/badge'
-import { Button } from '@/components/button'
-import { Skeleton } from '@/components/skeleton'
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
-import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
-import { cn } from '@/lib/utils'
-import { ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { useObtenerSolicitudesPorProceso } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-por-proceso'
-import { useUserSession } from '@/hooks/auth/use-user-session'
-import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
+import { Badge } from '@/components/badge'
+import { probabilidadCierreBadgeVariant } from '@/components/badge/variants/probabilidad-cierre-variants'
+import { Button } from '@/components/button'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import { Skeleton } from '@/components/skeleton'
 import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/dialog-nueva-solicitud-cotizacion'
+import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
+import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useObtenerSolicitudesPorProceso } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-por-proceso'
+import { cn } from '@/lib/utils'
+import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
+import { ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
+import { useState } from 'react'
+import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
 import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
 import ProbabilidadCierreCell from './probabilidad-cierre-cell'
 import SelectorEstadoOportunidad from './selector-estado-oportunidad'
-import PermissionGuard from '@/components/layouts/guards/permission-guard'
 
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
@@ -56,13 +57,6 @@ export default function OportunidadItem({
 	const probabilidadEfectiva =
 		probabilidadEjecutivo ?? proceso.probabilidad_cierre_sistema
 
-	const probabilidadCierreBadgeVariant = useMemo(() => {
-		if (probabilidadEfectiva < 0.5) return 'destructive'
-		if (probabilidadEfectiva >= 0.5 && probabilidadEfectiva < 0.7)
-			return 'pastel-amber'
-		return 'pastel-emerald'
-	}, [probabilidadEfectiva])
-
 	return (
 		<>
 			<div
@@ -89,12 +83,7 @@ export default function OportunidadItem({
 
 						{!expandido && (
 							<Badge
-								variant={
-									ESTADO_COMERCIAL_BADGE[
-										proceso.estado_actual
-											.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-									] ?? 'outline'
-								}
+								variant={ESTADO_COMERCIAL_BADGE[proceso.estado_actual.codigo]}
 								className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
 							>
 								{ESTADO_PROSPECTO_LABELS[
@@ -105,7 +94,7 @@ export default function OportunidadItem({
 						)}
 
 						<Badge
-							variant={probabilidadCierreBadgeVariant}
+							variant={probabilidadCierreBadgeVariant(probabilidadEfectiva)}
 							title={
 								probabilidadEjecutivo !== null
 									? 'Probabilidad de cierre estimada por el ejecutivo'

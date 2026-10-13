@@ -1,6 +1,15 @@
 'use client'
 
-import { EstadoConfiguracion } from '@/aplicacion/estados-admin/dto/estado-configuracion'
+import {
+	EstadoConfiguracion,
+	EtapaConfiguracion,
+} from '@/aplicacion/estados-admin/dto/estado-configuracion'
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from '@/components/accordion'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
@@ -8,13 +17,12 @@ import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { Skeleton } from '@/components/skeleton'
 import { ArrowRightLeft, Settings2 } from 'lucide-react'
 
-import {
-	formatearDiasLimite,
-	formatearProbabilidad,
-} from './formato-estados'
+import { probabilidadCierreBadgeVariant } from '@/components/badge/variants/probabilidad-cierre-variants'
+import { formatearDiasLimite, formatearProbabilidad } from './formato-estados'
 
 type TablaEstadosProps = {
-	estados: EstadoConfiguracion[]
+	/** Etapas ya ordenadas, cada una con sus estados por probabilidad ascendente. */
+	etapas: EtapaConfiguracion[]
 	isFetching: boolean
 	/** Código del estado cuyas transiciones están desplegadas, si alguna. */
 	codigoEstadoTransiciones: string | null
@@ -35,7 +43,9 @@ function Acciones({
 }) {
 	return (
 		<div className='flex items-center justify-end gap-1'>
-			<PermissionGuard allowedPermissions={['ADMINISTRAR_ESTADOS_PROCESO_COMERCIAL']}>
+			<PermissionGuard
+				allowedPermissions={['ADMINISTRAR_ESTADOS_PROCESO_COMERCIAL']}
+			>
 				<Button
 					variant='ghost'
 					size='icon'
@@ -60,58 +70,18 @@ function Acciones({
 	)
 }
 
-function ResumenEstado({
-	estado,
-}: {
-	estado: EstadoConfiguracion
-}) {
-	return (
-		<div className='flex flex-wrap items-center gap-2'>
-			<Badge variant='pastel-indigo'>
-				{formatearProbabilidad(estado.probabilidad_cierre)}
-			</Badge>
-			<Badge
-				variant={estado.dias_limite === null ? 'pastel-muted' : 'pastel-amber'}
-			>
-				{formatearDiasLimite(estado.dias_limite)}
-			</Badge>
-			<Badge variant='pastel-slate'>
-				{estado.cantidad_transiciones}{' '}
-				{estado.cantidad_transiciones === 1
-					? 'transición'
-					: 'transiciones'}
-			</Badge>
-		</div>
-	)
-}
-
-export default function TablaEstados({
+/** Listado de estados de una etapa: cards en mobile y tabla densa en desktop. */
+function ListadoEstados({
 	estados,
-	isFetching,
 	codigoEstadoTransiciones,
 	onConfigurar,
 	onVerTransiciones,
-}: TablaEstadosProps) {
-	if (isFetching) {
-		return (
-			<div className='space-y-2'>
-				{Array.from({ length: 6 }).map((_, i) => (
-					<Skeleton key={i} className='h-12 w-full rounded-md' />
-				))}
-			</div>
-		)
-	}
-
-	if (estados.length === 0) {
-		return (
-			<div className='flex items-center justify-center py-12'>
-				<p className='text-sm text-muted-foreground'>
-					No se encontraron estados
-				</p>
-			</div>
-		)
-	}
-
+}: {
+	estados: EstadoConfiguracion[]
+	codigoEstadoTransiciones: string | null
+	onConfigurar: (estado: EstadoConfiguracion) => void
+	onVerTransiciones: (estado: EstadoConfiguracion) => void
+}) {
 	return (
 		<>
 			{/* Mobile: cards */}
@@ -128,15 +98,33 @@ export default function TablaEstados({
 						<CardContent className='p-4'>
 							<div className='flex items-start justify-between gap-2'>
 								<div className='min-w-0 flex-1 space-y-2'>
-									<div className='space-y-0.5'>
-										<p className='truncate text-sm font-semibold text-foreground'>
-											{estado.nombre}
-										</p>
-										<p className='truncate text-xs text-muted-foreground'>
-											{estado.nombre_etapa}
-										</p>
+									<p className='truncate text-sm font-semibold text-foreground'>
+										{estado.nombre}
+									</p>
+									<div className='flex flex-wrap items-center gap-2'>
+										<Badge
+											variant={probabilidadCierreBadgeVariant(
+												estado.probabilidad_cierre,
+											)}
+										>
+											{formatearProbabilidad(estado.probabilidad_cierre)}
+										</Badge>
+										<Badge
+											variant={
+												estado.dias_limite === null
+													? 'pastel-muted'
+													: 'pastel-amber'
+											}
+										>
+											{formatearDiasLimite(estado.dias_limite)}
+										</Badge>
+										<Badge variant='pastel-slate'>
+											{estado.cantidad_transiciones}{' '}
+											{estado.cantidad_transiciones === 1
+												? 'transición'
+												: 'transiciones'}
+										</Badge>
 									</div>
-									<ResumenEstado estado={estado} />
 								</div>
 								<div className='flex shrink-0 gap-1'>
 									<Acciones
@@ -158,19 +146,16 @@ export default function TablaEstados({
 					<table className='w-full table-fixed text-sm'>
 						<thead>
 							<tr className='border-b border-border bg-muted/40'>
-								<th className='w-[30%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[34%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Estado
 								</th>
-								<th className='w-[22%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-									Etapa
-								</th>
-								<th className='w-[16%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[20%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Prob. cierre
 								</th>
-								<th className='w-[16%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[20%] px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Días límite
 								</th>
-								<th className='w-[16%] px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								<th className='w-[26%] px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 									Acciones
 								</th>
 							</tr>
@@ -194,12 +179,11 @@ export default function TablaEstados({
 										</p>
 									</td>
 									<td className='px-4 py-2.5'>
-										<p className='truncate text-muted-foreground'>
-											{estado.nombre_etapa}
-										</p>
-									</td>
-									<td className='px-4 py-2.5'>
-										<Badge variant='pastel-indigo'>
+										<Badge
+											variant={probabilidadCierreBadgeVariant(
+												estado.probabilidad_cierre,
+											)}
+										>
 											{formatearProbabilidad(estado.probabilidad_cierre)}
 										</Badge>
 									</td>
@@ -227,12 +211,67 @@ export default function TablaEstados({
 						</tbody>
 					</table>
 				</div>
-
-				<p className='mt-2 text-xs text-muted-foreground'>
-					La probabilidad de cierre y los días límite se usan en los
-					reportes y en las alertas SLA de cada oportunidad.
-				</p>
 			</div>
 		</>
+	)
+}
+
+export default function TablaEstados({
+	etapas,
+	isFetching,
+	codigoEstadoTransiciones,
+	onConfigurar,
+	onVerTransiciones,
+}: TablaEstadosProps) {
+	if (isFetching) {
+		return (
+			<div className='space-y-2'>
+				{Array.from({ length: 6 }).map((_, i) => (
+					<Skeleton key={i} className='h-12 w-full rounded-md' />
+				))}
+			</div>
+		)
+	}
+
+	if (etapas.length === 0) {
+		return (
+			<div className='flex items-center justify-center py-12'>
+				<p className='text-sm text-muted-foreground'>
+					No se encontraron estados
+				</p>
+			</div>
+		)
+	}
+
+	return (
+		<Accordion
+			type='multiple'
+			defaultValue={etapas.map(etapa => etapa.codigo_etapa)}
+		>
+			{etapas.map(etapa => (
+				<AccordionItem key={etapa.codigo_etapa} value={etapa.codigo_etapa}>
+					<AccordionTrigger className='py-3'>
+						<span className='flex flex-wrap items-center gap-2'>
+							<span className='text-sm font-semibold text-foreground'>
+								{etapa.nombre_etapa}
+							</span>
+							<Badge variant='pastel-slate'>
+								{etapa.estados.length}{' '}
+								{etapa.estados.length === 1 ? 'estado' : 'estados'}
+							</Badge>
+						</span>
+					</AccordionTrigger>
+
+					<AccordionContent>
+						<ListadoEstados
+							estados={etapa.estados}
+							codigoEstadoTransiciones={codigoEstadoTransiciones}
+							onConfigurar={onConfigurar}
+							onVerTransiciones={onVerTransiciones}
+						/>
+					</AccordionContent>
+				</AccordionItem>
+			))}
+		</Accordion>
 	)
 }

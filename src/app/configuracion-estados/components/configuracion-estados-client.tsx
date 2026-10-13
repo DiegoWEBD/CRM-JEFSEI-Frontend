@@ -16,29 +16,55 @@ export default function ConfiguracionEstadosClient() {
 	const textoBusqueda = useDebounce(inputBusqueda, 300)
 
 	const { data, isFetching, isLoading } = useEstadosConfiguracion()
-	const estados = useMemo(() => data?.data ?? [], [data])
+	const etapas = useMemo(() => data?.data ?? [], [data])
 
 	const [estadoAConfigurar, setEstadoAConfigurar] =
 		useState<EstadoConfiguracion | null>(null)
 	const [estadoTransiciones, setEstadoTransiciones] =
 		useState<EstadoConfiguracion | null>(null)
 
-	const estadosFiltrados = useMemo(() => {
-		const texto = textoBusqueda.trim().toLowerCase()
-		if (!texto) return estados
+	const estadosPlanos = useMemo(
+		() => etapas.flatMap(etapa => etapa.estados),
+		[etapas],
+	)
 
-		return estados.filter(
-			estado =>
-				estado.nombre.toLowerCase().includes(texto) ||
-				estado.nombre_etapa.toLowerCase().includes(texto) ||
-				estado.codigo.toLowerCase().includes(texto),
-		)
-	}, [estados, textoBusqueda])
+	/**
+	 * Filtra los estados de cada etapa y descarta las etapas que quedan sin
+	 * resultados, preservando el orden en que las entrega la API.
+	 *
+	 * Al buscar por nombre de etapa coinciden todos sus estados, de modo que
+	 * la etapa completa se mantiene visible.
+	 */
+	const etapasFiltradas = useMemo(() => {
+		const texto = textoBusqueda.trim().toLowerCase()
+		if (!texto) return etapas
+
+		return etapas
+			.map(etapa => ({
+				...etapa,
+				estados: etapa.estados.filter(
+					estado =>
+						estado.nombre.toLowerCase().includes(texto) ||
+						estado.codigo.toLowerCase().includes(texto) ||
+						estado.nombre_etapa.toLowerCase().includes(texto),
+				),
+			}))
+			.filter(etapa => etapa.estados.length > 0)
+	}, [etapas, textoBusqueda])
+
+	const totalEstados = useMemo(
+		() => estadosPlanos.length,
+		[estadosPlanos],
+	)
+	const totalFiltrados = useMemo(
+		() => etapasFiltradas.reduce((suma, etapa) => suma + etapa.estados.length, 0),
+		[etapasFiltradas],
+	)
 
 	// El estado seleccionado se refresca contra la última versión de la lista,
 	// de modo que la cantidad de transiciones refleje los cambios recientes.
 	const estadoTransicionesActual = estadoTransiciones
-		? (estados.find(e => e.codigo === estadoTransiciones.codigo) ??
+		? (estadosPlanos.find(e => e.codigo === estadoTransiciones.codigo) ??
 			estadoTransiciones)
 		: null
 
@@ -49,14 +75,14 @@ export default function ConfiguracionEstadosClient() {
 					<FiltrosEstados
 						busqueda={inputBusqueda}
 						onBusquedaChange={setInputBusqueda}
-						total={estados.length}
-						totalFiltrados={estadosFiltrados.length}
+						total={totalEstados}
+						totalFiltrados={totalFiltrados}
 					/>
 				</div>
 
 				<div className='p-3 sm:p-4'>
 					<TablaEstados
-						estados={estadosFiltrados}
+						etapas={etapasFiltradas}
 						isFetching={isFetching && isLoading}
 						codigoEstadoTransiciones={
 							estadoTransicionesActual?.codigo ?? null
@@ -74,7 +100,7 @@ export default function ConfiguracionEstadosClient() {
 			{estadoTransicionesActual && (
 				<TransicionesEstado
 					estado={estadoTransicionesActual}
-					estados={estados}
+					estados={estadosPlanos}
 					onCerrar={() => setEstadoTransiciones(null)}
 				/>
 			)}
