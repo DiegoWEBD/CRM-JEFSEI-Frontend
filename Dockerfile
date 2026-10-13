@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # Producción
-FROM gcr.io/distroless/nodejs22-debian12
+FROM gcr.io/distroless/nodejs22-debian13
 
 WORKDIR /app
 
