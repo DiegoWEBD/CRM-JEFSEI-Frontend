@@ -96,19 +96,19 @@ export default function SelectorEstadoOportunidad({
 						</Badge>
 					</DropdownMenuTrigger>
 
-					<DropdownMenuContent align='start' className='w-64'>
+					<DropdownMenuContent align='start' className='w-54'>
 						{transiciones?.map(transicion => (
 							<DropdownMenuItem
 								key={transicion.codigo}
 								disabled={pendiente}
 								onSelect={() => void cambiarEstadoA(transicion)}
-								className='flex-col items-start gap-1 cursor-pointer'
+								className='cursor-pointer w-full'
 							>
 								<Badge
 									variant={variantEstado(transicion.codigo)}
-									className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
+									className='shrink-0 p-1 text-xs leading-none w-full'
 								>
-									{labelEstado(transicion.codigo, transicion.nombre)}
+									{transicion.nombre}
 								</Badge>
 							</DropdownMenuItem>
 						))}
@@ -118,7 +118,7 @@ export default function SelectorEstadoOportunidad({
 				<div className='inline-flex items-center gap-1'>
 					<Badge
 						variant={variantEstado(codigoEstadoActual)}
-						className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
+						className='shrink-0 p-1 text-xs leading-none'
 					>
 						{labelEstado(codigoEstadoActual, proceso.estado_actual.nombre)}
 					</Badge>
