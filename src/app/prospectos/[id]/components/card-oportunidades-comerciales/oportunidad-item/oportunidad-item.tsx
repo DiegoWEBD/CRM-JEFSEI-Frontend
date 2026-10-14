@@ -84,7 +84,7 @@ export default function OportunidadItem({
 						{!expandido && (
 							<Badge
 								variant={ESTADO_COMERCIAL_BADGE[proceso.estado_actual.codigo]}
-								className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
+								className='shrink-0 py-1 px-2 text-xs leading-none'
 							>
 								{ESTADO_PROSPECTO_LABELS[
 									proceso.estado_actual
@@ -100,24 +100,11 @@ export default function OportunidadItem({
 									? 'Probabilidad de cierre estimada por el ejecutivo'
 									: 'Probabilidad de cierre estimada por el sistema'
 							}
-							className='shrink-0 px-2 py-0.5 text-xs font-semibold leading-none'
+							className='shrink-0 py-1 px-2 text-xs leading-none'
 						>
 							{Math.round(probabilidadEfectiva * 100)}%
 						</Badge>
-
-						{proceso.cerrado && (
-							<Badge
-								variant='outline'
-								className='shrink-0 border-muted-foreground/30 bg-muted/30 px-2 py-0.5 text-xs font-semibold leading-none text-muted-foreground'
-							>
-								Cerrado
-							</Badge>
-						)}
 					</div>
-
-					<span className='shrink-0 text-sm text-muted-foreground'>
-						{proceso.ejecutivo_comercial?.nombre ?? '—'}
-					</span>
 				</button>
 
 				{expandido && (
