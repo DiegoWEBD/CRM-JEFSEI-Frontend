@@ -180,13 +180,15 @@ export default function DetalleProcesoDrawer({
 								<div className='grid grid-cols-2 gap-x-4 gap-y-2'>
 									<div className='space-y-0.5'>
 										<p className='text-[11px] text-muted-foreground'>
-											Ingreso etapa
+											Ingreso estado
 										</p>
 										<p className='text-sm font-medium tabular-nums text-foreground'>
-											{formatearFecha(
-												new Date(reporte.fecha_ingreso_etapa),
-												'dd MMM yyyy HH:mm',
-											)}
+											{reporte.fecha_ingreso_estado
+												? formatearFecha(
+														new Date(reporte.fecha_ingreso_estado),
+														'dd MMM yyyy HH:mm',
+													)
+												: '—'}
 										</p>
 									</div>
 									<div className='space-y-0.5'>
@@ -194,7 +196,9 @@ export default function DetalleProcesoDrawer({
 											Transcurrido
 										</p>
 										<p className='text-sm font-medium tabular-nums text-foreground'>
-											{reporte.dias_transcurridos} días
+											{reporte.dias_transcurridos != null
+												? `${reporte.dias_transcurridos} días`
+												: '—'}
 										</p>
 									</div>
 									<div className='space-y-0.5'>
@@ -202,8 +206,8 @@ export default function DetalleProcesoDrawer({
 											Límite SLA
 										</p>
 										<p className='text-sm font-medium tabular-nums text-foreground'>
-											{proceso.etapa_actual.dias_limite != null
-												? `${proceso.etapa_actual.dias_limite} días`
+											{reporte.dias_limite != null
+												? `${reporte.dias_limite} días`
 												: 'Sin límite'}
 										</p>
 									</div>
@@ -211,52 +215,61 @@ export default function DetalleProcesoDrawer({
 										<p className='text-[11px] text-muted-foreground'>
 											% Consumido
 										</p>
-										<Badge
-											variant={
-												reporte.porentaje_sla_consumido >= 1
-													? 'pastel-red'
-													: reporte.porentaje_sla_consumido >= 0.7
-														? 'pastel-amber'
-														: 'pastel-emerald'
-											}
-											className='text-xs font-medium'
-										>
-											{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
-										</Badge>
+										{reporte.porentaje_sla_consumido != null ? (
+											<Badge
+												variant={
+													reporte.porentaje_sla_consumido >= 1
+														? 'pastel-red'
+														: reporte.porentaje_sla_consumido >= 0.7
+															? 'pastel-amber'
+															: 'pastel-emerald'
+												}
+												className='text-xs font-medium'
+											>
+												{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
+											</Badge>
+										) : (
+											<span className='text-sm font-medium text-muted-foreground'>
+												—
+											</span>
+										)}
 									</div>
 								</div>
 
 								{/* Progress bar SLA */}
-								<div className='space-y-1'>
-									<div className='h-2 w-full overflow-hidden rounded-full bg-border/50'>
-										<div
-											className={cn(
-												'h-full rounded-full transition-all',
-												reporte.porentaje_sla_consumido >= 1
-													? 'bg-destructive'
-													: reporte.porentaje_sla_consumido >= 0.7
-														? 'bg-warning'
-														: 'bg-success',
-											)}
-											style={{
-												width: `${Math.min(reporte.porentaje_sla_consumido * 100, 100)}%`,
-											}}
-										/>
+								{reporte.porentaje_sla_consumido != null && (
+									<div className='space-y-1'>
+										<div className='h-2 w-full overflow-hidden rounded-full bg-border/50'>
+											<div
+												className={cn(
+													'h-full rounded-full transition-all',
+													reporte.porentaje_sla_consumido >= 1
+														? 'bg-destructive'
+														: reporte.porentaje_sla_consumido >= 0.7
+															? 'bg-warning'
+															: 'bg-success',
+												)}
+												style={{
+													width: `${Math.min(reporte.porentaje_sla_consumido * 100, 100)}%`,
+												}}
+											/>
+										</div>
 									</div>
-								</div>
+								)}
 
 								<div className='grid grid-cols-2 gap-x-4'>
-									{reporte.dias_restantes >= 0 && (
-										<div className='space-y-0.5'>
-											<p className='text-[11px] text-muted-foreground'>
-												Días restantes
-											</p>
-											<p className='text-sm font-medium tabular-nums text-foreground'>
-												{reporte.dias_restantes}
-											</p>
-										</div>
-									)}
-									{reporte.dias_atraso > 0 && (
+									{reporte.dias_restantes != null &&
+										reporte.dias_restantes >= 0 && (
+											<div className='space-y-0.5'>
+												<p className='text-[11px] text-muted-foreground'>
+													Días restantes
+												</p>
+												<p className='text-sm font-medium tabular-nums text-foreground'>
+													{reporte.dias_restantes}
+												</p>
+											</div>
+										)}
+									{reporte.dias_atraso != null && reporte.dias_atraso > 0 && (
 										<div className='space-y-0.5'>
 											<p className='text-[11px] text-muted-foreground'>
 												Días de atraso
@@ -271,7 +284,8 @@ export default function DetalleProcesoDrawer({
 								<div className='rounded-md border border-border/70 bg-background p-2.5'>
 									<p className='text-[11px] text-muted-foreground'>Mensaje</p>
 									<p className='mt-0.5 text-sm font-medium text-foreground'>
-										{reporte.mensaje_semaforo}
+										{reporte.mensaje_semaforo ??
+											'Sin límite SLA configurado para el estado actual'}
 									</p>
 								</div>
 							</div>

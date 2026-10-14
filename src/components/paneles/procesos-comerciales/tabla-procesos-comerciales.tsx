@@ -134,11 +134,14 @@ export default function TablaProcesosComerciales({
 								{!f.proceso.cerrado && (
 									<>
 										<span>
-											Tiempo: {f.dias_transcurridos} /{' '}
-											{f.proceso.etapa_actual.dias_limite ?? '—'} días
+											Tiempo: {f.dias_transcurridos ?? '—'} /{' '}
+											{f.dias_limite ?? '—'} días
 										</span>
 										<span>
-											SLA: {(f.porentaje_sla_consumido * 100).toFixed(0)}%
+											SLA:{' '}
+											{f.porentaje_sla_consumido != null
+												? `${(f.porentaje_sla_consumido * 100).toFixed(0)}%`
+												: '—'}
 										</span>
 									</>
 								)}
@@ -220,7 +223,7 @@ export default function TablaProcesosComerciales({
 										</Badge>
 									</td>
 									<td className='px-4 py-2.5 text-right'>
-										{!f.proceso.cerrado ? (
+										{!f.proceso.cerrado && f.porentaje_sla_consumido != null ? (
 											<Badge
 												variant={
 													f.porentaje_sla_consumido >= 1
