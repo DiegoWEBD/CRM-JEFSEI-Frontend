@@ -14,4 +14,7 @@ export interface ProcesoComercial {
 	fecha_estimada_cierre: string | null
 	probabilidad_cierre_sistema: number
 	probabilidad_cierre_ejecutivo: number | null
+	prima_cotizada: number | null
+	prima_potencial_estimada: number | null
+	prima_esperada: number | null
 }

@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/components/button'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import {
 	Select,
@@ -12,8 +11,9 @@ import {
 import { useActualizarProbabilidadCierreEjecutivo } from '@/hooks/procesos-comerciales/use-actualizar-probabilidad-cierre-ejecutivo'
 import { useUserSession } from '@/hooks/auth/use-user-session'
 import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
-import { Check, Loader2, Pencil, X } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 type ProbabilidadCierreCellProps = {
 	proceso: ProcesoComercial
@@ -26,6 +26,12 @@ const OPCIONES_PROBABILIDAD = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 // Radix Select no admite items con value vacío, se usa un centinela
 // para representar "sin estimación del ejecutivo" (usa la del sistema)
 const VALOR_SISTEMA = 'sistema'
+
+// Trigger con estética de texto plano: el borde punteado y el fondo solo
+// aparecen al hacer hover, insinuando que el valor es editable sin añadir
+// un botón "Editar" que rompa la lectura del resumen.
+const TRIGGER_FANTASMA =
+	"-mx-1.5 max-w-44 rounded border-dashed border-transparent bg-transparent px-1.5 py-0.5 text-sm font-medium text-foreground shadow-none hover:border-border/60 hover:bg-muted/60 focus-visible:ring-ring/20 data-[size=sm]:h-auto data-[size=default]:h-auto [&_svg:not([class*='size-'])]:size-3"
 
 function formatearPorcentaje(valor: number): string {
 	return `${Math.round(valor * 100)}%`
@@ -45,63 +51,63 @@ export default function ProbabilidadCierreCell({
 	ejecutivoComercialRut,
 }: ProbabilidadCierreCellProps) {
 	const { usuario } = useUserSession()
-	const [editando, setEditando] = useState(false)
-	const [valorSeleccionado, setValorSeleccionado] = useState(VALOR_SISTEMA)
+	// Estado local optimista: se pinta al instante y se revierte si el guardado falla.
+	const [valor, setValor] = useState(() => obtenerValorInicial(proceso))
 	const actualizarProbabilidad =
 		useActualizarProbabilidadCierreEjecutivo(idProspecto)
 
 	const puedeEditar = !proceso.cerrado && usuario?.rut === ejecutivoComercialRut
+	const guardando = actualizarProbabilidad.isPending
 
-	function iniciarEdicion() {
-		setValorSeleccionado(obtenerValorInicial(proceso))
-		setEditando(true)
-	}
+	const valorEnLectura =
+		proceso.probabilidad_cierre_ejecutivo !== null
+			? formatearPorcentaje(proceso.probabilidad_cierre_ejecutivo)
+			: '—'
 
-	function cancelarEdicion() {
-		setEditando(false)
-		setValorSeleccionado(VALOR_SISTEMA)
-	}
+	async function cambiarValor(nuevo: string) {
+		if (nuevo === valor) return
 
-	async function guardar() {
-		const probabilidad =
-			valorSeleccionado === VALOR_SISTEMA
-				? null
-				: Number(valorSeleccionado) / 100
+		const anterior = valor
+		setValor(nuevo)
 
-		await actualizarProbabilidad.mutateAsync({
-			idProceso: proceso.id,
-			request: {
-				probabilidad_cierre_ejecutivo: probabilidad,
-			},
-		})
-
-		setEditando(false)
-		setValorSeleccionado(VALOR_SISTEMA)
+		try {
+			await actualizarProbabilidad.mutateAsync({
+				idProceso: proceso.id,
+				request: {
+					probabilidad_cierre_ejecutivo:
+						nuevo === VALOR_SISTEMA ? null : Number(nuevo) / 100,
+				},
+			})
+			toast.success('Probabilidad de cierre actualizada')
+		} catch {
+			setValor(anterior)
+			toast.error('Error al actualizar la probabilidad de cierre')
+		}
 	}
 
 	return (
-		<div className='flex flex-wrap items-center justify-between gap-2'>
-			<div className='min-w-0 space-y-3'>
-				<div>
-					<p className='text-xs text-muted-foreground'>
-						Probabilidad de cierre (sistema)
-					</p>
-					<p className='text-sm font-medium text-foreground'>
-						{formatearPorcentaje(proceso.probabilidad_cierre_sistema)}
-					</p>
-				</div>
+		<div className='min-w-0'>
+			<p className='text-xs text-muted-foreground'>
+				Probabilidad estimada por el ejecutivo
+			</p>
 
-				<div>
-					<p className='text-xs text-muted-foreground'>
-						Probabilidad estimada por el ejecutivo
-					</p>
-					{editando ? (
+			{puedeEditar ? (
+				<PermissionGuard
+					allowedPermissions={['ADMINISTRAR_PROCESOS_COMERCIALES_PROPIOS']}
+					fallback={
+						<p className='mt-0.5 text-sm font-medium tabular-nums text-foreground'>
+							{valorEnLectura}
+						</p>
+					}
+				>
+					<div className='mt-0.5 flex items-center gap-1.5'>
 						<Select
-							value={valorSeleccionado}
-							onValueChange={setValorSeleccionado}
+							value={valor}
+							onValueChange={cambiarValor}
+							disabled={guardando}
 						>
-							<SelectTrigger size='sm' className='mt-1 h-8 w-44 gap-1 text-xs'>
-								<SelectValue placeholder='Seleccione probabilidad' />
+							<SelectTrigger size='sm' className={TRIGGER_FANTASMA}>
+								<SelectValue placeholder='Sin estimación' />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value={VALOR_SISTEMA}>
@@ -114,65 +120,20 @@ export default function ProbabilidadCierreCell({
 								))}
 							</SelectContent>
 						</Select>
-					) : (
-						<p className='text-sm font-medium text-foreground'>
-							{proceso.probabilidad_cierre_ejecutivo !== null
-								? formatearPorcentaje(proceso.probabilidad_cierre_ejecutivo)
-								: '—'}
-						</p>
-					)}
-				</div>
-			</div>
 
-			{puedeEditar ? (
-				<PermissionGuard
-					allowedPermissions={['ADMINISTRAR_PROCESOS_COMERCIALES_PROPIOS']}
-					fallback={null}
-				>
-					{editando ? (
-						<div className='flex items-center gap-2'>
-							<Button
-								type='button'
-								size='sm'
-								className='h-8 gap-1 text-xs shadow-none'
-								onClick={guardar}
-								disabled={actualizarProbabilidad.isPending}
-							>
-								{actualizarProbabilidad.isPending ? (
-									<Loader2 className='h-3.5 w-3.5 animate-spin' aria-hidden />
-								) : (
-									<Check className='h-3.5 w-3.5' aria-hidden />
-								)}
-								Guardar
-							</Button>
-							<Button
-								type='button'
-								variant='outline'
-								size='sm'
-								className='h-8 gap-1 text-xs shadow-none'
-								onClick={cancelarEdicion}
-								disabled={actualizarProbabilidad.isPending}
-							>
-								<X className='h-3.5 w-3.5' aria-hidden />
-								Cancelar
-							</Button>
-						</div>
-					) : (
-						<Button
-							type='button'
-							variant='outline'
-							size='sm'
-							className='h-7 gap-1 text-xs shadow-none'
-							onClick={iniciarEdicion}
-						>
-							<Pencil className='h-3 w-3' aria-hidden />
-							{proceso.probabilidad_cierre_ejecutivo !== null
-								? 'Editar'
-								: 'Establecer'}
-						</Button>
-					)}
+						{guardando ? (
+							<Loader2
+								className='size-3.5 shrink-0 animate-spin text-muted-foreground'
+								aria-hidden
+							/>
+						) : null}
+					</div>
 				</PermissionGuard>
-			) : null}
+			) : (
+				<p className='mt-0.5 text-sm font-medium tabular-nums text-foreground'>
+					{valorEnLectura}
+				</p>
+			)}
 		</div>
 	)
 }

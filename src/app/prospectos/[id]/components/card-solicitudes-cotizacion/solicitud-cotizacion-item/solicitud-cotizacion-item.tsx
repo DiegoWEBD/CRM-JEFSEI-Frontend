@@ -8,9 +8,9 @@ import { formatearFecha } from '@/utils/formatear-fecha'
 import { normalizarTexto } from '@/utils/normalizar-texto'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import SolicitudCotizacionTabContent from './solicitud-cotizacion-tab-content'
-
-type TabId = 'solicitud' | 'cotizaciones' | 'estudio' | 'observaciones'
+import SolicitudCotizacionTabContent, {
+	TabId,
+} from './solicitud-cotizacion-tab-content'
 
 type SolicitudCotizacionItemProps = {
 	solicitud: SolicitudCotizacion
@@ -27,15 +27,9 @@ const TAB_LABELS: Record<TabId, string> = {
 	solicitud: 'Solicitud',
 	cotizaciones: 'Cotizaciones',
 	estudio: 'Estudio',
-	observaciones: 'Observaciones',
 }
 
-const ALL_TABS: TabId[] = [
-	'solicitud',
-	'cotizaciones',
-	'estudio',
-	'observaciones',
-]
+const ALL_TABS: TabId[] = ['solicitud', 'cotizaciones', 'estudio']
 const TIPOS_CON_ESTUDIO = ['unidades', 'espacios_comunes']
 
 export default function SolicitudCotizacionItem({
@@ -57,8 +51,6 @@ export default function SolicitudCotizacionItem({
 			t !== 'estudio' ||
 			TIPOS_CON_ESTUDIO.includes(solicitud.tipo.toLowerCase()),
 	)
-	const nombreEjecutivo =
-		solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
 
 	return (
 		<li
@@ -70,10 +62,7 @@ export default function SolicitudCotizacionItem({
 		>
 			<div className='p-3 sm:p-3.5'>
 				<div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
-					<div className='min-w-0 flex-1'>
-						<p className='truncate text-sm font-semibold text-foreground'>
-							{solicitud.producto}
-						</p>
+					<div className='min-w-0 flex flex-col gap-1'>
 						<div className='mt-1 flex flex-wrap items-center gap-1.5'>
 							<Badge
 								variant={PRIORIDAD_BADGE[solicitud.prioridad]}
@@ -88,7 +77,6 @@ export default function SolicitudCotizacionItem({
 							/>
 						</div>
 						<p className='mt-0.5 text-xs text-muted-foreground'>
-							{nombreEjecutivo ? `${nombreEjecutivo} · ` : null}
 							{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy · HH:mm')}
 						</p>
 						{gestionesAbiertasPorDefecto &&
@@ -103,7 +91,7 @@ export default function SolicitudCotizacionItem({
 							</p>
 						) : null}
 						{solicitud.observaciones?.trim() ? (
-							<p className='mt-1 line-clamp-2 text-xs text-muted-foreground'>
+							<p className='mt-1 line-clamp-2 text-sm font-semibold italic'>
 								{solicitud.observaciones.trim()}
 							</p>
 						) : null}

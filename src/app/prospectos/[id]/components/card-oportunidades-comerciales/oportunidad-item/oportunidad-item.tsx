@@ -1,8 +1,7 @@
 'use client'
 
-import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
-import { Badge } from '@/components/badge'
-import { probabilidadCierreBadgeVariant } from '@/components/badge/variants/probabilidad-cierre-variants'
+import { BadgeEstadoOportunidad } from '@/components/badge/badge-estado-oportunidad/badge-estado-oportunidad'
+import { BadgeProbabilidadCierre } from '@/components/badge/badge-probabilidad-cierre/badge-probabilidad-cierre'
 import { Button } from '@/components/button'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { Skeleton } from '@/components/skeleton'
@@ -10,8 +9,8 @@ import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/di
 import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
 import { useUserSession } from '@/hooks/auth/use-user-session'
 import { useObtenerSolicitudesPorProceso } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-por-proceso'
+import { formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
 import { useState } from 'react'
 import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
@@ -19,6 +18,7 @@ import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poli
 import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
 import ProbabilidadCierreCell from './probabilidad-cierre-cell'
 import SelectorEstadoOportunidad from './selector-estado-oportunidad'
+import { formatearFecha } from '@/utils/formatear-fecha'
 
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
@@ -57,6 +57,12 @@ export default function OportunidadItem({
 	const probabilidadEfectiva =
 		probabilidadEjecutivo ?? proceso.probabilidad_cierre_sistema
 
+	const esEjecutivoComercial = usuario?.rut === ejecutivoComercialRut
+	const esEjecutivoRenovacion = usuario?.rut === ejecutivoRenovacionRut
+	const puedeSubirPoliza =
+		(!proceso.cerrado && esEjecutivoComercial) || esEjecutivoRenovacion
+	const puedeSolicitarCotizacion = !proceso.cerrado && esEjecutivoComercial
+
 	return (
 		<>
 			<div
@@ -70,60 +76,64 @@ export default function OportunidadItem({
 					onClick={() => setExpandido(!expandido)}
 					className='flex w-full flex-wrap items-start gap-1.5 px-3 py-2.5 text-left sm:flex-nowrap sm:items-center sm:gap-3'
 				>
-					{expandido ? (
-						<ChevronDown className='h-4 w-4 shrink-0 text-muted-foreground' />
-					) : (
-						<ChevronRight className='h-4 w-4 shrink-0 text-muted-foreground' />
-					)}
+					<div className='flex min-w-0 flex-col items-start sm:flex-row sm:items-center gap-3 w-full'>
+						<div className='flex gap-3 justify-between w-full sm:w-fit'>
+							<div className='flex gap-1 items-center'>
+								{expandido ? (
+									<ChevronDown className='h-4 w-4 shrink-0 text-muted-foreground' />
+								) : (
+									<ChevronRight className='h-4 w-4 shrink-0 text-muted-foreground' />
+								)}
+								<span className='truncate text-sm font-medium text-foreground'>
+									{proceso.producto}
+								</span>
+							</div>
 
-					<div className='flex min-w-0 flex-1 items-center gap-3'>
-						<span className='truncate text-sm font-medium text-foreground'>
-							{proceso.producto}
-						</span>
+							<BadgeProbabilidadCierre
+								probabilidad={probabilidadEfectiva}
+								className='sm:hidden'
+							/>
+						</div>
 
-						{!expandido && (
-							<Badge
-								variant={ESTADO_COMERCIAL_BADGE[proceso.estado_actual.codigo]}
-								className='shrink-0 py-1 px-2 text-xs leading-none'
-							>
-								{ESTADO_PROSPECTO_LABELS[
-									proceso.estado_actual
-										.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-								] ?? proceso.estado_actual.nombre}
-							</Badge>
-						)}
+						{!expandido && <BadgeEstadoOportunidad oportunidad={proceso} />}
 
-						<Badge
-							variant={probabilidadCierreBadgeVariant(probabilidadEfectiva)}
-							title={
-								probabilidadEjecutivo !== null
-									? 'Probabilidad de cierre estimada por el ejecutivo'
-									: 'Probabilidad de cierre estimada por el sistema'
-							}
-							className='shrink-0 py-1 px-2 text-xs leading-none'
-						>
-							{Math.round(probabilidadEfectiva * 100)}%
-						</Badge>
+						<BadgeProbabilidadCierre
+							probabilidad={probabilidadEfectiva}
+							className='hidden sm:block'
+						/>
 					</div>
 				</button>
 
 				{expandido && (
 					<div className='border-t border-border/50 px-3 pb-3'>
-						<div className='space-y-3 my-3'>
-							<PermissionGuard
-								allowedPermissions={[
-									'ADMINISTRAR_PROCESOS_COMERCIALES_PROPIOS',
-								]}
-								fallback={null}
-							>
-								<SelectorEstadoOportunidad
-									proceso={proceso}
-									idProspecto={idProspecto}
-									ejecutivoComercialRut={ejecutivoComercialRut}
-								/>
-							</PermissionGuard>
+						{/* Resumen: estado + proyección en una fila, montos en otra. */}
+						<div className='my-3 space-y-3'>
+							<div className='grid gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-4'>
+								<PermissionGuard
+									allowedPermissions={[
+										'ADMINISTRAR_PROCESOS_COMERCIALES_PROPIOS',
+									]}
+									fallback={null}
+								>
+									{/* Envuelve el fragmento interno para que ocupe una sola celda de la grícula. */}
+									<div className='min-w-0'>
+										<SelectorEstadoOportunidad
+											proceso={proceso}
+											idProspecto={idProspecto}
+											ejecutivoComercialRut={ejecutivoComercialRut}
+										/>
+									</div>
+								</PermissionGuard>
 
-							<div className='grid gap-3 sm:grid-cols-2'>
+								<div className='min-w-0'>
+									<p className='text-xs text-muted-foreground'>
+										Probabilidad de cierre (sistema)
+									</p>
+									<p className='mt-0.5 text-sm font-medium tabular-nums text-foreground'>
+										{Math.round(proceso.probabilidad_cierre_sistema * 100)}%
+									</p>
+								</div>
+
 								<ProbabilidadCierreCell
 									proceso={proceso}
 									idProspecto={idProspecto}
@@ -135,6 +145,35 @@ export default function OportunidadItem({
 									ejecutivoComercialRut={ejecutivoComercialRut}
 								/>
 							</div>
+
+							<div className='grid gap-x-4 gap-y-3 border-t border-border/40 pt-3 sm:grid-cols-3'>
+								<div className='min-w-0'>
+									<p className='text-xs text-muted-foreground'>
+										Prima cotizada
+									</p>
+									<p className='mt-0.5 text-sm font-medium tabular-nums text-foreground'>
+										{formatUF(proceso.prima_cotizada)}
+									</p>
+								</div>
+
+								<div className='min-w-0'>
+									<p className='text-xs text-muted-foreground'>
+										Prima esperada
+									</p>
+									<p className='mt-0.5 text-sm font-medium tabular-nums text-foreground'>
+										{formatUF(proceso.prima_esperada)}
+									</p>
+								</div>
+
+								<div className='min-w-0'>
+									<p className='text-xs text-muted-foreground'>
+										Prima potencial estimada
+									</p>
+									<p className='mt-0.5 text-sm font-medium tabular-nums text-foreground'>
+										{formatUF(proceso.prima_potencial_estimada)}
+									</p>
+								</div>
+							</div>
 						</div>
 						{isLoading ? (
 							<div className='space-y-2'>
@@ -145,9 +184,9 @@ export default function OportunidadItem({
 							<div>
 								{solicitudes.length > 1 ? (
 									<div className='mb-2 flex flex-wrap gap-1.5'>
-										{solicitudes.map((s, i) => (
+										{solicitudes.map((solicitud, i) => (
 											<button
-												key={s.id}
+												key={solicitud.id}
 												type='button'
 												onClick={() => setSelectedIndex(i)}
 												className={cn(
@@ -157,7 +196,11 @@ export default function OportunidadItem({
 														: 'bg-muted text-muted-foreground hover:bg-muted/80',
 												)}
 											>
-												{s.producto}
+												Solicitud {i + 1} ·{' '}
+												{formatearFecha(
+													new Date(solicitud.fecha),
+													'dd-MM-yyyy',
+												)}
 											</button>
 										))}
 									</div>
@@ -183,34 +226,35 @@ export default function OportunidadItem({
 							</p>
 						)}
 
-						{(!proceso.cerrado && usuario?.rut === ejecutivoComercialRut) ||
-						usuario?.rut === ejecutivoRenovacionRut ? (
-							<div className='mt-2 flex flex-col gap-2 border-t border-border/30 pt-2 sm:flex-row sm:items-center'>
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									className='h-7 gap-1 text-xs shadow-none'
-									onClick={() => setOpenRegistrarPoliza(true)}
-								>
-									<Upload className='h-3 w-3' aria-hidden />
-									Subir póliza
-								</Button>
-							</div>
-						) : null}
+						{puedeSubirPoliza || puedeSolicitarCotizacion ? (
+							<div className='mt-3 flex flex-col gap-2 border-t border-border/50 pt-3 sm:flex-row sm:items-center'>
+								{puedeSubirPoliza ? (
+									<Button
+										type='button'
+										variant='outline'
+										size='sm'
+										className='h-7 gap-1 text-xs shadow-none'
+										onClick={() => setOpenRegistrarPoliza(true)}
+									>
+										<Upload className='h-3 w-3' aria-hidden />
+										Subir póliza
+									</Button>
+								) : null}
 
-						{!proceso.cerrado && usuario?.rut === ejecutivoComercialRut ? (
-							<div className='mt-2 flex flex-col gap-2 border-t border-border/30 pt-2 sm:flex-row sm:items-center'>
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									className='h-7 gap-1 text-xs shadow-none'
-									onClick={() => setOpenNuevaSolicitud(true)}
-								>
-									<Plus className='h-3 w-3' aria-hidden />
-									{esDualRol ? 'Iniciar cotizaciones' : 'Solicitar cotización'}
-								</Button>
+								{puedeSolicitarCotizacion ? (
+									<Button
+										type='button'
+										variant='outline'
+										size='sm'
+										className='h-7 gap-1 text-xs shadow-none'
+										onClick={() => setOpenNuevaSolicitud(true)}
+									>
+										<Plus className='h-3 w-3' aria-hidden />
+										{esDualRol
+											? 'Iniciar cotizaciones'
+											: 'Solicitar cotización'}
+									</Button>
+								) : null}
 							</div>
 						) : null}
 					</div>

@@ -12,8 +12,9 @@ import {
 import { Input } from '@/components/input'
 import { Label } from '@/components/label'
 import { useSubirArchivo } from '@/hooks/archivos/use-subir-archivo'
+import { validarTamanoArchivo } from '@/lib/archivos'
 import { Loader2, Upload } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useRef, useState, type ChangeEvent } from 'react'
 
 type DialogSubirArchivoProps = {
 	idProspecto: number
@@ -29,12 +30,33 @@ export default function DialogSubirArchivo({
 	onOpenChange,
 }: DialogSubirArchivoProps) {
 	const [archivo, setArchivo] = useState<File | null>(null)
+	const [errorArchivo, setErrorArchivo] = useState<string | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const subirMutation = useSubirArchivo(idProspecto)
 
 	const handleOpenChange = (next: boolean) => {
-		if (!next) setArchivo(null)
+		if (!next) {
+			setArchivo(null)
+			setErrorArchivo(null)
+		}
 		onOpenChange(next)
+	}
+
+	const handleArchivoChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const seleccionado = e.target.files?.[0] ?? null
+
+		if (seleccionado) {
+			const error = validarTamanoArchivo(seleccionado)
+			if (error) {
+				e.target.value = ''
+				setArchivo(null)
+				setErrorArchivo(error)
+				return
+			}
+		}
+
+		setErrorArchivo(null)
+		setArchivo(seleccionado)
 	}
 
 	const handleSubmit = async () => {
@@ -67,11 +89,16 @@ export default function DialogSubirArchivo({
 							type='file'
 							accept={ACCEPT}
 							className='h-9 text-xs file:h-8 file:text-xs'
-							onChange={e => setArchivo(e.target.files?.[0] ?? null)}
+							onChange={handleArchivoChange}
 						/>
 						{archivo && (
 							<p className='text-xs text-muted-foreground'>
 								{archivo.name} ({(archivo.size / 1024).toFixed(1)} KB)
+							</p>
+						)}
+						{errorArchivo && (
+							<p className='text-xs text-destructive' role='alert'>
+								{errorArchivo}
 							</p>
 						)}
 					</div>

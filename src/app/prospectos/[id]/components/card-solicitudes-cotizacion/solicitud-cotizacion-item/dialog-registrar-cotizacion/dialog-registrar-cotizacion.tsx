@@ -23,6 +23,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/radio-group'
 import { useCompaniesSeguros } from '@/hooks/companies-seguros/use-companies-seguros'
 import { useRegistrarCotizacion } from '@/hooks/cotizaciones/use-registrar-cotizacion'
+import { validarTamanoArchivo } from '@/lib/archivos'
 import type { RegistrarCotizacionRequest } from '@/aplicacion/cotizaciones/use-cases/registrar-cotizacion/dto/registrar-cotizacion-request'
 
 type DialogRegistrarCotizacionProps = {
@@ -148,6 +149,11 @@ export default function DialogRegistrarCotizacion({
 					errors.prima_afecta = 'No puede ser negativo'
 				if (values.prima_excenta === '' || Number(values.prima_excenta) < 0)
 					errors.prima_excenta = 'No puede ser negativo'
+			}
+
+			if (values.archivo) {
+				const errorArchivo = validarTamanoArchivo(values.archivo)
+				if (errorArchivo) errors.archivo = errorArchivo
 			}
 
 			return errors
@@ -430,9 +436,17 @@ export default function DialogRegistrarCotizacion({
 							type='file'
 							accept='.pdf,application/pdf'
 							className='sr-only'
-							onChange={e =>
-								formik.setFieldValue('archivo', e.target.files?.[0] ?? null)
-							}
+							onChange={e => {
+								const seleccionado = e.target.files?.[0] ?? null
+
+								if (seleccionado && validarTamanoArchivo(seleccionado)) {
+									e.target.value = ''
+									formik.setFieldValue('archivo', null)
+									return
+								}
+
+								formik.setFieldValue('archivo', seleccionado)
+							}}
 						/>
 						{formik.values.archivo ? (
 							<div className='flex items-center gap-2 rounded-md border border-border px-3 py-2'>
@@ -462,6 +476,11 @@ export default function DialogRegistrarCotizacion({
 								<Upload className='mr-1.5 h-3.5 w-3.5' />
 								Elegir PDF
 							</Button>
+						)}
+						{typeof formik.errors.archivo === 'string' && (
+							<p className='text-xs text-destructive' role='alert'>
+								{formik.errors.archivo}
+							</p>
 						)}
 					</div>
 
