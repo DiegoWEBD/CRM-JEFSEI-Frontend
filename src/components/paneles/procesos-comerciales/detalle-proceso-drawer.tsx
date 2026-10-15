@@ -1,25 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
-import {
-	Sheet,
-	SheetContent,
-	SheetFooter,
-	SheetHeader,
-	SheetTitle,
-} from '@/components/sheet'
-import { Badge } from '@/components/badge'
-import { Button } from '@/components/button'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/select'
-import { Label } from '@/components/label'
-import { Textarea } from '@/components/textarea'
+import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -29,17 +11,34 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/alert-dialog'
-import Link from 'next/link'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
-import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
-import { useCerrarProcesoComercial } from '@/hooks/procesos-comerciales/use-cerrar-proceso-comercial'
-import { useAceptarProcesoComercial } from '@/hooks/procesos-comerciales/use-aceptar-proceso-comercial'
-import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
+import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
 import HistorialEstadosTimeline from '@/components/historial-estados-timeline/historial-estados-timeline'
+import { Label } from '@/components/label'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/select'
+import {
+	Sheet,
+	SheetContent,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+} from '@/components/sheet'
+import { Textarea } from '@/components/textarea'
+import { useCerrarProcesoComercial } from '@/hooks/procesos-comerciales/use-cerrar-proceso-comercial'
+import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
 import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
+import { cn } from '@/lib/utils'
+import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { formatearFecha } from '@/utils/formatear-fecha'
+import Link from 'next/link'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 const PRIORIDAD_LABELS: Record<string, string> = {
 	ROJO: 'Atrasado',
@@ -74,8 +73,6 @@ export default function DetalleProcesoDrawer({
 	const [cerrarOpen, setCerrarOpen] = useState(false)
 
 	const cerrarMutation = useCerrarProcesoComercial(reporte?.proceso.id ?? 0)
-	const aceptarMutation = useAceptarProcesoComercial(reporte?.proceso.id ?? 0)
-	const [aceptarConfirmOpen, setAceptarConfirmOpen] = useState(false)
 	const { data: historial, isLoading: historialCargando } =
 		useObtenerHistorialEstado(reporte?.proceso.id ?? 0)
 
@@ -308,21 +305,6 @@ export default function DetalleProcesoDrawer({
 					{/* Acciones */}
 					{!reporte.proceso.cerrado && (
 						<div className='space-y-2.5 border-t border-border/50 pt-3'>
-							{proceso.etapa_actual.codigo !== 'FORMALIZACION' && (
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									className='w-full text-xs shadow-none'
-									disabled={aceptarMutation.isPending}
-									onClick={() => setAceptarConfirmOpen(true)}
-								>
-									{aceptarMutation.isPending
-										? 'Aceptando...'
-										: 'Marcar aceptación del cliente'}
-								</Button>
-							)}
-
 							{!cerrarOpen ? (
 								<Button
 									type='button'
@@ -424,44 +406,6 @@ export default function DetalleProcesoDrawer({
 					</Button>
 				</SheetFooter>
 			</SheetContent>
-
-			<AlertDialog
-				open={aceptarConfirmOpen}
-				onOpenChange={setAceptarConfirmOpen}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>¿Marcar aceptación del cliente?</AlertDialogTitle>
-						<AlertDialogDescription>
-							Se registrará la aceptación del cliente para esta oportunidad.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancelar</AlertDialogCancel>
-						<Button
-							type='button'
-							variant='default'
-							size='sm'
-							className='text-xs shadow-none'
-							disabled={aceptarMutation.isPending}
-							onClick={async () => {
-								try {
-									const response = await aceptarMutation.mutateAsync()
-									toast.success(response.message)
-									setAceptarConfirmOpen(false)
-									onOpenChange(false)
-								} catch {
-									setAceptarConfirmOpen(false)
-								}
-							}}
-						>
-							{aceptarMutation.isPending
-								? 'Aceptando...'
-								: 'Confirmar aceptación'}
-						</Button>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
 
 			<AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
 				<AlertDialogContent>

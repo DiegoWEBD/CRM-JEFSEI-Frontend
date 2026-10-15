@@ -1,4 +1,5 @@
-export function toSafeNumber(value: unknown): number {
+export function toSafeNumber(value: unknown | null): number {
+	if (value === null) return 0
 	const num = Number(value)
 	return Number.isFinite(num) ? num : 0
 }
@@ -12,7 +13,7 @@ export function formatUfAmount(uf: number): string {
 	return `${intFormatted},${decPart} UF`
 }
 
-export function formatUF(value: number): string {
+export function formatUF(value: number | null): string {
 	return formatUfAmount(toSafeNumber(value))
 }
 

@@ -13,7 +13,10 @@ import {
 	ESTADO_ESTUDIO_PERFIL_BADGE,
 	ESTADO_ESTUDIO_PERFIL_LABELS,
 } from '@/lib/estados-cotizaciones'
-import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
+import {
+	ESTADO_COTIZACION_VARIANT,
+	ESTADO_COTIZACION_LABELS,
+} from '@/lib/badge-variants'
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatUF } from '@/lib/uf'
 import { formatearFecha } from '@/utils/formatear-fecha'
@@ -24,7 +27,7 @@ import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-regi
 import DialogSubirEstudio from './dialog-subir-estudio/dialog-subir-estudio'
 import DialogVerCotizacionesWrapper from './dialog-ver-cotizaciones-wrapper'
 
-type TabId = 'solicitud' | 'cotizaciones' | 'estudio' | 'observaciones'
+export type TabId = 'solicitud' | 'cotizaciones' | 'estudio'
 
 type SolicitudCotizacionTabContentProps = {
 	solicitud: SolicitudCotizacion
@@ -247,15 +250,6 @@ export default function SolicitudCotizacionTabContent({
 						) : null}
 					</>
 				) : null}
-
-				{solicitud.observaciones ? (
-					<div>
-						<dt className='text-xs text-muted-foreground'>Observación</dt>
-						<dd className='whitespace-pre-wrap text-foreground'>
-							{solicitud.observaciones}
-						</dd>
-					</div>
-				) : null}
 			</dl>
 		)
 	}
@@ -315,9 +309,7 @@ export default function SolicitudCotizacionTabContent({
 										</span>
 										{cotizacion.estado && (
 											<Badge
-												variant={
-													ESTADO_COTIZACION_VARIANT[cotizacion.estado]
-												}
+												variant={ESTADO_COTIZACION_VARIANT[cotizacion.estado]}
 												className='text-xs font-medium'
 											>
 												{ESTADO_COTIZACION_LABELS[cotizacion.estado]}
@@ -507,22 +499,6 @@ export default function SolicitudCotizacionTabContent({
 					open={openSubirEstudio}
 					onOpenChange={setOpenSubirEstudio}
 				/>
-			</div>
-		)
-	}
-
-	if (tab === 'observaciones') {
-		return (
-			<div className='pt-3'>
-				{solicitud.observaciones?.trim() ? (
-					<p className='whitespace-pre-wrap rounded-md border border-border/70 bg-muted/20 p-3 text-sm text-foreground'>
-						{solicitud.observaciones.trim()}
-					</p>
-				) : (
-					<p className='rounded-md border border-dashed border-border px-3 py-4 text-center text-xs text-muted-foreground'>
-						Sin observaciones.
-					</p>
-				)}
 			</div>
 		)
 	}
