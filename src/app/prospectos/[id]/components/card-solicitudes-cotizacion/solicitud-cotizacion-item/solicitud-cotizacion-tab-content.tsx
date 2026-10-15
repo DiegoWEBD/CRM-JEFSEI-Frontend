@@ -20,12 +20,17 @@ import {
 import { TIPO_LINEA_LABELS } from '@/lib/solicitud-cotizacion-catalogo'
 import { formatUF } from '@/lib/uf'
 import { formatearFecha } from '@/utils/formatear-fecha'
-import { Download, FileText } from 'lucide-react'
+import { Download, FileText, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
+import { useEliminarCotizacion } from '@/hooks/cotizaciones/use-eliminar-cotizacion'
+import type Cotizacion from '@/dominio/cotizacion/cotizacion'
+import DialogEditarCotizacion from './dialog-editar-cotizacion/dialog-editar-cotizacion'
 import DialogGenerarEstudioWrapper from './dialog-generar-estudio-wrapper'
 import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-registrar-cotizacion'
 import DialogSubirEstudio from './dialog-subir-estudio/dialog-subir-estudio'
 import DialogVerCotizacionesWrapper from './dialog-ver-cotizaciones-wrapper'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 
 export type TabId = 'solicitud' | 'cotizaciones' | 'estudio'
 
@@ -72,6 +77,12 @@ export default function SolicitudCotizacionTabContent({
 	const [openVerCotizaciones, setOpenVerCotizaciones] = useState(false)
 	const [openGenerarEstudio, setOpenGenerarEstudio] = useState(false)
 	const [openSubirEstudio, setOpenSubirEstudio] = useState(false)
+	const [cotizacionAEditar, setCotizacionAEditar] = useState<Cotizacion | null>(
+		null,
+	)
+	const [cotizacionAEliminar, setCotizacionAEliminar] =
+		useState<Cotizacion | null>(null)
+	const eliminarMutation = useEliminarCotizacion(solicitud.id, idProspecto)
 
 	const nombreEjecutivo =
 		solicitud.nombre_ejecutivo_comercial || solicitud.ejecutivo_comercial
@@ -307,14 +318,44 @@ export default function SolicitudCotizacionTabContent({
 										<span className='font-medium text-foreground'>
 											{cotizacion.company}
 										</span>
-										{cotizacion.estado && (
-											<Badge
-												variant={ESTADO_COTIZACION_VARIANT[cotizacion.estado]}
-												className='text-xs font-medium'
-											>
-												{ESTADO_COTIZACION_LABELS[cotizacion.estado]}
-											</Badge>
-										)}
+										<div className='flex items-center gap-1'>
+											{cotizacion.estado && (
+												<Badge
+													variant={ESTADO_COTIZACION_VARIANT[cotizacion.estado]}
+													className='text-xs font-medium'
+												>
+													{ESTADO_COTIZACION_LABELS[cotizacion.estado]}
+												</Badge>
+											)}
+											{usuario?.rut === ejecutivoEvaluacionRut && (
+												<PermissionGuard
+													allowedPermissions={[
+														'ACTUALIZAR_COTIZACION',
+														'ELIMINAR_COTIZACION',
+													]}
+												>
+													<Button
+														type='button'
+														variant='ghost'
+														size='icon-sm'
+														onClick={() => setCotizacionAEditar(cotizacion)}
+														aria-label='Editar cotización'
+													>
+														<Pencil className='h-3.5 w-3.5' />
+													</Button>
+													<Button
+														type='button'
+														variant='ghost'
+														size='icon-sm'
+														onClick={() => setCotizacionAEliminar(cotizacion)}
+														aria-label='Eliminar cotización'
+														className='text-destructive hover:text-destructive'
+													>
+														<Trash2 className='h-3.5 w-3.5' />
+													</Button>
+												</PermissionGuard>
+											)}
+										</div>
 									</div>
 									<div className='mt-1 grid grid-cols-2 gap-x-3 gap-y-1 text-muted-foreground sm:grid-cols-4'>
 										<span>
@@ -406,6 +447,34 @@ export default function SolicitudCotizacionTabContent({
 					nombreEjecutivo={nombreEjecutivo}
 					open={openVerCotizaciones}
 					onOpenChange={setOpenVerCotizaciones}
+				/>
+
+				{cotizacionAEditar && (
+					<DialogEditarCotizacion
+						solicitudId={solicitud.id}
+						idProspecto={idProspecto}
+						cotizacion={cotizacionAEditar}
+						open={cotizacionAEditar !== null}
+						onOpenChange={o => {
+							if (!o) setCotizacionAEditar(null)
+						}}
+					/>
+				)}
+
+				<ConfirmDialog
+					open={cotizacionAEliminar !== null}
+					onOpenChange={() => setCotizacionAEliminar(null)}
+					title='Eliminar cotización'
+					description={`¿Eliminar la cotización de ${cotizacionAEliminar?.company ?? ''}? Esta acción no se puede deshacer.`}
+					confirmText='Eliminar'
+					onConfirm={() => {
+						if (cotizacionAEliminar) {
+							eliminarMutation.mutate(cotizacionAEliminar.id, {
+								onSuccess: () => setCotizacionAEliminar(null),
+							})
+						}
+					}}
+					isPending={eliminarMutation.isPending}
 				/>
 			</div>
 		)

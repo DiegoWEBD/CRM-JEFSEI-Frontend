@@ -1,5 +1,3 @@
-import { EstadoComercialProspecto } from '@/types/estados/estado-comercial-cliente'
-
 /** Estado general del prospecto/cliente devuelto por el backend. */
 export type EstadoGeneralCliente =
 	| 'prospecto'
@@ -17,58 +15,6 @@ export const ESTADO_GENERAL_CLIENTE_LABELS: Record<
 
 export { ESTADO_GENERAL_CLIENTE_VARIANT as ESTADO_GENERAL_CLIENTE_BADGE } from '@/lib/badge-variants'
 export type { BadgeVariant } from '@/lib/badge-variants'
-
-/** Estado general visible en el encabezado del perfil comercial. */
-export type EstadoGeneralClientePerfil =
-	| 'nuevo'
-	| 'en_seguimiento'
-	| 'en_proceso_comercial'
-	| 'cliente_activo'
-	| 'perdido'
-
-export const ESTADO_GENERAL_CLIENTE_PERFIL_LABELS: Record<
-	EstadoGeneralClientePerfil,
-	string
-> = {
-	nuevo: 'Nuevo',
-	en_seguimiento: 'En seguimiento',
-	en_proceso_comercial: 'En proceso comercial',
-	cliente_activo: 'Cliente activo',
-	perdido: 'Cerrado perdido',
-}
-
-export { ESTADO_GENERAL_CLIENTE_PERFIL_VARIANT as ESTADO_GENERAL_CLIENTE_PERFIL_BADGE } from '@/lib/badge-variants'
-
-export function estadoGeneralClientePerfilDesdeComercial(
-	estado: EstadoComercialProspecto,
-): EstadoGeneralClientePerfil {
-	switch (estado) {
-		case 'OPORTUNIDAD_CREADA':
-		case 'CLIENTE_CARGADO_MASIVO':
-			return 'nuevo'
-		case 'EJECUTIVO_COMERCIAL_ASIGNADO':
-		case 'CONTACTADO':
-		case 'COTIZACION_DISPONIBLE':
-		case 'DOCUMENTACION_PENDIENTE':
-			return 'en_seguimiento'
-		case 'COTIZACION_SOLICITADA_COMPANY':
-		case 'ESTUDIO_DISPONIBLE':
-		case 'ESTUDIO_ENVIADO_CLIENTE':
-		case 'RECOTIZACION_SOLICITADA':
-		case 'PROPUESTA_ACEPTADA':
-		case 'EN_NEGOCIACION':
-		case 'EMISION_PENDIENTE':
-			return 'en_proceso_comercial'
-		case 'GANADO':
-		case 'POLIZA_REGISTRADA':
-		case 'PLAN_PAGO_CREADO':
-			return 'cliente_activo'
-		case 'PERDIDO':
-			return 'perdido'
-		default:
-			return 'nuevo'
-	}
-}
 
 /** Estado de cotización en cada solicitud del perfil. */
 export type EstadoCotizacionPerfilVisual =

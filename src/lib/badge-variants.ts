@@ -7,7 +7,6 @@ import type {
 import type { EstadoCotizacionBackend } from '@/dominio/cotizacion/cotizacion'
 import type {
 	EstadoGeneralCliente,
-	EstadoGeneralClientePerfil,
 	EstadoCotizacionPerfilVisual,
 	EstadoEstudioPerfilVisual,
 	EstadoPoliza,
@@ -50,6 +49,8 @@ export const ESTADO_COMERCIAL_VARIANT: Record<
 	EN_NEGOCIACION: 'pastel-indigo',
 	EMISION_PENDIENTE: 'pastel-cyan',
 	DOCUMENTACION_PENDIENTE: 'pastel-red',
+	COTIZACION_ELIMINADA: 'pastel-red',
+	COTIZACION_MODIFICADA: 'pastel-blue',
 }
 
 export const PRIORIDAD_VARIANT: Record<Prioridad, BadgeVariant> = {
@@ -64,17 +65,6 @@ export const ESTADO_GENERAL_CLIENTE_VARIANT: Record<
 	prospecto: 'pastel-amber',
 	cliente_activo: 'pastel-emerald',
 	cliente_inactivo: 'pastel-red',
-}
-
-export const ESTADO_GENERAL_CLIENTE_PERFIL_VARIANT: Record<
-	EstadoGeneralClientePerfil,
-	BadgeVariant
-> = {
-	nuevo: 'pastel-slate',
-	en_seguimiento: 'pastel-sky',
-	en_proceso_comercial: 'pastel-indigo',
-	cliente_activo: 'pastel-emerald',
-	perdido: 'pastel-muted',
 }
 
 export const ESTADO_COTIZACION_PERFIL_VARIANT: Record<
