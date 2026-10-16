@@ -142,6 +142,18 @@ export const SEMAFORO_VARIANT: Record<string, BadgeVariant> = {
 	NO_APLICA: 'pastel-muted',
 }
 
+/**
+ * Colores de la barra de progreso del SLA, atados al mismo estado_semaforo
+ * que calcula el backend (VERDE < 70% ≤ AMARILLO ≤ 100% < ROJO). Así el
+ * badge del % consumido y la barra nunca divergen de la prioridad.
+ */
+export const SEMAFORO_PROGRESS_CLASS: Record<string, string> = {
+	ROJO: 'bg-destructive',
+	AMARILLO: 'bg-warning',
+	VERDE: 'bg-success',
+	NO_APLICA: 'bg-muted-foreground/40',
+}
+
 export const BANDEJA_SOLICITUD_VARIANT: Record<
 	EstadoSolicitudBandeja,
 	BadgeVariant

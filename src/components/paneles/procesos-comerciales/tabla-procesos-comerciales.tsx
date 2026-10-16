@@ -225,13 +225,7 @@ export default function TablaProcesosComerciales({
 									<td className='px-4 py-2.5 text-right'>
 										{!f.proceso.cerrado && f.porentaje_sla_consumido != null ? (
 											<Badge
-												variant={
-													f.porentaje_sla_consumido >= 1
-														? 'pastel-red'
-														: f.porentaje_sla_consumido >= 0.7
-															? 'pastel-amber'
-															: 'pastel-emerald'
-												}
+												variant={SEMAFORO_VARIANT[f.estado_semaforo]}
 												className='text-[11px] font-medium tabular-nums'
 											>
 												{(f.porentaje_sla_consumido * 100).toFixed(0)}%

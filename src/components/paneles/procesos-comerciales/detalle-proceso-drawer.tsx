@@ -32,7 +32,10 @@ import {
 import { Textarea } from '@/components/textarea'
 import { useCerrarProcesoComercial } from '@/hooks/procesos-comerciales/use-cerrar-proceso-comercial'
 import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
-import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
+import {
+	SEMAFORO_PROGRESS_CLASS,
+	SEMAFORO_VARIANT,
+} from '@/lib/badge-variants'
 import { cn } from '@/lib/utils'
 import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { formatearFecha } from '@/utils/formatear-fecha'
@@ -214,13 +217,7 @@ export default function DetalleProcesoDrawer({
 										</p>
 										{reporte.porentaje_sla_consumido != null ? (
 											<Badge
-												variant={
-													reporte.porentaje_sla_consumido >= 1
-														? 'pastel-red'
-														: reporte.porentaje_sla_consumido >= 0.7
-															? 'pastel-amber'
-															: 'pastel-emerald'
-												}
+												variant={SEMAFORO_VARIANT[reporte.estado_semaforo]}
 												className='text-xs font-medium'
 											>
 												{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
@@ -240,11 +237,7 @@ export default function DetalleProcesoDrawer({
 											<div
 												className={cn(
 													'h-full rounded-full transition-all',
-													reporte.porentaje_sla_consumido >= 1
-														? 'bg-destructive'
-														: reporte.porentaje_sla_consumido >= 0.7
-															? 'bg-warning'
-															: 'bg-success',
+													SEMAFORO_PROGRESS_CLASS[reporte.estado_semaforo],
 												)}
 												style={{
 													width: `${Math.min(reporte.porentaje_sla_consumido * 100, 100)}%`,
