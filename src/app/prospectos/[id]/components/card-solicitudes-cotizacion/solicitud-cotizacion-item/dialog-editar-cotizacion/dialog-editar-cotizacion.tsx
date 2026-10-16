@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormik } from 'formik'
-import { Loader2, Upload, X } from 'lucide-react'
+import { Loader2, FileText, Upload, X } from 'lucide-react'
 import { Button } from '@/components/button'
 import {
 	Dialog,
@@ -49,6 +49,7 @@ type FormValues = {
 	fecha_emision: string
 	fecha_vencimiento: string
 	archivo: File | null
+	eliminar_archivo: boolean
 }
 
 function construirInitialValues(cotizacion: Cotizacion): FormValues {
@@ -66,6 +67,7 @@ function construirInitialValues(cotizacion: Cotizacion): FormValues {
 		fecha_emision: cotizacion.fecha_emision.split('T')[0],
 		fecha_vencimiento: cotizacion.fecha_vencimiento.split('T')[0],
 		archivo: null,
+		eliminar_archivo: false,
 	}
 }
 
@@ -82,6 +84,7 @@ function transformarARequest(
 		fecha_emision: values.fecha_emision,
 		fecha_vencimiento: values.fecha_vencimiento,
 		archivo: values.archivo ?? undefined,
+		eliminar_archivo: values.eliminar_archivo,
 	}
 
 	if (values.tipo === 'tasa') {
@@ -460,6 +463,7 @@ export default function DialogEditarCotizacion({
 								}
 
 								formik.setFieldValue('archivo', seleccionado)
+								formik.setFieldValue('eliminar_archivo', false)
 							}}
 						/>
 						{formik.values.archivo ? (
@@ -476,6 +480,23 @@ export default function DialogEditarCotizacion({
 										if (archivoInputRef.current)
 											archivoInputRef.current.value = ''
 									}}
+								>
+									<X className='h-3.5 w-3.5' />
+								</button>
+							</div>
+						) : cotizacion.nombre_archivo &&
+						  !formik.values.eliminar_archivo ? (
+							<div className='flex items-center gap-2 rounded-md border border-border px-3 py-2'>
+								<FileText className='h-3.5 w-3.5 shrink-0 text-muted-foreground' />
+								<span className='flex-1 truncate text-xs'>
+									{cotizacion.nombre_archivo}
+								</span>
+								<button
+									type='button'
+									className='shrink-0 text-muted-foreground hover:text-foreground'
+									onClick={() =>
+										formik.setFieldValue('eliminar_archivo', true)
+									}
 								>
 									<X className='h-3.5 w-3.5' />
 								</button>

@@ -12,4 +12,5 @@ export interface ActualizarCotizacionRequest {
 	prima_afecta?: number
 	prima_excenta?: number
 	archivo?: File
+	eliminar_archivo?: boolean
 }

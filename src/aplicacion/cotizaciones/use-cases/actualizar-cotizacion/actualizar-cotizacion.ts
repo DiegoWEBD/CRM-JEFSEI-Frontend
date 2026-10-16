@@ -28,6 +28,8 @@ export const actualizarCotizacion = async (
 		formData.append('archivo', request.archivo)
 	}
 
+	formData.append('eliminar_archivo', String(request.eliminar_archivo ?? false))
+
 	const response = await axios.put(
 		`/api/solicitudes-cotizacion/${idSolicitud}/cotizaciones/${idCotizacion}`,
 		formData,
