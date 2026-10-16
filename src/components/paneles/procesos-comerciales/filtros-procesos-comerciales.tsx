@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/button'
 import { Input } from '@/components/input'
 import {
 	Select,
@@ -8,12 +9,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/select'
-import { Search, X } from 'lucide-react'
-import { Button } from '@/components/button'
 import {
 	ESTADO_PROSPECTO_LABELS,
 	ESTADOS_PROSPECTO,
 } from '@/types/estados/estado-comercial-cliente'
+import { Search, X } from 'lucide-react'
 
 export const TODOS = '__todos__'
 
@@ -60,7 +60,7 @@ export default function FiltrosProcesosComerciales({
 
 	return (
 		<div className='flex flex-wrap items-center gap-2'>
-			<div className='relative min-w-[12rem] flex-1'>
+			<div className='relative min-w-48 flex-1'>
 				<Search className='pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground' />
 				<Input
 					placeholder='Buscar por cliente, ejecutivo, producto…'

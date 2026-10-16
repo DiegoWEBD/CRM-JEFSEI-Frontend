@@ -36,10 +36,10 @@ export function HistorialEstadoComercialLista({
 							<span className='text-muted-foreground'>—</span>
 						)}
 						<span className='text-muted-foreground'>→</span>
-					<Badge
-						variant={ESTADO_COMERCIAL_BADGE[item.estado_actual]}
-						className='text-xs font-medium'
-					>
+						<Badge
+							variant={ESTADO_COMERCIAL_BADGE[item.estado_actual]}
+							className='text-xs font-medium'
+						>
 							{ESTADO_PROSPECTO_LABELS[item.estado_actual]}
 						</Badge>
 						<span className='text-xs text-muted-foreground'>

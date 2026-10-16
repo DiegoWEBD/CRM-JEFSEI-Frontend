@@ -1,13 +1,12 @@
 'use client'
 
 import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
-import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { Badge } from '@/components/badge'
+import { BadgeEstadoOportunidad } from '@/components/badge/badge-estado-oportunidad/badge-estado-oportunidad'
 import { Card, CardContent } from '@/components/card'
 import Paginacion from '@/components/paginacion/paginacion'
 import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
 import { cn } from '@/lib/utils'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { SkeletonTabla } from './skeleton-tabla'
 
 const PRIORIDAD_ORDER: Record<string, number> = {
@@ -116,20 +115,7 @@ export default function TablaProcesosComerciales({
 								<span>Etapa: {f.proceso.etapa_actual.nombre}</span>
 								<span>
 									Estado:{' '}
-									<Badge
-										variant={
-											ESTADO_COMERCIAL_BADGE[
-												f.proceso.estado_actual
-													.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-											] ?? 'outline'
-										}
-										className='shrink-0 font-semibold text-xs'
-									>
-										{ESTADO_PROSPECTO_LABELS[
-											f.proceso.estado_actual
-												.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-										] ?? f.proceso.estado_actual.nombre}
-									</Badge>
+									<BadgeEstadoOportunidad estado={f.proceso.estado_actual} />
 								</span>
 								{!f.proceso.cerrado && (
 									<>
@@ -207,20 +193,7 @@ export default function TablaProcesosComerciales({
 										{f.proceso.etapa_actual.nombre}
 									</td>
 									<td className='px-4 py-2.5'>
-										<Badge
-											variant={
-												ESTADO_COMERCIAL_BADGE[
-													f.proceso.estado_actual
-														.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-												] ?? 'outline'
-											}
-											className='text-[11px] font-semibold'
-										>
-											{ESTADO_PROSPECTO_LABELS[
-												f.proceso.estado_actual
-													.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-											] ?? f.proceso.estado_actual.nombre}
-										</Badge>
+										<BadgeEstadoOportunidad estado={f.proceso.estado_actual} />
 									</td>
 									<td className='px-4 py-2.5 text-right'>
 										{!f.proceso.cerrado && f.porentaje_sla_consumido != null ? (
