@@ -32,12 +32,8 @@ import {
 import { Textarea } from '@/components/textarea'
 import { useCerrarProcesoComercial } from '@/hooks/procesos-comerciales/use-cerrar-proceso-comercial'
 import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
-import {
-	SEMAFORO_PROGRESS_CLASS,
-	SEMAFORO_VARIANT,
-} from '@/lib/badge-variants'
+import { SEMAFORO_PROGRESS_CLASS, SEMAFORO_VARIANT } from '@/lib/badge-variants'
 import { cn } from '@/lib/utils'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -131,10 +127,7 @@ export default function DetalleProcesoDrawer({
 									}
 									className='text-xs font-semibold'
 								>
-									{ESTADO_PROSPECTO_LABELS[
-										proceso.estado_actual
-											.codigo as keyof typeof ESTADO_PROSPECTO_LABELS
-									] ?? proceso.estado_actual.nombre}
+									{proceso.estado_actual.nombre}
 								</Badge>
 							</div>
 							<div className='space-y-0.5'>

@@ -1,12 +1,17 @@
 import { PRIORIDAD_BADGE } from '@/app/styles/estados/prioridad-badge'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
+import { useEliminarSolicitudCotizacion } from '@/hooks/solicitudes-cotizacion/use-eliminar-solicitud-cotizacion'
+import { useUserSession } from '@/hooks/auth/use-user-session'
 
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { normalizarTexto } from '@/utils/normalizar-texto'
 import { cn } from '@/lib/utils'
+import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import SolicitudCotizacionTabContent, {
 	TabId,
@@ -16,8 +21,10 @@ type SolicitudCotizacionItemProps = {
 	solicitud: SolicitudCotizacion
 	informacionCompleta: boolean
 	idProspecto: number
+	idProceso?: number
 	nombreCliente: string
 	lineaNegocioNombre: string
+	ejecutivoComercialRut?: string
 	ejecutivoEvaluacionRut?: string
 	gestionesAbiertasPorDefecto?: boolean
 	ocultarToggle?: boolean
@@ -36,16 +43,24 @@ export default function SolicitudCotizacionItem({
 	solicitud,
 	informacionCompleta,
 	idProspecto,
+	idProceso,
 	nombreCliente,
 	lineaNegocioNombre,
+	ejecutivoComercialRut,
 	ejecutivoEvaluacionRut,
 	gestionesAbiertasPorDefecto,
 	ocultarToggle,
 }: SolicitudCotizacionItemProps) {
+	const { usuario } = useUserSession()
 	const [gestionesAbiertas, setGestionesAbiertas] = useState(
 		gestionesAbiertasPorDefecto ?? false,
 	)
 	const [tabActiva, setTabActiva] = useState<TabId>('solicitud')
+	const [solicitudAEliminar, setSolicitudAEliminar] = useState(false)
+	const eliminarMutation = useEliminarSolicitudCotizacion(
+		idProspecto,
+		idProceso,
+	)
 	const tabs = ALL_TABS.filter(
 		t =>
 			t !== 'estudio' ||
@@ -97,22 +112,22 @@ export default function SolicitudCotizacionItem({
 						) : null}
 					</div>
 
-					{!ocultarToggle ? (
-						<div className='flex shrink-0 justify-end'>
+					{usuario?.rut === ejecutivoComercialRut && (
+						<PermissionGuard
+							allowedPermissions={['ELIMINAR_SOLICITUD_COTIZACION']}
+						>
 							<Button
 								type='button'
-								variant={gestionesAbiertas ? 'secondary' : 'outline'}
-								size='sm'
-								className='h-8 text-xs shadow-none'
-								onClick={() => {
-									setGestionesAbiertas(!gestionesAbiertas)
-									if (!gestionesAbiertas) setTabActiva('solicitud')
-								}}
+								variant='ghost'
+								size='icon-sm'
+								onClick={() => setSolicitudAEliminar(true)}
+								aria-label='Eliminar solicitud'
+								className='text-destructive hover:text-destructive'
 							>
-								{gestionesAbiertas ? 'Ocultar gestiones' : 'Ver gestiones'}
+								<Trash2 className='h-3.5 w-3.5' />
 							</Button>
-						</div>
-					) : null}
+						</PermissionGuard>
+					)}
 				</div>
 
 				{gestionesAbiertas ? (
@@ -152,6 +167,20 @@ export default function SolicitudCotizacionItem({
 					</div>
 				) : null}
 			</div>
+
+			<ConfirmDialog
+				open={solicitudAEliminar}
+				onOpenChange={() => setSolicitudAEliminar(false)}
+				title='Eliminar solicitud de cotización'
+				description={`¿Eliminar la solicitud de ${solicitud.producto || solicitud.tipo}? Esto también eliminará sus cotizaciones asociadas. Esta acción no se puede deshacer.`}
+				confirmText='Eliminar'
+				onConfirm={() => {
+					eliminarMutation.mutate(solicitud.id, {
+						onSuccess: () => setSolicitudAEliminar(false),
+					})
+				}}
+				isPending={eliminarMutation.isPending}
+			/>
 		</li>
 	)
 }

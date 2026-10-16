@@ -1,20 +1,20 @@
+import { EstadoInformativoJson } from '@/aplicacion/procesos-comerciales/dto/estado-informativo-json'
 import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { Badge } from '../badge'
-import { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
 
 type BadgeEstadoOportunidadProps = {
-	oportunidad: ProcesoComercial
+	estado: EstadoInformativoJson
 }
 
 export const BadgeEstadoOportunidad = ({
-	oportunidad,
+	estado,
 }: BadgeEstadoOportunidadProps) => {
 	return (
 		<Badge
-			variant={ESTADO_COMERCIAL_BADGE[oportunidad.estado_actual.codigo]}
+			variant={ESTADO_COMERCIAL_BADGE[estado.codigo]}
 			className='shrink-0 py-1 px-2 text-xs leading-none'
 		>
-			{oportunidad.estado_actual.nombre}
+			{estado.nombre}
 		</Badge>
 	)
 }

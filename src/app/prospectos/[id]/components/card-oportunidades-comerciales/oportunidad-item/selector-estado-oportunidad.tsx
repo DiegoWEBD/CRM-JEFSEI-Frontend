@@ -1,5 +1,7 @@
 'use client'
 
+import type { TransicionManual } from '@/aplicacion/estados/use-cases/obtener-transiciones-manuales/dto/transicion-manual'
+import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import { Badge } from '@/components/badge'
 import {
 	DropdownMenu,
@@ -7,28 +9,17 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/dropdown-menu'
-import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
 import { useUserSession } from '@/hooks/auth/use-user-session'
-import { useCambiarEstadoManual } from '@/hooks/procesos-comerciales/use-cambiar-estado-manual'
 import { useTransicionesManuales } from '@/hooks/estados/use-transiciones-manuales'
-import { ESTADO_PROSPECTO_LABELS } from '@/types/estados/estado-comercial-cliente'
+import { useCambiarEstadoManual } from '@/hooks/procesos-comerciales/use-cambiar-estado-manual'
 import { ChevronDown, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import type { TransicionManual } from '@/aplicacion/estados/use-cases/obtener-transiciones-manuales/dto/transicion-manual'
 
 type SelectorEstadoOportunidadProps = {
 	proceso: ProcesoComercial
 	idProspecto: number
 	ejecutivoComercialRut?: string
-}
-
-function labelEstado(codigo: string, nombre?: string) {
-	return (
-		ESTADO_PROSPECTO_LABELS[codigo as keyof typeof ESTADO_PROSPECTO_LABELS] ??
-		nombre ??
-		codigo
-	)
 }
 
 function variantEstado(codigo: string) {
@@ -86,7 +77,7 @@ export default function SelectorEstadoOportunidad({
 							className='cursor-pointer gap-1 transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60'
 						>
 							<button type='button' disabled={pendiente}>
-								{labelEstado(codigoEstadoActual, proceso.estado_actual.nombre)}
+								{proceso.estado_actual.nombre}
 								{pendiente ? (
 									<Loader2 className='h-3 w-3 animate-spin' aria-hidden />
 								) : (
@@ -120,7 +111,7 @@ export default function SelectorEstadoOportunidad({
 						variant={variantEstado(codigoEstadoActual)}
 						className='shrink-0 p-1 text-xs leading-none'
 					>
-						{labelEstado(codigoEstadoActual, proceso.estado_actual.nombre)}
+						{proceso.estado_actual.nombre}
 					</Badge>
 					{cargandoTransiciones && (
 						<Loader2
