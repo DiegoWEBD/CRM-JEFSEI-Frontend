@@ -7,6 +7,7 @@ export type EstadoCotizacionBackend =
 export default class Cotizacion {
 	constructor(
 		public id: number,
+		public id_company: number,
 		public monto_total_asegurado: number,
 		public tasa_afecta: number,
 		public tasa_excenta: number,

@@ -7,7 +7,6 @@ import type {
 import type { EstadoCotizacionBackend } from '@/dominio/cotizacion/cotizacion'
 import type {
 	EstadoGeneralCliente,
-	EstadoGeneralClientePerfil,
 	EstadoCotizacionPerfilVisual,
 	EstadoEstudioPerfilVisual,
 	EstadoPoliza,
@@ -50,6 +49,8 @@ export const ESTADO_COMERCIAL_VARIANT: Record<
 	EN_NEGOCIACION: 'pastel-indigo',
 	EMISION_PENDIENTE: 'pastel-cyan',
 	DOCUMENTACION_PENDIENTE: 'pastel-red',
+	COTIZACION_ELIMINADA: 'pastel-red',
+	COTIZACION_MODIFICADA: 'pastel-blue',
 }
 
 export const PRIORIDAD_VARIANT: Record<Prioridad, BadgeVariant> = {
@@ -64,17 +65,6 @@ export const ESTADO_GENERAL_CLIENTE_VARIANT: Record<
 	prospecto: 'pastel-amber',
 	cliente_activo: 'pastel-emerald',
 	cliente_inactivo: 'pastel-red',
-}
-
-export const ESTADO_GENERAL_CLIENTE_PERFIL_VARIANT: Record<
-	EstadoGeneralClientePerfil,
-	BadgeVariant
-> = {
-	nuevo: 'pastel-slate',
-	en_seguimiento: 'pastel-sky',
-	en_proceso_comercial: 'pastel-indigo',
-	cliente_activo: 'pastel-emerald',
-	perdido: 'pastel-muted',
 }
 
 export const ESTADO_COTIZACION_PERFIL_VARIANT: Record<
@@ -150,6 +140,18 @@ export const SEMAFORO_VARIANT: Record<string, BadgeVariant> = {
 	AMARILLO: 'pastel-amber',
 	VERDE: 'pastel-emerald',
 	NO_APLICA: 'pastel-muted',
+}
+
+/**
+ * Colores de la barra de progreso del SLA, atados al mismo estado_semaforo
+ * que calcula el backend (VERDE < 70% ≤ AMARILLO ≤ 100% < ROJO). Así el
+ * badge del % consumido y la barra nunca divergen de la prioridad.
+ */
+export const SEMAFORO_PROGRESS_CLASS: Record<string, string> = {
+	ROJO: 'bg-destructive',
+	AMARILLO: 'bg-warning',
+	VERDE: 'bg-success',
+	NO_APLICA: 'bg-muted-foreground/40',
 }
 
 export const BANDEJA_SOLICITUD_VARIANT: Record<

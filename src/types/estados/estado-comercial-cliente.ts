@@ -16,6 +16,8 @@ export type EstadoComercialProspecto =
 	| 'EN_NEGOCIACION'
 	| 'EMISION_PENDIENTE'
 	| 'DOCUMENTACION_PENDIENTE'
+	| 'COTIZACION_ELIMINADA'
+	| 'COTIZACION_MODIFICADA'
 
 export const ESTADOS_PROSPECTO: EstadoComercialProspecto[] = [
 	'COTIZACION_DISPONIBLE',
@@ -35,6 +37,8 @@ export const ESTADOS_PROSPECTO: EstadoComercialProspecto[] = [
 	'EN_NEGOCIACION',
 	'EMISION_PENDIENTE',
 	'DOCUMENTACION_PENDIENTE',
+	'COTIZACION_ELIMINADA',
+	'COTIZACION_MODIFICADA',
 ]
 
 export const ESTADO_PROSPECTO_LABELS: Record<EstadoComercialProspecto, string> =
@@ -56,4 +60,6 @@ export const ESTADO_PROSPECTO_LABELS: Record<EstadoComercialProspecto, string> =
 		EN_NEGOCIACION: 'En negociación',
 		EMISION_PENDIENTE: 'Emisión pendiente',
 		DOCUMENTACION_PENDIENTE: 'Documentación pendiente',
+		COTIZACION_ELIMINADA: 'Cotización eliminada',
+		COTIZACION_MODIFICADA: 'Cotización modificada',
 	}
