@@ -12,6 +12,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/table'
+import { formatearProrrateoPorcentaje } from '@/utils/formatear-prorrateo'
 
 const ESTADO_LABELS: Record<RegistroAlicuota['estado'], string> = {
 	valido: 'Válido',
@@ -26,7 +27,7 @@ function claseEstado(estado: RegistroAlicuota['estado']): string {
 }
 
 function textoProrrateo(registro: RegistroAlicuota): string {
-	if (registro.prorrateo != null) return `${registro.prorrateo} %`
+	if (registro.prorrateo != null) return formatearProrrateoPorcentaje(registro.prorrateo)
 	if (registro.prorrateo_original != null) return String(registro.prorrateo_original)
 	return '—'
 }

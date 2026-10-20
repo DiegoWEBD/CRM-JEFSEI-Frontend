@@ -31,6 +31,7 @@ import {
 import { useAnalizarAlicuotas } from '@/hooks/importacion-alicuotas/use-analizar-alicuotas'
 import { useValidarAlicuotas } from '@/hooks/importacion-alicuotas/use-validar-alicuotas'
 import { validarTamanoArchivo } from '@/lib/archivos'
+import { formatearProrrateoPorcentaje } from '@/utils/formatear-prorrateo'
 import { Badge } from '@/components/badge'
 import { Loader2, Upload } from 'lucide-react'
 import { useMemo, useRef, useState, type ReactNode } from 'react'
@@ -539,7 +540,7 @@ export default function DialogImportarAlicuotas({
 								<span>
 									Suma de prorrateos:{' '}
 									<span className='font-medium text-foreground'>
-										{validacion.suma_prorrateos} %
+										{formatearProrrateoPorcentaje(validacion.suma_prorrateos)}
 									</span>
 								</span>
 							)}
@@ -657,7 +658,7 @@ export default function DialogImportarAlicuotas({
 									</dt>
 									<dd className='text-xs font-medium text-foreground'>
 										{validacion.suma_prorrateos != null
-											? `${validacion.suma_prorrateos} %`
+											? formatearProrrateoPorcentaje(validacion.suma_prorrateos)
 											: '—'}
 									</dd>
 								</div>

@@ -27,6 +27,7 @@ import ListadoUnidadesAlicuotas from '@/components/importador-alicuotas/listado-
 import { useEliminarCotizacion } from '@/hooks/cotizaciones/use-eliminar-cotizacion'
 import type Cotizacion from '@/dominio/cotizacion/cotizacion'
 import DialogEditarCotizacion from './dialog-editar-cotizacion/dialog-editar-cotizacion'
+import DialogDesgloseUnidades from './dialog-desglose-unidades'
 import DialogGenerarEstudioWrapper from './dialog-generar-estudio-wrapper'
 import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-registrar-cotizacion'
 import DialogSubirEstudio from './dialog-subir-estudio/dialog-subir-estudio'
@@ -78,6 +79,7 @@ export default function SolicitudCotizacionTabContent({
 	const [openVerCotizaciones, setOpenVerCotizaciones] = useState(false)
 	const [openGenerarEstudio, setOpenGenerarEstudio] = useState(false)
 	const [openSubirEstudio, setOpenSubirEstudio] = useState(false)
+	const [openDesgloseUnidades, setOpenDesgloseUnidades] = useState(false)
 	const [cotizacionAEditar, setCotizacionAEditar] = useState<Cotizacion | null>(
 		null,
 	)
@@ -515,6 +517,20 @@ export default function SolicitudCotizacionTabContent({
 						>
 							Generar estudio
 						</Button>
+						{solicitud.tipo === 'unidades' ? (
+							<PermissionGuard allowedPermissions={['ARMAR_ESTUDIO_COMERCIAL']}>
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									className='h-8 text-xs'
+									disabled={!cotizaciones || cotizaciones.length === 0}
+									onClick={() => setOpenDesgloseUnidades(true)}
+								>
+									Desglose por unidad
+								</Button>
+							</PermissionGuard>
+						) : null}
 					</div>
 				) : null}
 
@@ -579,6 +595,13 @@ export default function SolicitudCotizacionTabContent({
 					idProspecto={idProspecto}
 					open={openSubirEstudio}
 					onOpenChange={setOpenSubirEstudio}
+				/>
+
+				<DialogDesgloseUnidades
+					solicitudId={solicitud.id}
+					cotizaciones={cotizaciones ?? []}
+					open={openDesgloseUnidades}
+					onOpenChange={setOpenDesgloseUnidades}
 				/>
 			</div>
 		)

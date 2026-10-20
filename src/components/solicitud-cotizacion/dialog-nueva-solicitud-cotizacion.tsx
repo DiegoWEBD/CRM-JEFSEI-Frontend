@@ -37,6 +37,7 @@ import {
 	TIPO_CLIENTE_SOLICITUD_LABELS,
 } from '@/lib/solicitud-cotizacion-catalogo'
 import { useFormik } from 'formik'
+import { formatearProrrateoPorcentaje } from '@/utils/formatear-prorrateo'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -444,7 +445,7 @@ export default function DialogNuevaSolicitudCotizacion({
 										{' · '}
 										{importacionAlicuotas.cantidadUnidades} unidades
 										{importacionAlicuotas.sumaProrrateos != null
-											? ` · suma ${importacionAlicuotas.sumaProrrateos} %`
+											? ` · suma ${formatearProrrateoPorcentaje(importacionAlicuotas.sumaProrrateos)}`
 											: ''}
 									</p>
 									<Button

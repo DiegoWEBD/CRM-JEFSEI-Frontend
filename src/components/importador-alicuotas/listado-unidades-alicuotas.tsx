@@ -2,6 +2,7 @@
 
 import { Skeleton } from '@/components/skeleton'
 import { useUnidadesAlicuotas } from '@/hooks/importacion-alicuotas/use-unidades-alicuotas'
+import { formatearProrrateoPorcentaje } from '@/utils/formatear-prorrateo'
 
 type ListadoUnidadesAlicuotasProps = {
 	idSolicitud: number
@@ -38,7 +39,9 @@ export default function ListadoUnidadesAlicuotas({
 						<span className='font-medium text-foreground'>
 							{unidad.identificador_unidad}
 						</span>
-						<span className='text-muted-foreground'>{unidad.prorrateo} %</span>
+						<span className='text-muted-foreground'>
+							{formatearProrrateoPorcentaje(unidad.prorrateo)}
+						</span>
 					</div>
 				))}
 			</div>
