@@ -1,5 +1,6 @@
 'use client'
 
+import type { ImportacionAlicuotasResultado } from '@/aplicacion/importacion-alicuotas/dto/importacion-alicuotas'
 import type { SolicitudCotizacionUnionRequest } from '@/aplicacion/solicitudes-cotizacion/use-cases/solicitar-cotizacion/dto/solicitud-cotizacion-union-request'
 import { Button } from '@/components/button'
 import {
@@ -18,6 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/select'
+import DialogImportarAlicuotas from '@/components/importador-alicuotas/dialog-importar-alicuotas'
 import { Textarea } from '@/components/textarea'
 import { useSolicitarCotizacion } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion'
 import { useSolicitarCotizacionProceso } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion-proceso'
@@ -36,6 +38,7 @@ import {
 } from '@/lib/solicitud-cotizacion-catalogo'
 import { useFormik } from 'formik'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 interface ActividadFila {
 	actividad: string
@@ -95,8 +98,16 @@ export default function DialogNuevaSolicitudCotizacion({
 		idProceso ?? 0,
 		idProspecto,
 	)
+	const [importacionAlicuotas, setImportacionAlicuotas] =
+		useState<ImportacionAlicuotasResultado | null>(null)
+	const [importadorAbierto, setImportadorAbierto] = useState(false)
 
 	const lineasOpciones = lineasSolicitudParaTipo(tipoCliente)
+
+	function handleDialogOpenChange(siguiente: boolean) {
+		if (!siguiente) setImportacionAlicuotas(null)
+		onOpenChange(siguiente)
+	}
 
 	function validar(values: DialogNuevaSolicitudFormValues) {
 		const errors: Record<string, string> = {}
@@ -104,6 +115,9 @@ export default function DialogNuevaSolicitudCotizacion({
 			errors.lineaSeguro = 'Debe seleccionar una línea de seguro'
 		}
 		const campos = camposSolicitudParaLinea(tipoCliente, values.lineaSeguro)
+		if (values.lineaSeguro === 'unidades' && !importacionAlicuotas) {
+			errors.importacionAlicuotas = 'Debe importar el archivo de alícuotas'
+		}
 		for (const campo of campos) {
 			if (campo.tipo === 'actividades_aseguradas') {
 				for (let i = 0; i < values.actividades.length; i++) {
@@ -145,7 +159,8 @@ export default function DialogNuevaSolicitudCotizacion({
 			return {
 				...base,
 				tipo,
-				nombre_excel: '',
+				nombre_excel: importacionAlicuotas?.nombreExcel ?? '',
+				unidades: importacionAlicuotas?.unidades ?? [],
 			}
 		}
 
@@ -228,6 +243,7 @@ export default function DialogNuevaSolicitudCotizacion({
 	function handleLineaChange(value: string) {
 		if (tipoPredefinido) return
 		formik.setFieldValue('lineaSeguro', value)
+		setImportacionAlicuotas(null)
 		reiniciarCamposDinamicos(formik.setFieldValue)
 	}
 
@@ -247,7 +263,7 @@ export default function DialogNuevaSolicitudCotizacion({
 	}
 
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
+		<Dialog open={open} onOpenChange={handleDialogOpenChange}>
 			<DialogContent className='max-h-[min(90vh,720px)] max-w-md gap-4 overflow-y-auto'>
 				<DialogHeader className='space-y-0'>
 					<DialogTitle>Solicitud de cotización</DialogTitle>
@@ -416,6 +432,58 @@ export default function DialogNuevaSolicitudCotizacion({
 						</div>
 					) : null}
 
+					{lineaActual === 'unidades' && (
+						<div className='space-y-2 rounded-md border border-border/70 bg-muted/10 p-3'>
+							<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								Alícuotas de la comunidad
+							</p>
+							{importacionAlicuotas ? (
+								<div className='space-y-2'>
+									<p className='text-xs text-foreground'>
+										<span className='font-medium'>{importacionAlicuotas.nombreExcel}</span>
+										{' · '}
+										{importacionAlicuotas.cantidadUnidades} unidades
+										{importacionAlicuotas.sumaProrrateos != null
+											? ` · suma ${importacionAlicuotas.sumaProrrateos} %`
+											: ''}
+									</p>
+									<Button
+										type='button'
+										variant='outline'
+										size='sm'
+										className='h-8 text-xs shadow-none'
+										onClick={() => setImportadorAbierto(true)}
+									>
+										Reemplazar importación
+									</Button>
+								</div>
+							) : (
+								<div className='space-y-2'>
+									<p className='text-xs text-muted-foreground'>
+										Importe el archivo «Alicuota» con las unidades y sus prorrateos.
+									</p>
+									<Button
+										type='button'
+										variant='outline'
+										size='sm'
+										className='h-8 text-xs shadow-none'
+										onClick={() => setImportadorAbierto(true)}
+									>
+										Importar alícuotas
+									</Button>
+									{(formik.errors as Record<string, string>).importacionAlicuotas && (
+										<p className='text-xs font-medium text-destructive'>
+											{
+												(formik.errors as Record<string, string>)
+													.importacionAlicuotas
+											}
+										</p>
+									)}
+								</div>
+							)}
+						</div>
+					)}
+
 					<div className='space-y-1.5'>
 						<Label className='text-xs text-muted-foreground'>
 							Observaciones (opcional)
@@ -475,7 +543,7 @@ export default function DialogNuevaSolicitudCotizacion({
 							type='button'
 							variant='outline'
 							size='sm'
-							onClick={() => onOpenChange(false)}
+							onClick={() => handleDialogOpenChange(false)}
 						>
 							Cancelar
 						</Button>
@@ -484,7 +552,8 @@ export default function DialogNuevaSolicitudCotizacion({
 							size='sm'
 							disabled={
 								formik.isSubmitting ||
-								(!tipoPredefinido && !formik.values.lineaSeguro)
+								(!tipoPredefinido && !formik.values.lineaSeguro) ||
+								(lineaActual === 'unidades' && !importacionAlicuotas)
 							}
 						>
 							{formik.isSubmitting ? (
@@ -494,6 +563,12 @@ export default function DialogNuevaSolicitudCotizacion({
 						</Button>
 					</DialogFooter>
 				</form>
+
+				<DialogImportarAlicuotas
+					open={importadorAbierto}
+					onOpenChange={setImportadorAbierto}
+					onConfirmar={setImportacionAlicuotas}
+				/>
 			</DialogContent>
 		</Dialog>
 	)
