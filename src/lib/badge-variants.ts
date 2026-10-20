@@ -48,9 +48,10 @@ export const ESTADO_COMERCIAL_VARIANT: Record<
 	PLAN_PAGO_CREADO: 'pastel-emerald',
 	EN_NEGOCIACION: 'pastel-indigo',
 	EMISION_PENDIENTE: 'pastel-cyan',
-	DOCUMENTACION_PENDIENTE: 'pastel-red',
+	DOCUMENTACION_PENDIENTE: 'pastel-amber',
 	COTIZACION_ELIMINADA: 'pastel-red',
 	COTIZACION_MODIFICADA: 'pastel-blue',
+	SOLICITUD_COTIZACION_ELIMINADA: 'pastel-red',
 }
 
 export const PRIORIDAD_VARIANT: Record<Prioridad, BadgeVariant> = {

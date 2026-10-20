@@ -1,4 +1,4 @@
-import { EstadoComercialProspecto } from '@/types/estados/estado-comercial-cliente'
+import { EstadoInformativoJson } from '@/aplicacion/procesos-comerciales/dto/estado-informativo-json'
 
 export interface ProcesoComercial {
 	id: number
@@ -8,7 +8,7 @@ export interface ProcesoComercial {
 	nombre_cliente: string
 	producto: string
 	tipo_producto: string
-	estado_actual: { codigo: EstadoComercialProspecto; nombre: string }
+	estado_actual: EstadoInformativoJson
 	etapa_actual: { id: number; nombre: string; dias_limite: number | null }
 	cerrado: boolean
 	fecha_estimada_cierre: string | null

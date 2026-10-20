@@ -95,7 +95,9 @@ export default function OportunidadItem({
 							/>
 						</div>
 
-						{!expandido && <BadgeEstadoOportunidad oportunidad={proceso} />}
+						{!expandido && (
+							<BadgeEstadoOportunidad estado={proceso.estado_actual} />
+						)}
 
 						<BadgeProbabilidadCierre
 							probabilidad={probabilidadEfectiva}
@@ -212,8 +214,10 @@ export default function OportunidadItem({
 										solicitud={solicitudes[selectedIndex]}
 										informacionCompleta={informacionCompleta}
 										idProspecto={idProspecto}
+										idProceso={proceso.id}
 										nombreCliente={nombreCliente}
 										lineaNegocioNombre={lineaNegocioNombre}
+										ejecutivoComercialRut={ejecutivoComercialRut}
 										ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
 										gestionesAbiertasPorDefecto
 										ocultarToggle

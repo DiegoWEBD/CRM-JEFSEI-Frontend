@@ -1,19 +1,19 @@
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import { Badge } from '@/components/badge/badge'
 import { Button } from '@/components/button'
+import { ESTADO_COMERCIAL_VARIANT } from '@/lib/badge-variants'
 import { classname } from '@/lib/class-name'
 import {
 	ESTADO_GENERAL_CLIENTE_BADGE,
 	ESTADO_GENERAL_CLIENTE_LABELS,
 	type EstadoGeneralCliente,
 } from '@/lib/estados-cotizaciones'
-import { Briefcase, CreditCard, MapPin, User, UserCheck } from 'lucide-react'
-import { ESTADO_COMERCIAL_VARIANT } from '@/lib/badge-variants'
+import { resaltarRut, resaltarTexto } from '@/lib/resaltar-texto'
 import {
 	ESTADO_PROSPECTO_LABELS,
 	type EstadoComercialProspecto,
 } from '@/types/estados/estado-comercial-cliente'
-import { resaltarTexto, resaltarRut } from '@/lib/resaltar-texto'
+import { Briefcase, CreditCard, MapPin, User, UserCheck } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo } from 'react'
 
