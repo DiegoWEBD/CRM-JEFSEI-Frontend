@@ -1,6 +1,7 @@
 'use client'
 
 import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import { Loader2, FileText, Upload, X } from 'lucide-react'
 import { Button } from '@/components/button'
 import {
@@ -24,6 +25,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/radio-group'
 import { useCompaniesSeguros } from '@/hooks/companies-seguros/use-companies-seguros'
 import { useActualizarCotizacion } from '@/hooks/cotizaciones/use-actualizar-cotizacion'
 import { validarTamanoArchivo } from '@/lib/archivos'
+import { aNumero, esquemaCotizacion } from '@/lib/validacion-cotizacion'
 import type { ActualizarCotizacionRequest } from '@/aplicacion/cotizaciones/use-cases/actualizar-cotizacion/dto/actualizar-cotizacion-request'
 import type Cotizacion from '@/dominio/cotizacion/cotizacion'
 
@@ -79,8 +81,8 @@ function transformarARequest(
 		tipo: values.tipo,
 		id_company: Number(values.id_company),
 		monto_total_asegurado: Number(values.monto_total_asegurado),
-		asistencia_afecta: Number(values.asistencia_afecta),
-		asistencia_excenta: esFID ? Number(values.asistencia_excenta) : 0,
+		asistencia_afecta: aNumero(values.asistencia_afecta),
+		asistencia_excenta: esFID ? aNumero(values.asistencia_excenta) : 0,
 		fecha_emision: values.fecha_emision,
 		fecha_vencimiento: values.fecha_vencimiento,
 		archivo: values.archivo ?? undefined,
@@ -90,16 +92,16 @@ function transformarARequest(
 	if (values.tipo === 'tasa') {
 		return {
 			...base,
-			tasa_afecta: Number(values.tasa_afecta),
-			tasa_excenta: Number(values.tasa_excenta),
-			tasa_politica: Number(values.tasa_politica),
+			tasa_afecta: aNumero(values.tasa_afecta),
+			tasa_excenta: aNumero(values.tasa_excenta),
+			tasa_politica: aNumero(values.tasa_politica),
 		}
 	}
 
 	return {
 		...base,
-		prima_afecta: Number(values.prima_afecta),
-		prima_excenta: Number(values.prima_excenta),
+		prima_afecta: aNumero(values.prima_afecta),
+		prima_excenta: aNumero(values.prima_excenta),
 	}
 }
 
@@ -119,54 +121,9 @@ export default function DialogEditarCotizacion({
 	const formik = useFormik({
 		initialValues: construirInitialValues(cotizacion),
 		enableReinitialize: true,
-		validate: values => {
-			const errors: Record<string, string> = {}
-			const companyActual = companies?.find(
-				c => String(c.id) === values.id_company,
-			)
-			const esFIDActual = companyActual?.nombre === 'FID'
-
-			if (!values.id_company) errors.id_company = 'Seleccione una compañía'
-			if (
-				values.monto_total_asegurado === '' ||
-				Number(values.monto_total_asegurado) <= 0
-			)
-				errors.monto_total_asegurado = 'Debe ser mayor a cero'
-			if (
-				values.asistencia_afecta === '' ||
-				Number(values.asistencia_afecta) < 0
-			)
-				errors.asistencia_afecta = 'No puede ser negativo'
-			if (
-				esFIDActual &&
-				(values.asistencia_excenta === '' ||
-					Number(values.asistencia_excenta) < 0)
-			)
-				errors.asistencia_excenta = 'No puede ser negativo'
-			if (!values.fecha_emision) errors.fecha_emision = 'Requerido'
-			if (!values.fecha_vencimiento) errors.fecha_vencimiento = 'Requerido'
-
-			if (values.tipo === 'tasa') {
-				if (values.tasa_afecta === '' || Number(values.tasa_afecta) < 0)
-					errors.tasa_afecta = 'No puede ser negativo'
-				if (values.tasa_excenta === '' || Number(values.tasa_excenta) < 0)
-					errors.tasa_excenta = 'No puede ser negativo'
-				if (values.tasa_politica === '' || Number(values.tasa_politica) < 0)
-					errors.tasa_politica = 'No puede ser negativo'
-			} else {
-				if (values.prima_afecta === '' || Number(values.prima_afecta) < 0)
-					errors.prima_afecta = 'No puede ser negativo'
-				if (values.prima_excenta === '' || Number(values.prima_excenta) < 0)
-					errors.prima_excenta = 'No puede ser negativo'
-			}
-
-			if (values.archivo) {
-				const errorArchivo = validarTamanoArchivo(values.archivo)
-				if (errorArchivo) errors.archivo = errorArchivo
-			}
-
-			return errors
-		},
+		validationSchema: esquemaCotizacion.shape({
+			eliminar_archivo: Yup.boolean(),
+		}),
 		onSubmit: async values => {
 			const companySubmit = companies?.find(
 				c => String(c.id) === values.id_company,
@@ -269,7 +226,10 @@ export default function DialogEditarCotizacion({
 							</div>
 							<div className='flex items-center gap-2'>
 								<RadioGroupItem value='prima' id='edit-tipo-prima' />
-								<Label htmlFor='edit-tipo-prima' className='text-sm font-normal'>
+								<Label
+									htmlFor='edit-tipo-prima'
+									className='text-sm font-normal'
+								>
 									Indicar primas
 								</Label>
 							</div>
@@ -484,8 +444,7 @@ export default function DialogEditarCotizacion({
 									<X className='h-3.5 w-3.5' />
 								</button>
 							</div>
-						) : cotizacion.nombre_archivo &&
-						  !formik.values.eliminar_archivo ? (
+						) : cotizacion.nombre_archivo && !formik.values.eliminar_archivo ? (
 							<div className='flex items-center gap-2 rounded-md border border-border px-3 py-2'>
 								<FileText className='h-3.5 w-3.5 shrink-0 text-muted-foreground' />
 								<span className='flex-1 truncate text-xs'>
@@ -494,9 +453,7 @@ export default function DialogEditarCotizacion({
 								<button
 									type='button'
 									className='shrink-0 text-muted-foreground hover:text-foreground'
-									onClick={() =>
-										formik.setFieldValue('eliminar_archivo', true)
-									}
+									onClick={() => formik.setFieldValue('eliminar_archivo', true)}
 								>
 									<X className='h-3.5 w-3.5' />
 								</button>

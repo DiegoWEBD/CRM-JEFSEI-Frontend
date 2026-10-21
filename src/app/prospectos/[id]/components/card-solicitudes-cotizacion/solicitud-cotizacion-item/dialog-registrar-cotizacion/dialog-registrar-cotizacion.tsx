@@ -24,6 +24,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/radio-group'
 import { useCompaniesSeguros } from '@/hooks/companies-seguros/use-companies-seguros'
 import { useRegistrarCotizacion } from '@/hooks/cotizaciones/use-registrar-cotizacion'
 import { validarTamanoArchivo } from '@/lib/archivos'
+import { aNumero, esquemaCotizacion } from '@/lib/validacion-cotizacion'
 import type { RegistrarCotizacionRequest } from '@/aplicacion/cotizaciones/use-cases/registrar-cotizacion/dto/registrar-cotizacion-request'
 
 type DialogRegistrarCotizacionProps = {
@@ -73,8 +74,8 @@ function transformarARequest(
 		tipo: values.tipo,
 		id_company: Number(values.id_company),
 		monto_total_asegurado: Number(values.monto_total_asegurado),
-		asistencia_afecta: Number(values.asistencia_afecta),
-		asistencia_excenta: esFID ? Number(values.asistencia_excenta) : 0,
+		asistencia_afecta: aNumero(values.asistencia_afecta),
+		asistencia_excenta: esFID ? aNumero(values.asistencia_excenta) : 0,
 		fecha_emision: values.fecha_emision,
 		fecha_vencimiento: values.fecha_vencimiento,
 		archivo: values.archivo ?? undefined,
@@ -83,16 +84,16 @@ function transformarARequest(
 	if (values.tipo === 'tasa') {
 		return {
 			...base,
-			tasa_afecta: Number(values.tasa_afecta),
-			tasa_excenta: Number(values.tasa_excenta),
-			tasa_politica: Number(values.tasa_politica),
+			tasa_afecta: aNumero(values.tasa_afecta),
+			tasa_excenta: aNumero(values.tasa_excenta),
+			tasa_politica: aNumero(values.tasa_politica),
 		}
 	}
 
 	return {
 		...base,
-		prima_afecta: Number(values.prima_afecta),
-		prima_excenta: Number(values.prima_excenta),
+		prima_afecta: aNumero(values.prima_afecta),
+		prima_excenta: aNumero(values.prima_excenta),
 	}
 }
 
@@ -110,54 +111,7 @@ export default function DialogRegistrarCotizacion({
 
 	const formik = useFormik({
 		initialValues,
-		validate: values => {
-			const errors: Record<string, string> = {}
-			const companyActual = companies?.find(
-				c => String(c.id) === values.id_company,
-			)
-			const esFIDActual = companyActual?.nombre === 'FID'
-
-			if (!values.id_company) errors.id_company = 'Seleccione una compañía'
-			if (
-				values.monto_total_asegurado === '' ||
-				Number(values.monto_total_asegurado) <= 0
-			)
-				errors.monto_total_asegurado = 'Debe ser mayor a cero'
-			if (
-				values.asistencia_afecta === '' ||
-				Number(values.asistencia_afecta) < 0
-			)
-				errors.asistencia_afecta = 'No puede ser negativo'
-			if (
-				esFIDActual &&
-				(values.asistencia_excenta === '' ||
-					Number(values.asistencia_excenta) < 0)
-			)
-				errors.asistencia_excenta = 'No puede ser negativo'
-			if (!values.fecha_emision) errors.fecha_emision = 'Requerido'
-			if (!values.fecha_vencimiento) errors.fecha_vencimiento = 'Requerido'
-
-			if (values.tipo === 'tasa') {
-				if (values.tasa_afecta === '' || Number(values.tasa_afecta) < 0)
-					errors.tasa_afecta = 'No puede ser negativo'
-				if (values.tasa_excenta === '' || Number(values.tasa_excenta) < 0)
-					errors.tasa_excenta = 'No puede ser negativo'
-				if (values.tasa_politica === '' || Number(values.tasa_politica) < 0)
-					errors.tasa_politica = 'No puede ser negativo'
-			} else {
-				if (values.prima_afecta === '' || Number(values.prima_afecta) < 0)
-					errors.prima_afecta = 'No puede ser negativo'
-				if (values.prima_excenta === '' || Number(values.prima_excenta) < 0)
-					errors.prima_excenta = 'No puede ser negativo'
-			}
-
-			if (values.archivo) {
-				const errorArchivo = validarTamanoArchivo(values.archivo)
-				if (errorArchivo) errors.archivo = errorArchivo
-			}
-
-			return errors
-		},
+		validationSchema: esquemaCotizacion,
 		onSubmit: async values => {
 			const companySubmit = companies?.find(
 				c => String(c.id) === values.id_company,

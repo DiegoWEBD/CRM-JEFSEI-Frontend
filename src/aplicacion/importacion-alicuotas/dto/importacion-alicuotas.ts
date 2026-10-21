@@ -91,6 +91,22 @@ export interface AlicuotaOportunidadResponse {
   cantidad: number
 }
 
+export interface UnidadDesgloseReconstruccion {
+  identificador_unidad: string
+  prorrateo: number
+  fila_origen: number
+  monto_reconstruccion: number
+  monto_asegurado_sugerido: number
+  prorrateo_pago: number
+}
+
+export interface DesgloseReconstruccionResponse {
+  desglose_calculado: boolean
+  monto_asegurado_sugerido_unidades: number | null
+  unidades: UnidadDesgloseReconstruccion[]
+  cantidad: number
+}
+
 export interface ImportacionAlicuotasResultado {
   nombreExcel: string
   unidades: UnidadAlicuotaRequest[]

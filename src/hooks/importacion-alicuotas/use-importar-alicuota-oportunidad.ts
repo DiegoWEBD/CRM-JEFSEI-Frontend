@@ -12,6 +12,7 @@ export const useImportarAlicuotaOportunidad = (idProceso: number) => {
 			importarAlicuotaOportunidad(idProceso, request),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['alicuota-oportunidad', idProceso] })
+			queryClient.invalidateQueries({ queryKey: ['desglose-reconstruccion', idProceso] })
 		},
 	})
 }

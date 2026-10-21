@@ -67,7 +67,8 @@ export default function DialogDesgloseUnidades({
 					<DialogTitle className='text-base'>Desglose por unidad</DialogTitle>
 					<DialogDescription>
 						Seleccione las cotizaciones para generar el Excel con el desglose
-						por unidad según las alícuotas importadas.
+						completo por unidad: las primas se calculan por cada unidad sobre su
+						monto asegurado sugerido, prorrateando las asistencias.
 					</DialogDescription>
 				</DialogHeader>
 

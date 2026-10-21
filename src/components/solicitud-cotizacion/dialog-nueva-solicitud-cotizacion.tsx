@@ -19,8 +19,10 @@ import {
 	SelectValue,
 } from '@/components/select'
 import { Textarea } from '@/components/textarea'
+import { useDesgloseReconstruccion } from '@/hooks/importacion-alicuotas/use-desglose-reconstruccion'
 import { useSolicitarCotizacion } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion'
 import { useSolicitarCotizacionProceso } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion-proceso'
+import { formatUF } from '@/lib/uf'
 import type {
 	LineaSeguroSolicitudKey,
 	PrioridadSolicitud,
@@ -36,6 +38,7 @@ import {
 } from '@/lib/solicitud-cotizacion-catalogo'
 import { useFormik } from 'formik'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
+import { useEffect } from 'react'
 
 interface ActividadFila {
 	actividad: string
@@ -212,6 +215,20 @@ export default function DialogNuevaSolicitudCotizacion({
 
 	const lineaActual: LineaSeguroSolicitudKey | '' =
 		(tipoPredefinido as LineaSeguroSolicitudKey) ?? formik.values.lineaSeguro
+	const { data: desgloseUnidades } = useDesgloseReconstruccion(idProceso ?? 0)
+	const montoSugeridoUnidades =
+		lineaActual === 'unidades'
+			? desgloseUnidades?.monto_asegurado_sugerido_unidades ?? null
+			: null
+
+	// Las cotizaciones de unidades se solicitan con el monto asegurado
+	// sugerido del desglose de reconstrucción de las unidades.
+	useEffect(() => {
+		if (montoSugeridoUnidades != null && open && !formik.values.monto_asegurado) {
+			formik.setFieldValue('monto_asegurado', String(montoSugeridoUnidades))
+		}
+	}, [montoSugeridoUnidades, open, formik])
+
 	const camposDinamicos = camposSolicitudParaLinea(tipoCliente, lineaActual)
 	const camposEstandar = camposDinamicos.filter(
 		c => c.tipo !== 'actividades_aseguradas',
@@ -449,6 +466,12 @@ export default function DialogNuevaSolicitudCotizacion({
 							onChange={formik.handleChange}
 							name='monto_asegurado'
 						/>
+						{montoSugeridoUnidades != null ? (
+							<p className='text-xs text-muted-foreground'>
+								Monto asegurado sugerido según el desglose de unidades:{' '}
+								{formatUF(montoSugeridoUnidades)} UF
+							</p>
+						) : null}
 					</div>
 
 					<div className='space-y-1.5'>
