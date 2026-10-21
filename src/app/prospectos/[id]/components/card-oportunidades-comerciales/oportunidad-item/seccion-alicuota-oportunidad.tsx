@@ -26,7 +26,8 @@ export default function SeccionAlicuotaOportunidad({
 }: SeccionAlicuotaOportunidadProps) {
 	const [importadorAbierto, setImportadorAbierto] = useState(false)
 	const { data, isLoading } = useAlicuotaOportunidad(idProceso)
-	const { data: desglose, isLoading: cargandoDesglose } = useDesgloseReconstruccion(idProceso)
+	const { data: desglose, isLoading: cargandoDesglose } =
+		useDesgloseReconstruccion(idProceso)
 	const importarMutation = useImportarAlicuotaOportunidad(idProceso)
 	const descargarMutation = useDescargarDesgloseReconstruccion()
 
@@ -43,7 +44,8 @@ export default function SeccionAlicuotaOportunidad({
 				a.click()
 				URL.revokeObjectURL(url)
 			},
-			onError: () => toast.error('Error al descargar el desglose de reconstrucción'),
+			onError: () =>
+				toast.error('Error al descargar el desglose de reconstrucción'),
 		})
 	}
 
@@ -122,7 +124,9 @@ export default function SeccionAlicuotaOportunidad({
 			) : tieneAlicuota ? (
 				<div className='space-y-1'>
 					<p className='text-xs text-muted-foreground'>
-						<span className='font-medium text-foreground'>{data.nombre_excel}</span>
+						<span className='font-medium text-foreground'>
+							{data.nombre_excel}
+						</span>
 						{' · '}
 						{data.cantidad} unidades
 					</p>
@@ -133,7 +137,7 @@ export default function SeccionAlicuotaOportunidad({
 								Monto asegurado sugerido total
 							</p>
 							<p className='text-sm font-semibold text-foreground'>
-								{formatUF(desglose?.monto_asegurado_sugerido_unidades ?? null)} UF
+								{formatUF(desglose?.monto_asegurado_sugerido_unidades ?? null)}
 							</p>
 						</div>
 					) : (
@@ -150,9 +154,12 @@ export default function SeccionAlicuotaOportunidad({
 								<table className='w-full text-xs'>
 									<thead className='sticky top-0 bg-card'>
 										<tr className='border-b border-border/70 text-muted-foreground'>
-											<th className='px-2 py-1.5 text-left font-medium'>Unidad</th>
-											<th className='px-2 py-1.5 text-right font-medium'>Prorrateo alícuota</th>
-											<th className='px-2 py-1.5 text-right font-medium'>Prorrateo por monto</th>
+											<th className='px-2 py-1.5 text-left font-medium'>
+												Unidad
+											</th>
+											<th className='px-2 py-1.5 text-right font-medium'>
+												Prorrateo alícuota
+											</th>
 											<th className='px-2 py-1.5 text-right font-medium'>
 												Monto reconstrucción
 											</th>
@@ -173,9 +180,7 @@ export default function SeccionAlicuotaOportunidad({
 												<td className='px-2 py-1.5 text-right text-muted-foreground'>
 													{formatearProrrateoPorcentaje(unidad.prorrateo)}
 												</td>
-												<td className='px-2 py-1.5 text-right text-muted-foreground'>
-													{formatearProrrateoPorcentaje(unidad.prorrateo_pago)}
-												</td>
+
 												<td className='px-2 py-1.5 text-right text-muted-foreground'>
 													{formatUF(unidad.monto_reconstruccion)}
 												</td>
@@ -194,14 +199,7 @@ export default function SeccionAlicuotaOportunidad({
 													) ?? 0,
 												)}
 											</td>
-											<td className='px-2 py-1.5 text-right text-foreground'>
-												{formatearProrrateoPorcentaje(
-													desglose?.unidades.reduce(
-														(acumulado, unidad) => acumulado + unidad.prorrateo_pago,
-														0,
-													) ?? 0,
-												)}
-											</td>
+
 											<td className='px-2 py-1.5 text-right text-foreground'>
 												{formatUF(
 													desglose?.unidades.reduce(
@@ -212,7 +210,9 @@ export default function SeccionAlicuotaOportunidad({
 												)}
 											</td>
 											<td className='px-2 py-1.5 text-right text-foreground'>
-												{formatUF(desglose?.monto_asegurado_sugerido_unidades ?? null)}
+												{formatUF(
+													desglose?.monto_asegurado_sugerido_unidades ?? null,
+												)}
 											</td>
 										</tr>
 									</tbody>
