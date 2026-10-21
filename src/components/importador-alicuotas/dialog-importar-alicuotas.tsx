@@ -666,9 +666,8 @@ export default function DialogImportarAlicuotas({
 						</div>
 
 						<p className='text-xs text-muted-foreground'>
-							Al confirmar, las unidades se asocian a la solicitud de
-							cotización. Los cálculos posteriores usan estas alícuotas tal como
-							se muestran.
+							Al confirmar, las unidades se asocian a la oportunidad. Los
+							cálculos posteriores usan estas alícuotas tal como se muestran.
 						</p>
 					</div>
 				)}

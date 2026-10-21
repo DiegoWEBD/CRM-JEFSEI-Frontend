@@ -23,7 +23,6 @@ import { formatearFecha } from '@/utils/formatear-fecha'
 import { Download, FileText, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
-import ListadoUnidadesAlicuotas from '@/components/importador-alicuotas/listado-unidades-alicuotas'
 import { useEliminarCotizacion } from '@/hooks/cotizaciones/use-eliminar-cotizacion'
 import type Cotizacion from '@/dominio/cotizacion/cotizacion'
 import DialogEditarCotizacion from './dialog-editar-cotizacion/dialog-editar-cotizacion'
@@ -94,7 +93,6 @@ export default function SolicitudCotizacionTabContent({
 
 	const hasDetalles =
 		(solicitud.tipo === 'vida_guardia' && solicitud.numero_guardias != null) ||
-		(solicitud.tipo === 'unidades' && solicitud.nombre_excel != null) ||
 		solicitud.monto_asegurado != null ||
 		(solicitud.tipo === 'accidentes_personales' &&
 			solicitud.actividades &&
@@ -163,26 +161,6 @@ export default function SolicitudCotizacionTabContent({
 								</dt>
 								<dd className='font-medium text-foreground'>
 									{solicitud.monto_asegurado.toLocaleString('es-CL')}
-								</dd>
-							</div>
-						) : null}
-
-						{solicitud.tipo === 'unidades' && solicitud.nombre_excel ? (
-							<div>
-								<dt className='text-xs text-muted-foreground'>Archivo Excel</dt>
-								<dd className='font-medium text-foreground'>
-									{solicitud.nombre_excel}
-								</dd>
-							</div>
-						) : null}
-
-						{solicitud.tipo === 'unidades' && solicitud.id != null ? (
-							<div>
-								<dt className='mb-1 text-xs text-muted-foreground'>
-									Unidades y alícuotas
-								</dt>
-								<dd>
-									<ListadoUnidadesAlicuotas idSolicitud={solicitud.id} />
 								</dd>
 							</div>
 						) : null}

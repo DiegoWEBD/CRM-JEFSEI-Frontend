@@ -85,6 +85,12 @@ export interface UnidadAlicuotaRequest {
   fila_origen: number
 }
 
+export interface AlicuotaOportunidadResponse {
+  nombre_excel: string | null
+  unidades: UnidadAlicuotaRequest[]
+  cantidad: number
+}
+
 export interface ImportacionAlicuotasResultado {
   nombreExcel: string
   unidades: UnidadAlicuotaRequest[]
