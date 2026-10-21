@@ -19,7 +19,6 @@ export type EstadoConfiguracion = {
 export type EtapaConfiguracion = {
 	codigo_etapa: string
 	nombre_etapa: string
-	dias_limite_etapa: number | null
 	estados: EstadoConfiguracion[]
 }
 

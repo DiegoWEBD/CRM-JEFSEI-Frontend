@@ -9,7 +9,7 @@ export interface ProcesoComercial {
 	producto: string
 	tipo_producto: string
 	estado_actual: EstadoInformativoJson
-	etapa_actual: { id: number; nombre: string; dias_limite: number | null }
+	etapa_actual: { id: number; nombre: string }
 	cerrado: boolean
 	fecha_estimada_cierre: string | null
 	probabilidad_cierre_sistema: number
