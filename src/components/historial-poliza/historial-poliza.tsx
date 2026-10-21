@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { HistorialEstadoJson } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-estado-json'
 import { ToggleGroup, ToggleGroupItem } from '@/components/toggle'
-import { HistorialEtapaResumen } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-etapa-resumen'
 import { OpcionTimeline } from './opcion-timeline'
 import { OpcionListaPlana } from './opcion-lista-plana'
 
 type HistorialPolizaProps = {
-  historial: Record<string, HistorialEtapaResumen> | undefined
+  historial: HistorialEstadoJson[] | undefined
   cargando: boolean
 }
 

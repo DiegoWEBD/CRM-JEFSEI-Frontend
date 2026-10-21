@@ -1,9 +1,9 @@
-import { HistorialEtapaResumen } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-etapa-resumen'
+import { HistorialEstadoJson } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-estado-json'
 import { Skeleton } from '@/components/skeleton'
 import { formatearFecha } from '@/utils/formatear-fecha'
 
 type HistorialEstadosTimelineProps = {
-	historial: Record<string, HistorialEtapaResumen> | undefined
+	historial: HistorialEstadoJson[] | undefined
 	cargando: boolean
 }
 
@@ -28,47 +28,78 @@ export default function HistorialEstadosTimeline({
 				</div>
 			)}
 
-			{historial && Object.keys(historial).length === 0 && (
+			{historial && historial.length === 0 && (
 				<p className='text-xs text-muted-foreground'>
 					No hay historial de estados
 				</p>
 			)}
 
-			{historial &&
-				Object.entries(historial).map(([etapaNombre, etapaData]) => (
-					<div key={etapaNombre}>
-						<div className='flex items-center gap-2 py-1'>
-							<span className='h-2 w-2 rounded-full bg-muted-foreground/40' />
-							<span className='text-xs font-semibold text-foreground'>
-								{etapaData.etapa}
-							</span>
-						</div>
-						<div className='ml-4 space-y-3 border-l-2 border-border/50 pl-4'>
-							{etapaData.estados.map((estado, estIdx) => (
-								<div key={estIdx} className='relative'>
+			{historial && historial.length > 0 && (
+				<div className='space-y-3 border-l-2 border-border/50 pl-4'>
+					{historial.map((item, idx) => {
+						const etapa = item.estado.etapa.nombre
+						// La lista viene ordenada de más reciente a más antiguo,
+						// por lo que el siguiente elemento es el más antiguo.
+						const siguiente = historial[idx + 1]
+						const etapaSiguiente = siguiente?.estado.etapa.nombre
+						const cambioEtapa =
+							siguiente !== undefined && etapaSiguiente !== etapa
+						const etapaYaVisitada = historial
+							.slice(idx + 1)
+							.some(e => e.estado.etapa.nombre === etapa)
+
+						return (
+							<div key={idx}>
+								<div className='relative'>
 									<div className='absolute left-[-1.35rem] top-1.5 h-2 w-2 rounded-full border-2 border-primary bg-background' />
-									<p className='text-xs font-medium text-foreground'>
-										{estado.estado}
-									</p>
+									<div className='flex flex-wrap items-center gap-2'>
+										<p className='text-xs font-medium text-foreground'>
+											{item.estado.nombre}
+										</p>
+										<span className='rounded-sm border border-border bg-muted/50 px-1.5 py-0.5 text-xs text-muted-foreground'>
+											{etapa}
+										</span>
+									</div>
 									<p className='text-sm text-muted-foreground'>
-										Por: {estado.registrado_por}
+										Por: {item.registrado_por.nombre}
 									</p>
 									<p className='text-sm text-muted-foreground tabular-nums'>
 										{formatearFecha(
-											new Date(estado.fecha_registro),
+											new Date(item.fecha_registro),
 											'dd MMM yyyy, HH:mm',
 										)}
 									</p>
-									{estado.observacion && (
+									{item.observacion && (
 										<p className='mt-0.5 text-sm text-muted-foreground/80 italic'>
-											{estado.observacion}
+											{item.observacion}
 										</p>
 									)}
 								</div>
-							))}
-						</div>
-					</div>
-				))}
+
+								{cambioEtapa && (
+									<div className='relative py-0.5'>
+										<div className='absolute left-[-1.35rem] top-1.5 h-2 w-2 rounded-full border-2 border-border bg-background' />
+										<p
+											className={
+												'text-xs font-medium ' +
+												(etapaYaVisitada
+													? 'text-amber-600 dark:text-amber-500'
+													: 'text-muted-foreground')
+											}
+										>
+											{etapaYaVisitada ? (
+												<>← Volvió a &quot;{etapa}&quot;</>
+											) : (
+												<>→ {etapa}</>
+											)}
+										</p>
+									</div>
+								)}
+							</div>
+						)
+					})}
+				</div>
+			)}
 		</>
 	)
 }

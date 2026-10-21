@@ -132,7 +132,7 @@ export default function DetalleProcesoDrawer({
 							</div>
 							<div className='space-y-0.5'>
 								<p className='text-[11px] text-muted-foreground'>
-									Ejecutivo comercial
+									Gestión comercial
 								</p>
 								<p className='text-sm font-medium text-foreground'>
 									{proceso.ejecutivo_comercial?.nombre ?? '—'}
@@ -150,7 +150,7 @@ export default function DetalleProcesoDrawer({
 							{proceso.ejecutivo_evaluacion && (
 								<div className='col-span-2 space-y-0.5'>
 									<p className='text-[11px] text-muted-foreground'>
-										Ejecutivo evaluación
+										Evaluación técnica
 									</p>
 									<p className='text-sm font-medium text-foreground'>
 										{proceso.ejecutivo_evaluacion.nombre}
