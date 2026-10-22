@@ -198,7 +198,7 @@ export default function DialogEditarCotizacion({
 						<Input
 							type='number'
 							min={0}
-							step='0.01'
+							step='0.00001'
 							className='h-9 text-sm shadow-none'
 							placeholder='0'
 							{...formik.getFieldProps('monto_total_asegurado')}
@@ -243,7 +243,7 @@ export default function DialogEditarCotizacion({
 								<Input
 									type='number'
 									min={0}
-									step='0.01'
+									step='0.00001'
 									className='h-9 text-sm shadow-none'
 									{...formik.getFieldProps('tasa_afecta')}
 								/>
@@ -258,7 +258,7 @@ export default function DialogEditarCotizacion({
 								<Input
 									type='number'
 									min={0}
-									step='0.01'
+									step='0.00001'
 									className='h-9 text-sm shadow-none'
 									{...formik.getFieldProps('tasa_excenta')}
 								/>
@@ -273,7 +273,7 @@ export default function DialogEditarCotizacion({
 								<Input
 									type='number'
 									min={0}
-									step='0.01'
+									step='0.00001'
 									className='h-9 text-sm shadow-none'
 									{...formik.getFieldProps('tasa_politica')}
 								/>
@@ -292,7 +292,7 @@ export default function DialogEditarCotizacion({
 								<Input
 									type='number'
 									min={0}
-									step='0.01'
+									step='0.00001'
 									className='h-9 text-sm shadow-none'
 									{...formik.getFieldProps('prima_afecta')}
 								/>
@@ -307,7 +307,7 @@ export default function DialogEditarCotizacion({
 								<Input
 									type='number'
 									min={0}
-									step='0.01'
+									step='0.00001'
 									className='h-9 text-sm shadow-none'
 									{...formik.getFieldProps('prima_excenta')}
 								/>
@@ -328,7 +328,7 @@ export default function DialogEditarCotizacion({
 								<Input
 									type='number'
 									min={0}
-									step='0.01'
+									step='0.00001'
 									className='h-9 text-sm shadow-none'
 									{...formik.getFieldProps('asistencia_afecta')}
 								/>
@@ -344,7 +344,7 @@ export default function DialogEditarCotizacion({
 								<Input
 									type='number'
 									min={0}
-									step='0.01'
+									step='0.00001'
 									className='h-9 text-sm shadow-none'
 									{...formik.getFieldProps('asistencia_excenta')}
 								/>
@@ -362,7 +362,7 @@ export default function DialogEditarCotizacion({
 							<Input
 								type='number'
 								min={0}
-								step='0.01'
+								step='0.00001'
 								className='h-9 text-sm shadow-none'
 								placeholder='0'
 								{...formik.getFieldProps('asistencia_afecta')}

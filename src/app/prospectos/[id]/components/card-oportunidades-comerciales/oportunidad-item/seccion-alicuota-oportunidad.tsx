@@ -202,11 +202,13 @@ export default function SeccionAlicuotaOportunidad({
 
 											<td className='px-2 py-1.5 text-right text-foreground'>
 												{formatUF(
-													desglose?.unidades.reduce(
-														(acumulado, unidad) =>
-															acumulado + unidad.monto_reconstruccion,
-														0,
-													) ?? 0,
+													Math.round(
+														desglose?.unidades.reduce(
+															(acumulado, unidad) =>
+																acumulado + unidad.monto_reconstruccion,
+															0,
+														) ?? 0,
+													),
 												)}
 											</td>
 											<td className='px-2 py-1.5 text-right text-foreground'>

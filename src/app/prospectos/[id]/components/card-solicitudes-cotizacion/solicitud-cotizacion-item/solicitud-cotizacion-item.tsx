@@ -5,12 +5,12 @@ import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
-import { useEliminarSolicitudCotizacion } from '@/hooks/solicitudes-cotizacion/use-eliminar-solicitud-cotizacion'
 import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useEliminarSolicitudCotizacion } from '@/hooks/solicitudes-cotizacion/use-eliminar-solicitud-cotizacion'
 
+import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { normalizarTexto } from '@/utils/normalizar-texto'
-import { cn } from '@/lib/utils'
 import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import SolicitudCotizacionTabContent, {
@@ -21,13 +21,12 @@ type SolicitudCotizacionItemProps = {
 	solicitud: SolicitudCotizacion
 	informacionCompleta: boolean
 	idProspecto: number
-	idProceso?: number
+	idProceso: number
 	nombreCliente: string
 	lineaNegocioNombre: string
 	ejecutivoComercialRut?: string
 	ejecutivoEvaluacionRut?: string
 	gestionesAbiertasPorDefecto?: boolean
-	ocultarToggle?: boolean
 }
 
 const TAB_LABELS: Record<TabId, string> = {
@@ -49,7 +48,6 @@ export default function SolicitudCotizacionItem({
 	ejecutivoComercialRut,
 	ejecutivoEvaluacionRut,
 	gestionesAbiertasPorDefecto,
-	ocultarToggle,
 }: SolicitudCotizacionItemProps) {
 	const { usuario } = useUserSession()
 	const [gestionesAbiertas, setGestionesAbiertas] = useState(
@@ -159,6 +157,7 @@ export default function SolicitudCotizacionItem({
 						<SolicitudCotizacionTabContent
 							solicitud={solicitud}
 							idProspecto={idProspecto}
+							idProcesoComercial={idProceso}
 							tab={tabActiva}
 							nombreCliente={nombreCliente}
 							lineaNegocioNombre={lineaNegocioNombre}

@@ -38,6 +38,7 @@ export type TabId = 'solicitud' | 'cotizaciones' | 'estudio'
 type SolicitudCotizacionTabContentProps = {
 	solicitud: SolicitudCotizacion
 	idProspecto: number
+	idProcesoComercial: number
 	tab: TabId
 	nombreCliente: string
 	lineaNegocioNombre: string
@@ -63,6 +64,7 @@ function descargarPDF(base64: string, nombreArchivo: string) {
 export default function SolicitudCotizacionTabContent({
 	solicitud,
 	idProspecto,
+	idProcesoComercial,
 	tab,
 	nombreCliente,
 	lineaNegocioNombre,
@@ -561,6 +563,7 @@ export default function SolicitudCotizacionTabContent({
 				<DialogGenerarEstudioWrapper
 					solicitud={solicitud}
 					idProspecto={idProspecto}
+					idProcesoComercial={idProcesoComercial}
 					nombreCliente={nombreCliente}
 					lineaNegocioNombre={lineaNegocioNombre}
 					nombreEjecutivo={nombreEjecutivo}

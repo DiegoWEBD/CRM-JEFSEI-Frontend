@@ -25,7 +25,10 @@ import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
 import { useArmarEstudioComercial } from '@/hooks/estudio-comercial/use-armar-estudio-comercial'
 import { useUfValue } from '@/hooks/uf/use-uf-value'
 import { cn } from '@/lib/utils'
-import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
+import {
+	ESTADO_COTIZACION_VARIANT,
+	ESTADO_COTIZACION_LABELS,
+} from '@/lib/badge-variants'
 import { useFormik } from 'formik'
 import { Loader2, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -107,25 +110,28 @@ export default function DialogGenerarEstudio({
 	const formik = useFormik<FormValues>({
 		initialValues: {
 			observaciones: '',
-			infraseguro1: configuracionEstudio?.infraseguro_primer_ejemplo != null
-				? String(
-						Math.round(
-							(configuracionEstudio.infraseguro_primer_ejemplo * 100) / 10,
-						) * 10,
-					)
-				: 'no',
-			infraseguro2: configuracionEstudio?.infraseguro_segundo_ejemplo != null
-				? String(
-						Math.round(
-							(configuracionEstudio.infraseguro_segundo_ejemplo * 100) / 10,
-						) * 10,
-					)
-				: 'no',
+			infraseguro1:
+				configuracionEstudio?.infraseguro_primer_ejemplo != null
+					? String(
+							Math.round(
+								(configuracionEstudio.infraseguro_primer_ejemplo * 100) / 10,
+							) * 10,
+						)
+					: 'no',
+			infraseguro2:
+				configuracionEstudio?.infraseguro_segundo_ejemplo != null
+					? String(
+							Math.round(
+								(configuracionEstudio.infraseguro_segundo_ejemplo * 100) / 10,
+							) * 10,
+						)
+					: 'no',
 			cuotas: String(configuracionEstudio?.cantidad_cuotas ?? 11),
 			valorUf: '38000',
-			montoAseguradoActual: configuracionEstudio?.monto_asegurado_actual != null
-				? String(configuracionEstudio.monto_asegurado_actual)
-				: '',
+			montoAseguradoActual:
+				configuracionEstudio?.monto_asegurado_actual != null
+					? String(configuracionEstudio.monto_asegurado_actual)
+					: '',
 			conMontoSugerido: configuracionEstudio?.con_monto_sugerido
 				? 'true'
 				: 'false',
@@ -135,29 +141,32 @@ export default function DialogGenerarEstudio({
 			if (idsSeleccionados.length === 0) return
 
 			const response = await armarMutation.mutateAsync({
-				id_prospecto: fila.id_prospecto,
+				id_proceso_comercial: fila.id_proceso_comercial,
 				monto_asegurado_actual: values.montoAseguradoActual
 					? Number(values.montoAseguradoActual)
 					: null,
 				con_monto_sugerido: values.conMontoSugerido === 'true',
-				infraseguro_primer_ejemplo: values.infraseguro1 && values.infraseguro1 !== 'no'
-					? Number(values.infraseguro1) / 100
-					: null,
-				infraseguro_segundo_ejemplo: values.infraseguro2 && values.infraseguro2 !== 'no'
-					? Number(values.infraseguro2) / 100
-					: null,
+				infraseguro_primer_ejemplo:
+					values.infraseguro1 && values.infraseguro1 !== 'no'
+						? Number(values.infraseguro1) / 100
+						: null,
+				infraseguro_segundo_ejemplo:
+					values.infraseguro2 && values.infraseguro2 !== 'no'
+						? Number(values.infraseguro2) / 100
+						: null,
 				cantidad_cuotas: Number(values.cuotas),
 				ids_cotizacion: idsSeleccionados,
 				valor_uf: Number(values.valorUf),
-				secciones: secciones.length > 0
-					? secciones.map(s => ({
-							titulo: s.titulo,
-							monto_asegurado: Number(s.montoAsegurado),
-							numero_propietarios: s.numeroPropietarios
-								? Number(s.numeroPropietarios)
-								: null,
-						}))
-					: null,
+				secciones:
+					secciones.length > 0
+						? secciones.map(s => ({
+								titulo: s.titulo,
+								monto_asegurado: Number(s.montoAsegurado),
+								numero_propietarios: s.numeroPropietarios
+									? Number(s.numeroPropietarios)
+									: null,
+							}))
+						: null,
 			})
 
 			if (response.archivo_base64) {
@@ -277,7 +286,7 @@ export default function DialogGenerarEstudio({
 													className={cn(
 														'flex cursor-pointer gap-3 rounded-md border bg-card px-3 py-2.5 transition-colors',
 														checked
-															? 'border-primary/40 bg-primary/[0.04]'
+															? 'border-primary/40 bg-primary/4'
 															: 'border-border/70',
 													)}
 												>
@@ -515,9 +524,7 @@ export default function DialogGenerarEstudio({
 														/>
 													</div>
 													<div className='w-full space-y-1 sm:w-32'>
-														<Label className='text-xs'>
-															Monto asegurado
-														</Label>
+														<Label className='text-xs'>Monto asegurado</Label>
 														<Input
 															type='number'
 															step='0.01'

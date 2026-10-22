@@ -231,7 +231,6 @@ export default function OportunidadItem({
 										ejecutivoComercialRut={ejecutivoComercialRut}
 										ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
 										gestionesAbiertasPorDefecto
-										ocultarToggle
 									/>
 								) : null}
 							</div>
