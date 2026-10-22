@@ -74,6 +74,7 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 		return {
 			id: s.id,
 			id_prospecto: s.id_prospecto,
+			id_proceso_comercial: 0,
 			cliente: s.nombre_riesgo,
 			linea_seguro: s.producto,
 			ejecutivo_comercial: s.ejecutivo_comercial,

@@ -436,6 +436,7 @@ export default function SolicitudCotizacionTabContent({
 
 				<DialogVerCotizacionesWrapper
 					solicitud={solicitud}
+					idProcesoComercial={idProcesoComercial}
 					nombreCliente={nombreCliente}
 					lineaNegocioNombre={lineaNegocioNombre}
 					nombreEjecutivo={nombreEjecutivo}
