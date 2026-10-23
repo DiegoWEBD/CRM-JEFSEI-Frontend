@@ -230,7 +230,6 @@ export default function OportunidadItem({
 										lineaNegocioNombre={lineaNegocioNombre}
 										ejecutivoComercialRut={ejecutivoComercialRut}
 										ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
-										gestionesAbiertasPorDefecto
 									/>
 								) : null}
 							</div>
