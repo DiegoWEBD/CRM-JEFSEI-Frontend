@@ -4,6 +4,7 @@ import type { Prioridad } from '@/types/prioridad/prioridad'
 export interface PanelEstudioFila {
 	id: number
 	id_prospecto: number
+	id_proceso_comercial: number
 	cliente: string
 	linea_seguro: string
 	ejecutivo_comercial: string

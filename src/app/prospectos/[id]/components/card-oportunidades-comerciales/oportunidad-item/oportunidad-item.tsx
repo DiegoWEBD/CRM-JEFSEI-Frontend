@@ -17,6 +17,7 @@ import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
 import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
 import ProbabilidadCierreCell from './probabilidad-cierre-cell'
+import SeccionAlicuotaOportunidad from './seccion-alicuota-oportunidad'
 import SelectorEstadoOportunidad from './selector-estado-oportunidad'
 import { formatearFecha } from '@/utils/formatear-fecha'
 
@@ -177,6 +178,16 @@ export default function OportunidadItem({
 								</div>
 							</div>
 						</div>
+
+						{proceso.tipo_producto === 'unidades' ? (
+							<div className='mb-3'>
+								<SeccionAlicuotaOportunidad
+									idProceso={proceso.id}
+									puedeImportar={puedeSolicitarCotizacion}
+								/>
+							</div>
+						) : null}
+
 						{isLoading ? (
 							<div className='space-y-2'>
 								<Skeleton className='h-12 w-full' />
@@ -219,8 +230,6 @@ export default function OportunidadItem({
 										lineaNegocioNombre={lineaNegocioNombre}
 										ejecutivoComercialRut={ejecutivoComercialRut}
 										ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
-										gestionesAbiertasPorDefecto
-										ocultarToggle
 									/>
 								) : null}
 							</div>

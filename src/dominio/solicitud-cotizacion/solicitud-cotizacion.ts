@@ -23,7 +23,6 @@ export default class SolicitudCotizacion {
     public motivo_recotizacion?: string | null,
     public numero_guardias?: number,
     public monto_asegurado?: number | null,
-    public nombre_excel?: string,
     public actividades?: ActividadAccidentesPersonales[],
     public actividad_del_condominio?: string,
     public limite?: number,

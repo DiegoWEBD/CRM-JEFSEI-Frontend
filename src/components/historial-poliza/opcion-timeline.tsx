@@ -1,10 +1,8 @@
-'use client'
-
+import { HistorialEstadoJson } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-estado-json'
 import HistorialEstadosTimeline from '@/components/historial-estados-timeline/historial-estados-timeline'
-import { HistorialEtapaResumen } from '@/aplicacion/procesos-comerciales/use-cases/obtener-historial-estado/dto/historial-etapa-resumen'
 
 type OpcionTimelineProps = {
-  historial: Record<string, HistorialEtapaResumen> | undefined
+  historial: HistorialEstadoJson[] | undefined
   cargando: boolean
 }
 

@@ -5,12 +5,12 @@ import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
-import { useEliminarSolicitudCotizacion } from '@/hooks/solicitudes-cotizacion/use-eliminar-solicitud-cotizacion'
 import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useEliminarSolicitudCotizacion } from '@/hooks/solicitudes-cotizacion/use-eliminar-solicitud-cotizacion'
 
+import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import { normalizarTexto } from '@/utils/normalizar-texto'
-import { cn } from '@/lib/utils'
 import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import SolicitudCotizacionTabContent, {
@@ -21,13 +21,11 @@ type SolicitudCotizacionItemProps = {
 	solicitud: SolicitudCotizacion
 	informacionCompleta: boolean
 	idProspecto: number
-	idProceso?: number
+	idProceso: number
 	nombreCliente: string
 	lineaNegocioNombre: string
 	ejecutivoComercialRut?: string
 	ejecutivoEvaluacionRut?: string
-	gestionesAbiertasPorDefecto?: boolean
-	ocultarToggle?: boolean
 }
 
 const TAB_LABELS: Record<TabId, string> = {
@@ -48,13 +46,8 @@ export default function SolicitudCotizacionItem({
 	lineaNegocioNombre,
 	ejecutivoComercialRut,
 	ejecutivoEvaluacionRut,
-	gestionesAbiertasPorDefecto,
-	ocultarToggle,
 }: SolicitudCotizacionItemProps) {
 	const { usuario } = useUserSession()
-	const [gestionesAbiertas, setGestionesAbiertas] = useState(
-		gestionesAbiertasPorDefecto ?? false,
-	)
 	const [tabActiva, setTabActiva] = useState<TabId>('solicitud')
 	const [solicitudAEliminar, setSolicitudAEliminar] = useState(false)
 	const eliminarMutation = useEliminarSolicitudCotizacion(
@@ -72,7 +65,7 @@ export default function SolicitudCotizacionItem({
 			key={solicitud.id}
 			className={cn(
 				'min-w-0 overflow-hidden rounded-lg border border-border/80 bg-card transition-colors',
-				gestionesAbiertas && 'border-primary/40 ring-1 ring-primary/20',
+				'border-primary/40 ring-1 ring-primary/20',
 			)}
 		>
 			<div className='p-3 sm:p-3.5'>
@@ -94,8 +87,7 @@ export default function SolicitudCotizacionItem({
 						<p className='mt-0.5 text-xs text-muted-foreground'>
 							{formatearFecha(new Date(solicitud.fecha), 'dd-MM-yyyy · HH:mm')}
 						</p>
-						{gestionesAbiertasPorDefecto &&
-						solicitud.cantidad_cotizaciones > 0 ? (
+						{solicitud.cantidad_cotizaciones > 0 ? (
 							<p className='mt-1 flex flex-wrap items-center gap-1.5'>
 								<span className='inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 px-2 py-0.5 text-xs font-medium text-muted-foreground'>
 									{solicitud.cantidad_cotizaciones}{' '}
@@ -130,42 +122,40 @@ export default function SolicitudCotizacionItem({
 					)}
 				</div>
 
-				{gestionesAbiertas ? (
-					<div className='mt-3 min-w-0'>
-						<div className='flex border-b border-border'>
-							{tabs.map(t => (
-								<button
-									key={t}
-									type='button'
-									onClick={() => setTabActiva(t)}
-									className={cn(
-										'-mb-px px-3 py-2 text-xs font-medium transition-colors',
-										tabActiva === t
-											? 'border-b-2 border-primary text-foreground'
-											: 'border-b-2 border-transparent text-muted-foreground hover:text-foreground',
-									)}
-								>
-									{TAB_LABELS[t]}
-									{t === 'cotizaciones' &&
-									solicitud.cantidad_cotizaciones > 0 ? (
-										<span className='ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-xs tabular-nums'>
-											{solicitud.cantidad_cotizaciones}
-										</span>
-									) : null}
-								</button>
-							))}
-						</div>
-
-						<SolicitudCotizacionTabContent
-							solicitud={solicitud}
-							idProspecto={idProspecto}
-							tab={tabActiva}
-							nombreCliente={nombreCliente}
-							lineaNegocioNombre={lineaNegocioNombre}
-							ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
-						/>
+				<div className='mt-3 min-w-0'>
+					<div className='flex border-b border-border'>
+						{tabs.map(t => (
+							<button
+								key={t}
+								type='button'
+								onClick={() => setTabActiva(t)}
+								className={cn(
+									'-mb-px px-3 py-2 text-xs font-medium transition-colors',
+									tabActiva === t
+										? 'border-b-2 border-primary text-foreground'
+										: 'border-b-2 border-transparent text-muted-foreground hover:text-foreground',
+								)}
+							>
+								{TAB_LABELS[t]}
+								{t === 'cotizaciones' && solicitud.cantidad_cotizaciones > 0 ? (
+									<span className='ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-xs tabular-nums'>
+										{solicitud.cantidad_cotizaciones}
+									</span>
+								) : null}
+							</button>
+						))}
 					</div>
-				) : null}
+
+					<SolicitudCotizacionTabContent
+						solicitud={solicitud}
+						idProspecto={idProspecto}
+						idProcesoComercial={idProceso}
+						tab={tabActiva}
+						nombreCliente={nombreCliente}
+						lineaNegocioNombre={lineaNegocioNombre}
+						ejecutivoEvaluacionRut={ejecutivoEvaluacionRut}
+					/>
+				</div>
 			</div>
 
 			<ConfirmDialog

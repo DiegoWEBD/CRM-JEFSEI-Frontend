@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { HistorialEtapaResumen } from './dto/historial-etapa-resumen'
+import { HistorialEstadoJson } from './dto/historial-estado-json'
 
 type ObtenerHistorialEstadoResponse = {
-  historial: Record<string, HistorialEtapaResumen>
+  historial: HistorialEstadoJson[]
 }
 
 export const obtenerHistorialEstado = async (idProceso: number) => {

@@ -5,42 +5,45 @@ import DialogVerCotizaciones from '@/components/paneles/cotizaciones-estudios-em
 import type SolicitudCotizacion from '@/dominio/solicitud-cotizacion/solicitud-cotizacion'
 
 type DialogVerCotizacionesWrapperProps = {
-  solicitud: SolicitudCotizacion
-  nombreCliente: string
-  lineaNegocioNombre: string
-  nombreEjecutivo: string
-  open: boolean
-  onOpenChange: (open: boolean) => void
+	solicitud: SolicitudCotizacion
+	idProcesoComercial: number
+	nombreCliente: string
+	lineaNegocioNombre: string
+	nombreEjecutivo: string
+	open: boolean
+	onOpenChange: (open: boolean) => void
 }
 
 export default function DialogVerCotizacionesWrapper({
-  solicitud,
-  nombreCliente,
-  lineaNegocioNombre,
-  nombreEjecutivo,
-  open,
-  onOpenChange,
+	solicitud,
+	idProcesoComercial,
+	nombreCliente,
+	lineaNegocioNombre,
+	nombreEjecutivo,
+	open,
+	onOpenChange,
 }: DialogVerCotizacionesWrapperProps) {
-  const fila: PanelEstudioFila = {
-    id: solicitud.id,
-    id_prospecto: 0,
-    cliente: nombreCliente,
-    linea_seguro: lineaNegocioNombre,
-    ejecutivo_comercial: nombreEjecutivo,
-    cantidad_cotizaciones: solicitud.cantidad_cotizaciones,
-    prioridad: solicitud.prioridad,
-    fecha: solicitud.fecha,
-    tiene_estudio: false,
-    id_estudio: null,
-    vencimiento_mas_proximo: null,
-    estado: null,
-  }
+	const fila: PanelEstudioFila = {
+		id: solicitud.id,
+		id_prospecto: 0,
+		id_proceso_comercial: idProcesoComercial,
+		cliente: nombreCliente,
+		linea_seguro: lineaNegocioNombre,
+		ejecutivo_comercial: nombreEjecutivo,
+		cantidad_cotizaciones: solicitud.cantidad_cotizaciones,
+		prioridad: solicitud.prioridad,
+		fecha: solicitud.fecha,
+		tiene_estudio: false,
+		id_estudio: null,
+		vencimiento_mas_proximo: null,
+		estado: null,
+	}
 
-  return (
-    <DialogVerCotizaciones
-      fila={fila}
-      open={open}
-      onOpenChange={onOpenChange}
-    />
-  )
+	return (
+		<DialogVerCotizaciones
+			fila={fila}
+			open={open}
+			onOpenChange={onOpenChange}
+		/>
+	)
 }

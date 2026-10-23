@@ -26,6 +26,7 @@ import ConfirmDialog from '@/components/confirm-dialog/confirm-dialog'
 import { useEliminarCotizacion } from '@/hooks/cotizaciones/use-eliminar-cotizacion'
 import type Cotizacion from '@/dominio/cotizacion/cotizacion'
 import DialogEditarCotizacion from './dialog-editar-cotizacion/dialog-editar-cotizacion'
+import DialogDesgloseUnidades from './dialog-desglose-unidades'
 import DialogGenerarEstudioWrapper from './dialog-generar-estudio-wrapper'
 import DialogRegistrarCotizacion from './dialog-registrar-cotizacion/dialog-registrar-cotizacion'
 import DialogSubirEstudio from './dialog-subir-estudio/dialog-subir-estudio'
@@ -37,6 +38,7 @@ export type TabId = 'solicitud' | 'cotizaciones' | 'estudio'
 type SolicitudCotizacionTabContentProps = {
 	solicitud: SolicitudCotizacion
 	idProspecto: number
+	idProcesoComercial: number
 	tab: TabId
 	nombreCliente: string
 	lineaNegocioNombre: string
@@ -62,6 +64,7 @@ function descargarPDF(base64: string, nombreArchivo: string) {
 export default function SolicitudCotizacionTabContent({
 	solicitud,
 	idProspecto,
+	idProcesoComercial,
 	tab,
 	nombreCliente,
 	lineaNegocioNombre,
@@ -77,6 +80,7 @@ export default function SolicitudCotizacionTabContent({
 	const [openVerCotizaciones, setOpenVerCotizaciones] = useState(false)
 	const [openGenerarEstudio, setOpenGenerarEstudio] = useState(false)
 	const [openSubirEstudio, setOpenSubirEstudio] = useState(false)
+	const [openDesgloseUnidades, setOpenDesgloseUnidades] = useState(false)
 	const [cotizacionAEditar, setCotizacionAEditar] = useState<Cotizacion | null>(
 		null,
 	)
@@ -91,7 +95,6 @@ export default function SolicitudCotizacionTabContent({
 
 	const hasDetalles =
 		(solicitud.tipo === 'vida_guardia' && solicitud.numero_guardias != null) ||
-		(solicitud.tipo === 'unidades' && solicitud.nombre_excel != null) ||
 		solicitud.monto_asegurado != null ||
 		(solicitud.tipo === 'accidentes_personales' &&
 			solicitud.actividades &&
@@ -160,15 +163,6 @@ export default function SolicitudCotizacionTabContent({
 								</dt>
 								<dd className='font-medium text-foreground'>
 									{solicitud.monto_asegurado.toLocaleString('es-CL')}
-								</dd>
-							</div>
-						) : null}
-
-						{solicitud.tipo === 'unidades' && solicitud.nombre_excel ? (
-							<div>
-								<dt className='text-xs text-muted-foreground'>Archivo Excel</dt>
-								<dd className='font-medium text-foreground'>
-									{solicitud.nombre_excel}
 								</dd>
 							</div>
 						) : null}
@@ -442,6 +436,7 @@ export default function SolicitudCotizacionTabContent({
 
 				<DialogVerCotizacionesWrapper
 					solicitud={solicitud}
+					idProcesoComercial={idProcesoComercial}
 					nombreCliente={nombreCliente}
 					lineaNegocioNombre={lineaNegocioNombre}
 					nombreEjecutivo={nombreEjecutivo}
@@ -503,6 +498,20 @@ export default function SolicitudCotizacionTabContent({
 						>
 							Generar estudio
 						</Button>
+						{solicitud.tipo === 'unidades' ? (
+							<PermissionGuard allowedPermissions={['ARMAR_ESTUDIO_COMERCIAL']}>
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									className='h-8 text-xs'
+									disabled={!cotizaciones || cotizaciones.length === 0}
+									onClick={() => setOpenDesgloseUnidades(true)}
+								>
+									Desglose por unidad
+								</Button>
+							</PermissionGuard>
+						) : null}
 					</div>
 				) : null}
 
@@ -555,6 +564,7 @@ export default function SolicitudCotizacionTabContent({
 				<DialogGenerarEstudioWrapper
 					solicitud={solicitud}
 					idProspecto={idProspecto}
+					idProcesoComercial={idProcesoComercial}
 					nombreCliente={nombreCliente}
 					lineaNegocioNombre={lineaNegocioNombre}
 					nombreEjecutivo={nombreEjecutivo}
@@ -567,6 +577,13 @@ export default function SolicitudCotizacionTabContent({
 					idProspecto={idProspecto}
 					open={openSubirEstudio}
 					onOpenChange={setOpenSubirEstudio}
+				/>
+
+				<DialogDesgloseUnidades
+					solicitudId={solicitud.id}
+					cotizaciones={cotizaciones ?? []}
+					open={openDesgloseUnidades}
+					onOpenChange={setOpenDesgloseUnidades}
 				/>
 			</div>
 		)

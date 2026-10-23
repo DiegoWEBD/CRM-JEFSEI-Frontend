@@ -19,8 +19,10 @@ import {
 	SelectValue,
 } from '@/components/select'
 import { Textarea } from '@/components/textarea'
+import { useDesgloseReconstruccion } from '@/hooks/importacion-alicuotas/use-desglose-reconstruccion'
 import { useSolicitarCotizacion } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion'
 import { useSolicitarCotizacionProceso } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion-proceso'
+import { formatUF } from '@/lib/uf'
 import type {
 	LineaSeguroSolicitudKey,
 	PrioridadSolicitud,
@@ -36,6 +38,7 @@ import {
 } from '@/lib/solicitud-cotizacion-catalogo'
 import { useFormik } from 'formik'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
+import { useEffect } from 'react'
 
 interface ActividadFila {
 	actividad: string
@@ -95,8 +98,11 @@ export default function DialogNuevaSolicitudCotizacion({
 		idProceso ?? 0,
 		idProspecto,
 	)
-
 	const lineasOpciones = lineasSolicitudParaTipo(tipoCliente)
+
+	function handleDialogOpenChange(siguiente: boolean) {
+		onOpenChange(siguiente)
+	}
 
 	function validar(values: DialogNuevaSolicitudFormValues) {
 		const errors: Record<string, string> = {}
@@ -141,14 +147,6 @@ export default function DialogNuevaSolicitudCotizacion({
 
 		const tipo = values.lineaSeguro
 
-		if (tipo === 'unidades') {
-			return {
-				...base,
-				tipo,
-				nombre_excel: '',
-			}
-		}
-
 		if (tipo === 'vida_guardia') {
 			return {
 				...base,
@@ -185,7 +183,8 @@ export default function DialogNuevaSolicitudCotizacion({
 				| 'vida'
 				| 'salud_complementario'
 				| 'mascotas'
-				| 'espacios_comunes',
+				| 'espacios_comunes'
+				| 'unidades',
 		}
 	}
 
@@ -216,6 +215,20 @@ export default function DialogNuevaSolicitudCotizacion({
 
 	const lineaActual: LineaSeguroSolicitudKey | '' =
 		(tipoPredefinido as LineaSeguroSolicitudKey) ?? formik.values.lineaSeguro
+	const { data: desgloseUnidades } = useDesgloseReconstruccion(idProceso ?? 0)
+	const montoSugeridoUnidades =
+		lineaActual === 'unidades'
+			? desgloseUnidades?.monto_asegurado_sugerido_unidades ?? null
+			: null
+
+	// Las cotizaciones de unidades se solicitan con el monto asegurado
+	// sugerido del desglose de reconstrucción de las unidades.
+	useEffect(() => {
+		if (montoSugeridoUnidades != null && open && !formik.values.monto_asegurado) {
+			formik.setFieldValue('monto_asegurado', String(montoSugeridoUnidades))
+		}
+	}, [montoSugeridoUnidades, open, formik])
+
 	const camposDinamicos = camposSolicitudParaLinea(tipoCliente, lineaActual)
 	const camposEstandar = camposDinamicos.filter(
 		c => c.tipo !== 'actividades_aseguradas',
@@ -247,7 +260,7 @@ export default function DialogNuevaSolicitudCotizacion({
 	}
 
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
+		<Dialog open={open} onOpenChange={handleDialogOpenChange}>
 			<DialogContent className='max-h-[min(90vh,720px)] max-w-md gap-4 overflow-y-auto'>
 				<DialogHeader className='space-y-0'>
 					<DialogTitle>Solicitud de cotización</DialogTitle>
@@ -416,6 +429,18 @@ export default function DialogNuevaSolicitudCotizacion({
 						</div>
 					) : null}
 
+					{lineaActual === 'unidades' && (
+						<div className='space-y-1.5 rounded-md border border-border/70 bg-muted/10 p-3'>
+							<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+								Alícuotas de la comunidad
+							</p>
+							<p className='text-xs text-muted-foreground'>
+								La alícuota se importa desde la oportunidad (botón «Importar
+								alícuota») y puede agregarse en cualquier momento.
+							</p>
+						</div>
+					)}
+
 					<div className='space-y-1.5'>
 						<Label className='text-xs text-muted-foreground'>
 							Observaciones (opcional)
@@ -441,6 +466,12 @@ export default function DialogNuevaSolicitudCotizacion({
 							onChange={formik.handleChange}
 							name='monto_asegurado'
 						/>
+						{montoSugeridoUnidades != null ? (
+							<p className='text-xs text-muted-foreground'>
+								Monto asegurado sugerido según el desglose de unidades:{' '}
+								{formatUF(montoSugeridoUnidades)} UF
+							</p>
+						) : null}
 					</div>
 
 					<div className='space-y-1.5'>
@@ -475,7 +506,7 @@ export default function DialogNuevaSolicitudCotizacion({
 							type='button'
 							variant='outline'
 							size='sm'
-							onClick={() => onOpenChange(false)}
+							onClick={() => handleDialogOpenChange(false)}
 						>
 							Cancelar
 						</Button>

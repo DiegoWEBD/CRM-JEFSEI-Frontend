@@ -111,14 +111,6 @@ export default function SheetDetalleSolicitud({
 								</FilaDetalle>
 							)}
 
-							{full?.tipo === 'unidades' && (
-								<>
-									<FilaDetalle label='Archivo Excel'>
-										{full?.nombre_excel || '-'}
-									</FilaDetalle>
-								</>
-							)}
-
 							{full?.monto_asegurado != null && (
 								<FilaDetalle label='Monto asegurado'>
 									{full?.monto_asegurado?.toLocaleString('es-CL') || '-'}
