@@ -104,7 +104,8 @@ export default function DialogDetalleAlicuota({
 							<div className='flex items-center justify-between rounded-md border border-border/70 bg-card px-2.5 py-1.5'>
 								<p className='text-xs text-muted-foreground'>
 									Monto asegurado total
-									{cambios.totales.montoSugerido !== cambios.totales.montoAsegurado ? (
+									{cambios.totales.montoSugerido !==
+									cambios.totales.montoAsegurado ? (
 										<span className='text-muted-foreground/70'>
 											{' '}
 											(sugerido: {formatUF(cambios.totales.montoSugerido)})
@@ -118,14 +119,15 @@ export default function DialogDetalleAlicuota({
 						) : (
 							<p className='rounded-md border border-dashed border-border/70 px-2.5 py-1.5 text-xs text-muted-foreground'>
 								Monto asegurado sugerido no calculado: complete los datos de
-								reconstrucción del prospecto (m², UF/m² y depreciación). Los montos
-								asegurados personalizados que fije aquí se aplicarán al cálculo.
+								reconstrucción del prospecto (m², UF/m² y depreciación). Los
+								montos asegurados personalizados que fije aquí se aplicarán al
+								cálculo.
 							</p>
 						)}
 
 						{data.cantidad > 0 ? (
 							<div className='overflow-auto rounded-md border border-border/70 bg-card'>
-								<table className='w-full min-w-[860px] table-fixed text-xs'>
+								<table className='w-full min-w-215 table-fixed text-xs'>
 									<thead className='sticky top-0 bg-card'>
 										<tr className='border-b border-border/70 text-muted-foreground'>
 											<th className='w-[24%] px-2 py-1.5 text-left font-medium'>
@@ -161,10 +163,14 @@ export default function DialogDetalleAlicuota({
 											const descartada = cambios.descartadaEfectiva(unidad)
 											const personalizado =
 												cambios.montoPersonalizadoEfectivoDe(unidad) != null ||
-												(cambiosUnidad?.monto_asegurado_personalizado === undefined &&
-													calculado?.tiene_monto_asegurado_personalizado === true)
+												(cambiosUnidad?.monto_asegurado_personalizado ===
+													undefined &&
+													calculado?.tiene_monto_asegurado_personalizado ===
+														true)
 											const textoMonto =
-												unidad.id != null ? cambios.montosEditando[unidad.id] : undefined
+												unidad.id != null
+													? cambios.montosEditando[unidad.id]
+													: undefined
 											const montoInvalido =
 												textoMonto !== undefined &&
 												textoMonto.trim() !== '' &&
@@ -208,12 +214,21 @@ export default function DialogDetalleAlicuota({
 															<td className='px-2 py-1.5 text-right text-muted-foreground'>
 																{descartada
 																	? '—'
-																	: formatUF(calculado?.monto_reconstruccion ?? null)}
+																	: formatUF(
+																			Number(
+																				calculado?.monto_reconstruccion.toFixed(
+																					2,
+																				),
+																			) ?? null,
+																		)}
 															</td>
 															<td className='px-2 py-1.5 text-right text-muted-foreground'>
 																{descartada
 																	? '—'
-																	: formatUF(calculado?.monto_asegurado_sugerido ?? null)}
+																	: formatUF(
+																			calculado?.monto_asegurado_sugerido ??
+																				null,
+																		)}
 															</td>
 														</>
 													) : null}
@@ -237,13 +252,18 @@ export default function DialogDetalleAlicuota({
 																value={cambios.montoVisible(unidad)}
 																disabled={cambios.guardando}
 																onChange={event =>
-																	cambios.cambiarMonto(unidad, event.target.value)
+																	cambios.cambiarMonto(
+																		unidad,
+																		event.target.value,
+																	)
 																}
 															/>
 														) : (
 															<span
 																className={
-																	descartada ? 'text-muted-foreground' : 'text-foreground'
+																	descartada
+																		? 'text-muted-foreground'
+																		: 'text-foreground'
 																}
 															>
 																{descartada
@@ -270,7 +290,9 @@ export default function DialogDetalleAlicuota({
 																		usarSugeridoVisible ? '' : 'invisible'
 																	}`}
 																	aria-hidden={!usarSugeridoVisible}
-																	tabIndex={usarSugeridoVisible ? undefined : -1}
+																	tabIndex={
+																		usarSugeridoVisible ? undefined : -1
+																	}
 																	disabled={cambios.guardando}
 																	onClick={() => cambios.usarSugerido(unidad)}
 																>
@@ -284,11 +306,16 @@ export default function DialogDetalleAlicuota({
 																	size='sm'
 																	className='h-6 gap-1 px-1.5 text-[11px] text-muted-foreground shadow-none'
 																	disabled={cambios.guardando}
-																	onClick={() => cambios.alternarDescarte(unidad)}
+																	onClick={() =>
+																		cambios.alternarDescarte(unidad)
+																	}
 																>
 																	{descartada ? (
 																		<>
-																			<RotateCcw className='h-3 w-3' aria-hidden />
+																			<RotateCcw
+																				className='h-3 w-3'
+																				aria-hidden
+																			/>
 																			Restaurar
 																		</>
 																	) : (
@@ -315,13 +342,17 @@ export default function DialogDetalleAlicuota({
 												) : null}
 											</td>
 											<td className='px-2 py-1.5 text-right text-foreground'>
-												{formatearProrrateoPorcentaje(cambios.totales.prorrateoActivo)}
+												{formatearProrrateoPorcentaje(
+													cambios.totales.prorrateoActivo,
+												)}
 											</td>
 
 											{desgloseCalculado ? (
 												<>
 													<td className='px-2 py-1.5 text-right text-foreground'>
-														{formatUF(Math.round(cambios.totales.montoReconstruccion))}
+														{formatUF(
+															Math.round(cambios.totales.montoReconstruccion),
+														)}
 													</td>
 													<td className='px-2 py-1.5 text-right text-foreground'>
 														{formatUF(cambios.totales.montoSugerido)}
@@ -330,7 +361,9 @@ export default function DialogDetalleAlicuota({
 											) : null}
 
 											<td className='px-2 py-1.5 text-right text-foreground'>
-												{desgloseCalculado ? formatUF(cambios.totales.montoAsegurado) : '—'}
+												{desgloseCalculado
+													? formatUF(cambios.totales.montoAsegurado)
+													: '—'}
 											</td>
 
 											{puedeAdministrar ? <td className='px-2 py-1.5' /> : null}
@@ -371,7 +404,10 @@ export default function DialogDetalleAlicuota({
 										>
 											{cambios.guardando ? (
 												<>
-													<Loader2 className='h-3 w-3 animate-spin' aria-hidden />
+													<Loader2
+														className='h-3 w-3 animate-spin'
+														aria-hidden
+													/>
 													Guardando...
 												</>
 											) : (
@@ -400,7 +436,10 @@ export default function DialogDetalleAlicuota({
 				</DialogContent>
 			</Dialog>
 
-			<AlertDialog open={confirmacionAbierta} onOpenChange={setConfirmacionAbierta}>
+			<AlertDialog
+				open={confirmacionAbierta}
+				onOpenChange={setConfirmacionAbierta}
+			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Tienes cambios sin guardar</AlertDialogTitle>
@@ -421,7 +460,11 @@ export default function DialogDetalleAlicuota({
 						>
 							Descartar cambios y cerrar
 						</Button>
-						<Button type='button' onClick={guardarYCerrar} disabled={cambios.guardando}>
+						<Button
+							type='button'
+							onClick={guardarYCerrar}
+							disabled={cambios.guardando}
+						>
 							{cambios.guardando ? (
 								<>
 									<Loader2 className='h-3 w-3 animate-spin' aria-hidden />
