@@ -85,25 +85,59 @@ export interface UnidadAlicuotaRequest {
   fila_origen: number
 }
 
+export interface UnidadAlicuota {
+  id: number | null
+  identificador_unidad: string
+  prorrateo: number
+  fila_origen: number
+  descartada: boolean
+  monto_asegurado_personalizado: number | null
+  tiene_monto_asegurado_personalizado: boolean
+}
+
 export interface AlicuotaOportunidadResponse {
   nombre_excel: string | null
-  unidades: UnidadAlicuotaRequest[]
+  unidades: UnidadAlicuota[]
   cantidad: number
+  cantidad_descartadas: number
+  puede_administrar_alicuota: boolean
 }
 
 export interface UnidadDesgloseReconstruccion {
+  id_unidad: number | null
   identificador_unidad: string
   prorrateo: number
   fila_origen: number
   monto_reconstruccion: number
   monto_asegurado_sugerido: number
+  monto_asegurado: number
+  monto_asegurado_personalizado: number | null
+  tiene_monto_asegurado_personalizado: boolean
   prorrateo_pago: number
+  descartada: boolean
 }
 
 export interface DesgloseReconstruccionResponse {
   desglose_calculado: boolean
-  monto_asegurado_sugerido_unidades: number | null
+  monto_asegurado_total: number | null
+  monto_asegurado_sugerido_total: number | null
   unidades: UnidadDesgloseReconstruccion[]
+  cantidad: number
+  cantidad_descartadas: number
+}
+
+export interface UnidadAlicuotaCambioRequest {
+  id_unidad: number
+  descartada?: boolean
+  monto_asegurado_personalizado?: number | null
+}
+
+export interface ActualizarUnidadesAlicuotaRequest {
+  unidades: UnidadAlicuotaCambioRequest[]
+}
+
+export interface ActualizarUnidadesAlicuotaResponse {
+  unidades: UnidadAlicuota[]
   cantidad: number
 }
 

@@ -218,7 +218,7 @@ export default function DialogNuevaSolicitudCotizacion({
 	const { data: desgloseUnidades } = useDesgloseReconstruccion(idProceso ?? 0)
 	const montoSugeridoUnidades =
 		lineaActual === 'unidades'
-			? desgloseUnidades?.monto_asegurado_sugerido_unidades ?? null
+			? desgloseUnidades?.monto_asegurado_total ?? null
 			: null
 
 	// Las cotizaciones de unidades se solicitan con el monto asegurado
@@ -468,7 +468,7 @@ export default function DialogNuevaSolicitudCotizacion({
 						/>
 						{montoSugeridoUnidades != null ? (
 							<p className='text-xs text-muted-foreground'>
-								Monto asegurado sugerido según el desglose de unidades:{' '}
+								Monto asegurado según el desglose de unidades:{' '}
 								{formatUF(montoSugeridoUnidades)} UF
 							</p>
 						) : null}

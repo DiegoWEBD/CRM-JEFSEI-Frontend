@@ -2,16 +2,17 @@
 
 import type { ImportacionAlicuotasResultado } from '@/aplicacion/importacion-alicuotas/dto/importacion-alicuotas'
 import { Button } from '@/components/button'
+import DialogDetalleAlicuota from '@/components/importador-alicuotas/dialog-detalle-alicuota'
 import DialogImportarAlicuotas from '@/components/importador-alicuotas/dialog-importar-alicuotas'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { Skeleton } from '@/components/skeleton'
 import { useAlicuotaOportunidad } from '@/hooks/importacion-alicuotas/use-alicuota-oportunidad'
+import { useCambiosUnidadesAlicuota } from '@/hooks/importacion-alicuotas/use-cambios-unidades-alicuota'
 import { useDescargarDesgloseReconstruccion } from '@/hooks/importacion-alicuotas/use-descargar-desglose-reconstruccion'
 import { useDesgloseReconstruccion } from '@/hooks/importacion-alicuotas/use-desglose-reconstruccion'
 import { useImportarAlicuotaOportunidad } from '@/hooks/importacion-alicuotas/use-importar-alicuota-oportunidad'
 import { formatUF } from '@/lib/uf'
-import { formatearProrrateoPorcentaje } from '@/utils/formatear-prorrateo'
-import { Download, FileSpreadsheet, Loader2, Upload } from 'lucide-react'
+import { Download, Eye, FileSpreadsheet, Loader2, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -25,14 +26,17 @@ export default function SeccionAlicuotaOportunidad({
 	puedeImportar,
 }: SeccionAlicuotaOportunidadProps) {
 	const [importadorAbierto, setImportadorAbierto] = useState(false)
+	const [detalleAbierto, setDetalleAbierto] = useState(false)
 	const { data, isLoading } = useAlicuotaOportunidad(idProceso)
 	const { data: desglose, isLoading: cargandoDesglose } =
 		useDesgloseReconstruccion(idProceso)
 	const importarMutation = useImportarAlicuotaOportunidad(idProceso)
 	const descargarMutation = useDescargarDesgloseReconstruccion()
+	const cambios = useCambiosUnidadesAlicuota(idProceso, data, desglose)
 
 	const tieneAlicuota = data?.nombre_excel != null
 	const desgloseCalculado = desglose?.desglose_calculado === true
+	const puedeAdministrar = data?.puede_administrar_alicuota === true
 
 	function descargarDesglose() {
 		descargarMutation.mutate(idProceso, {
@@ -57,6 +61,9 @@ export default function SeccionAlicuotaOportunidad({
 			},
 			{
 				onSuccess: () => {
+					// La reimportación reemplaza las unidades: el borrador apuntaba a
+					// unidades que ya no existen.
+					cambios.descartarCambios()
 					toast.success('Alícuota importada')
 					if (desglose?.desglose_calculado) descargarDesglose()
 				},
@@ -68,9 +75,33 @@ export default function SeccionAlicuotaOportunidad({
 	return (
 		<div className='space-y-2 rounded-md border border-border/60 bg-muted/20 p-2.5'>
 			<div className='flex items-center justify-between gap-2'>
-				<p className='text-xs font-medium text-foreground'>Alícuota</p>
+				<div className='flex items-center gap-1.5'>
+					<p className='text-xs font-medium text-foreground'>Alícuota</p>
+
+					{puedeAdministrar && cambios.cantidadCambios > 0 ? (
+						<span className='rounded bg-amber-500/10 px-1 py-0.5 text-[10px] font-medium text-amber-600'>
+							{cambios.cantidadCambios}{' '}
+							{cambios.cantidadCambios === 1
+								? 'cambio sin guardar'
+								: 'cambios sin guardar'}
+						</span>
+					) : null}
+				</div>
 
 				<div className='flex items-center gap-1.5'>
+					{tieneAlicuota ? (
+						<Button
+							type='button'
+							variant='outline'
+							size='sm'
+							className='h-7 gap-1 text-xs shadow-none'
+							onClick={() => setDetalleAbierto(true)}
+						>
+							<Eye className='h-3 w-3' aria-hidden />
+							Ver detalle
+						</Button>
+					) : null}
+
 					{desgloseCalculado ? (
 						<Button
 							type='button'
@@ -121,7 +152,7 @@ export default function SeccionAlicuotaOportunidad({
 
 			{isLoading || cargandoDesglose ? (
 				<Skeleton className='h-10 w-full' />
-			) : tieneAlicuota ? (
+			) : tieneAlicuota && data ? (
 				<div className='space-y-1'>
 					<p className='text-xs text-muted-foreground'>
 						<span className='font-medium text-foreground'>
@@ -129,115 +160,34 @@ export default function SeccionAlicuotaOportunidad({
 						</span>
 						{' · '}
 						{data.cantidad} unidades
+						{cambios.totales.cantidadDescartadas > 0
+							? ` (${cambios.totales.cantidadDescartadas} descartadas)`
+							: ''}
 					</p>
 
 					{desgloseCalculado ? (
 						<div className='flex items-center justify-between rounded-md border border-border/70 bg-card px-2.5 py-1.5'>
 							<p className='text-xs text-muted-foreground'>
-								Monto asegurado sugerido total
+								Monto asegurado total
+								{cambios.totales.montoSugerido !== cambios.totales.montoAsegurado ? (
+									<span className='text-muted-foreground/70'>
+										{' '}
+										(sugerido: {formatUF(cambios.totales.montoSugerido)})
+									</span>
+								) : null}
 							</p>
 							<p className='text-sm font-semibold text-foreground'>
-								{formatUF(desglose?.monto_asegurado_sugerido_unidades ?? null)}
+								{formatUF(cambios.totales.montoAsegurado)}
 							</p>
 						</div>
 					) : (
 						<p className='rounded-md border border-dashed border-border/70 px-2.5 py-1.5 text-xs text-muted-foreground'>
 							Monto asegurado sugerido no calculado: complete los datos de
-							reconstrucción del prospecto (m², UF/m² y depreciación) y vuelva a
-							importar la alícuota.
+							reconstrucción del prospecto (m², UF/m² y depreciación). Los montos
+							asegurados personalizados que fije en el detalle se aplicarán al
+							cálculo.
 						</p>
 					)}
-
-					{data.cantidad > 0 ? (
-						desgloseCalculado ? (
-							<div className='max-h-56 overflow-auto rounded-md border border-border/70 bg-card'>
-								<table className='w-full text-xs'>
-									<thead className='sticky top-0 bg-card'>
-										<tr className='border-b border-border/70 text-muted-foreground'>
-											<th className='px-2 py-1.5 text-left font-medium'>
-												Unidad
-											</th>
-											<th className='px-2 py-1.5 text-right font-medium'>
-												Prorrateo alícuota
-											</th>
-											<th className='px-2 py-1.5 text-right font-medium'>
-												Monto reconstrucción
-											</th>
-											<th className='px-2 py-1.5 text-right font-medium'>
-												Monto sugerido
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{desglose?.unidades.map(unidad => (
-											<tr
-												key={`${unidad.fila_origen}-${unidad.identificador_unidad}`}
-												className='border-b border-border/50 last:border-b-0'
-											>
-												<td className='px-2 py-1.5 font-medium text-foreground'>
-													{unidad.identificador_unidad}
-												</td>
-												<td className='px-2 py-1.5 text-right text-muted-foreground'>
-													{formatearProrrateoPorcentaje(unidad.prorrateo)}
-												</td>
-
-												<td className='px-2 py-1.5 text-right text-muted-foreground'>
-													{formatUF(unidad.monto_reconstruccion)}
-												</td>
-												<td className='px-2 py-1.5 text-right text-foreground'>
-													{formatUF(unidad.monto_asegurado_sugerido)}
-												</td>
-											</tr>
-										))}
-										<tr className='bg-muted/40 font-semibold'>
-											<td className='px-2 py-1.5 text-foreground'>TOTAL</td>
-											<td className='px-2 py-1.5 text-right text-foreground'>
-												{formatearProrrateoPorcentaje(
-													desglose?.unidades.reduce(
-														(acumulado, unidad) => acumulado + unidad.prorrateo,
-														0,
-													) ?? 0,
-												)}
-											</td>
-
-											<td className='px-2 py-1.5 text-right text-foreground'>
-												{formatUF(
-													Math.round(
-														desglose?.unidades.reduce(
-															(acumulado, unidad) =>
-																acumulado + unidad.monto_reconstruccion,
-															0,
-														) ?? 0,
-													),
-												)}
-											</td>
-											<td className='px-2 py-1.5 text-right text-foreground'>
-												{formatUF(
-													desglose?.monto_asegurado_sugerido_unidades ?? null,
-												)}
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						) : (
-							<div className='max-h-40 space-y-0.5 overflow-auto rounded-md border border-border/70 bg-card p-2'>
-								{data.unidades.map(unidad => (
-									<div
-										key={`${unidad.fila_origen}-${unidad.identificador_unidad}`}
-										className='flex items-center justify-between gap-3 text-xs'
-									>
-										<span className='font-medium text-foreground'>
-											{unidad.identificador_unidad}
-										</span>
-										<span className='text-muted-foreground'>
-											{formatearProrrateoPorcentaje(unidad.prorrateo)}
-										</span>
-									</div>
-								))}
-							</div>
-						)
-					) : null}
 				</div>
 			) : (
 				<p className='text-xs text-muted-foreground'>
@@ -250,6 +200,16 @@ export default function SeccionAlicuotaOportunidad({
 				onOpenChange={setImportadorAbierto}
 				onConfirmar={handleConfirmar}
 			/>
+
+			{tieneAlicuota && data ? (
+				<DialogDetalleAlicuota
+					open={detalleAbierto}
+					onOpenChange={setDetalleAbierto}
+					data={data}
+					desglose={desglose}
+					cambios={cambios}
+				/>
+			) : null}
 		</div>
 	)
 }

@@ -2,6 +2,7 @@ import {
 	importarAlicuotaOportunidad,
 	ImportarAlicuotaOportunidadRequest,
 } from '@/aplicacion/importacion-alicuotas/use-cases/importar-alicuota-oportunidad/importar-alicuota-oportunidad'
+import { invalidarConsultasAlicuota } from '@/hooks/importacion-alicuotas/invalidar-consultas-alicuota'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const useImportarAlicuotaOportunidad = (idProceso: number) => {
@@ -11,8 +12,7 @@ export const useImportarAlicuotaOportunidad = (idProceso: number) => {
 		mutationFn: (request: ImportarAlicuotaOportunidadRequest) =>
 			importarAlicuotaOportunidad(idProceso, request),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['alicuota-oportunidad', idProceso] })
-			queryClient.invalidateQueries({ queryKey: ['desglose-reconstruccion', idProceso] })
+			invalidarConsultasAlicuota(queryClient, idProceso)
 		},
 	})
 }

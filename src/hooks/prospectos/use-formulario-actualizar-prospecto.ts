@@ -2,6 +2,7 @@ import { actualizarProspecto } from '@/aplicacion/prospectos/use-cases/actualiza
 import { ActualizarProspectoRequest } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto/dto/requests/actualizar-prospecto-request'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
+import { invalidarConsultasAlicuota } from '@/hooks/importacion-alicuotas/invalidar-consultas-alicuota'
 import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
@@ -30,6 +31,10 @@ export const useFormularioActualizarProspecto = ({
 			queryClient.invalidateQueries({
 				queryKey: ['prospectos'],
 			})
+
+			// Región/comuna pueden cambiar el UF/m² regional aplicado al monto
+			// de reconstrucción y al monto sugerido de las unidades.
+			invalidarConsultasAlicuota(queryClient)
 		},
 	})
 

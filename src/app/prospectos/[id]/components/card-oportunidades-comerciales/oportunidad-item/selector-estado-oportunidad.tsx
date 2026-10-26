@@ -13,6 +13,7 @@ import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comer
 import { useUserSession } from '@/hooks/auth/use-user-session'
 import { useTransicionesManuales } from '@/hooks/estados/use-transiciones-manuales'
 import { useCambiarEstadoManual } from '@/hooks/procesos-comerciales/use-cambiar-estado-manual'
+import { cn } from '@/lib/utils'
 import { ChevronDown, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -41,10 +42,6 @@ export default function SelectorEstadoOportunidad({
 
 	const puedeEditar = !proceso.cerrado && usuario?.rut === ejecutivoComercialRut
 
-	if (!puedeEditar) {
-		return null
-	}
-
 	const codigoEstadoActual = proceso.estado_actual.codigo
 	const tieneTransiciones = (transiciones?.length ?? 0) > 0
 	const pendiente = cambiarEstado.isPending
@@ -70,20 +67,27 @@ export default function SelectorEstadoOportunidad({
 
 			{tieneTransiciones ? (
 				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
+					<DropdownMenuTrigger asChild disabled={!puedeEditar}>
 						<Badge
 							asChild
 							variant={variantEstado(codigoEstadoActual)}
-							className='cursor-pointer gap-1 transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60'
+							className={cn(
+								puedeEditar && 'cursor-pointer hover:opacity-80',
+								'gap-1 transition-opacity disabled:cursor-not-allowed disabled:opacity-60',
+							)}
 						>
-							<button type='button' disabled={pendiente}>
-								{proceso.estado_actual.nombre}
-								{pendiente ? (
-									<Loader2 className='h-3 w-3 animate-spin' aria-hidden />
-								) : (
-									<ChevronDown className='h-3 w-3' aria-hidden />
-								)}
-							</button>
+							{
+								<button type='button' disabled={pendiente}>
+									{proceso.estado_actual.nombre}
+
+									{pendiente && (
+										<Loader2 className='h-3 w-3 animate-spin' aria-hidden />
+									)}
+									{!pendiente && puedeEditar && (
+										<ChevronDown className='h-3 w-3' aria-hidden />
+									)}
+								</button>
+							}
 						</Badge>
 					</DropdownMenuTrigger>
 
