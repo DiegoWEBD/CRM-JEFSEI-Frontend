@@ -30,6 +30,12 @@ jobs:
       - name: 🧹 Lint
         run: npm run lint
 
+      - name: 🔎 Tipos
+        run: npm run typecheck
+
+      - name: ✅ Tests
+        run: npm test
+
       - name: 🏗️ Verificar build de Next.js
         run: npm run build
 

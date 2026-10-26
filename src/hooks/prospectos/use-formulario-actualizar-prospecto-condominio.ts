@@ -2,6 +2,7 @@ import { actualizarProspectoCondominio } from '@/aplicacion/prospectos/use-cases
 import { ActualizarProspectoCondominioRequest } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto-condominio/dto/requests/actualizar-prospecto-condominio-request'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
+import { invalidarConsultasAlicuota } from '@/hooks/importacion-alicuotas/invalidar-consultas-alicuota'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -39,6 +40,10 @@ export const useFormularioActualizarProspectoCondominio = ({
 			queryClient.invalidateQueries({
 				queryKey: ['prospectos'],
 			})
+
+			// Los datos del prospecto alimentan el monto de reconstrucción y el
+			// monto sugerido de las unidades de la alícuota.
+			invalidarConsultasAlicuota(queryClient)
 		},
 	})
 

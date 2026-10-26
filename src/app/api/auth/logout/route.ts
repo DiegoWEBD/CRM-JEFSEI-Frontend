@@ -52,10 +52,35 @@ function origenPublico(): string {
 	}
 }
 
+/**
+ * Reduce el destino de la redirección a un path interno de esta aplicación.
+ *
+ * Un valor como `//evil.com`, `/\evil.com` o `https://evil.com` resuelve contra
+ * un dominio externo (open redirect, CWE-601) y un `javascript:` llegaría tal
+ * cual al header `Location`. Se resuelve contra el origen público y se comprueba
+ * que el origen coincida; si no, se usa `/login`. Al devolver solo
+ * `pathname + search + hash` tampoco se puede reinyectar un origen absoluto.
+ */
+function destinoInternoSeguro(redirectTo: string | null): string {
+	const fallback = '/login'
+	if (!redirectTo) return fallback
+
+	let destino: URL
+	try {
+		destino = new URL(redirectTo, origenPublico())
+	} catch {
+		return fallback
+	}
+
+	if (destino.origin !== origenPublico()) return fallback
+
+	return `${destino.pathname}${destino.search}${destino.hash}`
+}
+
 export async function GET(req: NextRequest) {
 	await notificarCierreSesion()
 	const origen = origenPublico()
-	const redirectTo = req.nextUrl.searchParams.get('redirect') || '/login'
+	const redirectTo = destinoInternoSeguro(req.nextUrl.searchParams.get('redirect'))
 
 	const res = NextResponse.redirect(new URL(redirectTo, origen))
 	return limpiarCookies(res)
