@@ -5,7 +5,6 @@ import { validarTamanoArchivo } from '@/lib/archivos'
 // Se usa al armar el request de la mutación: los campos de primas,
 // asistencias y tasas son opcionales en el formulario y se envían en 0 si vienen vacíos.
 export function aNumero(valor?: string): number {
-	console.log(valor)
 	if (!valor) return 0
 	const limpio = valor.toString().trim()
 	return limpio === '' ? 0 : Number(limpio)
