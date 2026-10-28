@@ -98,9 +98,19 @@ export default function TablaProcesosComerciales({
 										<p className='truncate text-sm font-semibold text-foreground'>
 											{f.proceso.nombre_cliente}
 										</p>
-										<p className='truncate text-xs text-muted-foreground'>
-											{f.proceso.producto}
-										</p>
+										<div className='flex items-center gap-1.5 min-w-0'>
+											<p className='truncate text-xs text-muted-foreground'>
+												{f.proceso.producto}
+											</p>
+											{f.proceso.renovacion ? (
+												<Badge
+													variant='pastel-indigo'
+													className='shrink-0 text-[10px]'
+												>
+													Renovación
+												</Badge>
+											) : null}
+										</div>
 									</div>
 								</div>
 								<Badge
@@ -182,9 +192,19 @@ export default function TablaProcesosComerciales({
 										<p className='font-semibold text-foreground truncate max-w-50'>
 											{f.proceso.nombre_cliente}
 										</p>
-										<p className='text-xs text-muted-foreground truncate max-w-50'>
-											{f.proceso.producto}
-										</p>
+										<div className='flex items-center gap-1.5 min-w-0'>
+											<p className='text-xs text-muted-foreground truncate max-w-50'>
+												{f.proceso.producto}
+											</p>
+											{f.proceso.renovacion ? (
+												<Badge
+													variant='pastel-indigo'
+													className='shrink-0 text-[10px]'
+												>
+													Renovación
+												</Badge>
+											) : null}
+										</div>
 									</td>
 									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-35'>
 										{f.proceso.ejecutivo_comercial?.nombre ?? '—'}

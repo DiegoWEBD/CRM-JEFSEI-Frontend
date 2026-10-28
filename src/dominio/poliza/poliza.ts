@@ -16,5 +16,6 @@ export default class Poliza {
 		public inicio_vigencia?: string,
 		public fin_vigencia?: string,
 		public company?: { id: number; nombre: string } | null,
+		public tiene_proceso_renovacion?: boolean,
 	) {}
 }

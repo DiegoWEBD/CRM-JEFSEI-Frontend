@@ -1,13 +1,12 @@
 'use client'
 
+import DialogCrearPlanPago from '@/app/polizas/[numeroPoliza]/dialog-crear-plan-pago/dialog-crear-plan-pago'
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { CuotasPlanPagoTable } from '@/components/cuotas-plan-pago-table/cuotas-plan-pago-table'
 import { Skeleton } from '@/components/skeleton'
-import { useObtenerPlanPago } from '@/hooks/polizas/use-obtener-plan-pago'
 import { useMarcarPagoCuota } from '@/hooks/cuotas/use-marcar-pago-cuota'
-import { useUserSession } from '@/hooks/auth/use-user-session'
-import DialogCrearPlanPago from '@/app/polizas/[numeroPoliza]/dialog-crear-plan-pago/dialog-crear-plan-pago'
+import { useObtenerPlanPago } from '@/hooks/polizas/use-obtener-plan-pago'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 
@@ -20,8 +19,6 @@ export default function CardPlanPago({ numeroPoliza }: CardPlanPagoProps) {
 	const { data: planPago, isLoading: planPagoCargando } =
 		useObtenerPlanPago(numeroPoliza)
 	const marcarPago = useMarcarPagoCuota()
-	const { tieneAlgunRol } = useUserSession()
-	const puedePagar = tieneAlgunRol(['EJECUTIVO_COBRANZA'])
 
 	return (
 		<>
@@ -35,7 +32,7 @@ export default function CardPlanPago({ numeroPoliza }: CardPlanPagoProps) {
 					) : planPago ? (
 						<CuotasPlanPagoTable
 							cuotas={planPago.cuotas}
-							onMarcarPago={puedePagar ? (id) => marcarPago.mutateAsync(id) : undefined}
+							onMarcarPago={id => marcarPago.mutateAsync(id)}
 						/>
 					) : (
 						<div className='flex flex-col items-center justify-center gap-3 px-4 py-6'>

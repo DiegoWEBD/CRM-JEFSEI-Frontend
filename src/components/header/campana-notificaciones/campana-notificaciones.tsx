@@ -37,7 +37,7 @@ const CampanaNotificaciones = () => {
 	}
 
 	const navegarAProspecto = (notificacion: Notificacion) => {
-		if (notificacion.id_prospecto) {
+		if (notificacion.id_prospecto || notificacion.numero_poliza) {
 			setAbierto(false)
 			marcarLeida.mutate(notificacion.id)
 		}
@@ -70,7 +70,7 @@ const CampanaNotificaciones = () => {
 							type='button'
 							onClick={() => marcarTodas.mutate()}
 							disabled={marcarTodas.isPending}
-							className='inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline disabled:opacity-50'
+							className='cursor-pointer inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline disabled:opacity-50'
 						>
 							{marcarTodas.isPending ? (
 								<Loader2 className='size-3 animate-spin' />

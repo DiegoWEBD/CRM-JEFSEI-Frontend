@@ -10,6 +10,7 @@ export interface Notificacion {
 	entidad_tipo: string | null
 	entidad_id: number | null
 	id_prospecto: number | null
+	numero_poliza: string | null
 	dedupe_key: string
 	leida: boolean
 	fecha_leida: string | null

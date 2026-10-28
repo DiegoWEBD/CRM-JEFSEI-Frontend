@@ -7,7 +7,7 @@ import {
 	formatFechaSolicitudConHora,
 	getFechaSolicitudIso,
 } from '@/lib/format-fecha-solicitud'
-import { formatearFecha } from '@/utils/formatear-fecha'
+import { diaDeSantiago, formatearFecha } from '@/utils/formatear-fecha'
 import { formatFechaCorta } from '@/utils/format-fecha-corta'
 
 /**
@@ -108,5 +108,22 @@ describe('formatFechaSolicitudConHora — etiqueta de la fila', () => {
 		expect(resultado.fecha).toContain('2026')
 		expect(resultado.hora).toBe('09:15 hrs')
 		expect(resultado.linea).toContain('09:15 hrs')
+	})
+})
+
+describe('diaDeSantiago — día calendario de America/Santiago', () => {
+	it('no corre el día cuando el instante está dentro del día de Santiago', () => {
+		expect(diaDeSantiago('2026-08-29T12:00:00Z')).toBe('2026-08-29')
+	})
+
+	it('devuelve el día de Santiago aunque el ISO caiga en el día UTC siguiente', () => {
+		// Regresión: 2026-08-30 00:00+00 es el 29-08 a las 20:00 en Santiago;
+		// tomar la parte antes de 'T' mostraba el 30 en el formulario.
+		expect(diaDeSantiago('2026-08-30T00:00:00+00:00')).toBe('2026-08-29')
+	})
+
+	it('resuelve medianoche de Santiago con el desfase de horario de invierno', () => {
+		// Medianoche de Santiago en invierno es UTC-4 (04:00Z).
+		expect(diaDeSantiago('2026-08-29T04:00:00+00:00')).toBe('2026-08-29')
 	})
 })
