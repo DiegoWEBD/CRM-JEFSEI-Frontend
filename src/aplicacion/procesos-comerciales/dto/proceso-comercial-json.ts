@@ -13,5 +13,8 @@ export interface ProcesoComercialJson {
 	estado_actual: EstadoInformativoJson
 	etapa_actual: EtapaProcesoComercialJson
 	cerrado: boolean
+	descartado: boolean
+	motivo_cierre: string | null
+	fecha_cierre: string | null
 	fecha_estimada_cierre: string | null
 }

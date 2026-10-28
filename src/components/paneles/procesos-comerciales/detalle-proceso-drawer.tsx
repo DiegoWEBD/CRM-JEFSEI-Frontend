@@ -1,7 +1,6 @@
 'use client'
 
 import type { ReporteProcesoComercial } from '@/aplicacion/procesos-comerciales/dto/reporte-proceso-comercial'
-import { ESTADO_COMERCIAL_BADGE } from '@/app/styles/estados/estado-comercial-badge'
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -12,6 +11,7 @@ import {
 	AlertDialogTitle,
 } from '@/components/alert-dialog'
 import { Badge } from '@/components/badge'
+import { BadgeEstadoOportunidad } from '@/components/badge/badge-estado-oportunidad/badge-estado-oportunidad'
 import { Button } from '@/components/button'
 import HistorialEstadosTimeline from '@/components/historial-estados-timeline/historial-estados-timeline'
 import { Label } from '@/components/label'
@@ -118,17 +118,8 @@ export default function DetalleProcesoDrawer({
 							</div>
 							<div className='space-y-0.5'>
 								<p className='text-[11px] text-muted-foreground'>Estado</p>
-								<Badge
-									variant={
-										ESTADO_COMERCIAL_BADGE[
-											proceso.estado_actual
-												.codigo as keyof typeof ESTADO_COMERCIAL_BADGE
-										] ?? 'outline'
-									}
-									className='text-xs font-semibold'
-								>
-									{proceso.estado_actual.nombre}
-								</Badge>
+
+								<BadgeEstadoOportunidad estado={proceso.estado_actual} />
 							</div>
 							<div className='space-y-0.5'>
 								<p className='text-[11px] text-muted-foreground'>
@@ -374,7 +365,9 @@ export default function DetalleProcesoDrawer({
 										: 'text-destructive',
 								)}
 							>
-								Proceso {proceso.estado_actual.nombre.toLowerCase()}
+								{proceso.descartado
+									? 'Oportunidad descartada'
+									: `${proceso.estado_actual.nombre.toLowerCase()}`}
 							</p>
 						</div>
 					)}

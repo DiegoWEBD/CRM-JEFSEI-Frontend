@@ -1,19 +1,32 @@
 'use client'
 
+import {
+	AlertDialog,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/alert-dialog'
 import { Badge } from '@/components/badge'
 import { BadgeEstadoOportunidad } from '@/components/badge/badge-estado-oportunidad/badge-estado-oportunidad'
 import { BadgeProbabilidadCierre } from '@/components/badge/badge-probabilidad-cierre/badge-probabilidad-cierre'
 import { Button } from '@/components/button'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import { Label } from '@/components/label'
 import { Skeleton } from '@/components/skeleton'
 import DialogNuevaSolicitudCotizacion from '@/components/solicitud-cotizacion/dialog-nueva-solicitud-cotizacion'
+import { Textarea } from '@/components/textarea'
 import type { ProcesoComercial } from '@/dominio/proceso-comercial/proceso-comercial'
 import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useDescartarProcesoComercial } from '@/hooks/procesos-comerciales/use-descartar-proceso-comercial'
 import { useObtenerSolicitudesPorProceso } from '@/hooks/solicitudes-cotizacion/use-obtener-solicitudes-por-proceso'
 import { formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
-import { ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
+import { Ban, ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
 import FechaEstimadaCierreCell from './fecha-estimada-cierre-cell'
@@ -49,10 +62,13 @@ export default function OportunidadItem({
 	const [expandido, setExpandido] = useState(false)
 	const [openNuevaSolicitud, setOpenNuevaSolicitud] = useState(false)
 	const [openRegistrarPoliza, setOpenRegistrarPoliza] = useState(false)
+	const [descartarOpen, setDescartarOpen] = useState(false)
+	const [observacionDescarte, setObservacionDescarte] = useState('')
 	const [selectedIndex, setSelectedIndex] = useState(0)
 	const { data: solicitudes, isLoading } = useObtenerSolicitudesPorProceso(
 		proceso.id,
 	)
+	const descartarMutation = useDescartarProcesoComercial(idProspecto)
 
 	const esDualRol = ejecutivoComercialRut === ejecutivoEvaluacionRut
 	const probabilidadEjecutivo = proceso.probabilidad_cierre_ejecutivo
@@ -64,6 +80,8 @@ export default function OportunidadItem({
 	const puedeSubirPoliza =
 		(!proceso.cerrado && esEjecutivoComercial) || esEjecutivoRenovacion
 	const puedeSolicitarCotizacion = !proceso.cerrado && esEjecutivoComercial
+	const puedeDescartar =
+		!proceso.cerrado && !proceso.descartado && esEjecutivoComercial
 
 	return (
 		<>
@@ -90,7 +108,10 @@ export default function OportunidadItem({
 									{proceso.producto}
 								</span>
 								{proceso.renovacion ? (
-									<Badge variant='pastel-indigo' className='shrink-0 text-[10px]'>
+									<Badge
+										variant='pastel-indigo'
+										className='shrink-0 text-[10px]'
+									>
 										Renovación
 									</Badge>
 								) : null}
@@ -245,7 +266,7 @@ export default function OportunidadItem({
 							</p>
 						)}
 
-						{puedeSubirPoliza || puedeSolicitarCotizacion ? (
+						{puedeSubirPoliza || puedeSolicitarCotizacion || puedeDescartar ? (
 							<div className='mt-3 flex flex-col gap-2 border-t border-border/50 pt-3 sm:flex-row sm:items-center'>
 								{puedeSubirPoliza ? (
 									<Button
@@ -274,6 +295,23 @@ export default function OportunidadItem({
 											: 'Solicitar cotización'}
 									</Button>
 								) : null}
+
+								{puedeDescartar ? (
+									<PermissionGuard
+										allowedPermissions={['DESCARTAR_PROCESO_COMERCIAL']}
+									>
+										<Button
+											type='button'
+											variant='outline'
+											size='sm'
+											className='h-7 gap-1 border-destructive/30 text-xs text-destructive shadow-none hover:bg-destructive/10'
+											onClick={() => setDescartarOpen(true)}
+										>
+											<Ban className='h-3 w-3' aria-hidden />
+											Descartar oportunidad
+										</Button>
+									</PermissionGuard>
+								) : null}
 							</div>
 						) : null}
 					</div>
@@ -299,6 +337,59 @@ export default function OportunidadItem({
 				nombreCliente={nombreCliente}
 				producto={proceso.producto}
 			/>
+
+			<AlertDialog open={descartarOpen} onOpenChange={setDescartarOpen}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>¿Descartar oportunidad?</AlertDialogTitle>
+						<AlertDialogDescription>
+							Esta acción es irreversible. La oportunidad quedará cerrada y
+							todas sus alertas se eliminarán.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<div className='space-y-1'>
+						<Label className='text-xs text-muted-foreground'>
+							Observación{' '}
+							<span className='text-muted-foreground/60'>(opcional)</span>
+						</Label>
+						<Textarea
+							value={observacionDescarte}
+							onChange={e => setObservacionDescarte(e.target.value)}
+							placeholder='Motivo del descarte...'
+							className='min-h-20 text-xs shadow-none'
+						/>
+					</div>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancelar</AlertDialogCancel>
+						<Button
+							type='button'
+							variant='destructive'
+							size='sm'
+							className='text-xs shadow-none'
+							disabled={descartarMutation.isPending}
+							onClick={async () => {
+								try {
+									await descartarMutation.mutateAsync({
+										idProceso: proceso.id,
+										request: {
+											observacion: observacionDescarte.trim() || null,
+										},
+									})
+									toast.success('Oportunidad descartada exitosamente')
+									setDescartarOpen(false)
+									setObservacionDescarte('')
+								} catch {
+									setDescartarOpen(false)
+								}
+							}}
+						>
+							{descartarMutation.isPending
+								? 'Descartando...'
+								: 'Confirmar descarte'}
+						</Button>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</>
 	)
 }

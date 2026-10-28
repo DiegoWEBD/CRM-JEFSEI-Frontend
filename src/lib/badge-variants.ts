@@ -38,7 +38,7 @@ export const ESTADO_COMERCIAL_VARIANT: Record<
 	RECOTIZACION_SOLICITADA: 'pastel-amber',
 	CLIENTE_CARGADO_MASIVO: 'pastel-slate',
 	GANADO: 'pastel-emerald',
-	PERDIDO: 'pastel-muted',
+	PERDIDO: 'pastel-red',
 	COTIZACION_SOLICITADA_COMPANY: 'pastel-fuchsia',
 	ESTUDIO_ENVIADO_CLIENTE: 'pastel-violet',
 	EJECUTIVO_COMERCIAL_ASIGNADO: 'pastel-cyan',
@@ -52,6 +52,7 @@ export const ESTADO_COMERCIAL_VARIANT: Record<
 	COTIZACION_ELIMINADA: 'pastel-red',
 	COTIZACION_MODIFICADA: 'pastel-blue',
 	SOLICITUD_COTIZACION_ELIMINADA: 'pastel-red',
+	OPORTUNIDAD_DESCARTADA: 'pastel-muted',
 }
 
 export const PRIORIDAD_VARIANT: Record<Prioridad, BadgeVariant> = {
