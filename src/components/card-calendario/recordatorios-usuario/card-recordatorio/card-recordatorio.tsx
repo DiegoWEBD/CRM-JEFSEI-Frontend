@@ -43,32 +43,25 @@ export default function CardRecordatorio({
 }: CardRecordatorioProps) {
 	const [editando, setEditando] = useState(false)
 	const esCobranza = recordatorio.tipo_gestion === 'cobranza_anticipada'
-	const esRenovacion = Boolean(recordatorio.numero_poliza) && !esCobranza
-	const asociado =
-		!esRenovacion && !esCobranza && recordatorio.id_prospecto != null
+	const asociado = !esCobranza && recordatorio.id_prospecto != null
 	const prio = recordatorio.prioridad
 
-	const badgePrincipal: BadgePrincipal = esRenovacion
+	const badgePrincipal: BadgePrincipal = esCobranza
 		? {
-				label: `Póliza ${recordatorio.numero_poliza}`,
-				variant: 'pastel-sky',
+				label: `Cobranza — Póliza ${recordatorio.numero_poliza}`,
+				href: `/polizas/${recordatorio.numero_poliza}`,
+				variant: 'pastel-amber',
 			}
-		: esCobranza
+		: asociado
 			? {
-					label: `Cobranza — Póliza ${recordatorio.numero_poliza}`,
-					href: `/polizas/${recordatorio.numero_poliza}`,
-					variant: 'pastel-amber',
+					label: recordatorio.nombre_prospecto?.trim() ?? '—',
+					href: `/prospectos/${recordatorio.id_prospecto}`,
+					variant: 'pastel-indigo',
 				}
-			: asociado
-				? {
-						label: recordatorio.nombre_prospecto?.trim() ?? '—',
-						href: `/prospectos/${recordatorio.id_prospecto}`,
-						variant: 'pastel-indigo',
-					}
-				: {
-						label: 'General',
-						variant: 'pastel-muted',
-					}
+			: {
+					label: 'General',
+					variant: 'pastel-muted',
+				}
 
 	return (
 		<>

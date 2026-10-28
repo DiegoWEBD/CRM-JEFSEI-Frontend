@@ -7,16 +7,22 @@ import { ConfirmDialog } from '@/components/confirm-dialog'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import CuotaPlanPago from '@/dominio/plan-pago/cuota-plan-pago'
 import { useState } from 'react'
+import PermissionGuard from '../layouts/guards/permission-guard'
 
 type CuotasPlanPagoTableProps = {
 	cuotas: CuotaPlanPago[]
-	onMarcarPago?: (idCuota: number) => Promise<void>
+	onMarcarPago: (idCuota: number) => Promise<void>
 }
 
-const TH = 'border border-border px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide'
-const TD = 'border border-border px-2 py-1.5 text-center align-middle text-sm leading-snug'
+const TH =
+	'border border-border px-2 py-2 text-center text-xs font-semibold uppercase tracking-wide'
+const TD =
+	'border border-border px-2 py-1.5 text-center align-middle text-sm leading-snug'
 
-export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTableProps) {
+export function CuotasPlanPagoTable({
+	cuotas,
+	onMarcarPago,
+}: CuotasPlanPagoTableProps) {
 	const [pagandoId, setPagandoId] = useState<number | null>(null)
 	const [confirmarCuotaId, setConfirmarCuotaId] = useState<number | null>(null)
 
@@ -39,8 +45,11 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 	return (
 		<>
 			<div className='divide-y divide-border sm:hidden'>
-				{cuotas.map((cuota) => (
-					<div key={cuota.numero_cuota} className='space-y-1 px-3 py-2.5 text-xs'>
+				{cuotas.map(cuota => (
+					<div
+						key={cuota.numero_cuota}
+						className='space-y-1 px-3 py-2.5 text-xs'
+					>
 						<div className='flex items-center justify-between'>
 							<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground/80'>
 								Cuota N°{cuota.numero_cuota}
@@ -58,10 +67,16 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 							)}
 						</div>
 						<div className='flex items-center justify-between text-muted-foreground'>
-							<span>Vence: {formatearFecha(new Date(cuota.fecha_vencimiento.slice(0, 10) + 'T12:00:00'), 'd MMM yyyy')}</span>
+							<span>
+								Vence:{' '}
+								{formatearFecha(
+									new Date(cuota.fecha_vencimiento.slice(0, 10) + 'T12:00:00'),
+									'd MMM yyyy',
+								)}
+							</span>
 							<span>
 								{cuota.fecha_pago
-									? `Pagado: ${formatearFecha(new Date(cuota.fecha_pago), "d MMM yyyy, HH:mm")}`
+									? `Pagado: ${formatearFecha(new Date(cuota.fecha_pago), 'd MMM yyyy, HH:mm')}`
 									: '—'}
 							</span>
 						</div>
@@ -73,7 +88,7 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 									variant='outline'
 									size='sm'
 									className='h-7 text-xs'
-									disabled={!onMarcarPago || pagandoId === cuota.id}
+									disabled={pagandoId === cuota.id}
 									onClick={() => handlePagar(cuota.id)}
 								>
 									{pagandoId === cuota.id ? (
@@ -110,46 +125,70 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 					</tr>
 				</thead>
 				<tbody>
-					{cuotas.map((cuota) => (
+					{cuotas.map(cuota => (
 						<tr
 							key={cuota.numero_cuota}
 							className='border-b border-border bg-background odd:bg-muted/20'
 						>
-							<td className={cn(TD, 'tabular-nums font-medium text-foreground')}>
+							<td
+								className={cn(TD, 'tabular-nums font-medium text-foreground')}
+							>
 								{cuota.numero_cuota}
 							</td>
 							<td className={cn(TD, 'whitespace-nowrap text-muted-foreground')}>
-								{formatearFecha(new Date(cuota.fecha_vencimiento.slice(0, 10) + 'T12:00:00'), 'd MMM yyyy')}
+								{formatearFecha(
+									new Date(cuota.fecha_vencimiento.slice(0, 10) + 'T12:00:00'),
+									'd MMM yyyy',
+								)}
 							</td>
 							<td className={TD}>
 								<div className='flex items-center justify-center'>
 									{cuota.pagado ? (
-										<CheckIcon className='h-4 w-4 text-emerald-600' aria-hidden />
+										<CheckIcon
+											className='h-4 w-4 text-emerald-600'
+											aria-hidden
+										/>
 									) : (
-										<XIcon className='h-4 w-4 text-muted-foreground/40' aria-hidden />
+										<XIcon
+											className='h-4 w-4 text-muted-foreground/40'
+											aria-hidden
+										/>
 									)}
 								</div>
 							</td>
-							<td className={cn(TD, 'whitespace-nowrap tabular-nums text-muted-foreground')}>
-								{cuota.fecha_pago ? formatearFecha(new Date(cuota.fecha_pago), "d MMM yyyy, HH:mm") : '—'}
+							<td
+								className={cn(
+									TD,
+									'whitespace-nowrap tabular-nums text-muted-foreground',
+								)}
+							>
+								{cuota.fecha_pago
+									? formatearFecha(
+											new Date(cuota.fecha_pago),
+											'd MMM yyyy, HH:mm',
+										)
+									: '—'}
 							</td>
 							<td className={TD}>
 								<div className='flex items-center justify-center'>
-									{cuota.pagado ? (
+									{cuota.pagado && (
 										<span className='text-xs text-emerald-600'>Pagado</span>
-									) : (
-										<Button
-											variant='outline'
-											size='sm'
-											className='h-7 text-xs'
-											disabled={!onMarcarPago || pagandoId === cuota.id}
-											onClick={() => handlePagar(cuota.id)}
-										>
-											{pagandoId === cuota.id ? (
-												<Loader2 className='mr-1 h-3 w-3 animate-spin' />
-											) : null}
-											Pagar
-										</Button>
+									)}
+									{!cuota.pagado && (
+										<PermissionGuard allowedPermissions={['MARCAR_PAGO_CUOTA']}>
+											<Button
+												variant='outline'
+												size='sm'
+												className='h-7 text-xs'
+												disabled={!onMarcarPago || pagandoId === cuota.id}
+												onClick={() => handlePagar(cuota.id)}
+											>
+												{pagandoId === cuota.id ? (
+													<Loader2 className='mr-1 h-3 w-3 animate-spin' />
+												) : null}
+												Pagar
+											</Button>
+										</PermissionGuard>
 									)}
 								</div>
 							</td>
@@ -157,7 +196,10 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 					))}
 					{cuotas.length === 0 && (
 						<tr>
-							<td colSpan={5} className='py-4 text-center text-xs text-muted-foreground'>
+							<td
+								colSpan={5}
+								className='py-4 text-center text-xs text-muted-foreground'
+							>
 								No hay cuotas registradas
 							</td>
 						</tr>
@@ -175,5 +217,6 @@ export function CuotasPlanPagoTable({ cuotas, onMarcarPago }: CuotasPlanPagoTabl
 				variant='destructive'
 				isPending={pagandoId !== null}
 			/>
-		</>)
+		</>
+	)
 }

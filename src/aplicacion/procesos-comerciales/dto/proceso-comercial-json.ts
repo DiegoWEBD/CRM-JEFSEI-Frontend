@@ -9,6 +9,7 @@ export interface ProcesoComercialJson {
 	id_prospecto: number
 	nombre_cliente: string
 	producto: string
+	renovacion: boolean
 	estado_actual: EstadoInformativoJson
 	etapa_actual: EtapaProcesoComercialJson
 	cerrado: boolean

@@ -37,7 +37,7 @@ const CampanaNotificaciones = () => {
 	}
 
 	const navegarAProspecto = (notificacion: Notificacion) => {
-		if (notificacion.id_prospecto) {
+		if (notificacion.id_prospecto || notificacion.numero_poliza) {
 			setAbierto(false)
 			marcarLeida.mutate(notificacion.id)
 		}

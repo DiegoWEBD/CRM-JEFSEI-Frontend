@@ -21,6 +21,7 @@ import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
 import PanelHeader from '@/components/paneles/panel-layout/panel-header/panel-header'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { useCancelarPoliza } from '@/hooks/polizas/use-cancelar-poliza'
+import { useIniciarRenovacion } from '@/hooks/polizas/use-iniciar-renovacion'
 import { useReactivarPoliza } from '@/hooks/polizas/use-reactivar-poliza'
 import { formatUF } from '@/lib/uf'
 import {
@@ -33,11 +34,14 @@ import {
 	Package,
 	Pencil,
 	Percent,
+	RefreshCw,
 	Shield,
 	User,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 type PolizaPageClientProps = {
 	numeroPoliza: string
@@ -53,15 +57,36 @@ function formatearFechaLarga(fecha: string | null | undefined): string {
 }
 
 export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
+	const router = useRouter()
 	const { data: poliza, isLoading: polizaCargando } =
 		useObtenerPoliza(numeroPoliza)
 	const cancelarPoliza = useCancelarPoliza(numeroPoliza)
 	const reactivarPoliza = useReactivarPoliza(numeroPoliza)
+	const iniciarRenovacion = useIniciarRenovacion(numeroPoliza)
 	const isLoadingMutation =
-		cancelarPoliza.isPending || reactivarPoliza.isPending
+		cancelarPoliza.isPending ||
+		reactivarPoliza.isPending ||
+		iniciarRenovacion.isPending
 	const [confirmarCancelar, setConfirmarCancelar] = useState(false)
 	const [confirmarReactivar, setConfirmarReactivar] = useState(false)
+	const [confirmarIniciarRenovacion, setConfirmarIniciarRenovacion] =
+		useState(false)
 	const [editarPoliza, setEditarPoliza] = useState(false)
+
+	const handleIniciarRenovacion = async () => {
+		setConfirmarIniciarRenovacion(false)
+
+		try {
+			await iniciarRenovacion.mutateAsync()
+			toast.success('Proceso de renovación iniciado')
+			router.push(`/prospectos/${poliza?.id_prospecto}`)
+		} catch (error) {
+			const mensaje = (
+				error as { response?: { data?: { error?: string } } }
+			)?.response?.data?.error
+			toast.error(mensaje ?? 'Error al iniciar la renovación')
+		}
+	}
 
 	const handleCopiarNumero = () => {
 		navigator.clipboard.writeText(numeroPoliza)
@@ -206,6 +231,37 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 												<Pencil className='h-3.5 w-3.5' />
 												Editar póliza
 											</Button>
+										</PermissionGuard>
+
+										<PermissionGuard allowedPermissions={['INICIAR_RENOVACION']}>
+											{!poliza.tiene_proceso_renovacion ? (
+												<>
+													<Button
+														variant='outline'
+														size='sm'
+														className='h-8 w-full gap-1.5 text-xs'
+														disabled={isLoadingMutation}
+														onClick={() => setConfirmarIniciarRenovacion(true)}
+													>
+														{iniciarRenovacion.isPending ? (
+															<Loader2 className='mr-1.5 h-3 w-3 animate-spin' />
+														) : (
+															<RefreshCw className='h-3.5 w-3.5' />
+														)}
+														Iniciar renovación
+													</Button>
+													<ConfirmDialog
+														open={confirmarIniciarRenovacion}
+														onOpenChange={setConfirmarIniciarRenovacion}
+														title='¿Iniciar renovación?'
+														description={`Se creará un proceso de renovación para la póliza ${numeroPoliza}.`}
+														confirmText='Iniciar renovación'
+														variant='default'
+														isPending={iniciarRenovacion.isPending}
+														onConfirm={handleIniciarRenovacion}
+													/>
+												</>
+											) : null}
 										</PermissionGuard>
 
 										<PermissionGuard

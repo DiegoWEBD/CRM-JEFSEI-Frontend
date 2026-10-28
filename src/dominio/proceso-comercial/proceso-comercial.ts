@@ -8,6 +8,7 @@ export interface ProcesoComercial {
 	nombre_cliente: string
 	producto: string
 	tipo_producto: string
+	renovacion: boolean
 	estado_actual: EstadoInformativoJson
 	etapa_actual: { id: number; nombre: string }
 	cerrado: boolean

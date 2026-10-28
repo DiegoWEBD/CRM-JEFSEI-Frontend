@@ -1,5 +1,6 @@
 'use client'
 
+import { Badge } from '@/components/badge'
 import { BadgeEstadoOportunidad } from '@/components/badge/badge-estado-oportunidad/badge-estado-oportunidad'
 import { BadgeProbabilidadCierre } from '@/components/badge/badge-probabilidad-cierre/badge-probabilidad-cierre'
 import { Button } from '@/components/button'
@@ -88,6 +89,11 @@ export default function OportunidadItem({
 								<span className='truncate text-sm font-medium text-foreground'>
 									{proceso.producto}
 								</span>
+								{proceso.renovacion ? (
+									<Badge variant='pastel-indigo' className='shrink-0 text-[10px]'>
+										Renovación
+									</Badge>
+								) : null}
 							</div>
 
 							<BadgeProbabilidadCierre

@@ -32,6 +32,18 @@ type ItemNotificacionProps = {
 	onSeleccionar: (notificacion: Notificacion) => void
 }
 
+const enlaceNotificacion = (notificacion: Notificacion): string => {
+	if (notificacion.numero_poliza) {
+		return `/polizas/${notificacion.numero_poliza}`
+	}
+
+	if (notificacion.id_prospecto) {
+		return `/prospectos/${notificacion.id_prospecto}`
+	}
+
+	return '#'
+}
+
 export default function ItemNotificacion({
 	notificacion,
 	pendiente = false,
@@ -39,7 +51,7 @@ export default function ItemNotificacion({
 }: ItemNotificacionProps) {
 	return (
 		<Link
-			href={`/prospectos/${notificacion.id_prospecto}`}
+			href={enlaceNotificacion(notificacion)}
 			onClick={() => onSeleccionar(notificacion)}
 			className='cursor-pointer flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent disabled:opacity-60'
 		>
