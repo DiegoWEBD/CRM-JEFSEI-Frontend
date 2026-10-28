@@ -3,6 +3,7 @@
 import { actualizarPoliza } from '@/aplicacion/polizas/use-cases/actualizar-poliza/actualizar-poliza'
 import { ActualizarPolizaRequest } from '@/aplicacion/polizas/use-cases/actualizar-poliza/dto/requests/actualizar-poliza-request'
 import Poliza from '@/dominio/poliza/poliza'
+import { diaDeSantiago } from '@/utils/formatear-fecha'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -77,13 +78,13 @@ export const useFormularioActualizarPoliza = ({
 			prima_neta: poliza.prima_neta,
 			comision_corredora_pct: poliza.comision_corredora_pct,
 			fecha_emision: poliza.fecha_emision
-				? poliza.fecha_emision.split('T')[0]
+				? diaDeSantiago(poliza.fecha_emision)
 				: '',
 			inicio_vigencia: poliza.inicio_vigencia
-				? poliza.inicio_vigencia.split('T')[0]
+				? diaDeSantiago(poliza.inicio_vigencia)
 				: '',
 			fin_vigencia: poliza.fin_vigencia
-				? poliza.fin_vigencia.split('T')[0]
+				? diaDeSantiago(poliza.fin_vigencia)
 				: '',
 			id_company: poliza.company?.id ?? 0,
 		},
