@@ -94,6 +94,6 @@ describe('DetalleProcesoDrawer — panel de gerentes (/oportunidades)', () => {
 	it('muestra el estado descartado cuando la oportunidad ya fue descartada', async () => {
 		await montar({ reporte: REPORTE_DESCARTADO })
 
-		expect(screen.getByText('Proceso descartado')).toBeInTheDocument()
+		expect(screen.getAllByText('Oportunidad descartada')).toHaveLength(2)
 	})
 })
