@@ -8,7 +8,6 @@ export interface ActualizarProspectoCondominioRequest {
 	region: string | null
 	comuna: string | null
 	observaciones: string | null
-	id_linea_negocio: number
 	porcentaje_espacios_comunes: number | null
 	tiene_locales_comerciales: boolean | null
 	uso_del_condominio: string | null
