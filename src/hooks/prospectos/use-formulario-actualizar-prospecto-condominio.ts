@@ -17,11 +17,6 @@ function n2(value: unknown): number | null {
 	return Number(value)
 }
 
-const LINEA_TO_ID: Record<string, number> = {
-	condominio: 10,
-	lineas_personales: 11,
-}
-
 export const useFormularioActualizarProspectoCondominio = ({
 	prospecto,
 	onComplete,
@@ -112,8 +107,6 @@ export const useFormularioActualizarProspectoCondominio = ({
 				comuna: values.comuna === '' ? null : (values.comuna ?? null),
 				observaciones:
 					values.observaciones === '' ? null : (values.observaciones ?? null),
-				id_linea_negocio:
-					LINEA_TO_ID[values.linea_negocio] ?? prospecto.linea_negocio.id,
 				porcentaje_espacios_comunes: (() => {
 					const n = n2(values.porcentaje_espacios_comunes)
 					return n == null ? null : n / 100
