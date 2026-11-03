@@ -2,6 +2,10 @@ import { actualizarProspectoCondominio } from '@/aplicacion/prospectos/use-cases
 import { ActualizarProspectoCondominioRequest } from '@/aplicacion/prospectos/use-cases/actualizar-prospecto-condominio/dto/requests/actualizar-prospecto-condominio-request'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
+import {
+	tipoCondominioDesdeVertical,
+	verticalDesdeTipoCondominio,
+} from '@/lib/condominio-vertical'
 import { invalidarConsultasAlicuota } from '@/hooks/importacion-alicuotas/invalidar-consultas-alicuota'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useFormik } from 'formik'
@@ -64,6 +68,9 @@ export const useFormularioActualizarProspectoCondominio = ({
 			administrador: prospecto.administrador,
 			tiene_locales_comerciales: prospecto.tiene_locales_comerciales,
 			uso_del_condominio: prospecto.uso_del_condominio,
+			condominio_vertical: tipoCondominioDesdeVertical(
+				prospecto.condominio_vertical,
+			),
 			materialidad: prospecto.materialidad,
 			clasificacion_preliminar_incendio:
 				prospecto.clasificacion_preliminar_incendio,
@@ -116,6 +123,9 @@ export const useFormularioActualizarProspectoCondominio = ({
 					values.uso_del_condominio === ''
 						? null
 						: (values.uso_del_condominio ?? null),
+				condominio_vertical: verticalDesdeTipoCondominio(
+					values.condominio_vertical,
+				),
 				materialidad:
 					values.materialidad === '' ? null : (values.materialidad ?? null),
 				clasificacion_preliminar_incendio:

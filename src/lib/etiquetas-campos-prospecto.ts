@@ -13,6 +13,7 @@ export const ETIQUETAS_CAMPOS_PROSPECTO: Record<string, string> = {
   porcentaje_espacios_comunes: '% de espacios comunes',
   tiene_locales_comerciales: '¿Tiene locales comerciales?',
   uso_del_condominio: 'Uso del condominio',
+  condominio_vertical: 'Tipo de condominio',
   materialidad: 'Materialidad principal',
   clasificacion_preliminar_incendio: 'Clasificación preliminar incendio',
   procesos_productivos: '¿Tiene procesos productivos?',

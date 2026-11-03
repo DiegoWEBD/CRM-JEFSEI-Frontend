@@ -7,6 +7,7 @@ import {
 	MATERIALIDAD_PRINCIPAL_LABELS,
 } from '@/lib/materialidades'
 import { UBICACION_PISCINA_LABELS } from '@/lib/ubicacion.piscina'
+import { labelTipoCondominio } from '@/lib/condominio-vertical'
 
 type InformacionAdicionalProspectoCondominioProps = {
 	prospecto: ProspectoCondominio
@@ -21,6 +22,16 @@ export default function InformacionAdicionalProspectoCondominio({
 				label='Uso del condominio'
 				value={prospecto.uso_del_condominio}
 				highlightMissing={inputPendiente(prospecto.uso_del_condominio)}
+			/>
+
+			<ItemInformacionProspecto
+				label='Tipo de condominio'
+				value={
+					prospecto.condominio_vertical == null
+						? undefined
+						: labelTipoCondominio(prospecto.condominio_vertical)
+				}
+				highlightMissing={inputPendiente(prospecto.condominio_vertical)}
 			/>
 
 			<ItemInformacionProspecto

@@ -169,6 +169,31 @@ describe('registro de prospecto — payload enviado', () => {
 		).toBe(11)
 	})
 
+	it('mapea el tipo de condominio a booleano antes de enviar', async () => {
+		await enviar({ ...PROSPECTO_VALIDO, condominio_vertical: 'vertical' })
+		await waitFor(() => expect(registrarProspectoMock).toHaveBeenCalledTimes(1))
+		expect(
+			(registrarProspectoMock.mock.calls[0]![0] as unknown as Record<string, unknown>)
+				.condominio_vertical,
+		).toBe(true)
+
+		registrarProspectoMock.mockClear()
+		await enviar({ ...PROSPECTO_VALIDO, condominio_vertical: 'horizontal' })
+		await waitFor(() => expect(registrarProspectoMock).toHaveBeenCalledTimes(1))
+		expect(
+			(registrarProspectoMock.mock.calls[0]![0] as unknown as Record<string, unknown>)
+				.condominio_vertical,
+		).toBe(false)
+
+		registrarProspectoMock.mockClear()
+		await enviar({ ...PROSPECTO_VALIDO, condominio_vertical: '' })
+		await waitFor(() => expect(registrarProspectoMock).toHaveBeenCalledTimes(1))
+		expect(
+			(registrarProspectoMock.mock.calls[0]![0] as unknown as Record<string, unknown>)
+				.condominio_vertical,
+		).toBeNull()
+	})
+
 	it('envía null en los campos vacíos en lugar de cadenas en blanco', async () => {
 		await enviar({
 			...PROSPECTO_VALIDO,

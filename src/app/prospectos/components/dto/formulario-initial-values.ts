@@ -13,6 +13,7 @@ export interface FormularioInitialValues {
 	administrador?: AdministradorCondominio
 	tiene_locales_comerciales?: boolean
 	uso_del_condominio?: string
+	condominio_vertical?: string
 	materialidad?: string
 	clasificacion_preliminar_incendio?: string
 	procesos_productivos?: boolean

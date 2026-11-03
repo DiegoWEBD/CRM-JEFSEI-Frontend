@@ -5,6 +5,7 @@ import {
 	MATERIALIDAD_PRINCIPAL_LABELS,
 } from '@/lib/materialidades'
 import { UBICACION_PISCINA_LABELS } from '@/lib/ubicacion.piscina'
+import { labelTipoCondominio } from '@/lib/condominio-vertical'
 import { formatUF } from '@/lib/uf'
 import { inputPendiente } from '@/utils/input/input-pendiente'
 import {
@@ -47,6 +48,17 @@ export default function InformacionTecnicaCondominio({
 					label='Uso del condominio'
 					value={prospecto.uso_del_condominio}
 					missing={inputPendiente(prospecto.uso_del_condominio)}
+				/>
+
+				<DataItemProspecto
+					icon={Building2}
+					label='Tipo de condominio'
+					value={
+						prospecto.condominio_vertical == null
+							? undefined
+							: labelTipoCondominio(prospecto.condominio_vertical)
+					}
+					missing={inputPendiente(prospecto.condominio_vertical)}
 				/>
 
 				<DataItemProspecto
