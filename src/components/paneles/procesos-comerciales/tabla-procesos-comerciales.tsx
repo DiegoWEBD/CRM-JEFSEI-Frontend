@@ -6,6 +6,7 @@ import { BadgeEstadoOportunidad } from '@/components/badge/badge-estado-oportuni
 import { Card, CardContent } from '@/components/card'
 import Paginacion from '@/components/paginacion/paginacion'
 import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
+import { formatearDiasHoras } from '@/lib/formatos/formatear-dias-horas'
 import { cn } from '@/lib/utils'
 import { SkeletonTabla } from './skeleton-tabla'
 
@@ -130,8 +131,8 @@ export default function TablaProcesosComerciales({
 								{!f.proceso.cerrado && (
 									<>
 										<span>
-											Tiempo: {f.dias_transcurridos ?? '—'} /{' '}
-											{f.dias_limite ?? '—'} días
+											Tiempo: {formatearDiasHoras(f.dias_transcurridos)} /{' '}
+											{formatearDiasHoras(f.dias_limite)}
 										</span>
 										<span>
 											SLA:{' '}
