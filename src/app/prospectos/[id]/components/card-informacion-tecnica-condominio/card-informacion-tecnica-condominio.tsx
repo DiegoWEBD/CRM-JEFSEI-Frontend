@@ -7,6 +7,7 @@ import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-co
 import { useUserSession } from '@/hooks/auth/use-user-session'
 import { useState } from 'react'
 import FormularioActualizarInformacionTecnicaCondominio from './formulario-actualizar-informacion-tecnica-condominio/formulario-actualizar-informacion-tecnica-condominio'
+import DialogPorcentajeDepreciacionPersonalizado from './formulario-porcentaje-depreciacion-personalizado/formulario-porcentaje-depreciacion-personalizado'
 import DialogValorUfM2Personalizado from './formulario-valor-uf-m2-personalizado/formulario-valor-uf-m2-personalizado'
 import InformacionTecnicaCondominio from './informacion-tecnica-condominio/informacion-tecnica-condominio'
 
@@ -19,9 +20,19 @@ export default function CardInformacionTecnicaCondominio({
 }: CardInformacionTecnicaCondominioProps) {
 	const [editar, setEditar] = useState<boolean>(false)
 	const [dialogValorUfAbierto, setDialogValorUfAbierto] = useState<boolean>(false)
-	const { usuario } = useUserSession()
+	const [dialogDepreciacionAbierto, setDialogDepreciacionAbierto] =
+		useState<boolean>(false)
+	const { usuario, tieneAlgunPermiso } = useUserSession()
 	const rutsCoinciden =
 		usuario?.rut === prospecto.ejecutivo_comercial_asignado?.rut
+	const puedeDepreciacionTodos = tieneAlgunPermiso([
+		'ESTABLECER_DEPRECIACION_PERSONALIZADA_TODOS',
+	])
+	const puedeDepreciacionPropios =
+		tieneAlgunPermiso(['ESTABLECER_DEPRECIACION_PERSONALIZADA_PROPIOS']) &&
+		usuario?.rut === prospecto.ejecutivo_evaluacion_asignado?.rut
+	const puedeEditarDepreciacion =
+		puedeDepreciacionTodos || puedeDepreciacionPropios
 
 	return (
 		<Card className='border-border bg-card shadow-none'>
@@ -41,6 +52,17 @@ export default function CardInformacionTecnicaCondominio({
 							</Button>
 						)}
 					</PermissionGuard>
+					{!editar && puedeEditarDepreciacion && (
+						<Button
+							type='button'
+							variant='outline'
+							size='sm'
+							className='h-8 text-xs'
+							onClick={() => setDialogDepreciacionAbierto(true)}
+						>
+							{prospecto.porcentaje_depreciacion_personalizado != null ? 'Editar depreciación personalizada' : 'Establecer depreciación personalizada'}
+						</Button>
+					)}
 					{!editar && rutsCoinciden && (
 						<Button
 							type='button'
@@ -64,6 +86,11 @@ export default function CardInformacionTecnicaCondominio({
 			<DialogValorUfM2Personalizado
 				open={dialogValorUfAbierto}
 				onOpenChange={setDialogValorUfAbierto}
+				prospecto={prospecto}
+			/>
+			<DialogPorcentajeDepreciacionPersonalizado
+				open={dialogDepreciacionAbierto}
+				onOpenChange={setDialogDepreciacionAbierto}
 				prospecto={prospecto}
 			/>
 		</Card>
