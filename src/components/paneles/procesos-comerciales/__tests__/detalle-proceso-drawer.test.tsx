@@ -56,6 +56,18 @@ const REPORTE_DESCARTADO = {
 	},
 } as unknown as ReporteProcesoComercial
 
+const REPORTE_CON_SLA = {
+	...REPORTE_ABIERTO,
+	fecha_ingreso_estado: '2026-11-02T12:00:00+00:00',
+	// 12 h transcurridas de un límite de 1 día: SLA con precisión de horas.
+	dias_transcurridos: 0.5,
+	porentaje_sla_consumido: 0.5,
+	dias_limite: 1,
+	dias_restantes: 0.5,
+	dias_atraso: -0.5,
+	mensaje_semaforo: 'Dentro del plazo (0 días 12 h de 1 día)',
+} as unknown as ReporteProcesoComercial
+
 function montar({
 	reporte = REPORTE_ABIERTO,
 	permisos = ['DESCARTAR_PROCESO_COMERCIAL'],
@@ -95,5 +107,17 @@ describe('DetalleProcesoDrawer — panel de gerentes (/oportunidades)', () => {
 		await montar({ reporte: REPORTE_DESCARTADO })
 
 		expect(screen.getAllByText('Oportunidad descartada')).toHaveLength(2)
+	})
+
+	it('muestra el SLA en días y horas con precisión de horas', async () => {
+		await montar({ reporte: REPORTE_CON_SLA })
+
+		// Transcurrido y restantes: la fracción de día se expresa en horas.
+		expect(screen.getAllByText('0 días 12 h')).toHaveLength(2)
+		expect(screen.getByText('1 día')).toBeTruthy()
+		expect(screen.getByText('50%')).toBeTruthy()
+		expect(
+			screen.getByText('Dentro del plazo (0 días 12 h de 1 día)'),
+		).toBeTruthy()
 	})
 })

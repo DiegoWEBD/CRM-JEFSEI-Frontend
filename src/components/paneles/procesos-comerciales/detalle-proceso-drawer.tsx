@@ -33,6 +33,7 @@ import { Textarea } from '@/components/textarea'
 import { useCerrarProcesoComercial } from '@/hooks/procesos-comerciales/use-cerrar-proceso-comercial'
 import { useObtenerHistorialEstado } from '@/hooks/procesos-comerciales/use-obtener-historial-estado'
 import { SEMAFORO_PROGRESS_CLASS, SEMAFORO_VARIANT } from '@/lib/badge-variants'
+import { formatearDiasHoras } from '@/lib/formatos/formatear-dias-horas'
 import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import Link from 'next/link'
@@ -180,9 +181,7 @@ export default function DetalleProcesoDrawer({
 											Transcurrido
 										</p>
 										<p className='text-sm font-medium tabular-nums text-foreground'>
-											{reporte.dias_transcurridos != null
-												? `${reporte.dias_transcurridos} días`
-												: '—'}
+											{formatearDiasHoras(reporte.dias_transcurridos)}
 										</p>
 									</div>
 									<div className='space-y-0.5'>
@@ -191,7 +190,7 @@ export default function DetalleProcesoDrawer({
 										</p>
 										<p className='text-sm font-medium tabular-nums text-foreground'>
 											{reporte.dias_limite != null
-												? `${reporte.dias_limite} días`
+												? formatearDiasHoras(reporte.dias_limite)
 												: 'Sin límite'}
 										</p>
 									</div>
@@ -239,7 +238,7 @@ export default function DetalleProcesoDrawer({
 													Días restantes
 												</p>
 												<p className='text-sm font-medium tabular-nums text-foreground'>
-													{reporte.dias_restantes}
+													{formatearDiasHoras(reporte.dias_restantes)}
 												</p>
 											</div>
 										)}
@@ -249,7 +248,7 @@ export default function DetalleProcesoDrawer({
 												Días de atraso
 											</p>
 											<p className='text-sm font-medium tabular-nums text-destructive'>
-												{reporte.dias_atraso}
+												{formatearDiasHoras(reporte.dias_atraso)}
 											</p>
 										</div>
 									)}
