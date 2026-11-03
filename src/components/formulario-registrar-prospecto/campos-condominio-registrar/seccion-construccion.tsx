@@ -16,6 +16,10 @@ import {
 	MATERIALIDAD_PRINCIPAL_LABELS,
 	MaterialidadPrincipalCondominio,
 } from '@/lib/materialidades'
+import {
+	TIPO_CONDOMINIO_LABELS,
+	TIPO_CONDOMINIO_OPCIONES,
+} from '@/lib/condominio-vertical'
 import { FormikProps } from 'formik'
 
 const USO_CONDOMINIO_OPTIONS = [
@@ -55,6 +59,35 @@ export default function SeccionConstruccion({ formik }: Props) {
 						{USO_CONDOMINIO_OPTIONS.map(opt => (
 							<SelectItem key={opt.value} value={opt.value} className='text-xs'>
 								{opt.label}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+			</Campo>
+
+			<Campo label='Tipo de condominio'>
+				<Select
+					value={formik.values.condominio_vertical || '__none__'}
+					onValueChange={value =>
+						formik.setFieldValue(
+							'condominio_vertical',
+							value === '__none__' ? '' : value,
+						)
+					}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder='Seleccionar tipo' />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem
+							value='__none__'
+							className='text-xs text-muted-foreground'
+						>
+							Seleccionar tipo
+						</SelectItem>
+						{TIPO_CONDOMINIO_OPCIONES.map(opt => (
+							<SelectItem key={opt} value={opt} className='text-xs'>
+								{TIPO_CONDOMINIO_LABELS[opt]}
 							</SelectItem>
 						))}
 					</SelectContent>

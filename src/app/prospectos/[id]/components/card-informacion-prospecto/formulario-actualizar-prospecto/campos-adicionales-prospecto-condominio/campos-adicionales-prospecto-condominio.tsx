@@ -7,6 +7,8 @@ import SelectItem from '@/components/forms/select/select-item/select-item'
 import SelectTrigger from '@/components/forms/select/select-trigger/select-trigger'
 import SelectValue from '@/components/forms/select/select-value/select-value'
 import SiNoSelect from '@/components/forms/si-no-select/si-no-select'
+import { SelectorAdministrador } from '@/components/selector-administrador'
+import SelectorTipoCondominio from '@/components/selector-tipo-condominio/selector-tipo-condominio'
 import {
 	CLASIFICACION_PRELIMINAR_INCENDIO_LABELS,
 	clasificacionPreliminarDesdeMaterialidad,
@@ -20,7 +22,6 @@ import {
 	UbicacionPiscinaCondominio,
 } from '@/lib/ubicacion.piscina'
 import { FormikProps } from 'formik'
-import { SelectorAdministrador } from '@/components/selector-administrador'
 
 type CamposAdicionalesProspectoCondominioProps = {
 	formik: FormikProps<FormularioInitialValues>
@@ -29,7 +30,6 @@ type CamposAdicionalesProspectoCondominioProps = {
 export default function CamposAdicionalesProspectoCondominio({
 	formik,
 }: CamposAdicionalesProspectoCondominioProps) {
-	console.log(formik.values)
 	return (
 		<>
 			<Campo label='Administrador'>
@@ -46,6 +46,14 @@ export default function CamposAdicionalesProspectoCondominio({
 					name='uso_del_condominio'
 					value={formik.values.uso_del_condominio}
 					onChange={formik.handleChange}
+				/>
+			</Campo>
+
+			<Campo label='Tipo de condominio'>
+				<SelectorTipoCondominio
+					name='condominio_vertical'
+					value={formik.values.condominio_vertical}
+					onChange={value => formik.setFieldValue('condominio_vertical', value)}
 				/>
 			</Campo>
 

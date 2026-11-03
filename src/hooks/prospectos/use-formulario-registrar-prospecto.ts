@@ -1,5 +1,6 @@
 import { registrarProspecto } from '@/aplicacion/prospectos/use-cases/registrar-prospecto/registrar-prospecto'
 import { FormularioInitialValues } from '@/app/prospectos/components/dto/formulario-initial-values'
+import { verticalDesdeTipoCondominio } from '@/lib/condominio-vertical'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { rutChilenoEstadoValidacion } from '@/utils/validar-rut'
 import { useFormik } from 'formik'
@@ -45,6 +46,9 @@ export const useFormularioRegistrarProspecto = ({
 				})(),
 				tiene_locales_comerciales: values.tiene_locales_comerciales ?? null,
 				uso_del_condominio: values.uso_del_condominio || null,
+				condominio_vertical: verticalDesdeTipoCondominio(
+					values.condominio_vertical,
+				),
 				materialidad: values.materialidad || null,
 				clasificacion_preliminar_incendio:
 					values.clasificacion_preliminar_incendio || null,
@@ -141,6 +145,7 @@ export const useFormularioRegistrarProspecto = ({
 			administrador: undefined,
 			tiene_locales_comerciales: undefined,
 			uso_del_condominio: '',
+			condominio_vertical: '',
 			materialidad: '',
 			clasificacion_preliminar_incendio: '',
 			procesos_productivos: undefined,

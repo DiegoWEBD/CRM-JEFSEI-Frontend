@@ -16,6 +16,7 @@ export interface ProspectoCondominio extends Prospecto {
 	porcentaje_espacios_comunes?: number
 	tiene_locales_comerciales?: boolean
 	uso_del_condominio?: string
+	condominio_vertical?: boolean
 	materialidad?: MaterialidadPrincipalCondominio
 	clasificacion_preliminar_incendio?: ClasificacionPreliminarIncendio
 	procesos_productivos?: boolean

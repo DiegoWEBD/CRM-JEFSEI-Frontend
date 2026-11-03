@@ -11,6 +11,7 @@ export interface ActualizarProspectoCondominioRequest {
 	porcentaje_espacios_comunes: number | null
 	tiene_locales_comerciales: boolean | null
 	uso_del_condominio: string | null
+	condominio_vertical: boolean | null
 	materialidad: string | null
 	clasificacion_preliminar_incendio: string | null
 	procesos_productivos: boolean | null
