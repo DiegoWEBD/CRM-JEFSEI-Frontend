@@ -190,6 +190,11 @@ export default function InformacionTecnicaCondominio({
 							: null
 					}
 					missing={inputPendiente(prospecto.porcentaje_depreciacion)}
+					badge={
+						prospecto.porcentaje_depreciacion_personalizado != null
+							? 'Personalizado'
+							: undefined
+					}
 				/>
 
 				<DataItemProspecto

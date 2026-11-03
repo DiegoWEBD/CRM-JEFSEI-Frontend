@@ -12,6 +12,7 @@ export interface ProspectoCondominio extends Prospecto {
 	valor_uf_m2_personalizado?: number
 	valor_uf_m2_disponible?: boolean
 	porcentaje_depreciacion?: number
+	porcentaje_depreciacion_personalizado?: number
 	porcentaje_espacios_comunes?: number
 	tiene_locales_comerciales?: boolean
 	uso_del_condominio?: string
