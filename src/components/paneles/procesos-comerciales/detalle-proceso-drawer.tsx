@@ -203,7 +203,7 @@ export default function DetalleProcesoDrawer({
 												variant={SEMAFORO_VARIANT[reporte.estado_semaforo]}
 												className='text-xs font-medium'
 											>
-												{(reporte.porentaje_sla_consumido * 100).toFixed(1)}%
+												{(reporte.porentaje_sla_consumido * 100).toFixed(0)}%
 											</Badge>
 										) : (
 											<span className='text-sm font-medium text-muted-foreground'>

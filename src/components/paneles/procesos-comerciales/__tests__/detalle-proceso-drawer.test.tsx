@@ -115,7 +115,7 @@ describe('DetalleProcesoDrawer — panel de gerentes (/oportunidades)', () => {
 		// Transcurrido y restantes: la fracción de día se expresa en horas.
 		expect(screen.getAllByText('0 días 12 h')).toHaveLength(2)
 		expect(screen.getByText('1 día')).toBeTruthy()
-		expect(screen.getByText('50.0%')).toBeTruthy()
+		expect(screen.getByText('50%')).toBeTruthy()
 		expect(
 			screen.getByText('Dentro del plazo (0 días 12 h de 1 día)'),
 		).toBeTruthy()
