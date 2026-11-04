@@ -5,6 +5,7 @@ export interface ProspectoResumenJson {
 	id_cliente?: number
 	rut_riesgo: string
 	nombre_riesgo: string
+	nombre_fantasia?: string
 	nombre_administrador?: string
 	linea_negocio: string
 	ejecutivo_comercial?: string

@@ -53,6 +53,10 @@ export default function FilaProspecto({
 				<p className='truncate text-sm font-semibold leading-snug text-foreground'>
 					{resaltarTexto(prospecto.nombre_riesgo, textoBusqueda)}
 				</p>
+				<p className='truncate text-xs font-semibold text-muted-foreground'>
+					{prospecto.nombre_fantasia &&
+						resaltarTexto(prospecto.nombre_fantasia, textoBusqueda)}
+				</p>
 				<Badge
 					variant={ESTADO_GENERAL_CLIENTE_BADGE[estadoGeneral]}
 					className='text-[10px]'

@@ -45,6 +45,13 @@ All components are built:
 
 **Lineamientos seguidos**: skeletons en estados de carga, Suspense con SSR, initialData para hidratación instantánea, ScrollArea en tablas largas, layout consistente en dialogs (header+border / scroll-body / footer).
 
+**Recordatorios — usuario destino en `POST /recordatorios`: DONE**
+
+- **Hook** (`src/hooks/recordatorios/use-registrar-recordatorio.ts`): `RegistrarRecordatorioRequest` incluye `rut_usuario_destino?: string | null`.
+- **Dialog** (`src/components/dialog-crear-recordatorio/dialog-crear-recordatorio.tsx`): con el permiso `CREAR_RECORDATORIO_GLOBAL` (solo al crear, no en edición) se muestra el Select "Asignar a (opcional)" con los usuarios (`useUsuarios`, 100/página). Opción por defecto "Para mí" (→ `rut_usuario_destino: null`); el BFF `POST /api/recordatorios` reenvía el body tal cual, sin cambios.
+- **Tests** (`src/components/dialog-crear-recordatorio/__tests__/dialog-crear-recordatorio-destino.test.tsx`): visibilidad por permiso/edición y envío del destino. Nota: Radix renderiza un `BubbleSelect` nativo que duplica el texto de las opciones dentro de `<form>`; usar `findByRole('option', { name })` para hacer click en el item.
+- **Backend** (ya implementado): permisos `CREAR_RECORDATORIO_PROPIO`/`CREAR_RECORDATORIO_GLOBAL` (`migraciones/migracion_permisos_crear_recordatorio.sql`), el caso de uso valida el destino y la auditoría describe "…para el usuario X en el prospecto Y".
+
 **Pre-existing lint issues (not from our work)**:
 - `campos-condominio-registrar.tsx:35`: `@typescript-eslint/no-explicit-any`
 - `use-mobile.tsx:14`: `react-hooks/set-state-in-effect` (React 19 lint rule)
