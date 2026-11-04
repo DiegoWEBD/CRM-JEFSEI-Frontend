@@ -1,3 +1,3 @@
 export interface CambiarLineaNegocioProspectoRequest {
-	id_linea_negocio: number
+	codigo_linea_negocio: 'condominios' | 'lineas_personales' | 'lineas_comerciales'
 }

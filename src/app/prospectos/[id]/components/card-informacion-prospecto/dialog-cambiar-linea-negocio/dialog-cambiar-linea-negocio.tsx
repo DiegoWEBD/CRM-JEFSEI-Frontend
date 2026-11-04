@@ -19,9 +19,11 @@ import {
 	SelectValue,
 } from '@/components/select'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
+import { CambiarLineaNegocioProspectoRequest } from '@/aplicacion/prospectos/use-cases/cambiar-linea-negocio/dto/cambiar-linea-negocio-request'
 import { useLineasNegocio } from '@/hooks/lineas-negocio/use-lineas-negocio'
 import { useObtenerProcesosComerciales } from '@/hooks/procesos-comerciales/use-obtener-procesos-comerciales'
 import { useCambiarLineaNegocio } from '@/hooks/prospectos/use-cambiar-linea-negocio'
+import { codigoLineaNegocio } from '@/lib/linea-negocio'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -33,7 +35,7 @@ export default function DialogCambiarLineaNegocio({
 	prospecto,
 }: DialogCambiarLineaNegocioProps) {
 	const [open, setOpen] = useState(false)
-	const [idLineaSeleccionada, setIdLineaSeleccionada] = useState('')
+	const [codigoLineaSeleccionada, setCodigoLineaSeleccionada] = useState('')
 
 	const { data: lineasNegocio, isLoading: cargandoLineas } = useLineasNegocio()
 	const { data: oportunidadesAbiertas, isLoading: cargandoOportunidades } =
@@ -46,10 +48,11 @@ export default function DialogCambiarLineaNegocio({
 	const cantidadOportunidades = oportunidadesAbiertas?.length ?? 0
 
 	const confirmarCambio = async () => {
-		if (!idLineaSeleccionada) return
+		if (!codigoLineaSeleccionada) return
 		try {
 			const response = await cambiarLineaMutation.mutateAsync({
-				id_linea_negocio: Number(idLineaSeleccionada),
+				codigo_linea_negocio:
+					codigoLineaSeleccionada as CambiarLineaNegocioProspectoRequest['codigo_linea_negocio'],
 			})
 			if (response.oportunidades_descartadas > 0) {
 				toast.success(
@@ -58,7 +61,7 @@ export default function DialogCambiarLineaNegocio({
 			} else {
 				toast.success('Línea de negocio cambiada exitosamente')
 			}
-			setIdLineaSeleccionada('')
+			setCodigoLineaSeleccionada('')
 			setOpen(false)
 		} catch {
 			toast.error('Error cambiando la línea de negocio')
@@ -102,15 +105,18 @@ export default function DialogCambiarLineaNegocio({
 							Nueva línea de negocio
 						</Label>
 						<Select
-							value={idLineaSeleccionada}
-							onValueChange={setIdLineaSeleccionada}
+							value={codigoLineaSeleccionada}
+							onValueChange={setCodigoLineaSeleccionada}
 						>
 							<SelectTrigger className='h-8 w-full text-xs shadow-none'>
 								<SelectValue placeholder='Seleccione una línea de negocio' />
 							</SelectTrigger>
 							<SelectContent>
 								{lineasDisponibles.map(linea => (
-									<SelectItem key={linea.id} value={String(linea.id)}>
+									<SelectItem
+										key={linea.id}
+										value={codigoLineaNegocio(linea)}
+									>
 										{linea.nombre}
 									</SelectItem>
 								))}
@@ -141,7 +147,7 @@ export default function DialogCambiarLineaNegocio({
 						<Button
 							variant='destructive'
 							disabled={
-								!idLineaSeleccionada ||
+								!codigoLineaSeleccionada ||
 								cargandoLineas ||
 								cambiarLineaMutation.isPending
 							}

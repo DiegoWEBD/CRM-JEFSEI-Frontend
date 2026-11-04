@@ -1,6 +1,7 @@
 'use client'
 
 import { Badge } from '@/components/badge'
+import { CODIGO_LINEA_CONDOMINIOS, codigoLineaNegocio } from '@/lib/linea-negocio'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
 import { useObtenerContactos } from '@/hooks/contactos/use-obtener-contactos'
 import { usePanelPolizas } from '@/hooks/polizas/use-panel-polizas'
@@ -67,7 +68,8 @@ export default function ProspectoHeroHeader({
 		authContext.tienePermiso('OBTENER_CONTACTOS_PROPIOS') ||
 		authContext.tienePermiso('OBTENER_CONTACTOS_TODOS')
 	const esCondominio =
-		prospecto.linea_negocio.nombre.toLowerCase() === 'condominio'
+		prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' ||
+		codigoLineaNegocio(prospecto.linea_negocio) === CODIGO_LINEA_CONDOMINIOS
 	const tieneCliente = Boolean(prospecto.id_cliente)
 
 	const estadoCliente: EstadoGeneralCliente =

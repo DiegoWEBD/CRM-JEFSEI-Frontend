@@ -1,6 +1,7 @@
 'use client'
 
 import { Badge } from '@/components/badge'
+import { CODIGO_LINEA_CONDOMINIOS, codigoLineaNegocio } from '@/lib/linea-negocio'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
 import EstadoCompletitudInformacion from '@/components/estado-completitud-informacion/estado-completitud-informacion'
@@ -84,7 +85,8 @@ const PaginaProspectoHeader = ({ prospecto }: PaginaProspectoHeaderProps) => {
 		(prospecto.estado_general_cliente as EstadoGeneralCliente) || 'prospecto'
 
 	const esCondominio =
-		prospecto.linea_negocio.nombre.toLowerCase() === 'condominio'
+		prospecto.linea_negocio.nombre.toLowerCase() === 'condominio' ||
+		codigoLineaNegocio(prospecto.linea_negocio) === CODIGO_LINEA_CONDOMINIOS
 	const tieneCliente = Boolean(prospecto.id_cliente)
 
 	const lineaNegocioLabel = prospecto.linea_negocio.nombre
