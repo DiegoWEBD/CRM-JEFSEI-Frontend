@@ -19,11 +19,11 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const idLineaNegocio = Number(body?.id_linea_negocio)
+    const codigoLineaNegocio = String(body?.codigo_linea_negocio ?? '')
 
-    if (!Number.isInteger(idLineaNegocio) || idLineaNegocio <= 0) {
+    if (!['condominios', 'lineas_personales', 'lineas_comerciales'].includes(codigoLineaNegocio)) {
       return NextResponse.json(
-        { error: 'ID de línea de negocio inválido' },
+        { error: 'Código de línea de negocio inválido' },
         { status: 400 },
       )
     }
@@ -32,7 +32,7 @@ export async function PATCH(
 
     const response = await axiosClient.patch(
       `/prospectos/${idProspecto}/linea-negocio`,
-      { id_linea_negocio: idLineaNegocio },
+      { codigo_linea_negocio: codigoLineaNegocio },
       { headers: { Cookie: cookieStore.toString() } },
     )
 

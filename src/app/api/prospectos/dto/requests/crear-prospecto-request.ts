@@ -8,7 +8,7 @@ export interface CrearProspectoRequest {
   region: string | null
   comuna: string | null
   observaciones: string | null
-  id_linea_negocio: number
+  codigo_linea_negocio: 'condominios' | 'lineas_personales' | 'lineas_comerciales'
   porcentaje_espacios_comunes: number | null
   tiene_locales_comerciales: boolean | null
   uso_del_condominio: string | null
@@ -26,4 +26,7 @@ export interface CrearProspectoRequest {
   tiene_sprinklers: boolean | null
   year_construccion: number | null
   metros_cuadrados: number | null
+  nombre_fantasia: string | null
+  cantidad_trabajadores: number | null
+  giros_comerciales: string[]
 }

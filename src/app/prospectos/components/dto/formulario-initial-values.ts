@@ -30,4 +30,7 @@ export interface FormularioInitialValues {
 	uf_por_metro_cuadrado?: number
 	porcentaje_depreciacion?: number
 	porcentaje_espacios_comunes?: number
+	nombre_fantasia?: string
+	cantidad_trabajadores?: number
+	giros_comerciales?: string[]
 }

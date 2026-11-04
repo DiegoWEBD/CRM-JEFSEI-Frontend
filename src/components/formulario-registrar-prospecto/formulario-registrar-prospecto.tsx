@@ -19,17 +19,18 @@ import {
 	obtenerComunasDeRegion,
 } from '@/lib/chile-regiones-comunas'
 import { formatRut } from '@/utils/format-rut'
-import { Building2, LoaderCircle, User } from 'lucide-react'
+import { Building2, BriefcaseBusiness, LoaderCircle, User } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import FormError from '../forms/form-error/form-error'
 import CamposCondominioRegistrar from './campos-condominio-registrar/campos-condominio-registrar'
+import CamposEmpresaRegistrar from './campos-empresa-registrar/campos-empresa-registrar'
 
 type FormularioRegistrarProspectoProps = {
 	onProspectoRegistrado?: () => void
 	onClose?: () => void
 }
 
-type TipoCliente = 'condominio' | 'linea_personal'
+type TipoCliente = 'condominio' | 'linea_personal' | 'empresa'
 
 export default function FormularioRegistrarProspecto({
 	onProspectoRegistrado,
@@ -47,14 +48,20 @@ export default function FormularioRegistrarProspecto({
 	)
 
 	const tipoActual: TipoCliente =
-		formik.values.linea_negocio === 'condominio'
+		formik.values.linea_negocio === 'condominios'
 			? 'condominio'
-			: 'linea_personal'
+			: formik.values.linea_negocio === 'lineas_comerciales'
+				? 'empresa'
+				: 'linea_personal'
 
 	const setTipo = (tipo: TipoCliente) => {
 		formik.setFieldValue(
 			'linea_negocio',
-			tipo === 'condominio' ? 'condominio' : 'lineas_personales',
+			tipo === 'condominio'
+				? 'condominios'
+				: tipo === 'empresa'
+					? 'lineas_comerciales'
+					: 'lineas_personales',
 		)
 	}
 
@@ -86,6 +93,16 @@ export default function FormularioRegistrarProspecto({
 					>
 						<User className='mr-1.5 h-3.5 w-3.5' aria-hidden />
 						Línea personal / Persona natural
+					</Button>
+					<Button
+						type='button'
+						size='sm'
+						variant={tipoActual === 'empresa' ? 'default' : 'outline'}
+						className='h-9 text-xs'
+						onClick={() => setTipo('empresa')}
+					>
+						<BriefcaseBusiness className='mr-1.5 h-3.5 w-3.5' aria-hidden />
+						Línea comercial / Empresa
 					</Button>
 				</CardContent>
 			</Card>
@@ -220,6 +237,19 @@ export default function FormularioRegistrarProspecto({
 					)}
 				</CardContent>
 			</Card>
+
+			{tipoActual === 'empresa' && (
+				<Card className='border-border bg-card shadow-none'>
+					<CardHeader className='pb-2 pt-3'>
+						<CardTitle className='text-sm font-semibold leading-tight tracking-tight text-foreground'>
+							Datos de la empresa
+						</CardTitle>
+					</CardHeader>
+					<CardContent className='grid gap-3 pb-4 sm:grid-cols-2'>
+						<CamposEmpresaRegistrar formik={formik} />
+					</CardContent>
+				</Card>
+			)}
 
 			{tipoActual === 'condominio' && (
 				<>

@@ -27,7 +27,7 @@ const PROSPECTO_VALIDO = {
 	rut_riesgo: '12.345.678-5',
 	nombre_riesgo: 'Condominio Los Alerces',
 	correo_contacto: 'contacto@condominio.test',
-	linea_negocio: 'condominio',
+	linea_negocio: 'condominios',
 	porcentaje_espacios_comunes: 25,
 	year_construccion: 2010,
 	numero_pisos: 12,
@@ -154,19 +154,19 @@ describe('registro de prospecto — payload enviado', () => {
 		expect(request.porcentaje_espacios_comunes).toBe(0.25)
 	})
 
-	it('traduce la línea de negocio al id que usa el backend', async () => {
-		await enviar({ ...PROSPECTO_VALIDO, linea_negocio: 'condominio' })
+	it('envía el código de la línea de negocio al backend', async () => {
+		await enviar({ ...PROSPECTO_VALIDO, linea_negocio: 'condominios' })
 		await waitFor(() => expect(registrarProspectoMock).toHaveBeenCalledTimes(1))
 		expect(
-			(registrarProspectoMock.mock.calls[0]![0] as unknown as Record<string, unknown>).id_linea_negocio,
-		).toBe(10)
+			(registrarProspectoMock.mock.calls[0]![0] as unknown as Record<string, unknown>).codigo_linea_negocio,
+		).toBe('condominios')
 
 		registrarProspectoMock.mockClear()
 		await enviar({ ...PROSPECTO_VALIDO, linea_negocio: 'lineas_personales' })
 		await waitFor(() => expect(registrarProspectoMock).toHaveBeenCalledTimes(1))
 		expect(
-			(registrarProspectoMock.mock.calls[0]![0] as unknown as Record<string, unknown>).id_linea_negocio,
-		).toBe(11)
+			(registrarProspectoMock.mock.calls[0]![0] as unknown as Record<string, unknown>).codigo_linea_negocio,
+		).toBe('lineas_personales')
 	})
 
 	it('mapea el tipo de condominio a booleano antes de enviar', async () => {

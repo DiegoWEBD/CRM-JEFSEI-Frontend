@@ -16,11 +16,6 @@ type UseFormularioRegistrarProspecto = {
 	onClose?: () => void
 }
 
-const LINEA_TO_ID: Record<string, number> = {
-	condominio: 10,
-	lineas_personales: 11,
-}
-
 export const useFormularioRegistrarProspecto = ({
 	onClose,
 	onProspectoRegistrado,
@@ -39,7 +34,10 @@ export const useFormularioRegistrarProspecto = ({
 				region: values.region || null,
 				comuna: values.comuna || null,
 				observaciones: values.observaciones || null,
-				id_linea_negocio: LINEA_TO_ID[values.linea_negocio] ?? 0,
+				codigo_linea_negocio: values.linea_negocio as
+					| 'condominios'
+					| 'lineas_personales'
+					| 'lineas_comerciales',
 				porcentaje_espacios_comunes: (() => {
 					const n = n2(values.porcentaje_espacios_comunes)
 					return n == null ? null : n / 100
@@ -63,6 +61,11 @@ export const useFormularioRegistrarProspecto = ({
 				tiene_sprinklers: values.tiene_sprinklers ?? null,
 				year_construccion: values.year_construccion ?? null,
 				metros_cuadrados: values.metros_cuadrados ?? null,
+				nombre_fantasia: values.nombre_fantasia || null,
+				cantidad_trabajadores: values.cantidad_trabajadores ?? null,
+				giros_comerciales: (values.giros_comerciales ?? []).filter(
+					giro => giro.trim() !== '',
+				),
 			}
 
 			await registrarProspecto(request)
@@ -88,7 +91,7 @@ export const useFormularioRegistrarProspecto = ({
 
 		linea_negocio: Yup.string()
 			.oneOf(
-				['condominio', 'lineas_personales'],
+				['condominios', 'lineas_personales', 'lineas_comerciales'],
 				'La línea de negocio es obligatoria',
 			)
 			.required('La línea de negocio es obligatoria'),
@@ -162,6 +165,9 @@ export const useFormularioRegistrarProspecto = ({
 			uf_por_metro_cuadrado: undefined,
 			porcentaje_depreciacion: undefined,
 			porcentaje_espacios_comunes: undefined,
+			nombre_fantasia: '',
+			cantidad_trabajadores: undefined,
+			giros_comerciales: [],
 		},
 		onSubmit: async values => {
 			await mutation.mutateAsync(values)

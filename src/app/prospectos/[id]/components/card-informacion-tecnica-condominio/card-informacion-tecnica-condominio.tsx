@@ -19,7 +19,8 @@ export default function CardInformacionTecnicaCondominio({
 	prospecto,
 }: CardInformacionTecnicaCondominioProps) {
 	const [editar, setEditar] = useState<boolean>(false)
-	const [dialogValorUfAbierto, setDialogValorUfAbierto] = useState<boolean>(false)
+	const [dialogValorUfAbierto, setDialogValorUfAbierto] =
+		useState<boolean>(false)
 	const [dialogDepreciacionAbierto, setDialogDepreciacionAbierto] =
 		useState<boolean>(false)
 	const { usuario, tieneAlgunPermiso } = useUserSession()
@@ -39,7 +40,9 @@ export default function CardInformacionTecnicaCondominio({
 			<CardHeader className='flex flex-col gap-2 border-b border-border pb-2 pt-3 sm:flex-row sm:items-center sm:justify-between'>
 				<CardTitle primary>Información técnica del condominio</CardTitle>
 				<div className='flex flex-wrap gap-2'>
-					<PermissionGuard allowedPermissions={['MODIFICAR_UF_M2_PERSONALIZADO']}>
+					<PermissionGuard
+						allowedPermissions={['MODIFICAR_UF_M2_PERSONALIZADO']}
+					>
 						{!editar && (
 							<Button
 								type='button'
@@ -48,7 +51,9 @@ export default function CardInformacionTecnicaCondominio({
 								className='h-8 text-xs'
 								onClick={() => setDialogValorUfAbierto(true)}
 							>
-								{prospecto.valor_uf_m2_personalizado != null ? 'Editar valor UF personalizado' : 'Establecer valor UF personalizado'}
+								{prospecto.valor_uf_m2_personalizado != null
+									? 'Editar valor UF personalizado'
+									: 'Establecer valor UF personalizado'}
 							</Button>
 						)}
 					</PermissionGuard>
@@ -60,7 +65,9 @@ export default function CardInformacionTecnicaCondominio({
 							className='h-8 text-xs'
 							onClick={() => setDialogDepreciacionAbierto(true)}
 						>
-							{prospecto.porcentaje_depreciacion_personalizado != null ? 'Editar depreciación personalizada' : 'Establecer depreciación personalizada'}
+							{prospecto.porcentaje_depreciacion_personalizado != null
+								? 'Editar depreciación personalizada'
+								: 'Establecer depreciación personalizada'}
 						</Button>
 					)}
 					{!editar && rutsCoinciden && (

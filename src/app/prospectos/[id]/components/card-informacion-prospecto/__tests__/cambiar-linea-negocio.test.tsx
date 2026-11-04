@@ -37,8 +37,8 @@ const useObtenerProcesosComercialesMock = vi.mocked(useObtenerProcesosComerciale
 const useCambiarLineaNegocioMock = vi.mocked(useCambiarLineaNegocio)
 
 const LINEAS_NEGOCIO = [
-	{ id: 10, nombre: 'Condominio' },
-	{ id: 11, nombre: 'Líneas Personales' },
+	{ id: 10, nombre: 'Condominio', codigo: 'condominios' },
+	{ id: 11, nombre: 'Líneas Personales', codigo: 'lineas_personales' },
 ]
 
 const OPORTUNIDAD_ABIERTA = {
@@ -58,7 +58,7 @@ const OTRA_OPORTUNIDAD_ABIERTA = {
 const PROSPECTO = {
 	id: 55,
 	nombre_riesgo: 'Condominio Los Pinos',
-	linea_negocio: { id: 10, nombre: 'Condominio' },
+	linea_negocio: { id: 10, nombre: 'Condominio', codigo: 'condominios' },
 	registrado_por: { rut: '55.555.555-5', nombre: 'Registrador' },
 	ultima_actualizacion: new Date().toISOString(),
 	ejecutivo_comercial_asignado: {
@@ -242,7 +242,7 @@ describe('DialogCambiarLineaNegocio — payload del cambio', () => {
 		)
 
 		await waitFor(() => expect(mutateAsync).toHaveBeenCalledTimes(1))
-		expect(mutateAsync).toHaveBeenCalledWith({ id_linea_negocio: 11 })
+		expect(mutateAsync).toHaveBeenCalledWith({ codigo_linea_negocio: 'lineas_personales' })
 	})
 
 	it('no permite confirmar sin elegir una línea', async () => {
