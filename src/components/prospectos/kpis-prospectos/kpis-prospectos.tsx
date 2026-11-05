@@ -57,66 +57,59 @@ export default function KpisProspectos({
 
 	return (
 		<PanelKpiContainer>
-			<AuthGuard
-				fallback={null}
-				allowedRoles={[
-					'EJECUTIVO_COMERCIAL',
-					'GERENTE_GENERAL',
-					'GERENTE_COMERCIAL',
-					'GERENTE_OPERACIONES',
-				]}
-			>
-				<PanelKpiCard
-					key='prospectos'
-					label='Prospectos'
-					value={totalProspectos}
-					icon={UserCheck}
-					onClick={() => onKpiClick('prospectos')}
-					activa={filtro === 'prospecto'}
-					accent='warning'
-				/>
+			<PanelKpiCard
+				key='prospectos'
+				label='Prospectos'
+				value={totalProspectos}
+				icon={UserCheck}
+				onClick={() => onKpiClick('prospectos')}
+				activa={filtro === 'prospecto'}
+				accent='warning'
+			/>
 
-				<PanelKpiCard
-					key='activos'
-					label='Clientes activos'
-					value={clientesActivos}
-					icon={Users}
-					onClick={() => onKpiClick('activos')}
-					activa={filtro === 'cliente_activo'}
-					accent='success'
-				/>
+			<PanelKpiCard
+				key='activos'
+				label='Clientes activos'
+				value={clientesActivos}
+				icon={Users}
+				onClick={() => onKpiClick('activos')}
+				activa={filtro === 'cliente_activo'}
+				accent='success'
+			/>
 
-				<PanelKpiCard
-					key='inactivos'
-					label='Clientes inactivos'
-					value={clientesInactivos}
-					icon={Users}
-					onClick={() => onKpiClick('inactivos')}
-					activa={filtro === 'cliente_inactivo'}
-					accent='danger'
-				/>
+			<PanelKpiCard
+				key='inactivos'
+				label='Clientes inactivos'
+				value={clientesInactivos}
+				icon={Users}
+				onClick={() => onKpiClick('inactivos')}
+				activa={filtro === 'cliente_inactivo'}
+				accent='danger'
+			/>
 
-				<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_COMERCIAL']}>
-					<PanelKpiCard
-						key='cotiz'
-						label='Cotizaciones solicitadas'
-						value={contadores.get('COTIZACION_SOLICITADA_COMPANY') ?? 0}
-						icon={ClipboardList}
-						onClick={() => onKpiClick('cotiz')}
-						activa={filtro === 'COTIZACION_SOLICITADA_COMPANY'}
-					/>
-					<PanelKpiCard
-						key='estDisp'
-						label='Estudios disponibles'
-						value={contadores.get('ESTUDIO_DISPONIBLE') ?? 0}
-						icon={FileText}
-						onClick={() => onKpiClick('estDisp')}
-						activa={filtro === 'ESTUDIO_DISPONIBLE'}
-					/>
-				</AuthGuard>
+			<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_COMERCIAL']}>
+				<PanelKpiCard
+					key='cotiz'
+					label='Cotizaciones solicitadas'
+					value={contadores.get('COTIZACION_SOLICITADA_COMPANY') ?? 0}
+					icon={ClipboardList}
+					onClick={() => onKpiClick('cotiz')}
+					activa={filtro === 'COTIZACION_SOLICITADA_COMPANY'}
+				/>
+				<PanelKpiCard
+					key='estDisp'
+					label='Estudios disponibles'
+					value={contadores.get('ESTUDIO_DISPONIBLE') ?? 0}
+					icon={FileText}
+					onClick={() => onKpiClick('estDisp')}
+					activa={filtro === 'ESTUDIO_DISPONIBLE'}
+				/>
 			</AuthGuard>
 
-			<AuthGuard fallback={null} allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}>
+			<AuthGuard
+				fallback={null}
+				allowedRoles={['EJECUTIVO_EVALUACION_PROYECTOS']}
+			>
 				<PanelKpiCard
 					key='pendRevision'
 					label='Cotizaciones pendientes'

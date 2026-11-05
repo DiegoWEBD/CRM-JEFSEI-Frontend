@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { headers } from 'next/headers'
+import { marcarErrorSinPermisos } from '@/lib/errores'
 
 export const axiosClient = axios.create({
 	baseURL: process.env.API_URL,
@@ -31,6 +32,14 @@ axiosClient.interceptors.request.use(async config => {
 axiosClient.interceptors.response.use(
 	response => response,
 	error => {
+		// Un 403 es una denegación definitiva (no se resuelve refrescando el
+		// token). Se estampa el digest de "sin permisos" sin reemplazar el
+		// AxiosError —que el BFF reenvía con `normalizarErrorServidor` y que
+		// error.tsx reconoce incluso tras la serialización Server → Client.
+		if (axios.isAxiosError(error) && error.response?.status === 403) {
+			return Promise.reject(marcarErrorSinPermisos(error))
+		}
+
 		return Promise.reject(error)
 	},
 )
