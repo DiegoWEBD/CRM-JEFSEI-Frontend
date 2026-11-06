@@ -95,8 +95,16 @@ export default function OportunidadItem({
 		proceso.renovacion,
 	])
 
-	const puedeDescartar =
-		!proceso.cerrado && !proceso.descartado && esEjecutivoComercial
+	const puedeDescartar = useMemo(() => {
+		if (proceso.cerrado || proceso.descartado) return false
+		return proceso.renovacion ? esEjecutivoRenovacion : esEjecutivoComercial
+	}, [
+		proceso.cerrado,
+		proceso.descartado,
+		proceso.renovacion,
+		esEjecutivoComercial,
+		esEjecutivoRenovacion,
+	])
 
 	return (
 		<>

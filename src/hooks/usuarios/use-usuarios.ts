@@ -21,7 +21,7 @@ export const useUsuarios = (filtros: UseUsuariosParams) => {
 			params.set('tamano_pagina', String(tamano_pagina))
 
 			const response = await axios.get(`/api/usuarios?${params.toString()}`)
-			return response.data as ObtenerUsuariosResponse
+			return response.data
 		},
 		enabled: filtros.enabled ?? true,
 	})

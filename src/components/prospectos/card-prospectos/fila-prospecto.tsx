@@ -1,7 +1,6 @@
 import { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import { Badge } from '@/components/badge/badge'
 import { Button } from '@/components/button'
-import { ESTADO_COMERCIAL_VARIANT } from '@/lib/badge-variants'
 import { classname } from '@/lib/class-name'
 import {
 	ESTADO_GENERAL_CLIENTE_BADGE,
@@ -9,13 +8,8 @@ import {
 	type EstadoGeneralCliente,
 } from '@/lib/estados-cotizaciones'
 import { resaltarRut, resaltarTexto } from '@/lib/resaltar-texto'
-import {
-	ESTADO_PROSPECTO_LABELS,
-	type EstadoComercialProspecto,
-} from '@/types/estados/estado-comercial-cliente'
 import { Briefcase, CreditCard, MapPin, User, UserCheck } from 'lucide-react'
 import Link from 'next/link'
-import { useMemo } from 'react'
 
 interface FilaProspectoProps {
 	prospecto: ProspectoResumenJson
@@ -31,16 +25,7 @@ export default function FilaProspecto({
 	const estadoGeneral = (prospecto.estado_general_cliente ||
 		'prospecto') as EstadoGeneralCliente
 
-	const procesosAbiertos = useMemo(
-		() =>
-			prospecto.procesos_comerciales.filter(
-				proceso =>
-					proceso.codigo_estado !== null &&
-					proceso.codigo_estado !== 'GANADO' &&
-					proceso.codigo_estado !== 'PERDIDO',
-			),
-		[prospecto.procesos_comerciales],
-	)
+	const { comerciales, renovaciones } = prospecto.oportunidades
 
 	return (
 		<div
@@ -63,23 +48,20 @@ export default function FilaProspecto({
 				>
 					{ESTADO_GENERAL_CLIENTE_LABELS[estadoGeneral]}
 				</Badge>
-				<div className='flex flex-wrap items-center gap-1.5'>
-					{procesosAbiertos.map((proceso, i) => (
-						<Badge
-							key={i}
-							variant={
-								ESTADO_COMERCIAL_VARIANT[
-									proceso.codigo_estado as EstadoComercialProspecto
-								]
-							}
-							className='text-[10px]'
-						>
-							{ESTADO_PROSPECTO_LABELS[
-								proceso.codigo_estado as EstadoComercialProspecto
-							] ?? proceso.nombre_estado}
-						</Badge>
-					))}
-				</div>
+				{(comerciales > 0 || renovaciones > 0) && (
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{comerciales > 0 && (
+							<Badge variant='pastel-blue' className='text-[10px]'>
+								{comerciales} comercial{comerciales !== 1 ? 'es' : ''}
+							</Badge>
+						)}
+						{renovaciones > 0 && (
+							<Badge variant='pastel-violet' className='text-[10px]'>
+								{renovaciones} renovación{renovaciones !== 1 ? 'es' : ''}
+							</Badge>
+						)}
+					</div>
+				)}
 
 				<div className='flex flex-col gap-1 text-muted-foreground sm:flex-row sm:gap-x-3'>
 					{prospecto.rut_riesgo && (
