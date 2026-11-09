@@ -5,7 +5,10 @@ import { Card, CardContent } from '@/components/card'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import Producto from '@/dominio/producto/producto'
 import { Pencil, Trash2 } from 'lucide-react'
-import { SkeletonTablaProductos } from './skeleton-tabla-productos'
+import {
+	SkeletonCardsProductos,
+	SkeletonFilasTablaProductos,
+} from './skeleton-tabla-productos'
 import Paginacion from '@/components/paginacion/paginacion'
 import { Badge } from '@/components/badge'
 
@@ -30,11 +33,9 @@ export default function TablaProductos({
 	onEliminar,
 	nombreLineaNegocio,
 }: TablaProductosProps) {
-	if (isFetching) {
-		return <SkeletonTablaProductos />
-	}
+	const cantidadSkeleton = productos.length > 0 ? productos.length : 5
 
-	if (productos.length === 0) {
+	if (!isFetching && productos.length === 0) {
 		return (
 			<div className='flex items-center justify-center py-12'>
 				<p className='text-sm text-muted-foreground'>
@@ -48,48 +49,55 @@ export default function TablaProductos({
 		<>
 			{/* Mobile: cards */}
 			<div className='space-y-3 lg:hidden'>
-				{productos.map(producto => (
-					<Card key={producto.id} className='border-border bg-card shadow-none'>
-						<CardContent className='p-4'>
-							<div className='flex items-start justify-between gap-2'>
-								<div className='min-w-0 flex-1'>
-									<p className='truncate text-sm font-semibold text-foreground'>
-										{producto.nombre}
-									</p>
-									<Badge variant='pastel-violet'>
-										{nombreLineaNegocio(producto.id_linea_negocio)}
-									</Badge>
-								</div>
-								<div className='flex shrink-0 gap-1'>
-									<PermissionGuard
-										allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
-									>
-										<Button
-											variant='ghost'
-											size='icon'
-											className='size-8'
-											onClick={() => onEditar(producto)}
+				{isFetching ? (
+					<SkeletonCardsProductos cantidad={cantidadSkeleton} />
+				) : (
+					productos.map(producto => (
+						<Card
+							key={producto.id}
+							className='border-border bg-card shadow-none'
+						>
+							<CardContent className='p-4'>
+								<div className='flex items-start justify-between gap-2'>
+									<div className='min-w-0 flex-1'>
+										<p className='truncate text-sm font-semibold text-foreground'>
+											{producto.nombre}
+										</p>
+										<Badge variant='pastel-violet'>
+											{nombreLineaNegocio(producto.id_linea_negocio)}
+										</Badge>
+									</div>
+									<div className='flex shrink-0 gap-1'>
+										<PermissionGuard
+											allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
 										>
-											<Pencil className='size-4' />
-										</Button>
-									</PermissionGuard>
-									<PermissionGuard
-										allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
-									>
-										<Button
-											variant='ghost'
-											size='icon'
-											className='size-8 text-destructive hover:text-destructive'
-											onClick={() => onEliminar(producto)}
+											<Button
+												variant='ghost'
+												size='icon'
+												className='size-8'
+												onClick={() => onEditar(producto)}
+											>
+												<Pencil className='size-4' />
+											</Button>
+										</PermissionGuard>
+										<PermissionGuard
+											allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
 										>
-											<Trash2 className='size-4' />
-										</Button>
-									</PermissionGuard>
+											<Button
+												variant='ghost'
+												size='icon'
+												className='size-8 text-destructive hover:text-destructive'
+												onClick={() => onEliminar(producto)}
+											>
+												<Trash2 className='size-4' />
+											</Button>
+										</PermissionGuard>
+									</div>
 								</div>
-							</div>
-						</CardContent>
-					</Card>
-				))}
+							</CardContent>
+						</Card>
+					))
+				)}
 				<Paginacion
 					pagina={pagina}
 					totalPaginas={totalPaginas}
@@ -115,51 +123,55 @@ export default function TablaProductos({
 							</tr>
 						</thead>
 						<tbody>
-							{productos.map(producto => (
-								<tr
-									key={producto.id}
-									className='border-b border-border/50 transition-colors hover:bg-accent/50 last:border-b-0'
-								>
-									<td className='px-4 py-2.5'>
-										<p className='font-semibold text-foreground max-w-60'>
-											{producto.nombre}
-										</p>
-									</td>
-									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-35'>
-										<Badge variant='pastel-violet'>
-											{nombreLineaNegocio(producto.id_linea_negocio)}
-										</Badge>
-									</td>
-									<td className='px-4 py-2.5'>
-										<div className='flex items-center justify-end gap-1'>
-											<PermissionGuard
-												allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
-											>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='size-8'
-													onClick={() => onEditar(producto)}
+							{isFetching ? (
+								<SkeletonFilasTablaProductos cantidad={cantidadSkeleton} />
+							) : (
+								productos.map(producto => (
+									<tr
+										key={producto.id}
+										className='border-b border-border/50 transition-colors hover:bg-accent/50 last:border-b-0'
+									>
+										<td className='px-4 py-2.5'>
+											<p className='font-semibold text-foreground max-w-60'>
+												{producto.nombre}
+											</p>
+										</td>
+										<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-35'>
+											<Badge variant='pastel-violet'>
+												{nombreLineaNegocio(producto.id_linea_negocio)}
+											</Badge>
+										</td>
+										<td className='px-4 py-2.5'>
+											<div className='flex items-center justify-end gap-1'>
+												<PermissionGuard
+													allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
 												>
-													<Pencil className='size-4' />
-												</Button>
-											</PermissionGuard>
-											<PermissionGuard
-												allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
-											>
-												<Button
-													variant='ghost'
-													size='icon'
-													className='size-8 text-destructive hover:text-destructive'
-													onClick={() => onEliminar(producto)}
+													<Button
+														variant='ghost'
+														size='icon'
+														className='size-8'
+														onClick={() => onEditar(producto)}
+													>
+														<Pencil className='size-4' />
+													</Button>
+												</PermissionGuard>
+												<PermissionGuard
+													allowedPermissions={['ADMINISTRAR_PRODUCTOS']}
 												>
-													<Trash2 className='size-4' />
-												</Button>
-											</PermissionGuard>
-										</div>
-									</td>
-								</tr>
-							))}
+													<Button
+														variant='ghost'
+														size='icon'
+														className='size-8 text-destructive hover:text-destructive'
+														onClick={() => onEliminar(producto)}
+													>
+														<Trash2 className='size-4' />
+													</Button>
+												</PermissionGuard>
+											</div>
+										</td>
+									</tr>
+								))
+							)}
 						</tbody>
 					</table>
 				</div>
