@@ -8,6 +8,7 @@ export type RegistrarRecordatorioRequest = {
 	tipo_gestion: string
 	fecha_recordatorio: string
 	id_prospecto?: number | null
+	rut_usuario_destino?: string | null
 }
 
 export const useRegistrarRecordatorio = () => {

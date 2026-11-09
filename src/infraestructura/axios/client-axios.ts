@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { decodificarAccessToken } from '@/lib/refresh-tokens'
+import { marcarErrorSinPermisos } from '@/lib/errores'
 
 export const clientAxios = axios.create()
 
@@ -90,6 +91,13 @@ function instalarInterceptor(instancia: typeof axios | typeof clientAxios) {
 	instancia.interceptors.response.use(
 		response => response,
 		error => {
+			// Un 403 es una denegación definitiva: sin refresh ni redirect. Se
+			// estampa el digest de "sin permisos" para que, si el error llega a
+			// un error boundary, ErrorFallback muestre la vista correspondiente.
+			if (axios.isAxiosError(error) && error.response?.status === 403) {
+				return Promise.reject(marcarErrorSinPermisos(error))
+			}
+
 			if (axios.isAxiosError(error) && error.response?.status === 401) {
 				return manejar401(error)
 			}

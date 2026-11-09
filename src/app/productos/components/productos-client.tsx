@@ -1,6 +1,5 @@
 'use client'
 
-import { ObtenerProductosResponse } from '@/aplicacion/producto/dtos/obtener-productos-response'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import Producto from '@/dominio/producto/producto'
@@ -14,18 +13,13 @@ import DialogRegistrarProducto from './dialog-registrar-producto/dialog-registra
 import FiltrosProductos from './panel-productos/filtros-productos'
 import TablaProductos from './panel-productos/tabla-productos'
 
-type ProductosClientProps = {
-	initialData: ObtenerProductosResponse
-}
-
-export default function ProductosClient({ initialData }: ProductosClientProps) {
+export default function ProductosClient() {
 	const [pagina, setPagina] = useState<number>(1)
 	const [inputBusqueda, setInputBusqueda] = useState('')
 	const textoBusqueda = useDebounce(inputBusqueda, 300)
 	const [filtroLineaNegocio, setFiltroLineaNegocio] = useState<string>('todas')
 
-	const { data: productos } = useProductos(
-		initialData,
+	const { data: productos, isFetching } = useProductos(
 		filtroLineaNegocio === 'todas' ? null : Number(filtroLineaNegocio),
 		textoBusqueda,
 		pagina,
@@ -79,7 +73,7 @@ export default function ProductosClient({ initialData }: ProductosClientProps) {
 				<div className='p-3 sm:p-4'>
 					<TablaProductos
 						productos={productos?.data || []}
-						isFetching={false}
+						isFetching={isFetching}
 						pagina={pagina}
 						totalPaginas={productos?.total_paginas || 0}
 						onPaginaChange={setPagina}

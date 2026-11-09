@@ -61,8 +61,7 @@ export default function CardOportunidadesComerciales({
 					<CardTitle className='min-w-0 text-sm font-semibold leading-tight tracking-tight text-foreground'>
 						Oportunidades comerciales
 					</CardTitle>
-					{usuario?.rut === ejecutivoComercialRut ||
-					usuario?.rut === ejecutivoRenovacionRut ? (
+					{usuario?.rut === ejecutivoComercialRut ? (
 						<Button
 							type='button'
 							size='sm'
@@ -129,8 +128,7 @@ export default function CardOportunidadesComerciales({
 							<p className='max-w-md text-sm text-muted-foreground'>
 								Aún no hay oportunidades comerciales para este cliente.
 							</p>
-							{usuario?.rut === ejecutivoComercialRut ||
-							usuario?.rut === ejecutivoRenovacionRut ? (
+							{usuario?.rut === ejecutivoComercialRut ? (
 								<Button
 									type='button'
 									size='sm'

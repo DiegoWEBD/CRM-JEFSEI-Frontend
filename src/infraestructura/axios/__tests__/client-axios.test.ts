@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import axios from 'axios'
 import { clientAxios } from '../client-axios'
+import { DIGEST_SIN_PERMISOS } from '@/lib/errores'
 import { codificarJwt, payloadSesion } from '@/test/fixtures/sesion'
 import { simularRed, type RedSimulada, type Responder } from '@/test/helpers/red-simulada'
 import { simularFetch, type FetchSimulado } from '@/test/helpers/fetch-simulado'
@@ -185,6 +186,19 @@ describe('client-axios — respuestas que no son 401', () => {
 		expect(eventos.expirado).not.toHaveBeenCalled()
 		expect(reemplazarUbicacion).not.toHaveBeenCalled()
 		eventos.detener()
+	})
+
+	it('un 403 se estampa con el digest de "sin permisos" conservando la respuesta', async () => {
+		red = simularRed(() => ({ status: 403, data: { detail: 'No puedes ver estas pólizas' } }), [
+			axios,
+			clientAxios,
+		])
+
+		const rechazo = await clientAxios.get('/api/polizas').catch(e => e)
+
+		expect(rechazo.digest).toBe(DIGEST_SIN_PERMISOS)
+		expect(rechazo.response?.status).toBe(403)
+		expect(rechazo.response?.data?.detail).toBe('No puedes ver estas pólizas')
 	})
 
 	it('un 500 del backend se rechaza sin darlo por éxito ni tocar la sesión', async () => {

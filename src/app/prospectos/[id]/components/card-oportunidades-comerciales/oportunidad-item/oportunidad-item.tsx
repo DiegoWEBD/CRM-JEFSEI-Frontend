@@ -25,7 +25,7 @@ import { useObtenerSolicitudesPorProceso } from '@/hooks/solicitudes-cotizacion/
 import { formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
 import { Ban, ChevronDown, ChevronRight, Plus, Upload } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import SolicitudCotizacionItem from '../../card-solicitudes-cotizacion/solicitud-cotizacion-item/solicitud-cotizacion-item'
 import SheetRegistrarPoliza from '../sheet-registrar-poliza/sheet-registrar-poliza'
@@ -79,9 +79,32 @@ export default function OportunidadItem({
 	const esEjecutivoRenovacion = usuario?.rut === ejecutivoRenovacionRut
 	const puedeSubirPoliza =
 		(!proceso.cerrado && esEjecutivoComercial) || esEjecutivoRenovacion
-	const puedeSolicitarCotizacion = !proceso.cerrado && esEjecutivoComercial
-	const puedeDescartar =
-		!proceso.cerrado && !proceso.descartado && esEjecutivoComercial
+
+	const puedeSolicitarCotizacion = useMemo(() => {
+		if (proceso.cerrado || proceso.descartado) return false
+
+		if (proceso.renovacion && esEjecutivoRenovacion) return true
+		if (!proceso.renovacion && esEjecutivoComercial) return true
+
+		return false
+	}, [
+		esEjecutivoComercial,
+		esEjecutivoRenovacion,
+		proceso.cerrado,
+		proceso.descartado,
+		proceso.renovacion,
+	])
+
+	const puedeDescartar = useMemo(() => {
+		if (proceso.cerrado || proceso.descartado) return false
+		return proceso.renovacion ? esEjecutivoRenovacion : esEjecutivoComercial
+	}, [
+		proceso.cerrado,
+		proceso.descartado,
+		proceso.renovacion,
+		esEjecutivoComercial,
+		esEjecutivoRenovacion,
+	])
 
 	return (
 		<>
@@ -281,25 +304,27 @@ export default function OportunidadItem({
 									</Button>
 								) : null}
 
-								{puedeSolicitarCotizacion ? (
-									<Button
-										type='button'
-										variant='outline'
-										size='sm'
-										className='h-7 gap-1 text-xs shadow-none'
-										onClick={() => setOpenNuevaSolicitud(true)}
-									>
-										<Plus className='h-3 w-3' aria-hidden />
-										{esDualRol
-											? 'Iniciar cotizaciones'
-											: 'Solicitar cotización'}
-									</Button>
-								) : null}
+								<PermissionGuard allowedPermissions={['SOLICITAR_COTIZACION']}>
+									{puedeSolicitarCotizacion && (
+										<Button
+											type='button'
+											variant='outline'
+											size='sm'
+											className='h-7 gap-1 text-xs shadow-none'
+											onClick={() => setOpenNuevaSolicitud(true)}
+										>
+											<Plus className='h-3 w-3' aria-hidden />
+											{esDualRol
+												? 'Iniciar cotizaciones'
+												: 'Solicitar cotización'}
+										</Button>
+									)}
+								</PermissionGuard>
 
-								{puedeDescartar ? (
-									<PermissionGuard
-										allowedPermissions={['DESCARTAR_PROCESO_COMERCIAL']}
-									>
+								<PermissionGuard
+									allowedPermissions={['DESCARTAR_PROCESO_COMERCIAL']}
+								>
+									{puedeDescartar && (
 										<Button
 											type='button'
 											variant='outline'
@@ -310,8 +335,8 @@ export default function OportunidadItem({
 											<Ban className='h-3 w-3' aria-hidden />
 											Descartar oportunidad
 										</Button>
-									</PermissionGuard>
-								) : null}
+									)}
+								</PermissionGuard>
 							</div>
 						) : null}
 					</div>

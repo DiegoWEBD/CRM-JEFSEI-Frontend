@@ -23,6 +23,8 @@ import SelectValue from '@/components/forms/select/select-value/select-value'
 import Textarea from '@/components/forms/text-area/text-area'
 import { useRegistrarRecordatorio } from '@/hooks/recordatorios/use-registrar-recordatorio'
 import { useActualizarRecordatorio } from '@/hooks/recordatorios/use-actualizar-recordatorio'
+import { useUserSession } from '@/hooks/auth/use-user-session'
+import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
 import { formatearFecha } from '@/utils/formatear-fecha'
 import type { ProspectoResumenJson } from '@/aplicacion/prospectos/use-cases/obtener-prospectos/dto/prospecto-resumen-json'
 import type Recordatorio from '@/dominio/recordatorio/recordatorio'
@@ -35,6 +37,9 @@ type DialogCrearRecordatorioProps = {
   editarRecordatorio?: Recordatorio | null
 }
 
+/** Valor centinela del Select: el recordatorio es para el propio usuario. */
+const DESTINO_PROPIO = '__propio__'
+
 export default function DialogCrearRecordatorio({
   open,
   onOpenChange,
@@ -43,6 +48,13 @@ export default function DialogCrearRecordatorio({
   editarRecordatorio,
 }: DialogCrearRecordatorioProps) {
   const esEdicion = !!editarRecordatorio
+  const { tienePermiso } = useUserSession()
+  const puedeAsignarDestino = !esEdicion && tienePermiso('CREAR_RECORDATORIO_GLOBAL')
+  const { data: usuariosData, isLoading: cargandoUsuarios } = useUsuarios({
+    pagina: 1,
+    tamano_pagina: 100,
+    enabled: puedeAsignarDestino && open,
+  })
   const crearMutation = useRegistrarRecordatorio()
   const actualizarMutation = useActualizarRecordatorio(editarRecordatorio?.id ?? 0)
   const hoyIso = useMemo(() => formatearFecha(new Date(), 'yyyy-MM-dd'), [])
@@ -65,6 +77,7 @@ export default function DialogCrearRecordatorio({
         prioridad: editarRecordatorio.prioridad,
         tipoGestion: editarRecordatorio.tipo_gestion,
         detalle: editarRecordatorio.detalle ?? '',
+        rutUsuarioDestino: '',
       }
     }
     return {
@@ -75,6 +88,7 @@ export default function DialogCrearRecordatorio({
       prioridad: 'normal',
       tipoGestion: 'llamada',
       detalle: '',
+      rutUsuarioDestino: '',
     }
   }
 
@@ -128,6 +142,7 @@ export default function DialogCrearRecordatorio({
             id_prospecto: values.idProspecto
               ? Number(values.idProspecto)
               : null,
+            rut_usuario_destino: values.rutUsuarioDestino || null,
           },
           {
             onSuccess: () => {
@@ -187,6 +202,39 @@ export default function DialogCrearRecordatorio({
                   ))}
                 </SelectContent>
               </Select>
+            ) : null}
+
+            {puedeAsignarDestino ? (
+              cargandoUsuarios ? (
+                <p className='text-xs text-muted-foreground'>
+                  Cargando usuarios…
+                </p>
+              ) : (
+                <Select
+                  value={formik.values.rutUsuarioDestino || DESTINO_PROPIO}
+                  onValueChange={(v) =>
+                    formik.setFieldValue(
+                      'rutUsuarioDestino',
+                      v === DESTINO_PROPIO ? '' : v,
+                    )
+                  }
+                >
+                  <SelectTrigger
+                    className='w-full'
+                    aria-label='Asignar a (opcional)'
+                  >
+                    <SelectValue placeholder='Asignar a (opcional)' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={DESTINO_PROPIO}>Para mí</SelectItem>
+                    {(usuariosData?.data ?? []).map((usuario) => (
+                      <SelectItem key={usuario.rut} value={usuario.rut}>
+                        {usuario.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )
             ) : null}
 
             <Input

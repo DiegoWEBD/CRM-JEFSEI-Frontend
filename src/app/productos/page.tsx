@@ -1,20 +1,11 @@
-import { obtenerProductos } from '@/aplicacion/producto/use-cases/obtener-productos'
 import { Suspense } from 'react'
-import ProductosClient from './components/productos-client'
 import { ProductosPageSkeleton } from './components/productos-page-skeleton'
+import { PanelInner } from './panel-inner'
 
-async function ProductosInner() {
-	const resultado = await obtenerProductos()
-
-	return <ProductosClient initialData={resultado} />
-}
-
-const ProductosPage = () => {
+export default function ProductosPage() {
 	return (
 		<Suspense fallback={<ProductosPageSkeleton />}>
-			<ProductosInner />
+			<PanelInner />
 		</Suspense>
 	)
 }
-
-export default ProductosPage

@@ -99,7 +99,7 @@ export default function RecordatoriosClienteSection({
 				rut_riesgo: '',
 				nombre_riesgo: nombreCliente,
 				linea_negocio: '',
-				procesos_comerciales: [],
+				oportunidades: { comerciales: 0, renovaciones: 0 },
 				estado_general_cliente: 'prospecto',
 				comuna: '',
 			},

@@ -45,6 +45,21 @@ All components are built:
 
 **Lineamientos seguidos**: skeletons en estados de carga, Suspense con SSR, initialData para hidratación instantánea, ScrollArea en tablas largas, layout consistente en dialogs (header+border / scroll-body / footer).
 
+**Recordatorios — usuario destino en `POST /recordatorios`: DONE**
+
+- **Hook** (`src/hooks/recordatorios/use-registrar-recordatorio.ts`): `RegistrarRecordatorioRequest` incluye `rut_usuario_destino?: string | null`.
+- **Dialog** (`src/components/dialog-crear-recordatorio/dialog-crear-recordatorio.tsx`): con el permiso `CREAR_RECORDATORIO_GLOBAL` (solo al crear, no en edición) se muestra el Select "Asignar a (opcional)" con los usuarios (`useUsuarios`, 100/página). Opción por defecto "Para mí" (→ `rut_usuario_destino: null`); el BFF `POST /api/recordatorios` reenvía el body tal cual, sin cambios.
+- **Tests** (`src/components/dialog-crear-recordatorio/__tests__/dialog-crear-recordatorio-destino.test.tsx`): visibilidad por permiso/edición y envío del destino. Nota: Radix renderiza un `BubbleSelect` nativo que duplica el texto de las opciones dentro de `<form>`; usar `findByRole('option', { name })` para hacer click en el item.
+- **Backend** (ya implementado): permisos `CREAR_RECORDATORIO_PROPIO`/`CREAR_RECORDATORIO_GLOBAL` (`migraciones/migracion_permisos_crear_recordatorio.sql`), el caso de uso valida el destino y la auditoría describe "…para el usuario X en el prospecto Y".
+
+**403 → vista genérica "Sin permisos": DONE**
+
+- **Problema**: un 403 del backend (p. ej. ejecutivo que ya no está asignado a un prospecto) mostraba el error genérico de `ErrorFallback`. En render de servidor el error llega serializado a `error.tsx` (en producción solo sobrevive `digest`), así que `axios.isAxiosError(error)` no lo detecta.
+- **Mecanismo**: `src/lib/errores.ts` expone `DIGEST_SIN_PERMISOS`, `marcarErrorSinPermisos(error)` (estampa `digest = 'SIN_PERMISOS'` **sin reemplazar el AxiosError**, porque el BFF reenvía status/mensaje con `normalizarErrorServidor`) y `esErrorSinPermisos(error)`. Next respeta un `digest` preexistente en el error (verificado en `create-error-handler.js`), así que el marcador cruza la serialización Server → Client.
+- **Interceptores**: `axios-client.ts` (servidor) y `client-axios.ts` (navegador) estampan el digest en cualquier respuesta 403. El flujo 401 (refresh → retry → logout) queda intacto; el 403 es denegación definitiva: **sin refresh ni redirect**.
+- **Vista**: `error-fallback.tsx` muestra "Sin permisos" (ShieldAlert + "No tienes permiso para acceder a este recurso…" + "Volver al inicio") para `esErrorSinPermisos(error)`, `UnauthorizedError` o axios 401. La rama genérica "Error / Reintentar" queda para el resto.
+- **Tests**: `src/lib/__tests__/errores.test.ts`, `src/infraestructura/axios/__tests__/axios-client.test.ts`, caso nuevo en `client-axios.test.ts` y `src/components/error-fallback/__tests__/error-fallback.test.tsx` (incluye el error serializado de SSR).
+
 **Pre-existing lint issues (not from our work)**:
 - `campos-condominio-registrar.tsx:35`: `@typescript-eslint/no-explicit-any`
 - `use-mobile.tsx:14`: `react-hooks/set-state-in-effect` (React 19 lint rule)

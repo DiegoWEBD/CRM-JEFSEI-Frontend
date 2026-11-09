@@ -1,14 +1,18 @@
-import { ProcesoComercialResumenJson } from '@/aplicacion/procesos-comerciales/dto/proceso-comercial-resumen-json'
+export interface OportunidadesContadoresJson {
+	comerciales: number
+	renovaciones: number
+}
 
 export interface ProspectoResumenJson {
 	id: number
 	id_cliente?: number
 	rut_riesgo: string
 	nombre_riesgo: string
+	nombre_fantasia?: string
 	nombre_administrador?: string
 	linea_negocio: string
 	ejecutivo_comercial?: string
-	procesos_comerciales: ProcesoComercialResumenJson[]
+	oportunidades: OportunidadesContadoresJson
 	estado_general_cliente: string
 	comuna: string
 }
