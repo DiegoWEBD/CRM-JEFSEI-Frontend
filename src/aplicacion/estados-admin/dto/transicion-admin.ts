@@ -11,6 +11,12 @@ export type TransicionAdmin = {
 	 * Solo aplica a la transición principal; en las secundarias es null.
 	 */
 	dias_limite: number | null
+	/**
+	 * Roles responsables de las alertas SLA, por tipo de oportunidad.
+	 * Solo aplica a la transición principal; en las secundarias están vacíos.
+	 */
+	roles_responsables_nuevas: string[]
+	roles_responsables_renovacion: string[]
 }
 
 export type ObtenerTransicionesEstadoResponse = {

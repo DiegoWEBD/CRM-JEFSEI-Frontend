@@ -10,6 +10,13 @@ export interface ActualizarTransicionRequest {
 	 * para las secundarias se envía null.
 	 */
 	dias_limite: number | null
+	/**
+	 * Roles responsables de las alertas SLA por tipo de oportunidad. Solo
+	 * aplica a la transicion principal (en las secundarias no se envian):
+	 * undefined = sin cambios, [] = sin responsables para ese tipo.
+	 */
+	roles_responsables_nuevas?: string[]
+	roles_responsables_renovacion?: string[]
 }
 
 export const actualizarTransicion = async (

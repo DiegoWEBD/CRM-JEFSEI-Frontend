@@ -1,10 +1,9 @@
 'use client'
 
-import {
-	EstadoConfiguracion,
-} from '@/aplicacion/estados-admin/dto/estado-configuracion'
+import { EstadoConfiguracion } from '@/aplicacion/estados-admin/dto/estado-configuracion'
 import { TransicionAdmin } from '@/aplicacion/estados-admin/dto/transicion-admin'
 import { Button } from '@/components/button'
+import { Checkbox } from '@/components/checkbox'
 import {
 	Dialog,
 	DialogContent,
@@ -13,9 +12,13 @@ import {
 } from '@/components/dialog'
 import { Input } from '@/components/input'
 import { Label } from '@/components/label'
+import { ScrollArea } from '@/components/scroll-area'
+import { Skeleton } from '@/components/skeleton'
 import { Switch } from '@/components/switch'
 import { useActualizarTransicion } from '@/hooks/estados-admin/use-actualizar-transicion'
+import { RolJson, useObtenerRoles } from '@/hooks/roles/use-obtener-roles'
 import { useFormik } from 'formik'
+import { useMemo } from 'react'
 import * as Yup from 'yup'
 
 type DialogEditarTransicionProps = {
@@ -27,12 +30,79 @@ type DialogEditarTransicionProps = {
 	cerrarDialog: () => void
 }
 
+type SelectorResponsablesProps = {
+	label: string
+	descripcion: string
+	roles: RolJson[]
+	seleccionados: string[]
+	alternar: (codigo: string, marcado: boolean) => void
+	cargando: boolean
+}
+
+/**
+ * Lista de checkboxes con los roles responsables de las alertas SLA de la
+ * transición para un tipo de oportunidad (nueva o de renovación). Puede
+ * haber más de un responsable por tipo.
+ */
+function SelectorResponsables({
+	label,
+	descripcion,
+	roles,
+	seleccionados,
+	alternar,
+	cargando,
+}: SelectorResponsablesProps) {
+	return (
+		<div className='space-y-2'>
+			<Label>{label}</Label>
+			<div
+				role='group'
+				aria-label={label}
+				className='rounded-lg border border-border'
+			>
+				<ScrollArea className='max-h-45 overflow-y-auto'>
+					<div className='space-y-2 p-3'>
+						{cargando ? (
+							<>
+								<Skeleton className='h-5 w-full' />
+								<Skeleton className='h-5 w-full' />
+								<Skeleton className='h-5 w-full' />
+							</>
+						) : roles.length === 0 ? (
+							<p className='text-xs text-muted-foreground'>
+								No hay roles disponibles.
+							</p>
+						) : (
+							roles.map(rol => (
+								<label
+									key={rol.codigo}
+									className='flex cursor-pointer items-center gap-2'
+								>
+									<Checkbox
+										checked={seleccionados.includes(rol.codigo)}
+										onCheckedChange={marcado =>
+											alternar(rol.codigo, marcado === true)
+										}
+									/>
+									<span className='text-sm'>{rol.nombre}</span>
+								</label>
+							))
+						)}
+					</div>
+				</ScrollArea>
+			</div>
+			<p className='text-xs text-muted-foreground'>{descripcion}</p>
+		</div>
+	)
+}
+
 /**
  * Edita una transición.
  *
  * - Secundaria: es_manual y acción requerida.
- * - Principal: solo sus días límite (SLA); es_manual y la acción requerida
- *   quedan reservadas al flujo feliz y no se tocan.
+ * - Principal: sus días límite (SLA) y sus responsables de alertas, por
+ *   tipo de oportunidad (nueva o de renovación); es_manual y la acción
+ *   requerida quedan reservadas al flujo feliz y no se tocan.
  */
 export default function DialogEditarTransicion({
 	estado,
@@ -41,8 +111,10 @@ export default function DialogEditarTransicion({
 	cerrarDialog,
 }: DialogEditarTransicionProps) {
 	const actualizarMutation = useActualizarTransicion()
+	const rolesQuery = useObtenerRoles()
 	const esPrincipal = transicion.es_principal
 
+	const roles = useMemo(() => rolesQuery.data || [], [rolesQuery])
 	const validationSchema = Yup.object({
 		esManual: Yup.boolean(),
 		accionRequerida: Yup.string().max(
@@ -63,10 +135,11 @@ export default function DialogEditarTransicion({
 			esManual: transicion.es_manual,
 			accionRequerida: transicion.accion_requerida ?? '',
 			diasLimite:
-				transicion.dias_limite === null ||
-				transicion.dias_limite === undefined
+				transicion.dias_limite === null || transicion.dias_limite === undefined
 					? ''
 					: String(transicion.dias_limite),
+			rolesNuevas: transicion.roles_responsables_nuevas ?? [],
+			rolesRenovacion: transicion.roles_responsables_renovacion ?? [],
 		},
 		validationSchema,
 		enableReinitialize: true,
@@ -76,9 +149,7 @@ export default function DialogEditarTransicion({
 					codigo_estado_origen: transicion.codigo_estado_origen,
 					codigo_estado_destino: transicion.codigo_estado_destino,
 					// En la principal estos campos no cambian: se reenvían intactos.
-					es_manual: esPrincipal
-						? transicion.es_manual
-						: values.esManual,
+					es_manual: esPrincipal ? transicion.es_manual : values.esManual,
 					accion_requerida: esPrincipal
 						? transicion.accion_requerida
 						: values.accionRequerida.trim()
@@ -89,6 +160,14 @@ export default function DialogEditarTransicion({
 							? Number(values.diasLimite)
 							: null
 						: null,
+					// Los responsables solo aplican a la transición principal;
+					// en las secundarias no se envían.
+					roles_responsables_nuevas: esPrincipal
+						? values.rolesNuevas
+						: undefined,
+					roles_responsables_renovacion: esPrincipal
+						? values.rolesRenovacion
+						: undefined,
 				})
 				cerrarDialog()
 			} catch {
@@ -98,11 +177,25 @@ export default function DialogEditarTransicion({
 		},
 	})
 
+	const alternarRol = (
+		campo: 'rolesNuevas' | 'rolesRenovacion',
+		codigo: string,
+		marcado: boolean,
+	) => {
+		const actuales = formik.values[campo]
+		formik.setFieldValue(
+			campo,
+			marcado ? [...actuales, codigo] : actuales.filter(rol => rol !== codigo),
+		)
+	}
+
 	return (
 		<Dialog open={dialogAbierto} onOpenChange={open => !open && cerrarDialog()}>
-			<DialogContent>
+			<DialogContent className='max-h-[90vh] overflow-y-auto'>
 				<DialogTitle>
-					{esPrincipal ? 'Configurar transición principal' : 'Editar transición'}
+					{esPrincipal
+						? 'Configurar transición principal'
+						: 'Editar transición'}
 				</DialogTitle>
 				<DialogDescription>
 					{`«${estado.nombre}» → «${transicion.nombre_estado_destino}»`}
@@ -135,6 +228,28 @@ export default function DialogEditarTransicion({
 									</p>
 								)}
 							</div>
+
+							<SelectorResponsables
+								label='Responsables — Oportunidades nuevas'
+								descripcion='Roles que reciben las alertas SLA cuando la oportunidad no es de renovación. Puede haber más de un responsable.'
+								roles={roles}
+								seleccionados={formik.values.rolesNuevas}
+								alternar={(codigo, marcado) =>
+									alternarRol('rolesNuevas', codigo, marcado)
+								}
+								cargando={rolesQuery.isLoading}
+							/>
+
+							<SelectorResponsables
+								label='Responsables — Oportunidades de renovación'
+								descripcion='Roles que reciben las alertas SLA cuando la oportunidad es de renovación. Puede haber más de un responsable.'
+								roles={roles}
+								seleccionados={formik.values.rolesRenovacion}
+								alternar={(codigo, marcado) =>
+									alternarRol('rolesRenovacion', codigo, marcado)
+								}
+								cargando={rolesQuery.isLoading}
+							/>
 						</>
 					) : (
 						<>
