@@ -81,10 +81,10 @@ export default function TablaSolicitudesEstudio({
 									<div className='flex items-start justify-between gap-2'>
 										<div className='min-w-0 flex-1'>
 											<p className='truncate text-sm font-semibold text-foreground'>
-												{s.nombre_riesgo}
+												{resaltarTexto(s.nombre_riesgo, textoResaltado)}
 											</p>
 											<p className='mt-0.5 truncate text-xs text-muted-foreground'>
-												{s.producto}
+												{resaltarTexto(s.producto, textoResaltado)}
 											</p>
 										</div>
 										<ChevronRight className='mt-0.5 h-4 w-4 shrink-0 text-muted-foreground' />
@@ -99,7 +99,9 @@ export default function TablaSolicitudesEstudio({
 									</div>
 
 									<div className='mt-2 flex items-center justify-between text-sm text-muted-foreground'>
-										<span>{s.ejecutivo_comercial}</span>
+										<span>
+											{resaltarTexto(s.ejecutivo_comercial, textoResaltado)}
+										</span>
 										<span className='tabular-nums'>
 											{formatearFecha(new Date(s.fecha), 'dd-MM-yyyy HH:mm')}
 										</span>

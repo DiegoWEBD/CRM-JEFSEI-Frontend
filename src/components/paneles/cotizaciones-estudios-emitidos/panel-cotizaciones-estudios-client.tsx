@@ -128,6 +128,7 @@ export default function PanelCotizacionesEstudiosClient({
 						<TablaCotizacionesEstudios
 							filas={filas}
 							isFetching={isFetching}
+							textoResaltado={textoBusqueda}
 							onVerCotizaciones={f =>
 								setDialog({ type: 'cotizaciones', fila: f })
 							}
