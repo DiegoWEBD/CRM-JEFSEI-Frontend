@@ -1,6 +1,8 @@
+import { cookies } from 'next/headers'
 import { getSession } from '@/lib/auth'
+import { SidebarInset, SidebarProvider } from '@/components/sidebar'
+import AppSidebar from '../app-sidebar/app-sidebar'
 import Header from '../header/header'
-import SideBar from '../sidebar/sidebar'
 import AuthGuard from './guards/auth-guard'
 import MainContentLayout from './main-content-layout/main-content-layout'
 
@@ -13,15 +15,19 @@ export default async function AppLayout({
 
 	const autenticado = !!session
 
+	/** Estado expandido/colapsado persistido por SidebarProvider en la cookie `sidebar_state`. */
+	const cookieStore = await cookies()
+	const defaultOpen = cookieStore.get('sidebar_state')?.value !== 'false'
+
 	return (
-		<>
+		<SidebarProvider defaultOpen={defaultOpen}>
 			{autenticado && (
 				<AuthGuard>
-					<SideBar />
+					<AppSidebar />
 				</AuthGuard>
 			)}
 
-			<div className='flex flex-col flex-1 min-w-0'>
+			<SidebarInset className='min-w-0'>
 				{autenticado && (
 					<AuthGuard>
 						<Header />
@@ -36,7 +42,7 @@ export default async function AppLayout({
 				>
 					{children}
 				</MainContentLayout>
-			</div>
-		</>
+			</SidebarInset>
+		</SidebarProvider>
 	)
 }

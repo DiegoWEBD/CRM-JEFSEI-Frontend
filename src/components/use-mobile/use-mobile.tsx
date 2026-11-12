@@ -1,19 +1,24 @@
 import * as React from 'react'
-import { useEffect } from 'react'
 
 const MOBILE_BREAKPOINT = 1024
 
+const query = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`
+
+function subscribe(callback: () => void) {
+	const mql = window.matchMedia(query)
+	mql.addEventListener('change', callback)
+	return () => mql.removeEventListener('change', callback)
+}
+
+function getSnapshot() {
+	return window.innerWidth < MOBILE_BREAKPOINT
+}
+
+/** En el servidor no hay ancho de ventana: se asume desktop. */
+function getServerSnapshot() {
+	return false
+}
+
 export function useIsMobile() {
-	const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
-
-	useEffect(() => {
-		const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-		const onChange = () => {
-			setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-		}
-		mql.addEventListener('change', onChange)
-		return () => mql.removeEventListener('change', onChange)
-	}, [])
-
-	return !!isMobile
+	return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 }

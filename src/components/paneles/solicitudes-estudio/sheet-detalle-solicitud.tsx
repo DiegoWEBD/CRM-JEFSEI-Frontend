@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { CircleAlert } from 'lucide-react'
 import BadgeEstadoSolicitud from './badge-estado-solicitud'
+import { resolverEstadoBandeja } from './resolver-estado-solicitud'
 
 function FilaDetalle({
 	label,
@@ -48,12 +49,6 @@ function DetallesSkeleton() {
 	)
 }
 
-function resolverEstado(s: SolicitudCotizacionResumen) {
-	if (!s.informacion_completa) return 'informacion_incompleta' as const
-	if (s.cantidad_cotizaciones > 0) return 'con_cotizaciones' as const
-	return 'lista_para_cotizar' as const
-}
-
 type SheetDetalleSolicitudProps = {
 	solicitud: SolicitudCotizacionResumen | null
 	open: boolean
@@ -78,7 +73,7 @@ export default function SheetDetalleSolicitud({
 
 	if (!solicitud) return null
 
-	const estado = resolverEstado(solicitud)
+	const estado = resolverEstadoBandeja(solicitud)
 	const full = solicitudCompleta
 
 	return (

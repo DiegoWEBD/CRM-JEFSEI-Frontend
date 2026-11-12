@@ -10,11 +10,14 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 	const cookieStore = await cookies()
 	const cookie = cookieStore.toString()
 
-	const solicitudesResponse = await axiosClient.get('/solicitudes-cotizacion', {
-		headers: { Cookie: cookie },
-	})
+	const solicitudesResponse = await axiosClient.get(
+		'/solicitudes-cotizacion?pagina=1&tamano_pagina=100',
+		{
+			headers: { Cookie: cookie },
+		},
+	)
 	const solicitudes: SolicitudCotizacionResumen[] =
-		solicitudesResponse.data.solicitudes ?? solicitudesResponse.data
+		solicitudesResponse.data.data ?? []
 
 	const estudiosPorSolicitud = new Map<
 		number,
@@ -36,7 +39,7 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 	)
 
 	const solicitudesConCotizaciones = solicitudes.filter(
-		s => s.cantidad_cotizaciones > 0,
+		s => s.tiene_cotizaciones,
 	)
 	const cotizacionesPorSolicitud = new Map<number, Cotizacion[]>()
 	await Promise.all(
@@ -79,7 +82,7 @@ export const obtenerPanelEstudios = async (): Promise<PanelEstudioFila[]> => {
 			linea_seguro: s.producto,
 			ejecutivo_comercial: s.ejecutivo_comercial,
 			prioridad: s.prioridad,
-			cantidad_cotizaciones: s.cantidad_cotizaciones,
+			cantidad_cotizaciones: cotizaciones.length,
 			fecha: s.fecha,
 			vencimiento_mas_proximo: vencimientoMasProximo,
 			estado,

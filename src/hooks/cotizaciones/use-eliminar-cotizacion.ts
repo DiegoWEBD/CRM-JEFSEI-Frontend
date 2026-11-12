@@ -13,10 +13,11 @@ export const useEliminarCotizacion = (idSolicitud: number, idProspecto?: number)
 			queryClient.invalidateQueries({
 				queryKey: ['cotizaciones', idSolicitud],
 			})
+			// Prefijo: refresca las listas por prospecto y el panel paginado.
+			queryClient.invalidateQueries({
+				queryKey: ['solicitudes-cotizacion'],
+			})
 			if (idProspecto) {
-				queryClient.invalidateQueries({
-					queryKey: ['solicitudes-cotizacion', idProspecto],
-				})
 				queryClient.invalidateQueries({
 					queryKey: ['procesos-comerciales', idProspecto],
 				})

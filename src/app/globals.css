@@ -78,6 +78,10 @@
 	--sidebar-accent-foreground: oklch(0.24 0.02 260);
 	--sidebar-border: oklch(0.92 0.006 260);
 	--sidebar-ring: oklch(0.52 0.16 260);
+
+	/* Sidebar (anchos de shadcn/ui) */
+	--sidebar-width: 16rem;
+	--sidebar-width-icon: 3rem;
 }
 
 .dark {

@@ -68,8 +68,9 @@ function encontrarRango(
 
 export function resaltarTexto(
 	texto: string,
-	busqueda: string,
+	busqueda: string | undefined,
 ): React.ReactNode {
+	if (!busqueda) return texto
 	if (!busqueda.trim()) return texto
 
 	const rango = encontrarRango(texto, busqueda)

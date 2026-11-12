@@ -2,8 +2,14 @@
 
 import { FileWarning, ClipboardList, ClipboardCheck, FileCheck, type LucideIcon } from 'lucide-react'
 import { PanelKpiCard, type KpiAcento } from '@/components/paneles/shared/panel-kpi-card'
+import type { ContadoresSolicitudesCotizacion } from '@/aplicacion/solicitudes-cotizacion/use-cases/obtener-todas-solicitudes-cotizacion/dto/obtener-todas-solicitudes-cotizacion-response'
 
-export type TarjetaActiva = 'todas' | 'informacion_incompleta' | 'lista_para_cotizar' | 'con_cotizaciones' | 'estudio_emitido'
+export type TarjetaActiva =
+	| 'todas'
+	| 'informacion_incompleta'
+	| 'listas_para_cotizar'
+	| 'cotizaciones_emitidas'
+	| 'estudios_emitidos'
 
 type TarjetaConfig = {
 	key: Exclude<TarjetaActiva, 'todas'>
@@ -14,19 +20,19 @@ type TarjetaConfig = {
 
 const TARJETAS: TarjetaConfig[] = [
 	{ key: 'informacion_incompleta', label: 'Información incompleta', icon: FileWarning, accent: 'warning' },
-	{ key: 'lista_para_cotizar', label: 'Listas para cotizar', icon: ClipboardList, accent: 'info' },
-	{ key: 'con_cotizaciones', label: 'Cotizaciones emitidas', icon: ClipboardCheck, accent: 'success' },
-	{ key: 'estudio_emitido', label: 'Estudios emitidos', icon: FileCheck, accent: 'primary' },
+	{ key: 'listas_para_cotizar', label: 'Listas para cotizar', icon: ClipboardList, accent: 'info' },
+	{ key: 'cotizaciones_emitidas', label: 'Cotizaciones emitidas', icon: ClipboardCheck, accent: 'success' },
+	{ key: 'estudios_emitidos', label: 'Estudios emitidos', icon: FileCheck, accent: 'primary' },
 ]
 
 type KpiSolicitudesEstudioProps = {
-	conteos: Record<string, number>
+	contadores: ContadoresSolicitudesCotizacion
 	tarjetaActiva: TarjetaActiva
 	onToggleTarjeta: (key: TarjetaActiva) => void
 }
 
 export default function KpiSolicitudesEstudio({
-	conteos,
+	contadores,
 	tarjetaActiva,
 	onToggleTarjeta,
 }: KpiSolicitudesEstudioProps) {
@@ -36,7 +42,7 @@ export default function KpiSolicitudesEstudio({
 				<PanelKpiCard
 					key={t.key}
 					label={t.label}
-					value={conteos[t.key] ?? 0}
+					value={contadores[t.key]}
 					icon={t.icon}
 					accent={t.accent}
 					activa={tarjetaActiva === t.key}
