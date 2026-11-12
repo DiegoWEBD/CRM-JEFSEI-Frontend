@@ -6,123 +6,105 @@ vi.mock('next/headers', () => ({
 vi.mock('@/infraestructura/axios/axios-client', () => ({
 	axiosClient: { get: vi.fn() },
 }))
-vi.mock(
-	'@/aplicacion/estudio-comercial/use-cases/listar-estudios-comerciales/listar-estudios-comerciales',
-	() => ({ listarEstudiosComerciales: vi.fn() }),
-)
 
-import { listarEstudiosComerciales } from '@/aplicacion/estudio-comercial/use-cases/listar-estudios-comerciales/listar-estudios-comerciales'
 import { obtenerPanelEstudios } from '@/aplicacion/cotizaciones-estudios/use-cases/obtener-panel-estudios/obtener-panel-estudios'
 import { axiosClient } from '@/infraestructura/axios/axios-client'
 
 const axiosGetMock = vi.mocked(axiosClient.get)
-const listarEstudiosMock = vi.mocked(listarEstudiosComerciales)
 
-const SOLICITUD_CON_TODO = {
-	id: 1,
-	id_prospecto: 101,
-	nombre_riesgo: 'Condominio Las Torres',
-	informacion_completa: true,
-	ejecutivo_comercial: 'Ana Pérez',
-	tipo: 'incendio',
-	producto: 'Incendio Condominio',
-	prioridad: 'alta',
-	fecha: '2026-11-10T10:00:00',
-	tiene_cotizaciones: true,
-	campos_faltantes: [],
-	recotizacion: false,
-	motivo_recotizacion: null,
-	estudio_disponible: true,
-}
-
-const SOLICITUD_SIN_COTIZACIONES = {
-	...SOLICITUD_CON_TODO,
-	id: 2,
-	id_prospecto: 102,
-	nombre_riesgo: 'Edificio Alameda',
-	tiene_cotizaciones: false,
-	estudio_disponible: false,
-}
-
-const COTIZACIONES = [
-	{ id: 11, fecha_vencimiento: '2026-12-01', estado: 'vigente' },
-	{ id: 12, fecha_vencimiento: '2026-11-20', estado: 'por_vencer' },
-]
-
-function configurarRespuestas() {
-	axiosGetMock.mockImplementation(async (url: string) => {
-		if (url.startsWith('/solicitudes-cotizacion?')) {
-			return {
-				data: {
-					data: [SOLICITUD_CON_TODO, SOLICITUD_SIN_COTIZACIONES],
-					contadores: {
-						informacion_incompleta: 0,
-						listas_para_cotizar: 1,
-						cotizaciones_emitidas: 1,
-						estudios_emitidos: 1,
-					},
-					total: 2,
-					pagina: 1,
-					tamano_pagina: 100,
-					total_paginas: 1,
-				},
-			}
-		}
-		if (url === '/solicitudes-cotizacion/1/cotizaciones') {
-			return { data: { cotizaciones: COTIZACIONES } }
-		}
-		throw new Error(`URL inesperada: ${url}`)
-	})
-
-	listarEstudiosMock.mockImplementation(async (idSolicitud: number) =>
-		idSolicitud === 1 ? [{ id: 55, id_solicitud: 1, nombre_archivo: 'e.pdf' }] : [],
-	)
-}
-
-beforeEach(() => {
-	configurarRespuestas()
-})
-
-describe('obtenerPanelEstudios — adaptación al listado paginado', () => {
-	it('lee la data del nuevo shape y arma las filas', async () => {
-		const filas = await obtenerPanelEstudios()
-
-		expect(filas).toHaveLength(2)
-
-		expect(filas[0]).toMatchObject({
+const RESPUESTA = {
+	data: [
+		{
 			id: 1,
 			id_prospecto: 101,
+			id_proceso_comercial: 202,
 			cliente: 'Condominio Las Torres',
 			linea_seguro: 'Incendio Condominio',
 			ejecutivo_comercial: 'Ana Pérez',
-			cantidad_cotizaciones: 2,
-			tiene_estudio: true,
-			id_estudio: 55,
-			estado: 'por_vencer',
-			vencimiento_mas_proximo: '2026-11-20',
-		})
-
-		expect(filas[1]).toMatchObject({
-			id: 2,
-			cliente: 'Edificio Alameda',
-			cantidad_cotizaciones: 0,
+			prioridad: 'alta',
+			cantidad_cotizaciones: 1,
+			fecha: '2026-11-10T10:00:00',
+			vencimiento_mas_proximo: '2026-12-01T00:00:00',
+			estado: 'VIGENTE',
 			tiene_estudio: false,
 			id_estudio: null,
+			cotizaciones: [
+				{
+					id: 11,
+					company: 'Company',
+					prima_neta: 10,
+					prima_bruta: 11.9,
+					fecha_vencimiento: '2026-12-01T00:00:00',
+					estado: 'VIGENTE',
+				},
+			],
+		},
+	],
+	contadores: {
+		cotizaciones_vigentes: 1,
+		cotizaciones_por_vencer: 2,
+		cotizaciones_vencidas: 3,
+		estudios_pendientes: 4,
+		estudios_emitidos: 5,
+	},
+	total: 23,
+	pagina: 1,
+	tamano_pagina: 10,
+	total_paginas: 3,
+}
+
+beforeEach(() => {
+	axiosGetMock.mockResolvedValue({ data: RESPUESTA })
+})
+
+describe('obtenerPanelEstudios — listado paginado con resumen de cotizaciones', () => {
+	it('devuelve la respuesta del backend tal cual', async () => {
+		const respuesta = await obtenerPanelEstudios()
+
+		expect(respuesta).toBe(RESPUESTA)
+		expect(respuesta.data[0].cotizaciones[0].company).toBe('Company')
+		expect(respuesta.contadores.cotizaciones_vigentes).toBe(1)
+	})
+
+	it('pide la página al backend con todos los query params', async () => {
+		await obtenerPanelEstudios({
+			textoBusqueda: 'torres',
+			estado: 'cotizaciones_vigentes',
+			prioridad: 'alta',
+			rutEjecutivo: '11111111-1',
+			pagina: 2,
+			tamanoPagina: 10,
 		})
+
+		expect(axiosGetMock).toHaveBeenCalledTimes(1)
+		const url = String(axiosGetMock.mock.calls[0][0])
+		expect(url).toContain('/solicitudes-cotizacion/panel-estudios?')
+		expect(url).toContain('texto_busqueda=torres')
+		expect(url).toContain('estado=cotizaciones_vigentes')
+		expect(url).toContain('prioridad=alta')
+		expect(url).toContain('rut_ejecutivo=11111111-1')
+		expect(url).toContain('pagina=2')
+		expect(url).toContain('tamano_pagina=10')
 	})
 
-	it('pide el listado con el mayor tamaño de página disponible', async () => {
+	it('sin filtros usa página 1 y tamaño 10 por defecto', async () => {
 		await obtenerPanelEstudios()
 
-		expect(axiosGetMock.mock.calls[0][0]).toContain('tamano_pagina=100')
+		const url = String(axiosGetMock.mock.calls[0][0])
+		expect(url).not.toContain('texto_busqueda')
+		expect(url).not.toContain('estado=')
+		expect(url).not.toContain('prioridad')
+		expect(url).not.toContain('rut_ejecutivo')
+		expect(url).toContain('pagina=1')
+		expect(url).toContain('tamano_pagina=10')
 	})
 
-	it('no consulta cotizaciones de solicitudes sin cotizaciones', async () => {
+	it('reenvía la cookie de sesión al backend', async () => {
 		await obtenerPanelEstudios()
 
-		const urls = axiosGetMock.mock.calls.map(call => String(call[0]))
-		expect(urls.filter(u => u.endsWith('/cotizaciones'))).toEqual([
-			'/solicitudes-cotizacion/1/cotizaciones',
-		])
+		const config = axiosGetMock.mock.calls[0][1] as {
+			headers: { Cookie: string }
+		}
+		expect(config.headers.Cookie).toBe('token=abc')
 	})
 })

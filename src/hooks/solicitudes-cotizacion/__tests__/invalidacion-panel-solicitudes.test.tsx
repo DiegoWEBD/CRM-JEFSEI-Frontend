@@ -32,6 +32,10 @@ vi.mock(
 	'@/aplicacion/solicitudes-cotizacion/use-cases/eliminar-solicitud-cotizacion/eliminar-solicitud-cotizacion',
 	() => ({ eliminarSolicitudCotizacion: vi.fn() }),
 )
+vi.mock(
+	'@/aplicacion/estudio-comercial/use-cases/subir-estudio-comercial/subir-estudio-comercial',
+	() => ({ subirEstudioComercial: vi.fn() }),
+)
 
 import { actualizarCotizacion } from '@/aplicacion/cotizaciones/use-cases/actualizar-cotizacion/actualizar-cotizacion'
 import { eliminarCotizacion } from '@/aplicacion/cotizaciones/use-cases/eliminar-cotizacion/eliminar-cotizacion'
@@ -39,6 +43,7 @@ import { registrarCotizacion } from '@/aplicacion/cotizaciones/use-cases/registr
 import { eliminarSolicitudCotizacion } from '@/aplicacion/solicitudes-cotizacion/use-cases/eliminar-solicitud-cotizacion/eliminar-solicitud-cotizacion'
 import { solicitarCotizacion } from '@/aplicacion/solicitudes-cotizacion/use-cases/solicitar-cotizacion/solicitar-cotizacion'
 import { solicitarRecotizacion } from '@/aplicacion/solicitudes-cotizacion/use-cases/solicitar-recotizacion/solicitar-recotizacion'
+import { subirEstudioComercial } from '@/aplicacion/estudio-comercial/use-cases/subir-estudio-comercial/subir-estudio-comercial'
 import { useActualizarCotizacion } from '@/hooks/cotizaciones/use-actualizar-cotizacion'
 import { useEliminarCotizacion } from '@/hooks/cotizaciones/use-eliminar-cotizacion'
 import { useRegistrarCotizacion } from '@/hooks/cotizaciones/use-registrar-cotizacion'
@@ -46,6 +51,7 @@ import { useEliminarSolicitudCotizacion } from '@/hooks/solicitudes-cotizacion/u
 import { useSolicitarCotizacion } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion'
 import { useSolicitarCotizacionProceso } from '@/hooks/solicitudes-cotizacion/use-solicitar-cotizacion-proceso'
 import { useSolicitarRecotizacion } from '@/hooks/solicitudes-cotizacion/use-solicitar-recotizacion'
+import { useSubirEstudioComercial } from '@/hooks/estudio-comercial/use-subir-estudio-comercial'
 
 function wrapperDe(queryClient: QueryClient) {
 	function QueryClientProviderDePruebas({ children }: { children: ReactNode }) {
@@ -70,6 +76,7 @@ async function verificarInvalidacionPanel(
 	await montar(queryClient)
 
 	expect(spy).toHaveBeenCalledWith({ queryKey: ['solicitudes-cotizacion'] })
+	expect(spy).toHaveBeenCalledWith({ queryKey: ['panel-estudios'] })
 }
 
 beforeEach(() => {
@@ -79,6 +86,7 @@ beforeEach(() => {
 	vi.mocked(solicitarCotizacion).mockResolvedValue({ message: 'ok' })
 	vi.mocked(solicitarRecotizacion).mockResolvedValue({ message: 'ok' })
 	vi.mocked(eliminarSolicitudCotizacion).mockResolvedValue({ message: 'ok' })
+	vi.mocked(subirEstudioComercial).mockResolvedValue({ message: 'ok' } as never)
 	vi.mocked(axios.post).mockResolvedValue({ data: { message: 'ok' } })
 })
 
@@ -153,5 +161,17 @@ describe('invalidación del panel de solicitudes de cotización', () => {
 			})
 			await result.current.mutateAsync({} as never)
 		})
+	})
+
+	it('subir estudio comercial también refresca el panel de cotizaciones', async () => {
+		const queryClient = new QueryClient()
+		const spy = vi.spyOn(queryClient, 'invalidateQueries')
+
+		const { result } = renderHook(() => useSubirEstudioComercial(1, 10), {
+			wrapper: wrapperDe(queryClient),
+		})
+		await result.current.mutateAsync({ archivo: new File([], 'e.pdf') })
+
+		expect(spy).toHaveBeenCalledWith({ queryKey: ['panel-estudios'] })
 	})
 })

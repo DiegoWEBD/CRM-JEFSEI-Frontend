@@ -4,176 +4,163 @@ import { useMemo } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/button'
 import { Badge } from '@/components/badge'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/popover'
-import { Skeleton } from '@/components/skeleton'
-import { useCotizaciones } from '@/hooks/cotizaciones/use-cotizaciones'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/popover'
+import type { CotizacionResumen } from '@/aplicacion/cotizaciones-estudios/dto/cotizacion-resumen'
 import { cn } from '@/lib/utils'
 
 function calendarioDiffDias(desde: Date, hasta: Date) {
-  const u1 = Date.UTC(desde.getFullYear(), desde.getMonth(), desde.getDate())
-  const u2 = Date.UTC(hasta.getFullYear(), hasta.getMonth(), hasta.getDate())
-  return Math.round((u2 - u1) / 86400000)
+	const u1 = Date.UTC(desde.getFullYear(), desde.getMonth(), desde.getDate())
+	const u2 = Date.UTC(hasta.getFullYear(), hasta.getMonth(), hasta.getDate())
+	return Math.round((u2 - u1) / 86400000)
 }
 
 function textoPlazoVencimientoRelativo(
-  fechaVencIso: string,
-  ahora: Date,
+	fechaVencIso: string,
+	ahora: Date,
 ): string {
-  const hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate())
-  const v = new Date(fechaVencIso)
-  const vd = new Date(v.getFullYear(), v.getMonth(), v.getDate())
-  const dias = calendarioDiffDias(hoy, vd)
-  if (dias < 0) {
-    const a = Math.abs(dias)
-    return `vencida hace ${a} ${a === 1 ? 'día' : 'días'}`
-  }
-  if (dias === 0) return 'vence hoy'
-  return `vence en ${dias} ${dias === 1 ? 'día' : 'días'}`
+	const hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate())
+	const v = new Date(fechaVencIso)
+	const vd = new Date(v.getFullYear(), v.getMonth(), v.getDate())
+	const dias = calendarioDiffDias(hoy, vd)
+	if (dias < 0) {
+		const a = Math.abs(dias)
+		return `vencida hace ${a} ${a === 1 ? 'día' : 'días'}`
+	}
+	if (dias === 0) return 'vence hoy'
+	return `vence en ${dias} ${dias === 1 ? 'día' : 'días'}`
 }
 
 function formatFechaCelda(iso: string) {
-  return new Date(iso).toLocaleDateString('es-CL', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
+	return new Date(iso).toLocaleDateString('es-CL', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+	})
 }
 
-import { ESTADO_COTIZACION_VARIANT, ESTADO_COTIZACION_LABELS } from '@/lib/badge-variants'
+import {
+	ESTADO_COTIZACION_VARIANT,
+	ESTADO_COTIZACION_LABELS,
+} from '@/lib/badge-variants'
 
 type VencimientoCellProps = {
-  idSolicitud: number
-  cantidadCotizaciones: number
-  vencimientoMasProximo: string | null
-  estado: string | null
+	/** Resumen de cotizaciones que ya viene embebido en la fila del panel. */
+	cotizaciones: CotizacionResumen[]
+	vencimientoMasProximo: string | null
 }
 
 export default function VencimientoCell({
-  idSolicitud,
-  vencimientoMasProximo,
+	cotizaciones,
+	vencimientoMasProximo,
 }: VencimientoCellProps) {
-  const { data: cotizaciones, isLoading } = useCotizaciones(idSolicitud)
-  const ahora = useMemo(() => new Date(), [])
+	const ahora = useMemo(() => new Date(), [])
 
-  const opciones = useMemo(() => {
-    if (!cotizaciones) return []
-    return [...cotizaciones].sort(
-      (a, b) =>
-        new Date(a.fecha_vencimiento).getTime() -
-        new Date(b.fecha_vencimiento).getTime(),
-    )
-  }, [cotizaciones])
+	const opciones = useMemo(() => {
+		return [...cotizaciones].sort(
+			(a, b) =>
+				new Date(a.fecha_vencimiento).getTime() -
+				new Date(b.fecha_vencimiento).getTime(),
+		)
+	}, [cotizaciones])
 
-  if (isLoading) {
-    return (
-      <Skeleton className='h-10 max-w-[200px] rounded-md' />
-    )
-  }
+	if (!vencimientoMasProximo || opciones.length === 0) {
+		return <span className='text-sm text-muted-foreground'>—</span>
+	}
 
-  if (!vencimientoMasProximo || opciones.length === 0) {
-    return (
-      <span className='text-sm text-muted-foreground'>—</span>
-    )
-  }
+	const principal = opciones[0]
+	const varias = opciones.length > 1
+	const lineaPlazo = textoPlazoVencimientoRelativo(
+		principal.fecha_vencimiento,
+		ahora,
+	)
 
-  const principal = opciones[0]
-  const varias = opciones.length > 1
-  const lineaPlazo = textoPlazoVencimientoRelativo(
-    principal.fecha_vencimiento,
-    ahora,
-  )
+	const resumen = (
+		<div className='flex min-w-0 flex-1 items-start gap-1'>
+			<div className='min-w-0 flex-1 space-y-0.5'>
+				<p className='line-clamp-2 text-sm leading-snug text-foreground'>
+					<span className='font-medium'>{principal.company}</span>
+					<span className='text-muted-foreground'> · {lineaPlazo}</span>
+				</p>
+				<p className='tabular-nums text-sm text-muted-foreground'>
+					{formatFechaCelda(principal.fecha_vencimiento)}
+				</p>
+				<p className='text-xs text-muted-foreground/90'>
+					{opciones.length}{' '}
+					{opciones.length === 1 ? 'opción cotizada' : 'opciones cotizadas'}
+				</p>
+			</div>
+			{varias ? (
+				<ChevronDown
+					className='mt-0.5 size-3.5 shrink-0 text-muted-foreground opacity-70'
+					aria-hidden
+				/>
+			) : (
+				<ChevronDown
+					className='mt-0.5 size-3 shrink-0 text-muted-foreground opacity-35'
+					aria-hidden
+				/>
+			)}
+		</div>
+	)
 
-  const resumen = (
-    <div className='flex min-w-0 flex-1 items-start gap-1'>
-      <div className='min-w-0 flex-1 space-y-0.5'>
-        <p className='line-clamp-2 text-sm leading-snug text-foreground'>
-          <span className='font-medium'>{principal.company}</span>
-          <span className='text-muted-foreground'> · {lineaPlazo}</span>
-        </p>
-        <p className='tabular-nums text-sm text-muted-foreground'>
-          {formatFechaCelda(principal.fecha_vencimiento)}
-        </p>
-        <p className='text-xs text-muted-foreground/90'>
-          {opciones.length}{' '}
-          {opciones.length === 1 ? 'opción cotizada' : 'opciones cotizadas'}
-        </p>
-      </div>
-      {varias ? (
-        <ChevronDown
-          className='mt-0.5 size-3.5 shrink-0 text-muted-foreground opacity-70'
-          aria-hidden
-        />
-      ) : (
-        <ChevronDown
-          className='mt-0.5 size-3 shrink-0 text-muted-foreground opacity-35'
-          aria-hidden
-        />
-      )}
-    </div>
-  )
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          type='button'
-          variant='ghost'
-          className={cn(
-            'h-auto min-h-[2.25rem] w-full justify-start gap-0 whitespace-normal rounded-md px-1.5 py-1 text-left font-normal hover:bg-muted/60',
-          )}
-        >
-          {resumen}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        align='start'
-        sideOffset={6}
-        className='w-80 max-w-[min(92vw,20rem)] p-0 shadow-md'
-      >
-        <div className='max-h-[min(46vh,280px)] overflow-y-auto p-2'>
-          <p className='px-1 pb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-            {varias ? 'Opciones cotizadas' : 'Cotización'}
-          </p>
-          <ul className='space-y-1.5'>
-            {opciones.map((op) => {
-              const plazo = textoPlazoVencimientoRelativo(
-                op.fecha_vencimiento,
-                ahora,
-              )
-              return (
-                <li
-                  key={op.id}
-                  className='rounded-md border border-border/50 bg-card px-2 py-1.5'
-                >
-                  <div className='flex flex-wrap items-start justify-between gap-x-2 gap-y-1'>
-                    <p className='min-w-0 flex-1 text-sm leading-snug text-foreground'>
-                      <span className='font-medium'>{op.company}</span>
-                      <span className='text-muted-foreground'> · {plazo}</span>
-                    </p>
-                    <div className='shrink-0'>
-                      {op.estado && (
-                        <Badge
-                          variant={ESTADO_COTIZACION_VARIANT[op.estado]}
-                          className='text-xs font-medium'
-                        >
-                          {ESTADO_COTIZACION_LABELS[op.estado]}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  <p className='mt-0.5 tabular-nums text-sm text-muted-foreground'>
-                    {formatFechaCelda(op.fecha_vencimiento)}
-                  </p>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
+	return (
+		<Popover>
+			<PopoverTrigger asChild>
+				<Button
+					type='button'
+					variant='ghost'
+					className={cn(
+						'h-auto min-h-9 w-full justify-start gap-0 whitespace-normal rounded-md px-1.5 py-1 text-left font-normal hover:bg-muted/60',
+					)}
+				>
+					{resumen}
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent
+				align='start'
+				sideOffset={6}
+				className='w-80 max-w-[min(92vw,20rem)] p-0 shadow-md'
+			>
+				<div className='max-h-[min(46vh,280px)] overflow-y-auto p-2'>
+					<p className='px-1 pb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+						{varias ? 'Opciones cotizadas' : 'Cotización'}
+					</p>
+					<ul className='space-y-1.5'>
+						{opciones.map(op => {
+							const plazo = textoPlazoVencimientoRelativo(
+								op.fecha_vencimiento,
+								ahora,
+							)
+							return (
+								<li
+									key={op.id}
+									className='rounded-md border border-border/50 bg-card px-2 py-1.5'
+								>
+									<div className='flex flex-wrap items-start justify-between gap-x-2 gap-y-1'>
+										<p className='min-w-0 flex-1 text-sm leading-snug text-foreground'>
+											<span className='font-medium'>{op.company}</span>
+											<span className='text-muted-foreground'> · {plazo}</span>
+										</p>
+										<div className='shrink-0'>
+											{op.estado && (
+												<Badge
+													variant={ESTADO_COTIZACION_VARIANT[op.estado]}
+													className='text-xs font-medium'
+												>
+													{ESTADO_COTIZACION_LABELS[op.estado]}
+												</Badge>
+											)}
+										</div>
+									</div>
+									<p className='mt-0.5 tabular-nums text-sm text-muted-foreground'>
+										{formatFechaCelda(op.fecha_vencimiento)}
+									</p>
+								</li>
+							)
+						})}
+					</ul>
+				</div>
+			</PopoverContent>
+		</Popover>
+	)
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { Search, X } from 'lucide-react'
 import { Input } from '@/components/input'
 import {
 	Select,
@@ -8,95 +9,107 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/select'
-import { Search, X } from 'lucide-react'
 import { Button } from '@/components/button'
+import FiltroUsuario from '@/components/filtro-usuario/filtro-usuario'
+import type { Prioridad } from '@/types/prioridad/prioridad'
 
 export const TODOS = '__todos__'
 
 export type FiltrosPanel = {
 	busqueda: string
-	estado_estudio: string
+	/** Estado del panel (uno de los 5 contadores) o TODOS. */
+	estado: string
+	/** Prioridad ('alta' | 'normal') o TODOS. */
 	prioridad: string
-	ejecutivo: string
-	linea: string
+	/** RUT del ejecutivo comercial; '' = todos (convención de FiltroUsuario). */
+	rutEjecutivo: string
 }
+
+export const FILTROS_POR_DEFECTO: FiltrosPanel = {
+	busqueda: '',
+	estado: TODOS,
+	prioridad: TODOS,
+	rutEjecutivo: '',
+}
+
+const ESTADOS = [
+	'cotizaciones_vigentes',
+	'cotizaciones_por_vencer',
+	'cotizaciones_vencidas',
+	'estudios_pendientes',
+	'estudios_emitidos',
+] as const
+
+const ESTADO_LABELS: Record<(typeof ESTADOS)[number], string> = {
+	cotizaciones_vigentes: 'Cotizaciones vigentes',
+	cotizaciones_por_vencer: 'Por vencer',
+	cotizaciones_vencidas: 'Vencidas',
+	estudios_pendientes: 'Estudios pendientes',
+	estudios_emitidos: 'Estudios finales emitidos',
+}
+
+const PRIORIDADES: Prioridad[] = ['alta', 'normal']
 
 type FiltrosCotizacionesEstudiosProps = {
 	filtros: FiltrosPanel
-	onChange: (f: FiltrosPanel) => void
-	opcionesEjecutivo: string[]
-	opcionesLinea: string[]
+	onChange: (filtros: FiltrosPanel) => void
 	total: number
 	filtrados: number
 }
 
-const ESTADOS_ESTUDIO = [
-	{ value: TODOS, label: 'Todos' },
-	{ value: 'pendiente', label: 'Pendiente' },
-	{ value: 'disponible', label: 'Disponible' },
-]
-
-const PRIORIDADES = [
-	{ value: TODOS, label: 'Todas' },
-	{ value: 'alta', label: 'Alta' },
-	{ value: 'normal', label: 'Normal' },
-]
-
 export default function FiltrosCotizacionesEstudios({
 	filtros,
 	onChange,
-	opcionesEjecutivo,
-	opcionesLinea,
 	total,
 	filtrados,
 }: FiltrosCotizacionesEstudiosProps) {
-	const actualizar = (key: keyof FiltrosPanel, value: string) => {
-		onChange({ ...filtros, [key]: value })
-	}
-
-	const limpiar = () => {
-		onChange({
-			busqueda: '',
-			estado_estudio: TODOS,
-			prioridad: TODOS,
-			ejecutivo: TODOS,
-			linea: TODOS,
-		})
-	}
-
-	const hayFiltros =
-		filtros.busqueda !== '' ||
-		filtros.estado_estudio !== TODOS ||
+	const hayFiltrosActivos =
+		filtros.busqueda.trim() !== '' ||
+		filtros.estado !== TODOS ||
 		filtros.prioridad !== TODOS ||
-		filtros.ejecutivo !== TODOS ||
-		filtros.linea !== TODOS
+		filtros.rutEjecutivo !== ''
+
+	const limpiarFiltros = () => {
+		onChange({ ...FILTROS_POR_DEFECTO })
+	}
+
+	const actualizar = (patch: Partial<FiltrosPanel>) => {
+		onChange({ ...filtros, ...patch })
+	}
 
 	return (
 		<div className='flex flex-wrap items-center gap-2'>
-			<div className='relative min-w-[12rem] flex-1'>
-				<Search className='pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground' />
+			<div className='relative min-w-48 flex-1'>
+				<Search
+					className='pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground'
+					aria-hidden
+				/>
 				<Input
-					placeholder='Buscar por cliente, ejecutivo, línea…'
-					value={filtros.busqueda}
-					onChange={e => actualizar('busqueda', e.target.value)}
 					className='h-9 pl-8 text-xs shadow-none'
+					placeholder='Buscar por cliente, producto o ejecutivo…'
+					value={filtros.busqueda}
+					onChange={e => actualizar({ busqueda: e.target.value })}
 				/>
 			</div>
 
 			<Select
-				value={filtros.estado_estudio}
-				onValueChange={v => actualizar('estado_estudio', v)}
+				value={filtros.estado}
+				onValueChange={value => actualizar({ estado: value })}
 			>
 				<SelectTrigger
 					size='sm'
-					className='h-9 w-[min(100%,9rem)] text-xs shadow-none'
+					aria-label='Estado'
+					className='h-9 w-[min(100%,11rem)] text-xs shadow-none'
 				>
-					<SelectValue placeholder='Estado estudio' />
+					<SelectValue placeholder='Estado' />
 				</SelectTrigger>
 				<SelectContent>
-					{ESTADOS_ESTUDIO.map(op => (
-						<SelectItem key={op.value} value={op.value} className='text-xs'>
-							{op.label}
+					<SelectItem value={TODOS} className='text-xs'>
+						Estado: todos
+					</SelectItem>
+					{ESTADOS.map(e => (
+						<SelectItem key={e} value={e} className='text-xs'>
+							{ESTADO_LABELS[e]}
 						</SelectItem>
 					))}
 				</SelectContent>
@@ -104,78 +117,51 @@ export default function FiltrosCotizacionesEstudios({
 
 			<Select
 				value={filtros.prioridad}
-				onValueChange={v => actualizar('prioridad', v)}
+				onValueChange={value => actualizar({ prioridad: value })}
 			>
 				<SelectTrigger
 					size='sm'
+					aria-label='Prioridad'
 					className='h-9 w-[min(100%,9rem)] text-xs shadow-none'
 				>
 					<SelectValue placeholder='Prioridad' />
 				</SelectTrigger>
 				<SelectContent>
-					{PRIORIDADES.map(op => (
-						<SelectItem key={op.value} value={op.value} className='text-xs'>
-							{op.label}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-
-			<Select
-				value={filtros.ejecutivo}
-				onValueChange={v => actualizar('ejecutivo', v)}
-			>
-				<SelectTrigger
-					size='sm'
-					className='h-9 w-[min(100%,11rem)] text-xs shadow-none'
-				>
-					<SelectValue placeholder='Ejecutivo' />
-				</SelectTrigger>
-				<SelectContent>
 					<SelectItem value={TODOS} className='text-xs'>
-						Todos
+						Prioridad: todas
 					</SelectItem>
-					{opcionesEjecutivo.map(op => (
-						<SelectItem key={op} value={op} className='text-xs'>
-							{op}
+					{PRIORIDADES.map(p => (
+						<SelectItem key={p} value={p} className='text-xs capitalize'>
+							{p === 'alta' ? 'Alta' : 'Normal'}
 						</SelectItem>
 					))}
 				</SelectContent>
 			</Select>
 
-			<Select
-				value={filtros.linea}
-				onValueChange={v => actualizar('linea', v)}
-			>
-				<SelectTrigger
-					size='sm'
-					className='h-9 w-[min(100%,10rem)] text-xs shadow-none'
-				>
-					<SelectValue placeholder='Línea seguro' />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectItem value={TODOS} className='text-xs'>
-						Todas
-					</SelectItem>
-					{opcionesLinea.map(op => (
-						<SelectItem key={op} value={op} className='text-xs'>
-							{op}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<FiltroUsuario
+				value={filtros.rutEjecutivo}
+				onChange={rutEjecutivo => actualizar({ rutEjecutivo })}
+				filtroRoles={[
+					'EJECUTIVO_COMERCIAL',
+					'EJECUTIVO_EVALUACION_PROYECTOS',
+					'GERENTE_GENERAL',
+					'GERENTE_COMERCIAL',
+					'GERENTE_OPERACIONES',
+				]}
+			/>
 
-			{hayFiltros && (
+			{hayFiltrosActivos ? (
 				<Button
+					type='button'
 					variant='ghost'
 					size='sm'
-					onClick={limpiar}
 					className='h-9 gap-1 px-2 text-xs text-muted-foreground'
+					onClick={limpiarFiltros}
 				>
 					<X className='h-3.5 w-3.5' aria-hidden />
 					Limpiar
 				</Button>
-			)}
+			) : null}
 
 			<span className='text-sm text-muted-foreground'>
 				Mostrando {filtrados} de {total} cotizaciones

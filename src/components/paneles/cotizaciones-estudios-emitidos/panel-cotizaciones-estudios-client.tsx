@@ -1,160 +1,154 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { ObtenerPanelEstudiosResponse } from '@/aplicacion/cotizaciones-estudios/dto/obtener-panel-estudios-response'
+import Paginacion from '@/components/paginacion/paginacion'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
-import { PanelEstudioFila } from '@/aplicacion/cotizaciones-estudios/dto/panel-estudio-fila'
 import { usePanelEstudios } from '@/hooks/cotizaciones-estudios/use-panel-estudios'
-import KpiCotizacionesEstudios, {
-	type TarjetaActiva,
-} from './kpi-cotizaciones-estudios'
+import { TAMANO_PAGINA } from '@/hooks/cotizaciones-estudios/query-key-panel-estudios'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useState } from 'react'
 import FiltrosCotizacionesEstudios, {
+	FILTROS_POR_DEFECTO,
 	TODOS,
 	type FiltrosPanel,
 } from './filtros-cotizaciones-estudios'
+import KpiCotizacionesEstudios, {
+	type TarjetaActiva,
+} from './kpi-cotizaciones-estudios'
 import TablaCotizacionesEstudios from './tabla-cotizaciones-estudios'
 import DialogVerCotizaciones from './dialog-ver-cotizaciones'
+import { PanelEstudioFila } from '@/aplicacion/cotizaciones-estudios/dto/panel-estudio-fila'
 
 type DialogState = { type: 'cotizaciones'; fila: PanelEstudioFila } | null
 
-function buildConteos(filas: PanelEstudioFila[]): Record<string, number> {
-	const conteos: Record<string, number> = {
-		vigentes: 0,
-		por_vencer: 0,
-		vencidas: 0,
-		estudios_pendientes: 0,
-		estudios_finales_emitidos: 0,
-	}
-	for (const f of filas) {
-		if (f.estado === 'VIGENTE') conteos.vigentes++
-		else if (f.estado === 'POR_VENCER') conteos.por_vencer++
-		else if (f.estado === 'VENCIDA') conteos.vencidas++
-		if (f.tiene_estudio) conteos.estudios_finales_emitidos++
-		else conteos.estudios_pendientes++
-	}
-	return conteos
-}
-
-function filaMatchesBusqueda(f: PanelEstudioFila, q: string): boolean {
-	if (!q) return true
-	const t = q.toLowerCase()
-	return (
-		f.cliente.toLowerCase().includes(t) ||
-		f.ejecutivo_comercial.toLowerCase().includes(t) ||
-		f.linea_seguro.toLowerCase().includes(t)
-	)
-}
-
 type PanelCotizacionesEstudiosClientProps = {
-	initialData: PanelEstudioFila[]
+	initialData: ObtenerPanelEstudiosResponse
 }
 
 export default function PanelCotizacionesEstudiosClient({
 	initialData,
 }: PanelCotizacionesEstudiosClientProps) {
-	const { data: filas, isFetching } = usePanelEstudios(initialData)
-
 	const [dialog, setDialog] = useState<DialogState>(null)
-
-	const [tarjetaActiva, setTarjetaActiva] = useState<TarjetaActiva>('todas')
+	const [pagina, setPagina] = useState(1)
 	const [filtros, setFiltros] = useState<FiltrosPanel>({
-		busqueda: '',
-		estado_estudio: TODOS,
-		prioridad: TODOS,
-		ejecutivo: TODOS,
-		linea: TODOS,
+		...FILTROS_POR_DEFECTO,
 	})
+	const textoBusqueda = useDebounce(filtros.busqueda, 300)
 
-	const data = filas ?? initialData
-
-	const conteos = useMemo(() => buildConteos(data), [data])
-
-	const opcionesEjecutivo = useMemo(
-		() => [...new Set(data.map(f => f.ejecutivo_comercial))].sort(),
-		[data],
+	const {
+		data: respuesta,
+		isLoading,
+		isFetching,
+		error,
+	} = usePanelEstudios(
+		{
+			textoBusqueda,
+			estado: filtros.estado === TODOS ? '' : filtros.estado,
+			prioridad: filtros.prioridad === TODOS ? '' : filtros.prioridad,
+			rutEjecutivo: filtros.rutEjecutivo,
+			pagina,
+			tamanoPagina: TAMANO_PAGINA,
+		},
+		initialData,
 	)
 
-	const opcionesLinea = useMemo(
-		() => [...new Set(data.map(f => f.linea_seguro))].sort(),
-		[data],
-	)
+	const actualizarFiltros = (nuevos: FiltrosPanel) => {
+		setFiltros(nuevos)
+		setPagina(1)
+	}
 
-	const listaFiltrada = useMemo(() => {
-		return data.filter(f => {
-			if (!filaMatchesBusqueda(f, filtros.busqueda)) return false
-			if (tarjetaActiva !== 'todas') {
-				if (tarjetaActiva === 'vigentes' && f.estado !== 'VIGENTE')
-					return false
-				if (
-					tarjetaActiva === 'por_vencer' &&
-					f.estado !== 'POR_VENCER'
-				)
-					return false
-				if (tarjetaActiva === 'vencidas' && f.estado !== 'VENCIDA')
-					return false
-				if (tarjetaActiva === 'estudios_pendientes' && f.tiene_estudio)
-					return false
-				if (tarjetaActiva === 'estudios_finales_emitidos' && !f.tiene_estudio)
-					return false
-			}
-			if (filtros.estado_estudio !== TODOS) {
-				const tieneEstudio = filtros.estado_estudio === 'disponible'
-				if (f.tiene_estudio !== tieneEstudio) return false
-			}
-			if (filtros.prioridad !== TODOS && f.prioridad !== filtros.prioridad)
-				return false
-			if (
-				filtros.ejecutivo !== TODOS &&
-				f.ejecutivo_comercial !== filtros.ejecutivo
-			)
-				return false
-			if (filtros.linea !== TODOS && f.linea_seguro !== filtros.linea)
-				return false
-			return true
+	const tarjetaActiva: TarjetaActiva =
+		filtros.estado === TODOS ? 'todas' : (filtros.estado as TarjetaActiva)
+
+	// El KPI ya resuelve el alternado: entrega la tarjeta resultante.
+	const onToggleTarjeta = (key: TarjetaActiva) => {
+		actualizarFiltros({
+			...filtros,
+			estado: key === 'todas' ? TODOS : key,
 		})
-	}, [data, filtros, tarjetaActiva])
+	}
 
-	const filaActual = dialog
-		? (data.find(f => f.id === dialog.fila.id) ?? null)
-		: null
+	if (isLoading) {
+		return (
+			<PanelLayout>
+				<KpiCotizacionesEstudios
+					contadores={{
+						cotizaciones_vigentes: 0,
+						cotizaciones_por_vencer: 0,
+						cotizaciones_vencidas: 0,
+						estudios_pendientes: 0,
+						estudios_emitidos: 0,
+					}}
+					tarjetaActiva='todas'
+					onToggleTarjeta={() => {}}
+					loading
+				/>
+			</PanelLayout>
+		)
+	}
+	if (error)
+		return (
+			<div className='flex items-center justify-center py-12'>
+				<p className='text-sm text-muted-foreground'>
+					Error al cargar el panel de cotizaciones.
+				</p>
+			</div>
+		)
+
+	const filas = respuesta?.data ?? []
 
 	return (
-		<PanelLayout>
-			<KpiCotizacionesEstudios
-				conteos={conteos}
-				tarjetaActiva={tarjetaActiva}
-				onToggleTarjeta={setTarjetaActiva}
-			/>
-
-			<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
-				<div className='border-b border-border/80 p-3 sm:p-4'>
-					<FiltrosCotizacionesEstudios
-						filtros={filtros}
-						onChange={setFiltros}
-						opcionesEjecutivo={opcionesEjecutivo}
-						opcionesLinea={opcionesLinea}
-						total={data.length}
-						filtrados={listaFiltrada.length}
-					/>
-				</div>
-
-				<div className='p-3 sm:p-4'>
-					<TablaCotizacionesEstudios
-						filas={listaFiltrada}
-						isFetching={isFetching}
-						onVerCotizaciones={f =>
-							setDialog({ type: 'cotizaciones', fila: f })
+		<>
+			<PanelLayout>
+				<KpiCotizacionesEstudios
+					contadores={
+						respuesta?.contadores ?? {
+							cotizaciones_vigentes: 0,
+							cotizaciones_por_vencer: 0,
+							cotizaciones_vencidas: 0,
+							estudios_pendientes: 0,
+							estudios_emitidos: 0,
 						}
-					/>
-				</div>
-			</section>
+					}
+					tarjetaActiva={tarjetaActiva}
+					onToggleTarjeta={onToggleTarjeta}
+				/>
 
-			{dialog?.type === 'cotizaciones' && filaActual && (
+				<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
+					<div className='border-b border-border/80 p-3 sm:p-4'>
+						<FiltrosCotizacionesEstudios
+							filtros={filtros}
+							onChange={actualizarFiltros}
+							total={respuesta?.total ?? 0}
+							filtrados={filas.length}
+						/>
+					</div>
+
+					<div className='p-3 sm:p-4'>
+						<TablaCotizacionesEstudios
+							filas={filas}
+							isFetching={isFetching}
+							textoResaltado={textoBusqueda}
+							onVerCotizaciones={f =>
+								setDialog({ type: 'cotizaciones', fila: f })
+							}
+						/>
+						<Paginacion
+							pagina={pagina}
+							totalPaginas={respuesta?.total_paginas ?? 1}
+							onPaginaChange={setPagina}
+						/>
+					</div>
+				</section>
+			</PanelLayout>
+
+			{dialog?.type === 'cotizaciones' && (
 				<DialogVerCotizaciones
-					fila={filaActual}
+					fila={dialog.fila}
 					open
 					onOpenChange={() => setDialog(null)}
 				/>
 			)}
-		</PanelLayout>
+		</>
 	)
 }

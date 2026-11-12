@@ -1,48 +1,52 @@
 'use client'
 
 import { PanelKpiCard, PanelKpiSkeleton, type KpiAcento } from '@/components/paneles/shared/panel-kpi-card'
+import type { ContadoresPanelCotizaciones } from '@/aplicacion/cotizaciones-estudios/dto/obtener-panel-estudios-response'
 
 export type TarjetaActiva =
 	| 'todas'
-	| 'vigentes'
-	| 'por_vencer'
-	| 'vencidas'
+	| 'cotizaciones_vigentes'
+	| 'cotizaciones_por_vencer'
+	| 'cotizaciones_vencidas'
 	| 'estudios_pendientes'
-	| 'estudios_finales_emitidos'
+	| 'estudios_emitidos'
 
-const KPI_LABELS: Record<string, string> = {
-	vigentes: 'Cotizaciones vigentes',
-	por_vencer: 'Por vencer',
-	vencidas: 'Vencidas',
+type TarjetaKey = Exclude<TarjetaActiva, 'todas'>
+
+const KPI_LABELS: Record<TarjetaKey, string> = {
+	cotizaciones_vigentes: 'Cotizaciones vigentes',
+	cotizaciones_por_vencer: 'Por vencer',
+	cotizaciones_vencidas: 'Vencidas',
 	estudios_pendientes: 'Estudios pendientes',
-	estudios_finales_emitidos: 'Estudios finales emitidos',
+	estudios_emitidos: 'Estudios finales emitidos',
 }
 
-const KPI_ACENTOS: Record<string, KpiAcento> = {
-	vigentes: 'success',
-	por_vencer: 'warning',
-	vencidas: 'danger',
+const KPI_ACENTOS: Record<TarjetaKey, KpiAcento> = {
+	cotizaciones_vigentes: 'success',
+	cotizaciones_por_vencer: 'warning',
+	cotizaciones_vencidas: 'danger',
 	estudios_pendientes: 'info',
-	estudios_finales_emitidos: 'primary',
+	estudios_emitidos: 'primary',
 }
 
-const TARJETAS: TarjetaActiva[] = [
-	'vigentes',
-	'por_vencer',
-	'vencidas',
+const TARJETAS: TarjetaKey[] = [
+	'cotizaciones_vigentes',
+	'cotizaciones_por_vencer',
+	'cotizaciones_vencidas',
 	'estudios_pendientes',
-	'estudios_finales_emitidos',
+	'estudios_emitidos',
 ]
 
 type KpiCotizacionesEstudiosProps = {
-	conteos: Record<string, number>
+	/** Contadores globales que entrega el backend, previos a cualquier filtro. */
+	contadores: ContadoresPanelCotizaciones
 	tarjetaActiva: TarjetaActiva
 	onToggleTarjeta: (key: TarjetaActiva) => void
 	loading?: boolean
 }
 
 export default function KpiCotizacionesEstudios({
-	conteos,
+	contadores,
 	tarjetaActiva,
 	onToggleTarjeta,
 	loading,
@@ -59,7 +63,7 @@ export default function KpiCotizacionesEstudios({
 					<PanelKpiCard
 						key={key}
 						label={KPI_LABELS[key]}
-						value={conteos[key] ?? 0}
+						value={contadores[key] ?? 0}
 						accent={acento}
 						activa={tarjetaActiva === key}
 						onClick={() =>
