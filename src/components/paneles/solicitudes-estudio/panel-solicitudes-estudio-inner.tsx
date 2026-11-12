@@ -12,7 +12,7 @@ import PanelSolicitudesEstudioClient from './panel-solicitudes-estudio-client'
 
 /**
  * Prefetch SSR de la consulta inicial del panel: página 1 sin búsqueda, con
- * tamaño de página 15.
+ * tamaño de página 10.
  *
  * La queryKey se construye con el mismo `queryKeySolicitudesPanel` y los
  * mismos `filtrosIniciales` que usa el hook en el cliente, para que la

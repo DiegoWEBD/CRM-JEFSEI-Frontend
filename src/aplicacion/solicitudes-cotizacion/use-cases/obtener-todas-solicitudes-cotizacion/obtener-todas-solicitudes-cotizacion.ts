@@ -21,7 +21,7 @@ export const obtenerTodasSolicitudesCotizacion = async (
   if (filtros.prioridad) searchParams.set('prioridad', filtros.prioridad)
   if (filtros.rutUsuario) searchParams.set('rut_usuario', filtros.rutUsuario)
   searchParams.set('pagina', String(filtros.pagina ?? 1))
-  searchParams.set('tamano_pagina', String(filtros.tamanoPagina ?? 15))
+  searchParams.set('tamano_pagina', String(filtros.tamanoPagina ?? 10))
 
   const response = await axiosClient.get(
     `/solicitudes-cotizacion?${searchParams.toString()}`,

@@ -21,7 +21,7 @@ const RESPUESTA = {
 	},
 	total: 0,
 	pagina: 1,
-	tamano_pagina: 15,
+	tamano_pagina: 10,
 	total_paginas: 1,
 }
 
@@ -88,6 +88,6 @@ describe('useObtenerTodasSolicitudesCotizacion — hidratación', () => {
 		expect(url).not.toContain('prioridad')
 		expect(url).not.toContain('rut_usuario')
 		expect(url).toContain('pagina=1')
-		expect(url).toContain('tamano_pagina=15')
+		expect(url).toContain('tamano_pagina=10')
 	})
 })

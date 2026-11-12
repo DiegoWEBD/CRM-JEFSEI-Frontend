@@ -15,7 +15,7 @@ describe('queryKeySolicitudesPanel', () => {
 			'',
 			'',
 			1,
-			15,
+			10,
 		])
 	})
 
@@ -52,6 +52,6 @@ describe('esConsultaInicial', () => {
 		expect(esConsultaInicial({ ...filtrosIniciales(), prioridad: 'alta' })).toBe(false)
 		expect(esConsultaInicial({ ...filtrosIniciales(), rutUsuario: '11111111-1' })).toBe(false)
 		expect(esConsultaInicial({ ...filtrosIniciales(), pagina: 2 })).toBe(false)
-		expect(esConsultaInicial({ ...filtrosIniciales(), tamanoPagina: 10 })).toBe(false)
+		expect(esConsultaInicial({ ...filtrosIniciales(), tamanoPagina: 25 })).toBe(false)
 	})
 })

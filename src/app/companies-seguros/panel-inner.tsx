@@ -23,7 +23,11 @@ export async function PanelInner() {
 	const initialData = await queryClient.fetchQuery({
 		queryKey: ['companies-seguros', '', 1, 10],
 		queryFn: () =>
-			obtenerCompaniesSeguros({ textoBusqueda: '', pagina: 1, tamanoPagina: 10 }),
+			obtenerCompaniesSeguros({
+				textoBusqueda: '',
+				pagina: 1,
+				tamanoPagina: 10,
+			}),
 	})
 
 	return (

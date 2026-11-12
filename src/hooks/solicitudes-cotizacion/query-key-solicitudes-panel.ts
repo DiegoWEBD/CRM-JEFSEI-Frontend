@@ -6,6 +6,8 @@
  * se dispararía un segundo fetch.
  */
 
+export const TAMANO_PAGINA = 10
+
 export type FiltrosSolicitudesCotizacion = {
 	textoBusqueda: string
 	estado: string
@@ -21,7 +23,7 @@ export const filtrosIniciales = (): FiltrosSolicitudesCotizacion => ({
 	prioridad: '',
 	rutUsuario: '',
 	pagina: 1,
-	tamanoPagina: 15,
+	tamanoPagina: TAMANO_PAGINA,
 })
 
 export const queryKeySolicitudesPanel = (filtros: FiltrosSolicitudesCotizacion) =>
@@ -41,4 +43,4 @@ export const esConsultaInicial = (filtros: FiltrosSolicitudesCotizacion) =>
 	filtros.prioridad === '' &&
 	filtros.rutUsuario === '' &&
 	filtros.pagina === 1 &&
-	filtros.tamanoPagina === 15
+	filtros.tamanoPagina === TAMANO_PAGINA

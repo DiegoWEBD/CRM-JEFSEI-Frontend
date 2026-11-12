@@ -12,7 +12,7 @@ export async function GET(request: Request) {
       prioridad: searchParams.get('prioridad'),
       rutUsuario: searchParams.get('rut_usuario'),
       pagina: Number(searchParams.get('pagina')) || 1,
-      tamanoPagina: Number(searchParams.get('tamano_pagina')) || 15,
+      tamanoPagina: Number(searchParams.get('tamano_pagina')) || 10,
     })
     return NextResponse.json(solicitudes)
   } catch (error) {

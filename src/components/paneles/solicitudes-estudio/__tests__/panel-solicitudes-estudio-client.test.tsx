@@ -58,7 +58,7 @@ const RESPUESTA = {
 	},
 	total: 23,
 	pagina: 1,
-	tamano_pagina: 15,
+	tamano_pagina: 10,
 	total_paginas: 3,
 }
 
@@ -127,7 +127,7 @@ describe('PanelSolicitudesEstudioClient — datos y contadores', () => {
 			prioridad: '',
 			rutUsuario: '',
 			pagina: 1,
-			tamanoPagina: 15,
+			tamanoPagina: 10,
 		})
 	})
 })
@@ -225,6 +225,21 @@ describe('PanelSolicitudesEstudioClient — KPIs y paginación', () => {
 			prioridad: 'alta',
 			pagina: 1,
 		})
+	})
+
+	it('muestra 10 skeletons de fila mientras se hace un fetch client-side', () => {
+		useObtenerMock.mockReturnValue({
+			data: RESPUESTA,
+			isLoading: false,
+			isFetching: true,
+			error: null,
+		} as unknown as ReturnType<typeof useObtenerTodasSolicitudesCotizacion>)
+
+		montar()
+
+		// 1 fila de header + 10 filas skeleton.
+		expect(screen.getAllByRole('row')).toHaveLength(11)
+		expect(screen.queryByText('Condominio Las Torres')).toBeNull()
 	})
 
 	it('muestra las filas de la página actual y el total del servidor', () => {

@@ -6,6 +6,7 @@ import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { PanelSolicitudesEstudioSkeleton } from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-skeleton'
 import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/solicitud-cotizacion-resumen'
 import { useObtenerTodasSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-todas-solicitudes-cotizacion'
+import { TAMANO_PAGINA } from '@/hooks/solicitudes-cotizacion/query-key-solicitudes-panel'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useState } from 'react'
 import FiltrosSolicitudesEstudio, {
@@ -18,8 +19,6 @@ import KpiSolicitudesEstudio, {
 } from './kpi-solicitudes-estudio'
 import SheetDetalleSolicitud from './sheet-detalle-solicitud'
 import TablaSolicitudesEstudio from './tabla-solicitudes-estudio'
-
-const TAMANO_PAGINA = 15
 
 type PanelSolicitudesEstudioClientProps = {
 	initialData: ObtenerTodasSolicitudesCotizacionResponse
@@ -39,6 +38,7 @@ export default function PanelSolicitudesEstudioClient({
 	const {
 		data: respuesta,
 		isLoading,
+		isFetching,
 		error,
 	} = useObtenerTodasSolicitudesCotizacion(
 		{
@@ -109,7 +109,9 @@ export default function PanelSolicitudesEstudioClient({
 					<div className='p-3 sm:p-4'>
 						<TablaSolicitudesEstudio
 							solicitudes={solicitudes}
+							isFetching={isFetching}
 							onVerDetalle={setDetalleAbierto}
+							textoResaltado={textoBusqueda}
 						/>
 						<Paginacion
 							pagina={pagina}
