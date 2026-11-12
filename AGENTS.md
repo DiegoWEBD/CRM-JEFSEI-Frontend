@@ -15,6 +15,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **Tests**: `src/components/app-sidebar/nav/__tests__/nav.test.tsx` (matriz de visibilidad por rol) envuelve el render en `SidebarProvider`. `typecheck`, `lint`, `test` (367) y `build` en verde.
 - **Nota**: el `SidebarMenuSkeleton` oficial de shadcn llama `Math.random()` en render (viola `react-hooks/purity` de React 19); aquí el ancho pseudoaleatorio se deriva de `useId()`.
 
+**Fix sidebar mobile (`useIsMobile` sin valor inicial): DONE**
+
+- **Bug**: en la primera carga a viewport mobile el botón del header no abría el drawer. `useIsMobile` solo escuchaba el evento `change` de la media query y nunca calculaba el valor al montar: quedaba en `false`, se renderizaba el sidebar desktop (oculto en mobile) y `toggleSidebar` alternaba un estado invisible. Solo "arreglaba" al redimensionar cruzando 1024px (cuando por fin entraba el evento `change`).
+- **Fix**: `src/components/use-mobile/use-mobile.tsx` reescrito con `React.useSyncExternalStore` (`subscribe` = evento `change` de `matchMedia`, `getSnapshot` = `window.innerWidth < 1024`, `getServerSnapshot` = `false`). Valor correcto desde el primer render, seguro ante hidratación y elimina el lint `react-hooks/set-state-in-effect` que AGENTS.md documentaba en `use-mobile.tsx:14`.
+- **Breakpoints alineados**: las primitivas `src/components/sidebar/*` pasaron de `md:` (768px, estándar shadcn) a `lg:` (1024px, el breakpoint del hook y el comportamiento histórico del drawer): `sidebar.tsx` (`md:block`/`md:flex`/`peer-data-[variant=inset]`), `sidebar-menu.tsx` y `sidebar-group.tsx` (`md:after:hidden`, `md:opacity-0`). Sin parpadeo del sidebar desktop en 768–1023px antes de la hidratación.
+- **Tests**: `src/components/use-mobile/__tests__/use-mobile.test.tsx` con mock de `matchMedia` que emite `change` (el shim de `vitest.setup.ts` no emite eventos): primer render mobile/desktop y cruce de breakpoint al redimensionar.
+
 **Notificaciones / campana header + refresh por WebSocket: DONE**
 
 - **Tipos**: `src/types/notificaciones/notificacion.ts` (Notificacion, paginado, contador, responses, `TicketWebSocketResponse`, `EventoCanalNotificaciones`).
@@ -71,4 +78,4 @@ All components are built:
 
 **Pre-existing lint issues (not from our work)**:
 - `campos-condominio-registrar.tsx:35`: `@typescript-eslint/no-explicit-any`
-- `use-mobile.tsx:14`: `react-hooks/set-state-in-effect` (React 19 lint rule)
+- `use-mobile.tsx:14`: `react-hooks/set-state-in-effect` (React 19 lint rule) — **resuelto** al reescribir el hook con `useSyncExternalStore` (ver "Fix sidebar mobile")
