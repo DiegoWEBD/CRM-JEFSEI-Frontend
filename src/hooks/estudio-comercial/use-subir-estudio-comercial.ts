@@ -18,6 +18,10 @@ export const useSubirEstudioComercial = (solicitudId: number, idProspecto?: numb
       queryClient.invalidateQueries({
         queryKey: ['estudios-comerciales', solicitudId],
       })
+      // Refresca también el panel de cotizaciones y estudios emitidos.
+      queryClient.invalidateQueries({
+        queryKey: ['panel-estudios'],
+      })
       if (idProspecto) {
         queryClient.invalidateQueries({
           queryKey: ['procesos-comerciales', idProspecto],

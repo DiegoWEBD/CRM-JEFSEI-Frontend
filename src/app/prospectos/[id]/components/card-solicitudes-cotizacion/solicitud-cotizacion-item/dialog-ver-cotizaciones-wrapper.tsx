@@ -37,6 +37,7 @@ export default function DialogVerCotizacionesWrapper({
 		id_estudio: null,
 		vencimiento_mas_proximo: null,
 		estado: null,
+		cotizaciones: [],
 	}
 
 	return (

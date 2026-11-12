@@ -43,6 +43,7 @@ export default function DialogGenerarEstudioWrapper({
 		id_estudio: null,
 		vencimiento_mas_proximo: null,
 		estado: null,
+		cotizaciones: [],
 	}
 
 	return (

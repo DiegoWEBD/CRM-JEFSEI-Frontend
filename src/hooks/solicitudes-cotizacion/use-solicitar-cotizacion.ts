@@ -13,6 +13,10 @@ export const useSolicitarCotizacion = (idProspecto: number) => {
       queryClient.invalidateQueries({
         queryKey: ['solicitudes-cotizacion'],
       })
+      // Refresca también el panel de cotizaciones y estudios emitidos.
+      queryClient.invalidateQueries({
+        queryKey: ['panel-estudios'],
+      })
       queryClient.invalidateQueries({
         queryKey: ['procesos-comerciales', idProspecto],
       })

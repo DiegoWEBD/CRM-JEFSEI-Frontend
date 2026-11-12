@@ -16,6 +16,10 @@ export const useRegistrarCotizacion = (idSolicitud: number, idProspecto?: number
       queryClient.invalidateQueries({
         queryKey: ['solicitudes-cotizacion'],
       })
+      // Refresca también el panel de cotizaciones y estudios emitidos.
+      queryClient.invalidateQueries({
+        queryKey: ['panel-estudios'],
+      })
       if (idProspecto) {
         queryClient.invalidateQueries({
           queryKey: ['procesos-comerciales', idProspecto],

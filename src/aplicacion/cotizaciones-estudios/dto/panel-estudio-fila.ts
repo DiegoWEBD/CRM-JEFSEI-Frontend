@@ -1,5 +1,6 @@
 import type { EstadoCotizacionBackend } from '@/dominio/cotizacion/cotizacion'
 import type { Prioridad } from '@/types/prioridad/prioridad'
+import type { CotizacionResumen } from './cotizacion-resumen'
 
 export interface PanelEstudioFila {
 	id: number
@@ -15,4 +16,6 @@ export interface PanelEstudioFila {
 	estado: EstadoCotizacionBackend | null
 	tiene_estudio: boolean
 	id_estudio: number | null
+	/** Resumen de las cotizaciones de la solicitud, ya incluido por el backend. */
+	cotizaciones: CotizacionResumen[]
 }

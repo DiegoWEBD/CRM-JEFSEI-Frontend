@@ -177,10 +177,8 @@ export default function TablaCotizacionesEstudios({
                 </TableCell>
                 <TableCell className={cn(cellClass, 'p-1.5')}>
                   <VencimientoCell
-                    idSolicitud={f.id}
-                    cantidadCotizaciones={f.cantidad_cotizaciones}
+                    cotizaciones={f.cotizaciones}
                     vencimientoMasProximo={f.vencimiento_mas_proximo}
-                    estado={f.estado}
                   />
                 </TableCell>
                 <TableCell className={cn(cellClass, 'p-1.5')}>
