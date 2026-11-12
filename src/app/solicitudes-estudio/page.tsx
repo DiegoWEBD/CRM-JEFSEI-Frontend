@@ -1,11 +1,11 @@
-import PanelSolicitudesEstudioClient from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-client'
+import { PanelSolicitudesEstudioInner } from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-inner'
 import { PanelSolicitudesEstudioSkeleton } from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-skeleton'
 import { Suspense } from 'react'
 
-export default async function SolicitudesEstudioPage() {
+export default function SolicitudesEstudioPage() {
 	return (
 		<Suspense fallback={<PanelSolicitudesEstudioSkeleton />}>
-			<PanelSolicitudesEstudioClient />
+			<PanelSolicitudesEstudioInner />
 		</Suspense>
 	)
 }

@@ -9,8 +9,9 @@ export const useSolicitarCotizacion = (idProspecto: number) => {
     mutationFn: (request: SolicitudCotizacionUnionRequest) =>
       solicitarCotizacion(request),
     onSuccess: () => {
+      // Prefijo: refresca las listas por prospecto y el panel paginado.
       queryClient.invalidateQueries({
-        queryKey: ['solicitudes-cotizacion', idProspecto],
+        queryKey: ['solicitudes-cotizacion'],
       })
       queryClient.invalidateQueries({
         queryKey: ['procesos-comerciales', idProspecto],

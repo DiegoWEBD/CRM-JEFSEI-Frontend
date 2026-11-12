@@ -1,11 +1,15 @@
 'use client'
 
+import { ObtenerTodasSolicitudesCotizacionResponse } from '@/aplicacion/solicitudes-cotizacion/use-cases/obtener-todas-solicitudes-cotizacion/dto/obtener-todas-solicitudes-cotizacion-response'
+import Paginacion from '@/components/paginacion/paginacion'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { PanelSolicitudesEstudioSkeleton } from '@/components/paneles/solicitudes-estudio/panel-solicitudes-estudio-skeleton'
 import SolicitudCotizacionResumen from '@/dominio/solicitud-cotizacion-resumen/solicitud-cotizacion-resumen'
 import { useObtenerTodasSolicitudesCotizacion } from '@/hooks/solicitudes-cotizacion/use-obtener-todas-solicitudes-cotizacion'
-import { useMemo, useState } from 'react'
+import { useDebounce } from '@/hooks/use-debounce'
+import { useState } from 'react'
 import FiltrosSolicitudesEstudio, {
+	FILTROS_POR_DEFECTO,
 	TODOS,
 	type FiltrosSolicitudes,
 } from './filtros-solicitudes-estudio'
@@ -15,104 +19,54 @@ import KpiSolicitudesEstudio, {
 import SheetDetalleSolicitud from './sheet-detalle-solicitud'
 import TablaSolicitudesEstudio from './tabla-solicitudes-estudio'
 
-function resolverEstado(s: SolicitudCotizacionResumen): string {
-	if (!s.informacion_completa) return 'informacion_incompleta'
-	if (s.estudio_disponible) return 'estudio_emitido'
-	if (s.cantidad_cotizaciones > 0) return 'con_cotizaciones'
-	return 'lista_para_cotizar'
+const TAMANO_PAGINA = 15
+
+type PanelSolicitudesEstudioClientProps = {
+	initialData: ObtenerTodasSolicitudesCotizacionResponse
 }
 
-function buildConteos(
-	solicitudes: SolicitudCotizacionResumen[],
-): Record<string, number> {
-	const conteos: Record<string, number> = {
-		informacion_incompleta: 0,
-		lista_para_cotizar: 0,
-		con_cotizaciones: 0,
-		estudio_emitido: 0,
-	}
-	for (const s of solicitudes) {
-		const estado = resolverEstado(s)
-		conteos[estado] = (conteos[estado] ?? 0) + 1
-	}
-	return conteos
-}
-
-function solicitudMatchesBusqueda(
-	s: SolicitudCotizacionResumen,
-	q: string,
-): boolean {
-	if (!q) return true
-	const term = q.toLowerCase()
-	return (
-		s.nombre_riesgo.toLowerCase().includes(term) ||
-		s.ejecutivo_comercial.toLowerCase().includes(term) ||
-		s.producto.toLowerCase().includes(term)
-	)
-}
-
-function filaCoincideTarjeta(estado: string, tarjeta: TarjetaActiva): boolean {
-	if (tarjeta === 'todas') return true
-	return estado === tarjeta
-}
-
-export default function PanelSolicitudesEstudioClient() {
-	const {
-		data: solicitudes,
-		isLoading,
-		error,
-	} = useObtenerTodasSolicitudesCotizacion()
-
+export default function PanelSolicitudesEstudioClient({
+	initialData,
+}: PanelSolicitudesEstudioClientProps) {
 	const [detalleAbierto, setDetalleAbierto] =
 		useState<SolicitudCotizacionResumen | null>(null)
-
-	const [tarjetaActiva, setTarjetaActiva] = useState<TarjetaActiva>('todas')
+	const [pagina, setPagina] = useState(1)
 	const [filtros, setFiltros] = useState<FiltrosSolicitudes>({
-		busqueda: '',
-		estado: TODOS,
-		prioridad: TODOS,
-		ejecutivo: TODOS,
-		linea: TODOS,
+		...FILTROS_POR_DEFECTO,
 	})
+	const textoBusqueda = useDebounce(filtros.busqueda, 300)
 
-	const conteos = useMemo(
-		() => (solicitudes ? buildConteos(solicitudes) : {}),
-		[solicitudes],
+	const {
+		data: respuesta,
+		isLoading,
+		error,
+	} = useObtenerTodasSolicitudesCotizacion(
+		{
+			textoBusqueda,
+			estado: filtros.estado === TODOS ? '' : filtros.estado,
+			prioridad: filtros.prioridad === TODOS ? '' : filtros.prioridad,
+			rutUsuario: filtros.rutUsuario,
+			pagina,
+			tamanoPagina: TAMANO_PAGINA,
+		},
+		initialData,
 	)
 
-	const opcionesEjecutivo = useMemo(
-		() =>
-			solicitudes
-				? [...new Set(solicitudes.map(s => s.ejecutivo_comercial))].sort()
-				: [],
-		[solicitudes],
-	)
+	const actualizarFiltros = (nuevos: FiltrosSolicitudes) => {
+		setFiltros(nuevos)
+		setPagina(1)
+	}
 
-	const opcionesLinea = useMemo(
-		() =>
-			solicitudes ? [...new Set(solicitudes.map(s => s.producto))].sort() : [],
-		[solicitudes],
-	)
+	const tarjetaActiva: TarjetaActiva =
+		filtros.estado === TODOS ? 'todas' : (filtros.estado as TarjetaActiva)
 
-	const listaFiltrada = useMemo(() => {
-		if (!solicitudes) return []
-		const rows = solicitudes.filter(s => {
-			if (!solicitudMatchesBusqueda(s, filtros.busqueda)) return false
-			const estado = resolverEstado(s)
-			if (!filaCoincideTarjeta(estado, tarjetaActiva)) return false
-			if (filtros.estado !== TODOS && estado !== filtros.estado) return false
-			if (filtros.prioridad !== TODOS && s.prioridad !== filtros.prioridad)
-				return false
-			if (
-				filtros.ejecutivo !== TODOS &&
-				s.ejecutivo_comercial !== filtros.ejecutivo
-			)
-				return false
-			if (filtros.linea !== TODOS && s.producto !== filtros.linea) return false
-			return true
+	// El KPI ya resuelve el alternado: entrega la tarjeta resultante.
+	const onToggleTarjeta = (key: TarjetaActiva) => {
+		actualizarFiltros({
+			...filtros,
+			estado: key === 'todas' ? TODOS : key,
 		})
-		return rows
-	}, [solicitudes, filtros, tarjetaActiva])
+	}
 
 	if (isLoading) return <PanelSolicitudesEstudioSkeleton />
 	if (error)
@@ -124,31 +78,43 @@ export default function PanelSolicitudesEstudioClient() {
 			</div>
 		)
 
+	const solicitudes = respuesta?.data ?? []
+
 	return (
 		<>
 			<PanelLayout>
 				<KpiSolicitudesEstudio
-					conteos={conteos}
+					contadores={
+						respuesta?.contadores ?? {
+							informacion_incompleta: 0,
+							listas_para_cotizar: 0,
+							cotizaciones_emitidas: 0,
+							estudios_emitidos: 0,
+						}
+					}
 					tarjetaActiva={tarjetaActiva}
-					onToggleTarjeta={setTarjetaActiva}
+					onToggleTarjeta={onToggleTarjeta}
 				/>
 
 				<section className='overflow-hidden rounded-lg border border-border bg-card shadow-none'>
 					<div className='border-b border-border/80 p-3 sm:p-4'>
 						<FiltrosSolicitudesEstudio
 							filtros={filtros}
-							onChange={setFiltros}
-							opcionesEjecutivo={opcionesEjecutivo}
-							opcionesLinea={opcionesLinea}
-							total={solicitudes?.length ?? 0}
-							filtrados={listaFiltrada.length}
+							onChange={actualizarFiltros}
+							total={respuesta?.total ?? 0}
+							filtrados={solicitudes.length}
 						/>
 					</div>
 
 					<div className='p-3 sm:p-4'>
 						<TablaSolicitudesEstudio
-							solicitudes={listaFiltrada}
+							solicitudes={solicitudes}
 							onVerDetalle={setDetalleAbierto}
+						/>
+						<Paginacion
+							pagina={pagina}
+							totalPaginas={respuesta?.total_paginas ?? 1}
+							onPaginaChange={setPagina}
 						/>
 					</div>
 				</section>

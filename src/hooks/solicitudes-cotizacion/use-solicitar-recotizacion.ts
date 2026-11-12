@@ -2,15 +2,16 @@ import { solicitarRecotizacion } from '@/aplicacion/solicitudes-cotizacion/use-c
 import { SolicitudCotizacionUnionRequest } from '@/aplicacion/solicitudes-cotizacion/use-cases/solicitar-cotizacion/dto/solicitud-cotizacion-union-request'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-export const useSolicitarRecotizacion = (idSolicitud: number, idProspecto: number) => {
+export const useSolicitarRecotizacion = (idSolicitud: number) => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (request: SolicitudCotizacionUnionRequest) =>
       solicitarRecotizacion(idSolicitud, request),
     onSuccess: () => {
+      // Prefijo: refresca las listas por prospecto y el panel paginado.
       queryClient.invalidateQueries({
-        queryKey: ['solicitudes-cotizacion', idProspecto],
+        queryKey: ['solicitudes-cotizacion'],
       })
     },
   })

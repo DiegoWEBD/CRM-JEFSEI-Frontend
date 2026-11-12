@@ -49,7 +49,10 @@ export default function FiltroUsuario({
 				value={value || '__all__'}
 				onValueChange={v => onChange(v === '__all__' ? '' : v)}
 			>
-				<SelectTrigger className='h-9 w-full text-xs shadow-none'>
+				<SelectTrigger
+					aria-label='Usuario'
+					className='h-9 w-full text-xs shadow-none'
+				>
 					<SelectValue placeholder='Todos los usuarios' />
 				</SelectTrigger>
 				<SelectContent>

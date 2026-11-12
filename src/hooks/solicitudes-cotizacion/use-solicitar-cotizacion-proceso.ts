@@ -14,6 +14,10 @@ export const useSolicitarCotizacionProceso = (idProceso: number, idProspecto: nu
       return response.data
     },
     onSuccess: () => {
+      // Prefijo: refresca las listas por prospecto y el panel paginado.
+      queryClient.invalidateQueries({
+        queryKey: ['solicitudes-cotizacion'],
+      })
       queryClient.invalidateQueries({
         queryKey: ['solicitudes-proceso', idProceso],
       })

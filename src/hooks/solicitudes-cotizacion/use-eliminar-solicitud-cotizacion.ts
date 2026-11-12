@@ -13,10 +13,11 @@ export const useEliminarSolicitudCotizacion = (
 			eliminarSolicitudCotizacion(idSolicitud),
 		onSuccess: (data) => {
 			toast.success(data?.message ?? 'Solicitud de cotización eliminada')
+			// Prefijo: refresca las listas por prospecto y el panel paginado.
+			queryClient.invalidateQueries({
+				queryKey: ['solicitudes-cotizacion'],
+			})
 			if (idProspecto) {
-				queryClient.invalidateQueries({
-					queryKey: ['solicitudes-cotizacion', idProspecto],
-				})
 				queryClient.invalidateQueries({
 					queryKey: ['procesos-comerciales', idProspecto],
 				})
