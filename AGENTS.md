@@ -6,6 +6,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current Summary
 
+**Sidebar migrado a shadcn/ui (`SidebarProvider` + `Sidebar`): DONE**
+
+- **Primitivas**: `src/components/sidebar/` ahora contiene el sidebar de shadcn (Tailwind v4): `sidebar.tsx` (`SidebarProvider`, `useSidebar`, `Sidebar`, `SidebarInset` + constantes), `sidebar-trigger.tsx`, `sidebar-rail.tsx`, `sidebar-header/-content/-footer/-separator/-input.tsx`, `sidebar-group.tsx`, `sidebar-menu.tsx` (con `sidebarMenuButtonVariants`) y barrel `index.ts`. Compone los primitivos existentes (`sheet`, `tooltip`, `separator`, `button`, `input`, `skeleton`, `use-mobile`); sin dependencias nuevas.
+- **Sidebar de la app**: `src/components/app-sidebar/` — `app-sidebar.tsx` (SSR, lee roles de la sesión), `app-sidebar-client/app-sidebar-client.tsx` (branding "IB"/"CRM JEFSEI" + `Nav` + footer "Contraer/Expandir" + `SidebarRail`, `collapsible='icon'` = mini-rail con tooltips). `nav/nav.tsx` conserva la matriz de secciones/roles tal cual y renderiza con `SidebarGroup`/`SidebarMenu`; `nav/nav-element.tsx` usa `SidebarMenuButton isActive` (tooltip automático en modo icon) y `setOpenMobile(false)` al navegar.
+- **Estado**: eliminado `src/global_states/sidebar-store.ts` (zustand + rehidratación). Ahora vive en `SidebarProvider`: cookie `sidebar_state` (persistencia; `defaultOpen` leído en `app-layout.tsx` con `cookies()`), atajo **Ctrl+B**, drawer móvil con `Sheet`. `toggle-sidebar-button.tsx` usa `useSidebar().toggleSidebar` (conserva el ícono `Menu` del header).
+- **Layout**: `app-layout.tsx` envuelve todo en `SidebarProvider` + `SidebarInset` (este es ahora el único `<main>`; `main-content-layout.tsx` quedó como `div` contenedor con scroll). Tokens `--sidebar-width: 16rem` / `--sidebar-width-icon: 3rem` en `globals.css`.
+- **Tests**: `src/components/app-sidebar/nav/__tests__/nav.test.tsx` (matriz de visibilidad por rol) envuelve el render en `SidebarProvider`. `typecheck`, `lint`, `test` (367) y `build` en verde.
+- **Nota**: el `SidebarMenuSkeleton` oficial de shadcn llama `Math.random()` en render (viola `react-hooks/purity` de React 19); aquí el ancho pseudoaleatorio se deriva de `useId()`.
+
 **Notificaciones / campana header + refresh por WebSocket: DONE**
 
 - **Tipos**: `src/types/notificaciones/notificacion.ts` (Notificacion, paginado, contador, responses, `TicketWebSocketResponse`, `EventoCanalNotificaciones`).

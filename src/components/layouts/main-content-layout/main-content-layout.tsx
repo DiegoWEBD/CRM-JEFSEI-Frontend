@@ -11,14 +11,14 @@ const MainContentLayout = ({
 }: MainContentLayoutProps) => {
 	if (bare) {
 		return (
-			<main className={`flex-1 overflow-auto ${className}`}>{children}</main>
+			<div className={`flex-1 overflow-auto ${className}`}>{children}</div>
 		)
 	}
 
 	return (
-		<main className={`flex-1 overflow-auto ${className}`}>
+		<div className={`flex-1 overflow-auto ${className}`}>
 			<div className='mx-auto w-full max-w-[1600px] p-3 lg:p-8'>{children}</div>
-		</main>
+		</div>
 	)
 }
 

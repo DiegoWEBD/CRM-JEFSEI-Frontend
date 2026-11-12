@@ -17,6 +17,12 @@ import {
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
+import {
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarMenu,
+} from '@/components/sidebar'
 import NavElement from './nav-element'
 
 const ROLES_GERENTE = [
@@ -177,28 +183,30 @@ type NavProps = {
 
 const Nav = ({ roles }: NavProps) => {
 	return (
-		<nav aria-label='Navegación principal' className='px-2'>
-			<ul className='flex flex-col gap-1'>
-				{SECCIONES.map(seccion => {
-					const items = seccion.items.filter(i => i.visible(roles))
-					if (items.length === 0) return null
-					return (
-						<li key={seccion.titulo} className='flex flex-col gap-0.5'>
-							<p className='px-3 pt-4 pb-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground/80 select-none group-data-[mode=collapsed]/sidebar:hidden'>
-								{seccion.titulo}
-							</p>
-							{items.map(item => (
-								<NavElement
-									key={item.href}
-									href={item.href}
-									icono={<item.icono className='size-4.5' />}
-									titulo={item.titulo}
-								/>
-							))}
-						</li>
-					)
-				})}
-			</ul>
+		<nav aria-label='Navegación principal'>
+			{SECCIONES.map(seccion => {
+				const items = seccion.items.filter(i => i.visible(roles))
+				if (items.length === 0) return null
+				return (
+					<SidebarGroup key={seccion.titulo}>
+						<SidebarGroupLabel className='font-semibold uppercase tracking-[0.08em] text-muted-foreground/80'>
+							{seccion.titulo}
+						</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<SidebarMenu>
+								{items.map(item => (
+									<NavElement
+										key={item.href}
+										href={item.href}
+										icono={<item.icono className='size-4' />}
+										titulo={item.titulo}
+									/>
+								))}
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				)
+			})}
 		</nav>
 	)
 }

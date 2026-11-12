@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
+import { SidebarProvider } from '@/components/sidebar'
 import Nav from '../nav'
 
 vi.mock('next/navigation', () => ({
@@ -25,7 +26,11 @@ const EVALUACION = ['Solicitudes de cotización', 'Cotizaciones emitidas'] as co
 const VISIBLES_PARA_TODOS = ['Inicio', 'Pólizas'] as const
 
 function visibles(roles: string[]): string[] {
-	render(<Nav roles={roles} />)
+	render(
+		<SidebarProvider>
+			<Nav roles={roles} />
+		</SidebarProvider>,
+	)
 	return screen.getAllByRole('link').map(l => l.textContent ?? '')
 }
 
