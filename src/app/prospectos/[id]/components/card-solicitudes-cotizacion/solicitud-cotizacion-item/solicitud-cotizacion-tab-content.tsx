@@ -322,32 +322,36 @@ export default function SolicitudCotizacionTabContent({
 												</Badge>
 											)}
 											{usuario?.rut === ejecutivoEvaluacionRut && (
-												<PermissionGuard
-													allowedPermissions={[
-														'ACTUALIZAR_COTIZACION',
-														'ELIMINAR_COTIZACION',
-													]}
-												>
-													<Button
-														type='button'
-														variant='ghost'
-														size='icon-sm'
-														onClick={() => setCotizacionAEditar(cotizacion)}
-														aria-label='Editar cotización'
+												<>
+													<PermissionGuard
+														allowedPermissions={['ACTUALIZAR_COTIZACION']}
 													>
-														<Pencil className='h-3.5 w-3.5' />
-													</Button>
-													<Button
-														type='button'
-														variant='ghost'
-														size='icon-sm'
-														onClick={() => setCotizacionAEliminar(cotizacion)}
-														aria-label='Eliminar cotización'
-														className='text-destructive hover:text-destructive'
+														<Button
+															type='button'
+															variant='ghost'
+															size='icon-sm'
+															onClick={() => setCotizacionAEditar(cotizacion)}
+															aria-label='Editar cotización'
+														>
+															<Pencil className='h-3.5 w-3.5' />
+														</Button>
+													</PermissionGuard>
+
+													<PermissionGuard
+														allowedPermissions={['ELIMINAR_COTIZACION']}
 													>
-														<Trash2 className='h-3.5 w-3.5' />
-													</Button>
-												</PermissionGuard>
+														<Button
+															type='button'
+															variant='ghost'
+															size='icon-sm'
+															onClick={() => setCotizacionAEliminar(cotizacion)}
+															aria-label='Eliminar cotización'
+															className='text-destructive hover:text-destructive'
+														>
+															<Trash2 className='h-3.5 w-3.5' />
+														</Button>
+													</PermissionGuard>
+												</>
 											)}
 										</div>
 									</div>

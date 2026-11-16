@@ -21,6 +21,8 @@ const GESTION = [
 
 const SOLO_GERENCIA = ['Parámetros de condominios'] as const
 
+const SOLO_ADMIN_ROLES = ['Roles y permisos'] as const
+
 const EVALUACION = ['Solicitudes de cotización', 'Cotizaciones emitidas'] as const
 
 const VISIBLES_PARA_TODOS = ['Inicio', 'Pólizas'] as const
@@ -48,7 +50,7 @@ describe('Nav — visibilidad del menú por rol', () => {
 		expect(nombres).toEqual(
 			expect.arrayContaining([...VISIBLES_PARA_TODOS, 'Prospectos', 'Administradores']),
 		)
-		for (const oculto of [...GESTION, ...SOLO_GERENCIA, ...EVALUACION]) {
+		for (const oculto of [...GESTION, ...SOLO_GERENCIA, ...SOLO_ADMIN_ROLES, ...EVALUACION]) {
 			expect(nombres).not.toContain(oculto)
 		}
 	})
@@ -79,24 +81,27 @@ describe('Nav — visibilidad del menú por rol', () => {
 	it('el gerente general ve la totalidad de las secciones', () => {
 		const nombres = visibles(['GERENTE_GENERAL'])
 
-		for (const item of [...GESTION, ...SOLO_GERENCIA, ...EVALUACION]) {
+		for (const item of [...GESTION, ...SOLO_GERENCIA, ...SOLO_ADMIN_ROLES, ...EVALUACION]) {
 			expect(nombres).toContain(item)
 		}
 	})
 
-	it('el gerente de operaciones administra productos y auditoría pero no parámetros de condominios', () => {
+	it('el gerente de operaciones administra productos y auditoría pero no parámetros de condominios ni roles', () => {
 		const nombres = visibles(['GERENTE_OPERACIONES'])
 
 		for (const item of ['Productos', 'Auditoría', 'Sesiones']) {
 			expect(nombres).toContain(item)
 		}
 		expect(nombres).not.toContain('Parámetros de condominios')
+		for (const oculto of SOLO_ADMIN_ROLES) {
+			expect(nombres).not.toContain(oculto)
+		}
 	})
 
 	it('el rol desarrollador tiene el mismo alcance que la gerencia', () => {
 		const nombres = visibles(['DESARROLLADOR'])
 
-		for (const item of [...GESTION, ...SOLO_GERENCIA, ...EVALUACION]) {
+		for (const item of [...GESTION, ...SOLO_GERENCIA, ...SOLO_ADMIN_ROLES, ...EVALUACION]) {
 			expect(nombres).toContain(item)
 		}
 	})
@@ -112,5 +117,8 @@ describe('Nav — visibilidad del menú por rol', () => {
 
 		expect(nombres).toContain('Configuración de estados')
 		expect(nombres).toContain('Solicitudes de cotización')
+		for (const oculto of SOLO_ADMIN_ROLES) {
+			expect(nombres).not.toContain(oculto)
+		}
 	})
 })
