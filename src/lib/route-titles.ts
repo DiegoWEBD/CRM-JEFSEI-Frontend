@@ -10,6 +10,7 @@ import {
 	LayoutDashboard,
 	Package,
 	ScrollText,
+	ShieldCheck,
 	SlidersHorizontal,
 	Users,
 	type LucideIcon,
@@ -59,6 +60,7 @@ export const RUTAS_PRINCIPALES: RouteMeta[] = [
 		titulo: 'Compañías de seguros',
 		icono: Landmark,
 	},
+	{ href: '/roles-permisos', titulo: 'Roles y permisos', icono: ShieldCheck },
 	{
 		href: '/configuracion-estados',
 		titulo: 'Configuración de estados',

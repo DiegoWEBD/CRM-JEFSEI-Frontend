@@ -13,6 +13,7 @@ import {
 	Monitor,
 	Package,
 	ScrollText,
+	ShieldCheck,
 	SlidersHorizontal,
 	Users,
 	type LucideIcon,
@@ -160,6 +161,13 @@ const SECCIONES: NavSection[] = [
 							'DESARROLLADOR',
 						].includes(c),
 					),
+			},
+			{
+				href: '/roles-permisos',
+				icono: ShieldCheck,
+				titulo: 'Roles y permisos',
+				visible: r =>
+					r.some(c => ['GERENTE_GENERAL', 'DESARROLLADOR'].includes(c)),
 			},
 			{
 				href: '/companies-seguros',
