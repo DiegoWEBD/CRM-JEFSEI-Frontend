@@ -1,6 +1,7 @@
 export interface PermisoJson {
 	codigo: string
 	descripcion: string
+	nombre: string
 }
 
 export interface RolConPermisosJson {

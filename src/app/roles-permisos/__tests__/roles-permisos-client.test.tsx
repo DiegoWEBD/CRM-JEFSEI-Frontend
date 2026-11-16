@@ -47,19 +47,27 @@ const ROLES = [
 	{
 		codigo: 'GERENTE_GENERAL',
 		nombre: 'Gerente General',
-		permisos: [{ codigo: 'ADMINISTRAR_ROLES', descripcion: 'Administrar roles' }],
+		permisos: [
+			{
+				codigo: 'ADMINISTRAR_ROLES',
+				descripcion: 'Administrar roles',
+				nombre: 'Administrar roles',
+			},
+		],
 	},
 	{
 		codigo: 'EJECUTIVO_COMERCIAL',
 		nombre: 'Ejecutivo Comercial',
-		permisos: [{ codigo: 'VER_ALERTAS', descripcion: 'Ver alertas' }],
+		permisos: [
+			{ codigo: 'VER_ALERTAS', descripcion: 'Ver alertas', nombre: 'Ver alertas' },
+		],
 	},
 ]
 
 const PERMISOS = [
-	{ codigo: 'ADMINISTRAR_ROLES', descripcion: 'Administrar roles' },
-	{ codigo: 'VER_ALERTAS', descripcion: 'Ver alertas' },
-	{ codigo: 'OBTENER_ROLES', descripcion: 'Obtener roles' },
+	{ codigo: 'ADMINISTRAR_ROLES', descripcion: 'Administrar roles', nombre: 'Administrar roles' },
+	{ codigo: 'VER_ALERTAS', descripcion: 'Ver alertas', nombre: 'Ver alertas' },
+	{ codigo: 'OBTENER_ROLES', descripcion: 'Obtener roles', nombre: 'Obtener roles' },
 ]
 
 function usuarioFixture(): Usuario {

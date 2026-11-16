@@ -41,7 +41,9 @@ export default function ChecklistPermisos({
 
 	const texto = textoBusqueda.toLowerCase()
 	const permisosFiltrados = (permisos ?? []).filter((permiso: PermisoJson) =>
-		`${permiso.codigo} ${permiso.descripcion}`.toLowerCase().includes(texto),
+		`${permiso.codigo} ${permiso.nombre} ${permiso.descripcion}`
+			.toLowerCase()
+			.includes(texto),
 	)
 
 	const hayCambios = useMemo(() => {
@@ -80,8 +82,8 @@ export default function ChecklistPermisos({
 		<>
 			<div className='flex flex-wrap items-center justify-between gap-2'>
 				<p className='text-xs text-muted-foreground'>
-					{seleccionados.size} de {permisos?.length ?? 0} permisos asignados
-					a <strong>{rol.nombre}</strong>
+					{seleccionados.size} de {permisos?.length ?? 0} permisos asignados a{' '}
+					<strong>{rol.nombre}</strong>
 				</p>
 
 				<Button
@@ -121,7 +123,7 @@ export default function ChecklistPermisos({
 									className='min-w-0 cursor-pointer'
 								>
 									<p className='text-xs font-medium text-foreground'>
-										{permiso.codigo}
+										{permiso.nombre}
 									</p>
 									<p className='text-xs text-muted-foreground'>
 										{permiso.descripcion}
