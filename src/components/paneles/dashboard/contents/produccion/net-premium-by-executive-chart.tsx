@@ -1,20 +1,36 @@
-'use client'
+import {
+  QueryClient,
+  dehydrate,
+  HydrationBoundary,
+} from '@tanstack/react-query'
+import { consultarPrimaPorEjecutivo } from '@/aplicacion/metricas/consultas-dashboard'
+import { clavePrimaPorEjecutivo } from '@/hooks/metricas/query-keys-metricas'
+import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import NetPremiumByExecutiveChartClient from './net-premium-by-executive-chart-client'
 
-import { ProductionHorizontalBarChart } from './production-horizontal-bar-chart'
-import { ItemValor } from '@/aplicacion/dashboard-gerente/use-cases/obtener-metricas-dashboard-gerente/dto/metricas-dashboard-gerente-json'
-
-type NetPremiumByExecutiveChartProps = {
-  data: ItemValor[]
+/**
+ * Prima por ejecutivo: prefetch SSR de la métrica `prima-por-ejecutivo`.
+ *
+ * La queryKey debe calzar exactamente con la de `usePrimaPorEjecutivo` para
+ * que la hidratación sea efectiva y no se dispare un segundo fetch. Al
+ * cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
+ */
+export default async function NetPremiumByExecutiveChart({
+  className,
+}: {
   className?: string
-}
+}) {
+  const filtros = filtrosInicialesDashboard()
+  const queryClient = new QueryClient()
 
-export default function NetPremiumByExecutiveChart({ data, className }: NetPremiumByExecutiveChartProps) {
+  await queryClient.prefetchQuery({
+    queryKey: clavePrimaPorEjecutivo(filtros),
+    queryFn: () => consultarPrimaPorEjecutivo(filtros.mes, filtros.year),
+  })
+
   return (
-    <ProductionHorizontalBarChart
-      title='Prima por ejecutivo'
-      items={data}
-      className={className}
-      axisWidth={88}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NetPremiumByExecutiveChartClient className={className} />
+    </HydrationBoundary>
   )
 }

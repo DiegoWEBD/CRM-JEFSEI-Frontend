@@ -1,47 +1,32 @@
-import { TrendingDown, TrendingUp } from 'lucide-react'
-import { Card, CardContent } from '@/components/card'
-import { cn } from '@/lib/utils'
+import {
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
+} from '@tanstack/react-query'
+import { consultarPrimaNetaMensual } from '@/aplicacion/metricas/consultas-dashboard'
+import { clavePrimaNetaMensual } from '@/hooks/metricas/query-keys-metricas'
+import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import MonthlyNetPremiumCardClient from './monthly-net-premium-card-client'
 
-type MonthlyNetPremiumCardProps = {
-	totalPrimaNeta: number
-	variacionMesAnterior: number
-	mesLabel: string
-}
+/**
+ * Prima neta mensual: prefetch SSR de la métrica `prima-neta-mensual`.
+ *
+ * La queryKey debe calzar exactamente con la de `usePrimaNetaMensual` para
+ * que la hidratación sea efectiva y no se dispare un segundo fetch. Al
+ * cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
+ */
+export default async function MonthlyNetPremiumCard() {
+	const filtros = filtrosInicialesDashboard()
+	const queryClient = new QueryClient()
 
-export default function MonthlyNetPremiumCard({
-	totalPrimaNeta,
-	variacionMesAnterior,
-	mesLabel,
-}: MonthlyNetPremiumCardProps) {
-	const positiva = variacionMesAnterior >= 0
+	await queryClient.prefetchQuery({
+		queryKey: clavePrimaNetaMensual(filtros),
+		queryFn: () => consultarPrimaNetaMensual(filtros.mes, filtros.year),
+	})
 
 	return (
-		<Card className='border-border bg-card shadow-none'>
-			<CardContent className='p-3.5'>
-				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-					Prima neta mensual
-				</p>
-				<p className='mt-1 text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-[1.75rem]'>
-					{totalPrimaNeta.toLocaleString('es-CL')} UF
-				</p>
-				<p className='mt-0.5 text-xs text-muted-foreground'>{mesLabel}</p>
-				<p
-					className={cn(
-						'mt-1.5 inline-flex items-center gap-0.5 text-xs',
-						positiva
-							? 'text-emerald-700 dark:text-emerald-300'
-							: 'text-amber-700 dark:text-amber-300',
-					)}
-				>
-					{positiva ? (
-						<TrendingUp className='h-2.5 w-2.5' aria-hidden />
-					) : (
-						<TrendingDown className='h-2.5 w-2.5' aria-hidden />
-					)}
-					{positiva ? '+' : ''}
-					{variacionMesAnterior.toFixed(1)}% vs. mes anterior
-				</p>
-			</CardContent>
-		</Card>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<MonthlyNetPremiumCardClient />
+		</HydrationBoundary>
 	)
 }

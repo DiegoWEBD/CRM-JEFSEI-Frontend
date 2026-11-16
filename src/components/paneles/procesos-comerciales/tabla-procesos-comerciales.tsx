@@ -9,6 +9,7 @@ import { SEMAFORO_VARIANT } from '@/lib/badge-variants'
 import { formatearDiasHoras } from '@/lib/formatos/formatear-dias-horas'
 import { cn } from '@/lib/utils'
 import { SkeletonTabla } from './skeleton-tabla'
+import { resaltarTexto } from '@/lib/resaltar-texto'
 
 const PRIORIDAD_ORDER: Record<string, number> = {
 	ROJO: 0,
@@ -38,6 +39,7 @@ type TablaProcesosComercialesProps = {
 	pagina: number
 	totalPaginas: number
 	onPaginaChange: (pagina: number) => void
+	textoResaltado?: string
 }
 
 export default function TablaProcesosComerciales({
@@ -47,6 +49,7 @@ export default function TablaProcesosComerciales({
 	pagina,
 	totalPaginas,
 	onPaginaChange,
+	textoResaltado,
 }: TablaProcesosComercialesProps) {
 	if (isFetching) {
 		return <SkeletonTabla />
@@ -191,11 +194,11 @@ export default function TablaProcesosComerciales({
 								>
 									<td className='px-4 py-2.5'>
 										<p className='font-semibold text-foreground truncate max-w-50'>
-											{f.proceso.nombre_cliente}
+											{resaltarTexto(f.proceso.nombre_cliente, textoResaltado)}
 										</p>
 										<div className='flex items-center gap-1.5 min-w-0'>
 											<p className='text-xs text-muted-foreground truncate max-w-50'>
-												{f.proceso.producto}
+												{resaltarTexto(f.proceso.producto, textoResaltado)}
 											</p>
 											{f.proceso.renovacion ? (
 												<Badge
@@ -208,7 +211,12 @@ export default function TablaProcesosComerciales({
 										</div>
 									</td>
 									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-35'>
-										{f.proceso.ejecutivo_comercial?.nombre ?? '—'}
+										{f.proceso.ejecutivo_comercial?.nombre
+											? resaltarTexto(
+													f.proceso.ejecutivo_comercial.nombre,
+													textoResaltado,
+												)
+											: '—'}
 									</td>
 									<td className='px-4 py-2.5 text-xs text-foreground truncate max-w-30'>
 										{f.proceso.etapa_actual.nombre}

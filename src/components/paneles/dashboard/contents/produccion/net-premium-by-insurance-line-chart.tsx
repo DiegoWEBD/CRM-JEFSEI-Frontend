@@ -1,20 +1,36 @@
-'use client'
+import {
+  QueryClient,
+  dehydrate,
+  HydrationBoundary,
+} from '@tanstack/react-query'
+import { consultarPrimaPorRamo } from '@/aplicacion/metricas/consultas-dashboard'
+import { clavePrimaPorRamo } from '@/hooks/metricas/query-keys-metricas'
+import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import NetPremiumByInsuranceLineChartClient from './net-premium-by-insurance-line-chart-client'
 
-import { ProductionHorizontalBarChart } from './production-horizontal-bar-chart'
-import { ItemValor } from '@/aplicacion/dashboard-gerente/use-cases/obtener-metricas-dashboard-gerente/dto/metricas-dashboard-gerente-json'
-
-type NetPremiumByInsuranceLineChartProps = {
-  data: ItemValor[]
+/**
+ * Prima por línea de seguros: prefetch SSR de la métrica `prima-por-ramo`.
+ *
+ * La queryKey debe calzar exactamente con la de `usePrimaPorRamo` para que
+ * la hidratación sea efectiva y no se dispare un segundo fetch. Al cambiar
+ * mes/año la versión cliente hace refetch (la queryKey cambia).
+ */
+export default async function NetPremiumByInsuranceLineChart({
+  className,
+}: {
   className?: string
-}
+}) {
+  const filtros = filtrosInicialesDashboard()
+  const queryClient = new QueryClient()
 
-export default function NetPremiumByInsuranceLineChart({ data, className }: NetPremiumByInsuranceLineChartProps) {
+  await queryClient.prefetchQuery({
+    queryKey: clavePrimaPorRamo(filtros),
+    queryFn: () => consultarPrimaPorRamo(filtros.mes, filtros.year),
+  })
+
   return (
-    <ProductionHorizontalBarChart
-      title='Prima por línea de seguros'
-      items={data}
-      className={className}
-      axisWidth={100}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NetPremiumByInsuranceLineChartClient className={className} />
+    </HydrationBoundary>
   )
 }
