@@ -1,3 +1,4 @@
+import type { FiltrosDashboard } from '@/lib/filtros-dashboard'
 import { DashboardSectionHeading } from './shared/dashboard-section-heading'
 import EstimatedPotentialPremiumCard from './contents/pipeline-oportunidades/estimated-potential-premium-card'
 import ExpectedPremiumCard from './contents/pipeline-oportunidades/expected-premium-card'
@@ -17,9 +18,11 @@ import MonthlyNetPremiumCard from './contents/produccion/monthly-net-premium-car
 export default function DashboardKpisRow({
 	tipo,
 	prefetch = true,
+	filtros,
 }: {
 	tipo: 'pipeline' | 'produccion'
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	return (
 		<section className='space-y-3 pt-1' aria-label='Indicadores clave'>
@@ -47,8 +50,8 @@ export default function DashboardKpisRow({
 					</>
 				) : (
 					<>
-						<MonthlyNetPremiumCard prefetch={prefetch} />
-						<MonthlyComisionCard prefetch={prefetch} />
+						<MonthlyNetPremiumCard prefetch={prefetch} filtros={filtros} />
+						<MonthlyComisionCard prefetch={prefetch} filtros={filtros} />
 					</>
 				)}
 			</div>

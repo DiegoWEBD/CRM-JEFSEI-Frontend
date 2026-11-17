@@ -65,6 +65,21 @@ describe('DashboardTabs — pestañas del dashboard', () => {
 		expect(replaceStateSpy).toHaveBeenCalledWith(null, '', '?tab=produccion')
 	})
 
+	it('cambiar de pestaña preserva mes y year en la URL', () => {
+		window.history.replaceState(null, '', '/?tab=pipeline&mes=5&year=2026')
+		const replaceStateSpy = vi.spyOn(window.history, 'replaceState')
+
+		render(arbol())
+
+		fireEvent.mouseDown(screen.getByRole('tab', { name: /producción comercial/i }))
+
+		expect(replaceStateSpy).toHaveBeenCalledWith(
+			null,
+			'',
+			'?tab=produccion&mes=5&year=2026',
+		)
+	})
+
 	it('al re-renderizar con la nueva URL monta el contenido de la otra pestaña', () => {
 		const view = render(arbol())
 

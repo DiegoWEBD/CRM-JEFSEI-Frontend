@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarTendenciaAnual } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveTendenciaAnual } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import MonthlyNetPremiumTrendChartClient from './monthly-net-premium-trend-chart-client'
 
 /**
@@ -19,13 +19,14 @@ import MonthlyNetPremiumTrendChartClient from './monthly-net-premium-trend-chart
 export default async function MonthlyNetPremiumTrendChart({
 	className,
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	className?: string
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <MonthlyNetPremiumTrendChartClient className={className} />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

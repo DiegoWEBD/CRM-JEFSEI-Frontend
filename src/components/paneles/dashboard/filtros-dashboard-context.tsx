@@ -2,12 +2,14 @@
 
 import {
 	createContext,
+	useCallback,
 	useContext,
 	useMemo,
 	useState,
 	type ReactNode,
 } from 'react'
 import type { FiltrosDashboard } from '@/lib/filtros-dashboard'
+import { actualizarUrlDashboard } from '@/lib/url-dashboard'
 
 type FiltrosDashboardContextValue = FiltrosDashboard & {
 	setMes: (mes: number) => void
@@ -32,12 +34,31 @@ export function FiltrosDashboardProvider({
 	filtrosIniciales: FiltrosDashboard
 	children: ReactNode
 }) {
-	const [mes, setMes] = useState(filtrosIniciales.mes)
-	const [year, setYear] = useState(filtrosIniciales.year)
+	const [mes, setMesEstado] = useState(filtrosIniciales.mes)
+	const [year, setYearEstado] = useState(filtrosIniciales.year)
+
+	// Cada cambio de período se refleja también en la URL (`?mes=&year=`,
+	// preservando el tab) para que al compartir o refrescar el enlace se
+	// aplique automáticamente.
+	const setMes = useCallback(
+		(nuevoMes: number) => {
+			setMesEstado(nuevoMes)
+			actualizarUrlDashboard({ mes: nuevoMes, year })
+		},
+		[year],
+	)
+
+	const setYear = useCallback(
+		(nuevoYear: number) => {
+			setYearEstado(nuevoYear)
+			actualizarUrlDashboard({ mes, year: nuevoYear })
+		},
+		[mes],
+	)
 
 	const value = useMemo(
 		() => ({ mes, year, setMes, setYear }),
-		[mes, year],
+		[mes, year, setMes, setYear],
 	)
 
 	return (

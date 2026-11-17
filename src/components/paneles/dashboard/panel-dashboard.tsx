@@ -1,5 +1,5 @@
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { resolverFiltrosDashboard } from '@/lib/filtros-dashboard'
 import { resolverTabDashboard } from '@/lib/tab-dashboard'
 import DashboardKpisRow from './dashboard-kpis-row'
 import DashboardTabs from './dashboard-tabs'
@@ -22,14 +22,19 @@ import PoliciesReportsSection from './contents/reportes-polizas/policies-reports
  *
  * Solo la pestaña activa (resuelta desde `?tab=`) hace prefetch SSR de sus
  * métricas; las de la otra pestaña se fetchean en cliente al cambiar a ella.
+ *
+ * El período (`?mes=&year=`) también se resuelve desde la URL: el prefetch
+ * SSR y el estado inicial de los filtros usan esos valores, así se aplican
+ * automáticamente al abrir (o cambiar a) producción comercial.
  */
 export default async function PanelDashboard({
 	searchParams,
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-	const filtrosIniciales = filtrosInicialesDashboard()
-	const tab = resolverTabDashboard((await searchParams).tab)
+	const params = await searchParams
+	const tab = resolverTabDashboard(params.tab)
+	const filtrosIniciales = resolverFiltrosDashboard(params)
 
 	return (
 		<PermissionGuard allowedPermissions={['VER_METRICAS_GERENCIA']}>
@@ -43,12 +48,22 @@ export default async function PanelDashboard({
 					}
 					produccion={
 						<>
-							<DashboardKpisRow tipo='produccion' prefetch={tab === 'produccion'} />
+							<DashboardKpisRow
+								tipo='produccion'
+								prefetch={tab === 'produccion'}
+								filtros={filtrosIniciales}
+							/>
 							<div className='grid gap-8 lg:grid-cols-2 lg:items-start'>
-								<ProductionSection prefetch={tab === 'produccion'} />
-								<CommercialActivitiesSection prefetch={tab === 'produccion'} />
+								<ProductionSection prefetch={tab === 'produccion'} filtros={filtrosIniciales} />
+								<CommercialActivitiesSection
+									prefetch={tab === 'produccion'}
+									filtros={filtrosIniciales}
+								/>
 							</div>
-							<PoliciesReportsSection prefetch={tab === 'produccion'} />
+							<PoliciesReportsSection
+								prefetch={tab === 'produccion'}
+								filtros={filtrosIniciales}
+							/>
 						</>
 					}
 				/>

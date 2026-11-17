@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarPrimaPorEjecutivo } from '@/aplicacion/metricas/consultas-dashboard'
 import { clavePrimaPorEjecutivo } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import NetPremiumByExecutiveChartClient from './net-premium-by-executive-chart-client'
 
 /**
@@ -18,13 +18,14 @@ import NetPremiumByExecutiveChartClient from './net-premium-by-executive-chart-c
 export default async function NetPremiumByExecutiveChart({
 	className,
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	className?: string
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <NetPremiumByExecutiveChartClient className={className} />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

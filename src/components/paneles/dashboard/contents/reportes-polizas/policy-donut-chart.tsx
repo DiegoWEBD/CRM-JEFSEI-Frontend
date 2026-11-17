@@ -15,7 +15,7 @@ import {
 	clavePolizasPorRangoEdad,
 	clavePolizasPorSexo,
 } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import PolicyDonutChartClient, {
 	type MetricaDonutPolizas,
 } from './policy-donut-chart-client'
@@ -50,11 +50,13 @@ export default async function PolicyDonutChart({
 	metrica,
 	className,
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	title: string
 	metrica: MetricaDonutPolizas
 	className?: string
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) {
 		return (
@@ -66,7 +68,6 @@ export default async function PolicyDonutChart({
 		)
 	}
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 	const { clave, consultar } = CONSULTAS_DONUT[metrica]
 

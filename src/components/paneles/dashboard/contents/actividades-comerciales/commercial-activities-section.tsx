@@ -1,3 +1,4 @@
+import type { FiltrosDashboard } from '@/lib/filtros-dashboard'
 import { DashboardSection } from '../../shared/dashboard-section'
 import { CommercialActivityFilters } from './commercial-activity-filters'
 import CommercialActivityCompletionSummary from './commercial-activity-completion-summary'
@@ -6,8 +7,10 @@ import CommercialActivitiesBarChart from './commercial-activities-bar-chart'
 
 export default function CommercialActivitiesSection({
   prefetch = true,
+  filtros,
 }: {
   prefetch?: boolean
+  filtros?: FiltrosDashboard
 }) {
   return (
     <DashboardSection
@@ -17,11 +20,11 @@ export default function CommercialActivitiesSection({
       <CommercialActivityFilters />
 
       <div className='space-y-4' aria-live='polite'>
-        <CommercialActivityCompletionSummary prefetch={prefetch} />
+        <CommercialActivityCompletionSummary prefetch={prefetch} filtros={filtros} />
 
-        <CommercialActivityCountCards prefetch={prefetch} />
+        <CommercialActivityCountCards prefetch={prefetch} filtros={filtros} />
 
-        <CommercialActivitiesBarChart prefetch={prefetch} />
+        <CommercialActivitiesBarChart prefetch={prefetch} filtros={filtros} />
       </div>
     </DashboardSection>
   )

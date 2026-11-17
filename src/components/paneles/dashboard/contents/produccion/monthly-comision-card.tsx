@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarComisionMensual } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveComisionMensual } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import MonthlyComisionCardClient from './monthly-comision-card-client'
 
 /**
@@ -17,12 +17,13 @@ import MonthlyComisionCardClient from './monthly-comision-card-client'
  */
 export default async function MonthlyComisionCard({
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <MonthlyComisionCardClient />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

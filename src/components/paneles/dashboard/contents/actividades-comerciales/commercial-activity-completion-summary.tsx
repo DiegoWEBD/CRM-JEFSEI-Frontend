@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarResumenActividades } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveResumenActividades } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import CommercialActivityCompletionSummaryClient from './commercial-activity-completion-summary-client'
 
 /**
@@ -17,12 +17,13 @@ import CommercialActivityCompletionSummaryClient from './commercial-activity-com
  */
 export default async function CommercialActivityCompletionSummary({
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <CommercialActivityCompletionSummaryClient />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

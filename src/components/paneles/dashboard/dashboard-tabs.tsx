@@ -2,6 +2,7 @@
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/tabs'
 import { resolverTabDashboard, type TabDashboard } from '@/lib/tab-dashboard'
+import { actualizarUrlDashboard } from '@/lib/url-dashboard'
 import { useSearchParams } from 'next/navigation'
 import type { ReactNode } from 'react'
 import FiltrosDashboardBar from './filtros-dashboard-bar'
@@ -38,7 +39,9 @@ export default function DashboardTabs({
 	const tab = resolverTabDashboard(searchParams.get('tab'))
 
 	const cambiarTab = (value: string) => {
-		window.history.replaceState(null, '', `?tab=${value}`)
+		// Conserva mes/year en la URL: al volver a producción se aplican
+		// automáticamente.
+		actualizarUrlDashboard({ tab: value })
 	}
 
 	return (

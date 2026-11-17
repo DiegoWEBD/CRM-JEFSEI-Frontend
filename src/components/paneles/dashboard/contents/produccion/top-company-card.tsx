@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarCompaniaTop } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveCompaniaTop } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import TopCompanyCardClient from './top-company-card-client'
 
 /**
@@ -17,12 +17,13 @@ import TopCompanyCardClient from './top-company-card-client'
  */
 export default async function TopCompanyCard({
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <TopCompanyCardClient />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

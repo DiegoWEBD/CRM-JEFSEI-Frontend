@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import axios from 'axios'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -16,14 +17,16 @@ const axiosGetMock = vi.mocked(axios.get)
 
 const urlsLlamadas = () => axiosGetMock.mock.calls.map((c) => c[0] as string)
 
-function arbol() {
+function arbol(queryClient: QueryClient) {
 	return (
-		<FiltrosDashboardProvider filtrosIniciales={{ mes: 11, year: 2026 }}>
-			<DashboardTabs
-				pipeline={<QuotedPremiumCardClient />}
-				produccion={<MonthlyNetPremiumCardClient />}
-			/>
-		</FiltrosDashboardProvider>
+		<QueryClientProvider client={queryClient}>
+			<FiltrosDashboardProvider filtrosIniciales={{ mes: 11, year: 2026 }}>
+				<DashboardTabs
+					pipeline={<QuotedPremiumCardClient />}
+					produccion={<MonthlyNetPremiumCardClient />}
+				/>
+			</FiltrosDashboardProvider>
+		</QueryClientProvider>
 	)
 }
 
@@ -46,7 +49,8 @@ beforeEach(() => {
 
 describe('DashboardTabs — fetch de métricas por pestaña', () => {
 	it('solo fetchea las métricas de la pestaña activa; la otra al cambiar', async () => {
-		const view = render(arbol())
+		const queryClient = new QueryClient()
+		const view = render(arbol(queryClient))
 
 		await waitFor(() =>
 			expect(urlsLlamadas()).toContain('/api/metricas/prima-cotizada'),
@@ -58,12 +62,14 @@ describe('DashboardTabs — fetch de métricas por pestaña', () => {
 			screen.getByRole('tab', { name: /producción comercial/i }),
 		)
 		// El router de Next re-renderiza con la nueva URL; aquí se simula.
-		view.rerender(arbol())
+		view.rerender(arbol(queryClient))
 
 		await waitFor(() =>
 			expect(urlsLlamadas()).toContain('/api/metricas/prima-neta-mensual'),
 		)
 		expect(screen.getByText('Prima neta mensual')).toBeInTheDocument()
-		expect(screen.getByText('Noviembre 2026')).toBeInTheDocument()
+		await waitFor(() =>
+			expect(screen.getByText('Noviembre 2026')).toBeInTheDocument(),
+		)
 	})
 })

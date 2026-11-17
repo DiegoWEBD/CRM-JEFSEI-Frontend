@@ -13,7 +13,7 @@ import {
 	clavePolizasPorRamo,
 	clavePolizasPorSexo,
 } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import ComunaAnalysisCardClient from './comuna-analysis-card-client'
 
 /**
@@ -26,12 +26,13 @@ import ComunaAnalysisCardClient from './comuna-analysis-card-client'
  */
 export default async function ComunaAnalysisCard({
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <ComunaAnalysisCardClient />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await Promise.all([

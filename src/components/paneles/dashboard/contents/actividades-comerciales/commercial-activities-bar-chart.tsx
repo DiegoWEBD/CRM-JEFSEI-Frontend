@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarActividadesPorTipo } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveActividadesPorTipo } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import CommercialActivitiesBarChartClient from './commercial-activities-bar-chart-client'
 
 /**
@@ -19,13 +19,14 @@ import CommercialActivitiesBarChartClient from './commercial-activities-bar-char
 export default async function CommercialActivitiesBarChart({
 	className,
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	className?: string
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <CommercialActivitiesBarChartClient className={className} />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

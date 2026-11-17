@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarPrimaNetaMensual } from '@/aplicacion/metricas/consultas-dashboard'
 import { clavePrimaNetaMensual } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import MonthlyNetPremiumCardClient from './monthly-net-premium-card-client'
 
 /**
@@ -17,12 +17,13 @@ import MonthlyNetPremiumCardClient from './monthly-net-premium-card-client'
  */
 export default async function MonthlyNetPremiumCard({
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <MonthlyNetPremiumCardClient />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-query'
 import { consultarPrimaPorRamo } from '@/aplicacion/metricas/consultas-dashboard'
 import { clavePrimaPorRamo } from '@/hooks/metricas/query-keys-metricas'
-import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
 import NetPremiumByInsuranceLineChartClient from './net-premium-by-insurance-line-chart-client'
 
 /**
@@ -18,13 +18,14 @@ import NetPremiumByInsuranceLineChartClient from './net-premium-by-insurance-lin
 export default async function NetPremiumByInsuranceLineChart({
 	className,
 	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
 	className?: string
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	if (!prefetch) return <NetPremiumByInsuranceLineChartClient className={className} />
 
-	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

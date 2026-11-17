@@ -1,3 +1,4 @@
+import type { FiltrosDashboard } from '@/lib/filtros-dashboard'
 import { DashboardSection } from '../../shared/dashboard-section'
 import MonthlyNetPremiumTrendChart from './monthly-net-premium-trend-chart'
 import NetPremiumByCompanyChart from './net-premium-by-company-chart'
@@ -7,23 +8,25 @@ import TopCompanyCard from './top-company-card'
 
 export default function ProductionSection({
 	prefetch = true,
+	filtros,
 }: {
 	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
 	return (
 		<DashboardSection
 			title='Producción comercial'
 			description='Prima neta del período seleccionado.'
 		>
-			<MonthlyNetPremiumTrendChart prefetch={prefetch} />
+			<MonthlyNetPremiumTrendChart prefetch={prefetch} filtros={filtros} />
 
 			<div className='space-y-2.5 border-t border-border/60 pt-4'>
 				<h3 className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 					Compañías principales
 				</h3>
 				<div className='grid gap-2.5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 xl:items-stretch'>
-					<TopCompanyCard prefetch={prefetch} />
-					<NetPremiumByCompanyChart prefetch={prefetch} />
+					<TopCompanyCard prefetch={prefetch} filtros={filtros} />
+					<NetPremiumByCompanyChart prefetch={prefetch} filtros={filtros} />
 				</div>
 			</div>
 
@@ -32,8 +35,8 @@ export default function ProductionSection({
 					Distribución de producción
 				</h3>
 				<div className='grid gap-2.5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 xl:items-start'>
-					<NetPremiumByInsuranceLineChart prefetch={prefetch} />
-					<NetPremiumByExecutiveChart prefetch={prefetch} />
+					<NetPremiumByInsuranceLineChart prefetch={prefetch} filtros={filtros} />
+					<NetPremiumByExecutiveChart prefetch={prefetch} filtros={filtros} />
 				</div>
 			</div>
 		</DashboardSection>
