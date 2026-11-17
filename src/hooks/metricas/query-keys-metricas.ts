@@ -13,8 +13,8 @@ export const clavePrimaNetaMensual = (filtros: FiltrosMetricas) =>
 export const claveComisionMensual = (filtros: FiltrosMetricas) =>
 	['metricas', 'comision-mensual', filtros] as const
 
-export const claveTendencia12Meses = (filtros: FiltrosMetricas) =>
-	['metricas', 'tendencia-12-meses', filtros] as const
+export const claveTendenciaAnual = (filtros: FiltrosMetricas) =>
+	['metricas', 'tendencia-anual', filtros] as const
 
 export const clavePrimaPorCompania = (filtros: FiltrosMetricas) =>
 	['metricas', 'prima-por-compania', filtros] as const

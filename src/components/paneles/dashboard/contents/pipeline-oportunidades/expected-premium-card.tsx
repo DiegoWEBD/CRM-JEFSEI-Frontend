@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarPrimaEsperada } from '@/aplicacion/metricas/consultas-dashboard'
 import { clavePrimaEsperada } from '@/hooks/metricas/query-keys-metricas'
@@ -15,16 +15,16 @@ import ExpectedPremiumCardClient from './expected-premium-card-client'
  * la hidratación sea efectiva y no se dispare un segundo fetch.
  */
 export default async function ExpectedPremiumCard() {
-  const queryClient = new QueryClient()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: clavePrimaEsperada(),
-    queryFn: () => consultarPrimaEsperada(),
-  })
+	await queryClient.query({
+		queryKey: clavePrimaEsperada(),
+		queryFn: () => consultarPrimaEsperada(),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ExpectedPremiumCardClient />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<ExpectedPremiumCardClient />
+		</HydrationBoundary>
+	)
 }

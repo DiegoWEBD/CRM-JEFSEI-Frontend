@@ -18,6 +18,7 @@ export interface ItemCantidad {
 }
 
 export interface TendenciaMes {
+	/** Mes de emisión, formato 'YYYY-MM' */
 	mes: string
 	prima_neta: number
 }
@@ -46,7 +47,7 @@ export interface ComisionMensualJson {
 	mes_label: string
 }
 
-export type Tendencia12MesesJson = TendenciaMes[]
+export type TendenciaAnualJson = TendenciaMes[]
 
 export type PrimaPorCompaniaJson = ItemValor[]
 

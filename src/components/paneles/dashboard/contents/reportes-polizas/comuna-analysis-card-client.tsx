@@ -1,17 +1,32 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/chart'
 import { colorDonut, colorSegmento } from '@/lib/paleta-dashboard'
 import { useFiltrosDashboard } from '../../filtros-dashboard-context'
 import {
-  MetricaCardError,
-  MetricaCardSkeleton,
+  MetricaContenidoError,
+  MetricaContenidoSkeleton,
+  MetricaGraficoSkeleton,
 } from '../../shared/metrica-card-skeleton'
 import { usePolizasPorComuna } from '@/hooks/metricas/use-polizas-por-comuna'
 import { usePolizasPorRamo } from '@/hooks/metricas/use-polizas-por-ramo'
 import { usePolizasPorSexo } from '@/hooks/metricas/use-polizas-por-sexo'
+
+const chartConfig = {} satisfies ChartConfig
+
+const chartConfigRamo = {
+  cantidad: {
+    label: 'Pólizas',
+  },
+} satisfies ChartConfig
 
 export default function ComunaAnalysisCardClient() {
   const { mes, year } = useFiltrosDashboard()
@@ -23,8 +38,13 @@ export default function ComunaAnalysisCardClient() {
   const porSexo = useMemo(() => consultaSexo.data ?? [], [consultaSexo.data])
   const porRamo = useMemo(() => consultaRamo.data ?? [], [consultaRamo.data])
 
-  const isLoading =
-    consultaComuna.isLoading || consultaSexo.isLoading || consultaRamo.isLoading
+  const cargando =
+    consultaComuna.isLoading ||
+    consultaSexo.isLoading ||
+    consultaRamo.isLoading ||
+    consultaComuna.isPlaceholderData ||
+    consultaSexo.isPlaceholderData ||
+    consultaRamo.isPlaceholderData
   const isError =
     consultaComuna.isError || consultaSexo.isError || consultaRamo.isError
 
@@ -70,14 +90,11 @@ export default function ComunaAnalysisCardClient() {
   const sinDatosRamo = ramoData.length === 0 || ramoData.every((d) => d.cantidad <= 0)
   const sinDatosGeneral = !comunaActual || totalComuna === 0
 
-  if (isLoading) return <MetricaCardSkeleton alto={220} />
-  if (isError) return <MetricaCardError />
-
   return (
     <Card className='border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md'>
       <CardHeader className='flex flex-row items-center justify-between gap-2 space-y-0 pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>
-          An&aacute;lisis de p&oacute;lizas por comuna y sexo
+          Análisis de pólizas por comuna y sexo
         </CardTitle>
         {opcionesComuna.length > 0 ? (
           <select
@@ -94,14 +111,19 @@ export default function ComunaAnalysisCardClient() {
         ) : null}
       </CardHeader>
       <CardContent className='pb-2.5 pt-0'>
+        {isError ? (
+          <MetricaContenidoError />
+        ) : (
         <div className='grid gap-3 lg:grid-cols-[minmax(5.5rem,0.32fr)_minmax(10rem,0.68fr)_1fr]'>
           <div className='flex min-h-[10rem] flex-col items-center justify-center rounded-lg bg-muted/15 px-2 py-3'>
             <p className='text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground/80'>
               Total
             </p>
-            {sinDatosGeneral ? (
+            {cargando ? (
+              <MetricaContenidoSkeleton alto={64} lineas={1} className='mt-1' />
+            ) : sinDatosGeneral ? (
               <p className='py-3 text-center text-xs text-muted-foreground'>
-                No hay datos disponibles para este per&iacute;odo.
+                No hay datos disponibles para este período.
               </p>
             ) : (
               <>
@@ -117,18 +139,19 @@ export default function ComunaAnalysisCardClient() {
 
           <div className='flex min-h-[10rem] flex-col rounded-lg bg-muted/15 px-2 py-2.5'>
             <p className='mb-1.5 px-1 text-xs font-semibold text-muted-foreground'>
-              P&oacute;lizas por sexo
+              Pólizas por sexo
             </p>
-            {sinDatosSexo ? (
+            {cargando ? (
+              <MetricaGraficoSkeleton alto={120} />
+            ) : sinDatosSexo ? (
               <p className='flex flex-1 items-center justify-center py-3 text-center text-xs text-muted-foreground'>
-                No hay datos disponibles para este per&iacute;odo.
+                No hay datos disponibles para este período.
               </p>
             ) : (
               <div className='relative mx-auto w-full max-w-[200px] flex-1'>
-                <div className='aspect-square w-full'>
-                  <ResponsiveContainer width='100%' height='100%'>
-                    <PieChart>
-                      <Pie
+                <ChartContainer config={chartConfig} className='aspect-square w-full'>
+                  <PieChart>
+                    <Pie
                       data={sexoData}
                       dataKey='value'
                       nameKey='name'
@@ -143,14 +166,20 @@ export default function ComunaAnalysisCardClient() {
                         <Cell
                           key={entry.name}
                           fill={colorDonut(index)}
-                          stroke='hsl(var(--card))'
+                          stroke='var(--card)'
                           strokeWidth={1.5}
                         />
                       ))}
                     </Pie>
+                    <ChartTooltip
+                      content={
+                        <ChartTooltipContent
+                          formatter={(value) => Number(value).toLocaleString('es-CL')}
+                        />
+                      }
+                    />
                   </PieChart>
-                  </ResponsiveContainer>
-                </div>
+                </ChartContainer>
                 <div className='mt-1 flex flex-wrap justify-center gap-1'>
                   {sexoData.map((entry, index) => (
                     <span
@@ -172,21 +201,25 @@ export default function ComunaAnalysisCardClient() {
 
           <div className='flex min-h-[10rem] min-w-0 flex-col rounded-lg bg-muted/15 px-2 py-2.5 lg:min-h-[11rem]'>
             <p className='mb-1.5 px-1 text-xs font-semibold text-muted-foreground'>
-              L&iacute;neas de seguro en {comunaActual || 'comuna'}
+              Líneas de seguro en {comunaActual || 'comuna'}
             </p>
-            {sinDatosRamo ? (
+            {cargando ? (
+              <MetricaGraficoSkeleton alto={120} />
+            ) : sinDatosRamo ? (
               <p className='flex flex-1 items-center justify-center py-3 text-center text-xs text-muted-foreground'>
-                No hay datos disponibles para este per&iacute;odo.
+                No hay datos disponibles para este período.
               </p>
             ) : (
               <div className='min-h-0 flex-1'>
-                <div className='h-[180px] w-full sm:h-[200px] lg:h-[220px]'>
-                  <ResponsiveContainer width='100%' height='100%'>
-                    <BarChart
-                      data={ramoData}
-                      margin={{ top: 6, right: 8, left: 2, bottom: 2 }}
-                      barCategoryGap='22%'
-                      barGap={2}
+                <ChartContainer
+                  config={chartConfigRamo}
+                  className='aspect-auto h-[180px] w-full sm:h-[200px] lg:h-[220px]'
+                >
+                  <BarChart
+                    data={ramoData}
+                    margin={{ top: 6, right: 8, left: 2, bottom: 2 }}
+                    barCategoryGap='22%'
+                    barGap={2}
                   >
                     <CartesianGrid vertical={false} strokeDasharray='3 3' className='stroke-border/60' />
                     <XAxis
@@ -207,6 +240,17 @@ export default function ComunaAnalysisCardClient() {
                       fontSize={9}
                       allowDecimals={false}
                     />
+                    <ChartTooltip
+                      cursor={{ fill: 'color-mix(in oklab, var(--primary) 8%, transparent)' }}
+                      content={
+                        <ChartTooltipContent
+                          labelFormatter={(_label, payload) =>
+                            (payload?.[0]?.payload?.linea as string | undefined) ?? ''
+                          }
+                          formatter={(value) => Number(value).toLocaleString('es-CL')}
+                        />
+                      }
+                    />
                     <Bar dataKey='cantidad' radius={[5, 5, 0, 0]} maxBarSize={36}>
                       {ramoData.map((entry, index) => (
                         <Cell
@@ -217,12 +261,12 @@ export default function ComunaAnalysisCardClient() {
                       ))}
                     </Bar>
                   </BarChart>
-                  </ResponsiveContainer>
-                </div>
+                </ChartContainer>
               </div>
             )}
           </div>
         </div>
+        )}
       </CardContent>
     </Card>
   )

@@ -95,4 +95,38 @@ describe('MonthlyNetPremiumCardClient — hidratación y refetch', () => {
 			),
 		)
 	})
+
+	it('al cambiar el mes muestra skeleton solo en los valores y el título permanece visible', async () => {
+		const queryClient = new QueryClient()
+		renderCard(queryClient)
+
+		await waitFor(() => expect(screen.getByText('Enero 2026')).toBeInTheDocument())
+
+		// El fetch del nuevo mes queda pendiente hasta resolverlo a mano.
+		let resolverFetch: ((valor: unknown) => void) | undefined
+		axiosGetMock.mockImplementationOnce(
+			() => new Promise((resolve) => { resolverFetch = resolve }),
+		)
+
+		fireEvent.click(screen.getByText('cambiar-mes'))
+
+		// El título sigue visible y solo el área de valores muestra skeleton.
+		expect(screen.getByText('Prima neta mensual')).toBeInTheDocument()
+		await waitFor(() => {
+			expect(document.querySelectorAll('[data-slot="skeleton"]').length).toBeGreaterThan(0)
+		})
+		expect(screen.queryByText('Enero 2026')).not.toBeInTheDocument()
+
+		resolverFetch?.({
+			data: {
+				total_prima_neta: 200,
+				variacion_mes_anterior: 1.5,
+				mes_label: 'Febrero 2026',
+			},
+		})
+
+		await waitFor(() => expect(screen.getByText('Febrero 2026')).toBeInTheDocument())
+		expect(screen.getByText('Prima neta mensual')).toBeInTheDocument()
+		expect(document.querySelectorAll('[data-slot="skeleton"]')).toHaveLength(0)
+	})
 })

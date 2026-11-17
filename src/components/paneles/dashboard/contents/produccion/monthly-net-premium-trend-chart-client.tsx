@@ -1,38 +1,29 @@
 'use client'
 
 import { useMemo } from 'react'
-import { CartesianGrid, Area, AreaChart, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { CartesianGrid, Area, AreaChart, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/chart'
 import { chartAxisTickUf, formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
 import { useFiltrosDashboard } from '../../filtros-dashboard-context'
 import {
-	MetricaCardError,
-	MetricaCardSkeleton,
+  MetricaContenidoError,
+  MetricaGraficoSkeleton,
 } from '../../shared/metrica-card-skeleton'
-import { useTendencia12Meses } from '@/hooks/metricas/use-tendencia-12-meses'
+import { useTendenciaAnual } from '@/hooks/metricas/use-tendencia-anual'
 
-const LINEA_PRIMA_COLOR = 'hsl(var(--foreground))'
-
-function TooltipPrima({
-  active,
-  payload,
-}: {
-  active?: boolean
-  payload?: { payload: { mes: string; prima_neta: number } }[]
-}) {
-  if (!active || !payload?.[0]?.payload) return null
-  const p = payload[0].payload
-  const sinValor = p.prima_neta <= 0
-  return (
-    <div className='rounded-md border border-border bg-popover px-2.5 py-1.5 text-xs shadow-md'>
-      <p className='font-medium text-foreground'>{p.mes}</p>
-      <p className='tabular-nums text-muted-foreground'>
-        {sinValor ? 'Sin registro' : `Prima neta: ${formatUF(p.prima_neta)}`}
-      </p>
-    </div>
-  )
-}
+const chartConfig = {
+  prima_neta: {
+    label: 'Prima neta',
+    color: 'var(--foreground)',
+  },
+} satisfies ChartConfig
 
 function PuntoAnual(props: {
   cx?: number
@@ -46,7 +37,7 @@ function PuntoAnual(props: {
       cx={cx}
       cy={cy}
       r={4}
-      fill={LINEA_PRIMA_COLOR}
+      fill='var(--color-prima_neta)'
       stroke='none'
     />
   )
@@ -62,9 +53,17 @@ const MESES_LABELS: Record<string, string> = {
   '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dic',
 }
 
+const MESES_LARGOS: Record<string, string> = {
+  '01': 'Enero', '02': 'Febrero', '03': 'Marzo', '04': 'Abril',
+  '05': 'Mayo', '06': 'Junio', '07': 'Julio', '08': 'Agosto',
+  '09': 'Septiembre', '10': 'Octubre', '11': 'Noviembre', '12': 'Diciembre',
+}
+
 export default function MonthlyNetPremiumTrendChartClient({ className }: MonthlyNetPremiumTrendChartClientProps) {
   const { mes, year } = useFiltrosDashboard()
-  const { data, isLoading, isError } = useTendencia12Meses(mes, year)
+  const { data, isLoading, isPlaceholderData, isError } = useTendenciaAnual(mes, year)
+
+  const cargando = isLoading || isPlaceholderData
 
   const serie = useMemo(() => {
     return (data ?? []).map((d) => ({
@@ -75,9 +74,6 @@ export default function MonthlyNetPremiumTrendChartClient({ className }: Monthly
 
   const tieneAlgunDato = serie.some((p) => p.prima_neta > 0)
 
-  if (isLoading) return <MetricaCardSkeleton alto={220} className={className} />
-  if (isError || !data) return <MetricaCardError className={className} />
-
   return (
     <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
       <CardHeader className='pb-1.5 pt-2.5'>
@@ -86,48 +82,68 @@ export default function MonthlyNetPremiumTrendChartClient({ className }: Monthly
         </CardTitle>
       </CardHeader>
       <CardContent className='pb-2.5 pt-0'>
-        {!tieneAlgunDato ? (
+        {cargando ? (
+          <MetricaGraficoSkeleton alto={210} />
+        ) : isError || !data ? (
+          <MetricaContenidoError />
+        ) : !tieneAlgunDato ? (
           <p className='py-10 text-center text-xs text-muted-foreground'>
             Sin datos de prima neta.
           </p>
         ) : (
-          <div className='h-[200px] w-full sm:h-[210px]'>
-            <ResponsiveContainer width='100%' height={210}>
-              <AreaChart data={serie} margin={{ top: 12, right: 12, left: 4, bottom: 4 }}>
-                <CartesianGrid
-                  vertical={false}
-                  strokeDasharray='3 3'
-                  className='stroke-border'
-                />
-                <XAxis
-                  dataKey='monthLabel'
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  fontSize={10}
-                  interval={0}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  width={56}
-                  fontSize={9}
-                  tickFormatter={(v) => chartAxisTickUf(Number(v))}
-                />
-                <Tooltip content={<TooltipPrima />} cursor={{ stroke: 'hsl(var(--border))' }} />
-                <Area
-                  type='monotone'
-                  dataKey='prima_neta'
-                  stroke={LINEA_PRIMA_COLOR}
-                  strokeWidth={2.5}
-                  fill='transparent'
-                  dot={<PuntoAnual />}
-                  activeDot={{ r: 5, fill: LINEA_PRIMA_COLOR, stroke: 'none' }}
-                  connectNulls
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <ChartContainer
+            config={chartConfig}
+            className='aspect-auto h-[200px] w-full sm:h-[210px]'
+          >
+            <AreaChart data={serie} margin={{ top: 12, right: 12, left: 4, bottom: 4 }}>
+              <CartesianGrid
+                vertical={false}
+                strokeDasharray='3 3'
+                className='stroke-border'
+              />
+              <XAxis
+                dataKey='monthLabel'
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                fontSize={10}
+                interval={0}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                width={56}
+                fontSize={9}
+                tickFormatter={(v) => chartAxisTickUf(Number(v))}
+              />
+              <ChartTooltip
+                cursor={{ stroke: 'var(--border)' }}
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(_label, payload) => {
+                      const mes = payload?.[0]?.payload?.mes as string | undefined
+                      return mes
+                        ? `${MESES_LARGOS[mes.slice(5, 7)] ?? mes} ${mes.slice(0, 4)}`
+                        : ''
+                    }}
+                    formatter={(value) =>
+                      Number(value) <= 0 ? 'Sin registro' : formatUF(Number(value))
+                    }
+                  />
+                }
+              />
+              <Area
+                type='monotone'
+                dataKey='prima_neta'
+                stroke='var(--color-prima_neta)'
+                strokeWidth={2.5}
+                fill='transparent'
+                dot={<PuntoAnual />}
+                activeDot={{ r: 5, fill: 'var(--color-prima_neta)', stroke: 'none' }}
+                connectNulls
+              />
+            </AreaChart>
+          </ChartContainer>
         )}
       </CardContent>
     </Card>

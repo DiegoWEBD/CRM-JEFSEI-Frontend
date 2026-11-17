@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarPrimaPorEjecutivo } from '@/aplicacion/metricas/consultas-dashboard'
 import { clavePrimaPorEjecutivo } from '@/hooks/metricas/query-keys-metricas'
@@ -16,21 +16,21 @@ import NetPremiumByExecutiveChartClient from './net-premium-by-executive-chart-c
  * cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
  */
 export default async function NetPremiumByExecutiveChart({
-  className,
+	className,
 }: {
-  className?: string
+	className?: string
 }) {
-  const filtros = filtrosInicialesDashboard()
-  const queryClient = new QueryClient()
+	const filtros = filtrosInicialesDashboard()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: clavePrimaPorEjecutivo(filtros),
-    queryFn: () => consultarPrimaPorEjecutivo(filtros.mes, filtros.year),
-  })
+	await queryClient.query({
+		queryKey: clavePrimaPorEjecutivo(filtros),
+		queryFn: () => consultarPrimaPorEjecutivo(filtros.mes, filtros.year),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <NetPremiumByExecutiveChartClient className={className} />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<NetPremiumByExecutiveChartClient className={className} />
+		</HydrationBoundary>
+	)
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+
 import {
 	Bar,
 	BarChart,
@@ -8,38 +9,29 @@ import {
 	Cell,
 	XAxis,
 	YAxis,
-	ResponsiveContainer,
-	Tooltip,
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import {
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+	type ChartConfig,
+} from '@/components/chart'
 import { colorSegmento } from '@/lib/paleta-dashboard'
 import { chartAxisTickUf, formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
 import { useFiltrosDashboard } from '../../filtros-dashboard-context'
 import {
-	MetricaCardError,
-	MetricaCardSkeleton,
+	MetricaContenidoError,
+	MetricaGraficoSkeleton,
 } from '../../shared/metrica-card-skeleton'
 import { usePrimaPorCompania } from '@/hooks/metricas/use-prima-por-compania'
 
-function TooltipCompania({
-	active,
-	payload,
-}: {
-	active?: boolean
-	payload?: { payload: { nombre: string; valor: number } }[]
-}) {
-	if (!active || !payload?.[0]?.payload) return null
-	const p = payload[0].payload
-	return (
-		<div className='rounded-lg border border-border bg-popover px-3 py-2 text-xs shadow-md'>
-			<p className='font-semibold text-foreground'>{p.nombre}</p>
-			<p className='mt-0.5 tabular-nums text-muted-foreground'>
-				Prima neta: {formatUF(p.valor)}
-			</p>
-		</div>
-	)
-}
+const chartConfig = {
+	valor: {
+		label: 'Prima neta',
+	},
+} satisfies ChartConfig
 
 type NetPremiumByCompanyChartClientProps = {
 	className?: string
@@ -49,7 +41,9 @@ export default function NetPremiumByCompanyChartClient({
 	className,
 }: NetPremiumByCompanyChartClientProps) {
 	const { mes, year } = useFiltrosDashboard()
-	const { data, isLoading, isError } = usePrimaPorCompania(mes, year)
+	const { data, isLoading, isPlaceholderData, isError } = usePrimaPorCompania(mes, year)
+
+	const cargando = isLoading || isPlaceholderData
 
 	const chartData = useMemo(
 		() =>
@@ -61,24 +55,6 @@ export default function NetPremiumByCompanyChartClient({
 		[data],
 	)
 
-	if (isLoading) return <MetricaCardSkeleton alto={220} className={className} />
-	if (isError || !data) return <MetricaCardError className={className} />
-
-	if (chartData.length === 0) {
-		return (
-			<Card className={cn('border-border bg-card shadow-none', className)}>
-				<CardHeader className='space-y-0 pb-1.5 pt-2.5'>
-					<CardTitle className='text-xs font-semibold text-foreground'>
-						Prima neta por compañía
-					</CardTitle>
-				</CardHeader>
-				<CardContent className='py-12 text-center text-xs text-muted-foreground'>
-					No hay datos disponibles para este período
-				</CardContent>
-			</Card>
-		)
-	}
-
 	const alturaGrafico = Math.max(200, chartData.length * 36)
 
 	return (
@@ -89,8 +65,20 @@ export default function NetPremiumByCompanyChartClient({
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='pb-0 pt-0'>
-				<div className='w-full' style={{ height: alturaGrafico }}>
-					<ResponsiveContainer width='100%' height='100%'>
+				{cargando ? (
+					<MetricaGraficoSkeleton alto={220} />
+				) : isError || !data ? (
+					<MetricaContenidoError />
+				) : chartData.length === 0 ? (
+					<p className='py-12 text-center text-xs text-muted-foreground'>
+						No hay datos disponibles para este período
+					</p>
+				) : (
+					<ChartContainer
+						config={chartConfig}
+						className='aspect-auto w-full'
+						style={{ height: alturaGrafico }}
+					>
 						<BarChart
 							data={chartData}
 							layout='vertical'
@@ -116,9 +104,16 @@ export default function NetPremiumByCompanyChartClient({
 								width={72}
 								fontSize={10}
 							/>
-							<Tooltip
-								content={<TooltipCompania />}
-								cursor={{ fill: 'hsl(var(--primary) / 0.08)' }}
+							<ChartTooltip
+								cursor={{ fill: 'color-mix(in oklab, var(--primary) 8%, transparent)' }}
+								content={
+									<ChartTooltipContent
+										labelFormatter={(_label, payload) =>
+											(payload?.[0]?.payload?.nombre as string | undefined) ?? ''
+										}
+										formatter={value => formatUF(Number(value))}
+									/>
+								}
 							/>
 							<Bar dataKey='valor' radius={[0, 4, 4, 0]} maxBarSize={16}>
 								{chartData.map((entry, index) => (
@@ -130,8 +125,8 @@ export default function NetPremiumByCompanyChartClient({
 								))}
 							</Bar>
 						</BarChart>
-					</ResponsiveContainer>
-				</div>
+					</ChartContainer>
+				)}
 			</CardContent>
 		</Card>
 	)

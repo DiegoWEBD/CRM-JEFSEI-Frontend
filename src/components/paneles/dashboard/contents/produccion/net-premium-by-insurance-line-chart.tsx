@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarPrimaPorRamo } from '@/aplicacion/metricas/consultas-dashboard'
 import { clavePrimaPorRamo } from '@/hooks/metricas/query-keys-metricas'
@@ -16,21 +16,21 @@ import NetPremiumByInsuranceLineChartClient from './net-premium-by-insurance-lin
  * mes/año la versión cliente hace refetch (la queryKey cambia).
  */
 export default async function NetPremiumByInsuranceLineChart({
-  className,
+	className,
 }: {
-  className?: string
+	className?: string
 }) {
-  const filtros = filtrosInicialesDashboard()
-  const queryClient = new QueryClient()
+	const filtros = filtrosInicialesDashboard()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: clavePrimaPorRamo(filtros),
-    queryFn: () => consultarPrimaPorRamo(filtros.mes, filtros.year),
-  })
+	await queryClient.query({
+		queryKey: clavePrimaPorRamo(filtros),
+		queryFn: () => consultarPrimaPorRamo(filtros.mes, filtros.year),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <NetPremiumByInsuranceLineChartClient className={className} />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<NetPremiumByInsuranceLineChartClient className={className} />
+		</HydrationBoundary>
+	)
 }

@@ -1,17 +1,17 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import {
-  consultarPolizasPorComuna,
-  consultarPolizasPorRamo,
-  consultarPolizasPorSexo,
+	consultarPolizasPorComuna,
+	consultarPolizasPorRamo,
+	consultarPolizasPorSexo,
 } from '@/aplicacion/metricas/consultas-dashboard'
 import {
-  clavePolizasPorComuna,
-  clavePolizasPorRamo,
-  clavePolizasPorSexo,
+	clavePolizasPorComuna,
+	clavePolizasPorRamo,
+	clavePolizasPorSexo,
 } from '@/hooks/metricas/query-keys-metricas'
 import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
 import ComunaAnalysisCardClient from './comuna-analysis-card-client'
@@ -25,27 +25,27 @@ import ComunaAnalysisCardClient from './comuna-analysis-card-client'
  * Al cambiar mes/año la versión cliente hace refetch (las queryKeys cambian).
  */
 export default async function ComunaAnalysisCard() {
-  const filtros = filtrosInicialesDashboard()
-  const queryClient = new QueryClient()
+	const filtros = filtrosInicialesDashboard()
+	const queryClient = new QueryClient()
 
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: clavePolizasPorComuna(filtros),
-      queryFn: () => consultarPolizasPorComuna(filtros.mes, filtros.year),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: clavePolizasPorSexo(filtros),
-      queryFn: () => consultarPolizasPorSexo(filtros.mes, filtros.year),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: clavePolizasPorRamo(filtros),
-      queryFn: () => consultarPolizasPorRamo(filtros.mes, filtros.year),
-    }),
-  ])
+	await Promise.all([
+		queryClient.query({
+			queryKey: clavePolizasPorComuna(filtros),
+			queryFn: () => consultarPolizasPorComuna(filtros.mes, filtros.year),
+		}),
+		queryClient.query({
+			queryKey: clavePolizasPorSexo(filtros),
+			queryFn: () => consultarPolizasPorSexo(filtros.mes, filtros.year),
+		}),
+		queryClient.query({
+			queryKey: clavePolizasPorRamo(filtros),
+			queryFn: () => consultarPolizasPorRamo(filtros.mes, filtros.year),
+		}),
+	])
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ComunaAnalysisCardClient />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<ComunaAnalysisCardClient />
+		</HydrationBoundary>
+	)
 }

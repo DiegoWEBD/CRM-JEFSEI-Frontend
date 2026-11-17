@@ -24,7 +24,7 @@ import PanelCotizacionesEstudiosClient from '@/components/paneles/cotizaciones-e
 export async function PanelInner() {
 	const queryClient = new QueryClient()
 
-	const initialData = await queryClient.fetchQuery({
+	const initialData = await queryClient.query({
 		queryKey: queryKeyPanelEstudios(filtrosIniciales()),
 		queryFn: () => obtenerPanelEstudios(),
 	})

@@ -6,24 +6,46 @@ import MonthlyComisionCard from './contents/produccion/monthly-comision-card'
 import MonthlyNetPremiumCard from './contents/produccion/monthly-net-premium-card'
 
 /**
- * Fila de indicadores clave del dashboard: producción del período
- * (prima neta y comisión, dependen de mes/año) y pipeline de oportunidades
- * abiertas (prima cotizada, potencial y esperada, no dependen del filtro).
+ * Indicadores clave del dashboard, separados por dominio: producción del
+ * período (prima neta y comisión, dependen de mes/año) y pipeline de
+ * oportunidades abiertas (prima cotizada, potencial y esperada, no
+ * dependen del filtro).
  */
-export default function DashboardKpisRow() {
+export default function DashboardKpisRow({
+	tipo,
+}: {
+	tipo: 'pipeline' | 'produccion'
+}) {
 	return (
 		<section className='space-y-3 pt-1' aria-label='Indicadores clave'>
 			<DashboardSectionHeading
 				title='Indicadores clave'
-				description='Producción del período y pipeline de oportunidades abiertas.'
+				description={
+					tipo === 'pipeline'
+						? 'Pipeline de oportunidades abiertas.'
+						: 'Producción del período seleccionado.'
+				}
 			/>
 
-			<div className='grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5 lg:items-stretch'>
-				<MonthlyNetPremiumCard />
-				<MonthlyComisionCard />
-				<QuotedPremiumCard />
-				<EstimatedPotentialPremiumCard />
-				<ExpectedPremiumCard />
+			<div
+				className={
+					tipo === 'pipeline'
+						? 'grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:items-stretch'
+						: 'grid grid-cols-2 gap-2.5 lg:items-stretch'
+				}
+			>
+				{tipo === 'pipeline' ? (
+					<>
+						<QuotedPremiumCard />
+						<EstimatedPotentialPremiumCard />
+						<ExpectedPremiumCard />
+					</>
+				) : (
+					<>
+						<MonthlyNetPremiumCard />
+						<MonthlyComisionCard />
+					</>
+				)}
 			</div>
 		</section>
 	)

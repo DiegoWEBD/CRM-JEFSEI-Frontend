@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarProyeccionPrimaEsperada } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveProyeccionPrimaEsperada } from '@/hooks/metricas/query-keys-metricas'
@@ -15,20 +15,20 @@ import ExpectedPremiumProjectionChartClient from './expected-premium-projection-
  * para que la hidratación sea efectiva y no se dispare un segundo fetch.
  */
 export default async function ExpectedPremiumProjectionChart({
-  className,
+	className,
 }: {
-  className?: string
+	className?: string
 }) {
-  const queryClient = new QueryClient()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: claveProyeccionPrimaEsperada(),
-    queryFn: () => consultarProyeccionPrimaEsperada(),
-  })
+	await queryClient.query({
+		queryKey: claveProyeccionPrimaEsperada(),
+		queryFn: () => consultarProyeccionPrimaEsperada(),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ExpectedPremiumProjectionChartClient className={className} />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<ExpectedPremiumProjectionChartClient className={className} />
+		</HydrationBoundary>
+	)
 }

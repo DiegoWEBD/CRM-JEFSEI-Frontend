@@ -20,7 +20,7 @@ import CompaniesClient from './components/companies-client'
 export async function PanelInner() {
 	const queryClient = new QueryClient()
 
-	const initialData = await queryClient.fetchQuery({
+	const initialData = await queryClient.query({
 		queryKey: ['companies-seguros', '', 1, 10],
 		queryFn: () =>
 			obtenerCompaniesSeguros({

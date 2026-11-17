@@ -19,7 +19,7 @@ export default async function MonthlyComisionCard() {
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
-	await queryClient.prefetchQuery({
+	await queryClient.query({
 		queryKey: claveComisionMensual(filtros),
 		queryFn: () => consultarComisionMensual(filtros.mes, filtros.year),
 	})

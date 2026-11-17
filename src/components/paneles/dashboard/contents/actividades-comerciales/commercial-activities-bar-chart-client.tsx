@@ -1,16 +1,28 @@
 'use client'
 
 import { useMemo } from 'react'
-import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis, ResponsiveContainer } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/chart'
 import { cn } from '@/lib/utils'
 import { colorSegmento } from '@/lib/paleta-dashboard'
 import { useFiltrosDashboard } from '../../filtros-dashboard-context'
 import {
-  MetricaCardError,
-  MetricaCardSkeleton,
+  MetricaContenidoError,
+  MetricaGraficoSkeleton,
 } from '../../shared/metrica-card-skeleton'
 import { useActividadesPorTipo } from '@/hooks/metricas/use-actividades-por-tipo'
+
+const chartConfig = {
+  cantidad: {
+    label: 'Gestiones',
+  },
+} satisfies ChartConfig
 
 export default function CommercialActivitiesBarChartClient({
   className,
@@ -18,7 +30,9 @@ export default function CommercialActivitiesBarChartClient({
   className?: string
 }) {
   const { mes, year } = useFiltrosDashboard()
-  const { data, isLoading, isError } = useActividadesPorTipo(mes, year)
+  const { data, isLoading, isPlaceholderData, isError } = useActividadesPorTipo(mes, year)
+
+  const cargando = isLoading || isPlaceholderData
 
   const chartData = useMemo(
     () =>
@@ -31,27 +45,25 @@ export default function CommercialActivitiesBarChartClient({
     [data],
   )
 
-  if (isLoading) return <MetricaCardSkeleton alto={220} className={className} />
-  if (isError || !data) return <MetricaCardError className={className} />
-
-  if (chartData.length === 0 || chartData.every((d) => d.cantidad === 0)) {
-    return (
-      <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
-        <CardContent className='py-12 text-center text-xs text-muted-foreground'>
-          Sin gestiones en el per&iacute;odo seleccionado.
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
     <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
       <CardHeader className='space-y-0 pb-1.5 pt-2.5'>
         <CardTitle className='text-xs font-semibold text-foreground'>Gestiones por tipo</CardTitle>
       </CardHeader>
       <CardContent className='pb-2.5 pt-0'>
-        <div className='h-[200px] w-full sm:h-[210px]'>
-          <ResponsiveContainer width='100%' height={210}>
+        {cargando ? (
+          <MetricaGraficoSkeleton alto={220} />
+        ) : isError || !data ? (
+          <MetricaContenidoError />
+        ) : chartData.length === 0 || chartData.every((d) => d.cantidad === 0) ? (
+          <p className='py-12 text-center text-xs text-muted-foreground'>
+            Sin gestiones en el período seleccionado.
+          </p>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className='aspect-auto h-[200px] w-full sm:h-[210px]'
+          >
             <BarChart
               data={chartData}
               margin={{ top: 6, right: 6, left: 0, bottom: 0 }}
@@ -69,6 +81,14 @@ export default function CommercialActivitiesBarChartClient({
                 height={48}
               />
               <YAxis tickLine={false} axisLine={false} width={28} fontSize={10} allowDecimals={false} />
+              <ChartTooltip
+                cursor={{ fill: 'color-mix(in oklab, var(--primary) 8%, transparent)' }}
+                content={
+                  <ChartTooltipContent
+                    formatter={(value) => Number(value).toLocaleString('es-CL')}
+                  />
+                }
+              />
               <Bar dataKey='cantidad' radius={[4, 4, 0, 0]} maxBarSize={32}>
                 {chartData.map((entry, index) => (
                   <Cell
@@ -79,8 +99,8 @@ export default function CommercialActivitiesBarChartClient({
                 ))}
               </Bar>
             </BarChart>
-          </ResponsiveContainer>
-        </div>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   )

@@ -1,4 +1,4 @@
-import { obtenerTendencia12Meses } from '@/aplicacion/metricas/use-cases/obtener-tendencia-12-meses/obtener-tendencia-12-meses'
+import { obtenerTendenciaAnual } from '@/aplicacion/metricas/use-cases/obtener-tendencia-anual/obtener-tendencia-anual'
 import { normalizarErrorServidor } from '@/utils/axios/normalizar-error-servidor'
 import { NextResponse } from 'next/server'
 
@@ -8,9 +8,9 @@ export async function GET(request: Request) {
     const mes = searchParams.get('mes') ? Number(searchParams.get('mes')) : undefined
     const year = searchParams.get('year') ? Number(searchParams.get('year')) : undefined
 
-    const metrica = await obtenerTendencia12Meses(mes, year)
+    const metrica = await obtenerTendenciaAnual(mes, year)
     return NextResponse.json(metrica)
   } catch (error) {
-    return normalizarErrorServidor(error, 'Error obteniendo la tendencia de 12 meses')
+    return normalizarErrorServidor(error, 'Error obteniendo la tendencia anual')
   }
 }

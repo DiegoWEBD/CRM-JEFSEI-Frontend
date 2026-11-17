@@ -17,13 +17,15 @@ import ConfiguracionEstadosClient from './components/configuracion-estados-clien
 export async function ConfiguracionEstadosPanelInner() {
 	const queryClient = new QueryClient()
 
-	await queryClient.fetchQuery({
+	await queryClient.query({
 		queryKey: ['estados-configuracion'],
 		queryFn: () => obtenerEstadosConfiguracion(),
 	})
 
 	return (
-		<PermissionGuard allowedPermissions={['ADMINISTRAR_ESTADOS_PROCESO_COMERCIAL']}>
+		<PermissionGuard
+			allowedPermissions={['ADMINISTRAR_ESTADOS_PROCESO_COMERCIAL']}
+		>
 			<HydrationBoundary state={dehydrate(queryClient)}>
 				<ConfiguracionEstadosClient />
 			</HydrationBoundary>

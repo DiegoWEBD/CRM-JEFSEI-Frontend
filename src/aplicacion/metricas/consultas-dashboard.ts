@@ -15,7 +15,7 @@ import { obtenerPrimaPorRamo } from './use-cases/obtener-prima-por-ramo/obtener-
 import { obtenerPrimaPotencialEstimada } from './use-cases/obtener-prima-potencial-estimada/obtener-prima-potencial-estimada'
 import { obtenerProyeccionPrimaEsperada } from './use-cases/obtener-proyeccion-prima-esperada/obtener-proyeccion-prima-esperada'
 import { obtenerResumenActividades } from './use-cases/obtener-resumen-actividades/obtener-resumen-actividades'
-import { obtenerTendencia12Meses } from './use-cases/obtener-tendencia-12-meses/obtener-tendencia-12-meses'
+import { obtenerTendenciaAnual } from './use-cases/obtener-tendencia-anual/obtener-tendencia-anual'
 
 /**
  * Versiones con dedupe por request de los use cases de métricas, para que
@@ -27,7 +27,7 @@ import { obtenerTendencia12Meses } from './use-cases/obtener-tendencia-12-meses/
  */
 export const consultarPrimaNetaMensual = cache(obtenerPrimaNetaMensual)
 export const consultarComisionMensual = cache(obtenerComisionMensual)
-export const consultarTendencia12Meses = cache(obtenerTendencia12Meses)
+export const consultarTendenciaAnual = cache(obtenerTendenciaAnual)
 export const consultarPrimaPorCompania = cache(obtenerPrimaPorCompania)
 export const consultarCompaniaTop = cache(obtenerCompaniaTop)
 export const consultarPrimaPorEjecutivo = cache(obtenerPrimaPorEjecutivo)

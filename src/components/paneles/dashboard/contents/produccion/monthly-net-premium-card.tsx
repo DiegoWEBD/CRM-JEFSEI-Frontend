@@ -19,7 +19,7 @@ export default async function MonthlyNetPremiumCard() {
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
-	await queryClient.prefetchQuery({
+	await queryClient.query({
 		queryKey: clavePrimaNetaMensual(filtros),
 		queryFn: () => consultarPrimaNetaMensual(filtros.mes, filtros.year),
 	})

@@ -100,11 +100,11 @@ export default function TablaProcesosComerciales({
 									/>
 									<div className='min-w-0'>
 										<p className='truncate text-sm font-semibold text-foreground'>
-											{f.proceso.nombre_cliente}
+											{resaltarTexto(f.proceso.nombre_cliente, textoResaltado)}
 										</p>
 										<div className='flex items-center gap-1.5 min-w-0'>
 											<p className='truncate text-xs text-muted-foreground'>
-												{f.proceso.producto}
+												{resaltarTexto(f.proceso.producto, textoResaltado)}
 											</p>
 											{f.proceso.renovacion ? (
 												<Badge

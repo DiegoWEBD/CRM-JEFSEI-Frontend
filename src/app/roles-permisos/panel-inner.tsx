@@ -19,12 +19,12 @@ import RolesPermisosClient from './components/roles-permisos-client'
 export async function PanelInner() {
 	const queryClient = new QueryClient()
 
-	await queryClient.fetchQuery({
+	await queryClient.query({
 		queryKey: ['roles-con-permisos'],
 		queryFn: async () => (await obtenerRolesConPermisos()).data,
 	})
 
-	await queryClient.fetchQuery({
+	await queryClient.query({
 		queryKey: ['permisos'],
 		queryFn: async () => (await obtenerPermisos()).data,
 	})

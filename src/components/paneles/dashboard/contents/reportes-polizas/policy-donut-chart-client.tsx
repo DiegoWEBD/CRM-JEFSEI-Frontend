@@ -1,14 +1,20 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
+import { Cell, Pie, PieChart } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/chart'
 import { colorDonut } from '@/lib/paleta-dashboard'
 import { cn } from '@/lib/utils'
 import { useFiltrosDashboard } from '../../filtros-dashboard-context'
 import {
-  MetricaCardError,
-  MetricaCardSkeleton,
+  MetricaContenidoError,
+  MetricaGraficoSkeleton,
 } from '../../shared/metrica-card-skeleton'
 import { usePolizasPorComuna } from '@/hooks/metricas/use-polizas-por-comuna'
 import { usePolizasPorRamo } from '@/hooks/metricas/use-polizas-por-ramo'
@@ -16,13 +22,15 @@ import { usePolizasPorRangoEdad } from '@/hooks/metricas/use-polizas-por-rango-e
 import { usePolizasPorSexo } from '@/hooks/metricas/use-polizas-por-sexo'
 import type { ItemCantidad } from '@/aplicacion/metricas/dto/metricas-dashboard-json'
 
-const SIN_DATOS = 'No hay datos disponibles para este per\u00edodo'
+const SIN_DATOS = 'No hay datos disponibles para este período'
+
+const chartConfig = {} satisfies ChartConfig
 
 export type MetricaDonutPolizas = 'comuna' | 'sexo' | 'rango-edad' | 'ramo'
 
 const HOOKS_DONUT: Record<
   MetricaDonutPolizas,
-  (mes?: number, year?: number) => { data: ItemCantidad[] | undefined; isLoading: boolean; isError: boolean }
+  (mes?: number, year?: number) => { data: ItemCantidad[] | undefined; isLoading: boolean; isPlaceholderData: boolean; isError: boolean }
 > = {
   comuna: usePolizasPorComuna,
   sexo: usePolizasPorSexo,
@@ -43,7 +51,9 @@ export default function PolicyDonutChartClient({
   const [seleccionado, setSeleccionado] = useState<string | null>(null)
 
   const useMetrica = HOOKS_DONUT[metrica]
-  const { data, isLoading, isError } = useMetrica(mes, year)
+  const { data, isLoading, isPlaceholderData, isError } = useMetrica(mes, year)
+
+  const cargando = isLoading || isPlaceholderData
 
   const chartData = useMemo(() => {
     const conValor = (data ?? []).filter((d) => d.cantidad > 0)
@@ -57,9 +67,6 @@ export default function PolicyDonutChartClient({
 
   const total = useMemo(() => chartData.reduce((s, d) => s + d.value, 0), [chartData])
 
-  if (isLoading) return <MetricaCardSkeleton alto={260} className={className} />
-  if (isError) return <MetricaCardError className={className} />
-
   const sinDatos = chartData.length === 0
 
   return (
@@ -68,14 +75,17 @@ export default function PolicyDonutChartClient({
         <CardTitle className='text-xs font-semibold text-foreground'>{title}</CardTitle>
       </CardHeader>
       <CardContent className='pb-2.5 pt-0'>
-        {sinDatos ? (
+        {cargando ? (
+          <MetricaGraficoSkeleton alto={260} />
+        ) : isError ? (
+          <MetricaContenidoError />
+        ) : sinDatos ? (
           <p className='py-8 text-center text-xs text-muted-foreground'>{SIN_DATOS}</p>
         ) : (
           <div className='flex flex-col items-center -mt-1'>
             <div className='relative mx-auto w-full max-w-[280px]'>
-              <div className='aspect-square w-full'>
-                <ResponsiveContainer width='100%' height='100%'>
-                  <PieChart>
+              <ChartContainer config={chartConfig} className='aspect-square w-full'>
+                <PieChart>
                   <Pie
                     data={chartData}
                     dataKey='value'
@@ -102,16 +112,26 @@ export default function PolicyDonutChartClient({
                         <Cell
                           key={entry.name}
                           fill={fill}
-                          stroke={isSelected ? fill : 'hsl(var(--card))'}
+                          stroke={isSelected ? fill : 'var(--card)'}
                           strokeWidth={isSelected ? 3 : 1.5}
                           opacity={isDimmed ? 0.35 : 1}
                         />
                       )
                     })}
                   </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        formatter={(value, _name, item) =>
+                          `${Number(value).toLocaleString('es-CL')} (${
+                            (item.payload?.porcentaje as number | undefined) ?? 0
+                          }%)`
+                        }
+                      />
+                    }
+                  />
+                </PieChart>
+              </ChartContainer>
               <div
                 className='pointer-events-none absolute inset-0 flex items-center justify-center'
                 aria-hidden

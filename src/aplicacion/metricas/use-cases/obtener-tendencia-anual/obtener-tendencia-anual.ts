@@ -1,14 +1,14 @@
 import { axiosClient } from '@/infraestructura/axios/axios-client'
 import { cookies } from 'next/headers'
-import type { Tendencia12MesesJson } from '../../dto/metricas-dashboard-json'
+import type { TendenciaAnualJson } from '../../dto/metricas-dashboard-json'
 
-export const obtenerTendencia12Meses = async (
+export const obtenerTendenciaAnual = async (
 	mes?: number,
 	year?: number,
-): Promise<Tendencia12MesesJson> => {
+): Promise<TendenciaAnualJson> => {
 	const cookieStore = await cookies()
 
-	const response = await axiosClient.get('/metricas/tendencia-12-meses', {
+	const response = await axiosClient.get('/metricas/tendencia-anual', {
 		headers: { Cookie: cookieStore.toString() },
 		params: {
 			...(mes !== undefined && { mes }),

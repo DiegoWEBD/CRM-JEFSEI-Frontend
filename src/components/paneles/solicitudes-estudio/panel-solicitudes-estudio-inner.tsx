@@ -24,7 +24,7 @@ import PanelSolicitudesEstudioClient from './panel-solicitudes-estudio-client'
 export async function PanelSolicitudesEstudioInner() {
 	const queryClient = new QueryClient()
 
-	const initialData = await queryClient.fetchQuery({
+	const initialData = await queryClient.query({
 		queryKey: queryKeySolicitudesPanel(filtrosIniciales()),
 		queryFn: () => obtenerTodasSolicitudesCotizacion(),
 	})

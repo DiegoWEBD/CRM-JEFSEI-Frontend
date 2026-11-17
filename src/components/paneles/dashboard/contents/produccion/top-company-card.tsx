@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarCompaniaTop } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveCompaniaTop } from '@/hooks/metricas/query-keys-metricas'
@@ -16,17 +16,17 @@ import TopCompanyCardClient from './top-company-card-client'
  * mes/año la versión cliente hace refetch (la queryKey cambia).
  */
 export default async function TopCompanyCard() {
-  const filtros = filtrosInicialesDashboard()
-  const queryClient = new QueryClient()
+	const filtros = filtrosInicialesDashboard()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: claveCompaniaTop(filtros),
-    queryFn: () => consultarCompaniaTop(filtros.mes, filtros.year),
-  })
+	await queryClient.query({
+		queryKey: claveCompaniaTop(filtros),
+		queryFn: () => consultarCompaniaTop(filtros.mes, filtros.year),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <TopCompanyCardClient />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<TopCompanyCardClient />
+		</HydrationBoundary>
+	)
 }

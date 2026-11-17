@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarPrimaPotencialEstimada } from '@/aplicacion/metricas/consultas-dashboard'
 import { clavePrimaPotencialEstimada } from '@/hooks/metricas/query-keys-metricas'
@@ -15,16 +15,16 @@ import EstimatedPotentialPremiumCardClient from './estimated-potential-premium-c
  * para que la hidratación sea efectiva y no se dispare un segundo fetch.
  */
 export default async function EstimatedPotentialPremiumCard() {
-  const queryClient = new QueryClient()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: clavePrimaPotencialEstimada(),
-    queryFn: () => consultarPrimaPotencialEstimada(),
-  })
+	await queryClient.query({
+		queryKey: clavePrimaPotencialEstimada(),
+		queryFn: () => consultarPrimaPotencialEstimada(),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <EstimatedPotentialPremiumCardClient />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<EstimatedPotentialPremiumCardClient />
+		</HydrationBoundary>
+	)
 }

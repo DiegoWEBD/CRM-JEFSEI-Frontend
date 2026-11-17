@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarResumenActividades } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveResumenActividades } from '@/hooks/metricas/query-keys-metricas'
@@ -16,17 +16,17 @@ import CommercialActivityCompletionSummaryClient from './commercial-activity-com
  * Al cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
  */
 export default async function CommercialActivityCompletionSummary() {
-  const filtros = filtrosInicialesDashboard()
-  const queryClient = new QueryClient()
+	const filtros = filtrosInicialesDashboard()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: claveResumenActividades(filtros),
-    queryFn: () => consultarResumenActividades(filtros.mes, filtros.year),
-  })
+	await queryClient.query({
+		queryKey: claveResumenActividades(filtros),
+		queryFn: () => consultarResumenActividades(filtros.mes, filtros.year),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <CommercialActivityCompletionSummaryClient />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<CommercialActivityCompletionSummaryClient />
+		</HydrationBoundary>
+	)
 }

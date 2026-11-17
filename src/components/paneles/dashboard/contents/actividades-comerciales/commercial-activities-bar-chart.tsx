@@ -1,7 +1,7 @@
 import {
-  QueryClient,
-  dehydrate,
-  HydrationBoundary,
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
 } from '@tanstack/react-query'
 import { consultarActividadesPorTipo } from '@/aplicacion/metricas/consultas-dashboard'
 import { claveActividadesPorTipo } from '@/hooks/metricas/query-keys-metricas'
@@ -17,21 +17,21 @@ import CommercialActivitiesBarChartClient from './commercial-activities-bar-char
  * Al cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
  */
 export default async function CommercialActivitiesBarChart({
-  className,
+	className,
 }: {
-  className?: string
+	className?: string
 }) {
-  const filtros = filtrosInicialesDashboard()
-  const queryClient = new QueryClient()
+	const filtros = filtrosInicialesDashboard()
+	const queryClient = new QueryClient()
 
-  await queryClient.prefetchQuery({
-    queryKey: claveActividadesPorTipo(filtros),
-    queryFn: () => consultarActividadesPorTipo(filtros.mes, filtros.year),
-  })
+	await queryClient.query({
+		queryKey: claveActividadesPorTipo(filtros),
+		queryFn: () => consultarActividadesPorTipo(filtros.mes, filtros.year),
+	})
 
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <CommercialActivitiesBarChartClient className={className} />
-    </HydrationBoundary>
-  )
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<CommercialActivitiesBarChartClient className={className} />
+		</HydrationBoundary>
+	)
 }
