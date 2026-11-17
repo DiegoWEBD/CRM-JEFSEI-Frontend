@@ -15,7 +15,13 @@ import CommercialActivityCompletionSummaryClient from './commercial-activity-com
  * para que la hidratación sea efectiva y no se dispare un segundo fetch.
  * Al cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
  */
-export default async function CommercialActivityCompletionSummary() {
+export default async function CommercialActivityCompletionSummary({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <CommercialActivityCompletionSummaryClient />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

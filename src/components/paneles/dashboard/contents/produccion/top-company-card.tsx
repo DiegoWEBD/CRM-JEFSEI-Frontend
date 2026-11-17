@@ -15,7 +15,13 @@ import TopCompanyCardClient from './top-company-card-client'
  * la hidratación sea efectiva y no se dispare un segundo fetch. Al cambiar
  * mes/año la versión cliente hace refetch (la queryKey cambia).
  */
-export default async function TopCompanyCard() {
+export default async function TopCompanyCard({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <TopCompanyCardClient />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

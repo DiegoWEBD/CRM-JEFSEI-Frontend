@@ -15,7 +15,13 @@ import MonthlyComisionCardClient from './monthly-comision-card-client'
  * que la hidratación sea efectiva y no se dispare un segundo fetch. Al
  * cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
  */
-export default async function MonthlyComisionCard() {
+export default async function MonthlyComisionCard({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <MonthlyComisionCardClient />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

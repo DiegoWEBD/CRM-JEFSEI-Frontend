@@ -49,11 +49,23 @@ export default async function PolicyDonutChart({
 	title,
 	metrica,
 	className,
+	prefetch = true,
 }: {
 	title: string
 	metrica: MetricaDonutPolizas
 	className?: string
+	prefetch?: boolean
 }) {
+	if (!prefetch) {
+		return (
+			<PolicyDonutChartClient
+				title={title}
+				metrica={metrica}
+				className={className}
+			/>
+		)
+	}
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 	const { clave, consultar } = CONSULTAS_DONUT[metrica]

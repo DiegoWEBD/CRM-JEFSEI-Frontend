@@ -4,7 +4,11 @@ import CommercialActivityCompletionSummary from './commercial-activity-completio
 import CommercialActivityCountCards from './commercial-activity-count-cards'
 import CommercialActivitiesBarChart from './commercial-activities-bar-chart'
 
-export default function CommercialActivitiesSection() {
+export default function CommercialActivitiesSection({
+  prefetch = true,
+}: {
+  prefetch?: boolean
+}) {
   return (
     <DashboardSection
       title='Gestiones comerciales'
@@ -13,11 +17,11 @@ export default function CommercialActivitiesSection() {
       <CommercialActivityFilters />
 
       <div className='space-y-4' aria-live='polite'>
-        <CommercialActivityCompletionSummary />
+        <CommercialActivityCompletionSummary prefetch={prefetch} />
 
-        <CommercialActivityCountCards />
+        <CommercialActivityCountCards prefetch={prefetch} />
 
-        <CommercialActivitiesBarChart />
+        <CommercialActivitiesBarChart prefetch={prefetch} />
       </div>
     </DashboardSection>
   )

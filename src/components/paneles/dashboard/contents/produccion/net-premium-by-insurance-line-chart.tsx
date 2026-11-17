@@ -17,9 +17,13 @@ import NetPremiumByInsuranceLineChartClient from './net-premium-by-insurance-lin
  */
 export default async function NetPremiumByInsuranceLineChart({
 	className,
+	prefetch = true,
 }: {
 	className?: string
+	prefetch?: boolean
 }) {
+	if (!prefetch) return <NetPremiumByInsuranceLineChartClient className={className} />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

@@ -24,7 +24,13 @@ import ComunaAnalysisCardClient from './comuna-analysis-card-client'
  * para que la hidratación sea efectiva y no se dispare un segundo fetch.
  * Al cambiar mes/año la versión cliente hace refetch (las queryKeys cambian).
  */
-export default async function ComunaAnalysisCard() {
+export default async function ComunaAnalysisCard({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <ComunaAnalysisCardClient />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

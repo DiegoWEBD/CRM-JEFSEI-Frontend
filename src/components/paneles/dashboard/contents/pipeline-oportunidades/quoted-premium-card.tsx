@@ -14,7 +14,13 @@ import QuotedPremiumCardClient from './quoted-premium-card-client'
  * La queryKey debe calzar exactamente con la de `usePrimaCotizada` para que
  * la hidratación sea efectiva y no se dispare un segundo fetch.
  */
-export default async function QuotedPremiumCard() {
+export default async function QuotedPremiumCard({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <QuotedPremiumCardClient />
+
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

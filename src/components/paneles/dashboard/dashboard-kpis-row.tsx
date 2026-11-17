@@ -10,11 +10,16 @@ import MonthlyNetPremiumCard from './contents/produccion/monthly-net-premium-car
  * período (prima neta y comisión, dependen de mes/año) y pipeline de
  * oportunidades abiertas (prima cotizada, potencial y esperada, no
  * dependen del filtro).
+ *
+ * `prefetch` se propaga a cada tarjeta para que solo la pestaña activa
+ * haga prefetch SSR de sus métricas.
  */
 export default function DashboardKpisRow({
 	tipo,
+	prefetch = true,
 }: {
 	tipo: 'pipeline' | 'produccion'
+	prefetch?: boolean
 }) {
 	return (
 		<section className='space-y-3 pt-1' aria-label='Indicadores clave'>
@@ -36,14 +41,14 @@ export default function DashboardKpisRow({
 			>
 				{tipo === 'pipeline' ? (
 					<>
-						<QuotedPremiumCard />
-						<EstimatedPotentialPremiumCard />
-						<ExpectedPremiumCard />
+						<QuotedPremiumCard prefetch={prefetch} />
+						<EstimatedPotentialPremiumCard prefetch={prefetch} />
+						<ExpectedPremiumCard prefetch={prefetch} />
 					</>
 				) : (
 					<>
-						<MonthlyNetPremiumCard />
-						<MonthlyComisionCard />
+						<MonthlyNetPremiumCard prefetch={prefetch} />
+						<MonthlyComisionCard prefetch={prefetch} />
 					</>
 				)}
 			</div>

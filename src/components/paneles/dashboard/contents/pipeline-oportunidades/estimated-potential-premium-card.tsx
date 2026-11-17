@@ -14,7 +14,13 @@ import EstimatedPotentialPremiumCardClient from './estimated-potential-premium-c
  * La queryKey debe calzar exactamente con la de `usePrimaPotencialEstimada`
  * para que la hidratación sea efectiva y no se dispare un segundo fetch.
  */
-export default async function EstimatedPotentialPremiumCard() {
+export default async function EstimatedPotentialPremiumCard({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <EstimatedPotentialPremiumCardClient />
+
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

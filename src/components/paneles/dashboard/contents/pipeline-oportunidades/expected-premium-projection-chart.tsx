@@ -16,9 +16,13 @@ import ExpectedPremiumProjectionChartClient from './expected-premium-projection-
  */
 export default async function ExpectedPremiumProjectionChart({
 	className,
+	prefetch = true,
 }: {
 	className?: string
+	prefetch?: boolean
 }) {
+	if (!prefetch) return <ExpectedPremiumProjectionChartClient className={className} />
+
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

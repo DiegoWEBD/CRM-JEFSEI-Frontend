@@ -18,9 +18,13 @@ import CommercialActivitiesBarChartClient from './commercial-activities-bar-char
  */
 export default async function CommercialActivitiesBarChart({
 	className,
+	prefetch = true,
 }: {
 	className?: string
+	prefetch?: boolean
 }) {
+	if (!prefetch) return <CommercialActivitiesBarChartClient className={className} />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

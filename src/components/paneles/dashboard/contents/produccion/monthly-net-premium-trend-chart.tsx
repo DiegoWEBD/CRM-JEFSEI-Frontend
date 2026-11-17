@@ -18,9 +18,13 @@ import MonthlyNetPremiumTrendChartClient from './monthly-net-premium-trend-chart
  */
 export default async function MonthlyNetPremiumTrendChart({
 	className,
+	prefetch = true,
 }: {
 	className?: string
+	prefetch?: boolean
 }) {
+	if (!prefetch) return <MonthlyNetPremiumTrendChartClient className={className} />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

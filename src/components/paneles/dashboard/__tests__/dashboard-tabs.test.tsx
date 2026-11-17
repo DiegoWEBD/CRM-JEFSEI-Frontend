@@ -8,14 +8,14 @@ vi.mock('next/navigation', () => ({
 import DashboardTabs from '../dashboard-tabs'
 import { FiltrosDashboardProvider } from '../filtros-dashboard-context'
 
-function renderTabs() {
-	return render(
+function arbol() {
+	return (
 		<FiltrosDashboardProvider filtrosIniciales={{ mes: 11, year: 2026 }}>
 			<DashboardTabs
 				pipeline={<p>contenido pipeline</p>}
 				produccion={<p>contenido produccion</p>}
 			/>
-		</FiltrosDashboardProvider>,
+		</FiltrosDashboardProvider>
 	)
 }
 
@@ -24,38 +24,23 @@ beforeEach(() => {
 })
 
 describe('DashboardTabs — pestañas del dashboard', () => {
-	it('sin query param abre en la pestaña pipeline comercial', () => {
-		renderTabs()
+	it('sin query param abre en pipeline y no monta el contenido de producción', () => {
+		render(arbol())
 
-		const panelPipeline = screen.getByRole('tabpanel', {
-			name: /pipeline comercial/i,
-		})
-		const panelProduccion = screen.getByRole('tabpanel', {
-			name: /producción comercial/i,
-		})
-
-		expect(panelPipeline).toHaveAttribute('data-state', 'active')
-		expect(panelProduccion).toHaveAttribute('data-state', 'inactive')
 		expect(screen.getByText('contenido pipeline')).toBeInTheDocument()
+		// Solo la pestaña activa está montada: la otra se monta al cambiar.
+		expect(screen.queryByText('contenido produccion')).not.toBeInTheDocument()
 		// La barra de filtros mes/año no aplica a pipeline.
 		expect(screen.queryAllByRole('combobox')).toHaveLength(0)
 	})
 
-	it('con ?tab=produccion muestra la pestaña de producción y la barra de filtros', () => {
+	it('con ?tab=produccion monta producción y la barra de filtros', () => {
 		window.history.replaceState(null, '', '/?tab=produccion')
 
-		renderTabs()
+		render(arbol())
 
-		const panelPipeline = screen.getByRole('tabpanel', {
-			name: /pipeline comercial/i,
-		})
-		const panelProduccion = screen.getByRole('tabpanel', {
-			name: /producción comercial/i,
-		})
-
-		expect(panelProduccion).toHaveAttribute('data-state', 'active')
-		expect(panelPipeline).toHaveAttribute('data-state', 'inactive')
 		expect(screen.getByText('contenido produccion')).toBeInTheDocument()
+		expect(screen.queryByText('contenido pipeline')).not.toBeInTheDocument()
 		// Selectores mes y año.
 		expect(screen.getAllByRole('combobox')).toHaveLength(2)
 	})
@@ -63,25 +48,33 @@ describe('DashboardTabs — pestañas del dashboard', () => {
 	it('con un query param inválido vuelve a la pestaña por defecto', () => {
 		window.history.replaceState(null, '', '/?tab=no-existe')
 
-		renderTabs()
+		render(arbol())
 
-		expect(
-			screen.getByRole('tabpanel', { name: /pipeline comercial/i }),
-		).toHaveAttribute('data-state', 'active')
+		expect(screen.getByText('contenido pipeline')).toBeInTheDocument()
+		expect(screen.queryByText('contenido produccion')).not.toBeInTheDocument()
 	})
 
 	it('cambiar de pestaña actualiza la URL con replaceState (routing superficial)', () => {
 		const replaceStateSpy = vi.spyOn(window.history, 'replaceState')
 
-		renderTabs()
+		render(arbol())
 
 		// Radix Tabs activa la pestaña en el mousedown del disparador.
 		fireEvent.mouseDown(screen.getByRole('tab', { name: /producción comercial/i }))
 
-		expect(replaceStateSpy).toHaveBeenCalledWith(
-			null,
-			'',
-			'?tab=produccion',
-		)
+		expect(replaceStateSpy).toHaveBeenCalledWith(null, '', '?tab=produccion')
+	})
+
+	it('al re-renderizar con la nueva URL monta el contenido de la otra pestaña', () => {
+		const view = render(arbol())
+
+		fireEvent.mouseDown(screen.getByRole('tab', { name: /producción comercial/i }))
+
+		// El router de Next re-renderiza con la nueva URL; aquí se simula.
+		view.rerender(arbol())
+
+		expect(screen.getByText('contenido produccion')).toBeInTheDocument()
+		expect(screen.queryByText('contenido pipeline')).not.toBeInTheDocument()
+		expect(screen.getAllByRole('combobox')).toHaveLength(2)
 	})
 })

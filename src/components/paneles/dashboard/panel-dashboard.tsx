@@ -1,5 +1,6 @@
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { filtrosInicialesDashboard } from '@/lib/filtros-dashboard'
+import { resolverTabDashboard } from '@/lib/tab-dashboard'
 import DashboardKpisRow from './dashboard-kpis-row'
 import DashboardTabs from './dashboard-tabs'
 import { FiltrosDashboardProvider } from './filtros-dashboard-context'
@@ -18,9 +19,17 @@ import PoliciesReportsSection from './contents/reportes-polizas/policies-reports
  * Layout: pestañas "Pipeline comercial" / "Producción comercial" (páginas
  * del informe). La barra de filtros mes/año solo aplica a producción; cada
  * pestaña muestra sus indicadores clave y secciones.
+ *
+ * Solo la pestaña activa (resuelta desde `?tab=`) hace prefetch SSR de sus
+ * métricas; las de la otra pestaña se fetchean en cliente al cambiar a ella.
  */
-export default function PanelDashboard() {
+export default async function PanelDashboard({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
 	const filtrosIniciales = filtrosInicialesDashboard()
+	const tab = resolverTabDashboard((await searchParams).tab)
 
 	return (
 		<PermissionGuard allowedPermissions={['VER_METRICAS_GERENCIA']}>
@@ -28,18 +37,18 @@ export default function PanelDashboard() {
 				<DashboardTabs
 					pipeline={
 						<>
-							<DashboardKpisRow tipo='pipeline' />
-							<OpportunitiesPipelineSection />
+							<DashboardKpisRow tipo='pipeline' prefetch={tab === 'pipeline'} />
+							<OpportunitiesPipelineSection prefetch={tab === 'pipeline'} />
 						</>
 					}
 					produccion={
 						<>
-							<DashboardKpisRow tipo='produccion' />
+							<DashboardKpisRow tipo='produccion' prefetch={tab === 'produccion'} />
 							<div className='grid gap-8 lg:grid-cols-2 lg:items-start'>
-								<ProductionSection />
-								<CommercialActivitiesSection />
+								<ProductionSection prefetch={tab === 'produccion'} />
+								<CommercialActivitiesSection prefetch={tab === 'produccion'} />
 							</div>
-							<PoliciesReportsSection />
+							<PoliciesReportsSection prefetch={tab === 'produccion'} />
 						</>
 					}
 				/>

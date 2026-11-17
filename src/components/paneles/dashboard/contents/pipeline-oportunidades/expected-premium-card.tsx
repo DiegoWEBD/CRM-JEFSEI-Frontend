@@ -14,7 +14,13 @@ import ExpectedPremiumCardClient from './expected-premium-card-client'
  * La queryKey debe calzar exactamente con la de `usePrimaEsperada` para que
  * la hidratación sea efectiva y no se dispare un segundo fetch.
  */
-export default async function ExpectedPremiumCard() {
+export default async function ExpectedPremiumCard({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <ExpectedPremiumCardClient />
+
 	const queryClient = new QueryClient()
 
 	await queryClient.query({

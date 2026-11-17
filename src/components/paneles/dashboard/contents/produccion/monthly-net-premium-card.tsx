@@ -15,7 +15,13 @@ import MonthlyNetPremiumCardClient from './monthly-net-premium-card-client'
  * que la hidratación sea efectiva y no se dispare un segundo fetch. Al
  * cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
  */
-export default async function MonthlyNetPremiumCard() {
+export default async function MonthlyNetPremiumCard({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <MonthlyNetPremiumCardClient />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

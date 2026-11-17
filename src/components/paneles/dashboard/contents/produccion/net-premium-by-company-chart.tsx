@@ -17,13 +17,17 @@ import NetPremiumByCompanyChartClient from './net-premium-by-company-chart-clien
  */
 export default async function NetPremiumByCompanyChart({
 	className,
+	prefetch = true,
 }: {
 	className?: string
+	prefetch?: boolean
 }) {
+	if (!prefetch) return <NetPremiumByCompanyChartClient className={className} />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
-	await queryClient.prefetchQuery({
+	await queryClient.query({
 		queryKey: clavePrimaPorCompania(filtros),
 		queryFn: () => consultarPrimaPorCompania(filtros.mes, filtros.year),
 	})

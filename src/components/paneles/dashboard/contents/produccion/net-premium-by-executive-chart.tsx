@@ -17,9 +17,13 @@ import NetPremiumByExecutiveChartClient from './net-premium-by-executive-chart-c
  */
 export default async function NetPremiumByExecutiveChart({
 	className,
+	prefetch = true,
 }: {
 	className?: string
+	prefetch?: boolean
 }) {
+	if (!prefetch) return <NetPremiumByExecutiveChartClient className={className} />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 

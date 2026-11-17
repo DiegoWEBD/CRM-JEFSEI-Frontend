@@ -16,7 +16,13 @@ import CommercialActivityCountCardsClient from './commercial-activity-count-card
  * para que la hidratación sea efectiva y no se dispare un segundo fetch.
  * Al cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
  */
-export default async function CommercialActivityCountCards() {
+export default async function CommercialActivityCountCards({
+	prefetch = true,
+}: {
+	prefetch?: boolean
+}) {
+	if (!prefetch) return <CommercialActivityCountCardsClient />
+
 	const filtros = filtrosInicialesDashboard()
 	const queryClient = new QueryClient()
 
