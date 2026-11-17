@@ -91,3 +91,11 @@ export type ProyeccionPrimaEsperadaItemJson = {
 }
 
 export type ProyeccionPrimaEsperadaJson = ProyeccionPrimaEsperadaItemJson[]
+
+export type TasaCierreJson = {
+	/** Ganadas / cerradas, en porcentaje (0–100, dos decimales) */
+	tasa_cierre_pct: number
+	oportunidades_ganadas: number
+	/** Ganadas + perdidas (las descartadas no cuentan) */
+	oportunidades_cerradas: number
+}
