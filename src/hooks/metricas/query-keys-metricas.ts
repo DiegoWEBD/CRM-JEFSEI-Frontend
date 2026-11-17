@@ -59,3 +59,5 @@ export const clavePrimaEsperada = () => ['metricas', 'prima-esperada'] as const
 
 export const claveProyeccionPrimaEsperada = () =>
 	['metricas', 'proyeccion-prima-esperada'] as const
+
+export const claveTasaCierre = () => ['metricas', 'tasa-cierre'] as const

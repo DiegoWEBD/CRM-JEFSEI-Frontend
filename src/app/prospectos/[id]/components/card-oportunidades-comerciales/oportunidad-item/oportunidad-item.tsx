@@ -38,7 +38,6 @@ import { formatearFecha } from '@/utils/formatear-fecha'
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
 	idProspecto: number
-	idCliente?: number
 	informacionCompleta: boolean
 	nombreCliente: string
 	lineaNegocioNombre: string
@@ -50,7 +49,6 @@ type OportunidadItemProps = {
 export default function OportunidadItem({
 	proceso,
 	idProspecto,
-	idCliente,
 	informacionCompleta,
 	nombreCliente,
 	lineaNegocioNombre,
@@ -69,6 +67,13 @@ export default function OportunidadItem({
 		proceso.id,
 	)
 	const descartarMutation = useDescartarProcesoComercial(idProspecto)
+
+	// Tras eliminar una solicitud el refetch devuelve menos elementos y el
+	// índice seleccionado puede quedar fuera del arreglo (p. ej. al eliminar
+	// la última). Se acota para que la vista nunca quede vacía por error.
+	const indexSeleccionado = solicitudes?.length
+		? Math.min(selectedIndex, solicitudes.length - 1)
+		: 0
 
 	const esDualRol = ejecutivoComercialRut === ejecutivoEvaluacionRut
 	const probabilidadEjecutivo = proceso.probabilidad_cierre_ejecutivo
@@ -254,7 +259,7 @@ export default function OportunidadItem({
 												onClick={() => setSelectedIndex(i)}
 												className={cn(
 													'rounded px-2.5 py-1 text-xs font-medium transition-colors',
-													i === selectedIndex
+													i === indexSeleccionado
 														? 'bg-primary text-primary-foreground'
 														: 'bg-muted text-muted-foreground hover:bg-muted/80',
 												)}
@@ -269,10 +274,10 @@ export default function OportunidadItem({
 									</div>
 								) : null}
 
-								{solicitudes[selectedIndex] ? (
+								{solicitudes[indexSeleccionado] ? (
 									<SolicitudCotizacionItem
-										key={solicitudes[selectedIndex].id}
-										solicitud={solicitudes[selectedIndex]}
+										key={solicitudes[indexSeleccionado].id}
+										solicitud={solicitudes[indexSeleccionado]}
 										informacionCompleta={informacionCompleta}
 										idProspecto={idProspecto}
 										idProceso={proceso.id}
@@ -358,7 +363,6 @@ export default function OportunidadItem({
 				onOpenChange={setOpenRegistrarPoliza}
 				idProceso={proceso.id}
 				idProspecto={idProspecto}
-				idCliente={idCliente}
 				nombreCliente={nombreCliente}
 				producto={proceso.producto}
 			/>

@@ -15,6 +15,7 @@ import { obtenerPrimaPorRamo } from './use-cases/obtener-prima-por-ramo/obtener-
 import { obtenerPrimaPotencialEstimada } from './use-cases/obtener-prima-potencial-estimada/obtener-prima-potencial-estimada'
 import { obtenerProyeccionPrimaEsperada } from './use-cases/obtener-proyeccion-prima-esperada/obtener-proyeccion-prima-esperada'
 import { obtenerResumenActividades } from './use-cases/obtener-resumen-actividades/obtener-resumen-actividades'
+import { obtenerTasaCierre } from './use-cases/obtener-tasa-cierre/obtener-tasa-cierre'
 import { obtenerTendenciaAnual } from './use-cases/obtener-tendencia-anual/obtener-tendencia-anual'
 
 /**
@@ -42,3 +43,4 @@ export const consultarPrimaCotizada = cache(obtenerPrimaCotizada)
 export const consultarPrimaPotencialEstimada = cache(obtenerPrimaPotencialEstimada)
 export const consultarPrimaEsperada = cache(obtenerPrimaEsperada)
 export const consultarProyeccionPrimaEsperada = cache(obtenerProyeccionPrimaEsperada)
+export const consultarTasaCierre = cache(obtenerTasaCierre)

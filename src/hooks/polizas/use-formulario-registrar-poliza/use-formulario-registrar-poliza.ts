@@ -9,14 +9,12 @@ import { FieldsFormularioRegistrarPoliza } from './dto/fields-formulario-registr
 type UseFormularioRegistrarPolizaProps = {
 	idProceso: number
 	idProspecto: number
-	idCliente?: number
 	onClose?: () => void
 }
 
 export const useFormularioRegistrarPoliza = ({
 	idProceso,
 	idProspecto,
-	idCliente,
 	onClose,
 }: UseFormularioRegistrarPolizaProps) => {
 	const queryClient = useQueryClient()
@@ -44,9 +42,9 @@ export const useFormularioRegistrarPoliza = ({
 				queryKey: ['procesos-comerciales', idProspecto],
 			})
 
-			if (idCliente) {
-				queryClient.invalidateQueries({ queryKey: ['polizas', idCliente] })
-			}
+			queryClient.invalidateQueries({
+				queryKey: ['panel-polizas'],
+			})
 			onClose?.()
 		},
 	})

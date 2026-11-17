@@ -31,8 +31,8 @@ export function DashboardSkeleton() {
       <PanelLayout>
         <div className='space-y-3 pt-1'>
           <Skeleton className='h-5 w-36' />
-          <div className='grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5'>
-            {Array.from({ length: 5 }).map((_, i) => (
+          <div className='grid grid-cols-2 gap-2.5 lg:grid-cols-4'>
+            {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className='h-24 rounded-lg' />
             ))}
           </div>

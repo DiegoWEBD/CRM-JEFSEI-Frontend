@@ -76,6 +76,13 @@ All components are built:
 - **Vista**: `error-fallback.tsx` muestra "Sin permisos" (ShieldAlert + "No tienes permiso para acceder a este recurso…" + "Volver al inicio") para `esErrorSinPermisos(error)`, `UnauthorizedError` o axios 401. La rama genérica "Error / Reintentar" queda para el resto.
 - **Tests**: `src/lib/__tests__/errores.test.ts`, `src/infraestructura/axios/__tests__/axios-client.test.ts`, caso nuevo en `client-axios.test.ts` y `src/components/error-fallback/__tests__/error-fallback.test.tsx` (incluye el error serializado de SSR).
 
+**Fix eliminar solicitud de cotización (UI se vaciaba al borrar la última): DONE**
+
+- **Bug**: al eliminar la última solicitud de cotización de una oportunidad, la UI mostraba vacío (desaparecían las restantes) hasta recargar; al eliminar la primera funcionaba. La eliminación en BD era correcta.
+- **Causa**: `oportunidad-item.tsx` navegaba las solicitudes con `selectedIndex` posicional y nunca se acotaba tras el refetch; al borrar la última, `solicitudes[selectedIndex]` quedaba fuera del arreglo y se renderizaba `null` (y con 2→1 la tira de pestañas se oculta por `length > 1`, así que "desaparecía todo").
+- **Fix**: índice derivado `indexSeleccionado = Math.min(selectedIndex, solicitudes.length - 1)` (sin efectos, evita `react-hooks/set-state-in-effect`), usado para el highlight de la tira de pestañas y para el `SolicitudCotizacionItem` renderizado.
+- **Tests**: `.../oportunidad-item/__tests__/seleccion-solicitud-tras-eliminar.test.tsx` — simula el refetch con menos elementos (misma sesión, mismo árbol) y cubre: eliminar la última de varias, eliminar la última de dos, eliminar la primera y quedar sin solicitudes.
+
 **Pre-existing lint issues (not from our work)**:
 - `campos-condominio-registrar.tsx:35`: `@typescript-eslint/no-explicit-any`
 - `use-mobile.tsx:14`: `react-hooks/set-state-in-effect` (React 19 lint rule) — **resuelto** al reescribir el hook con `useSyncExternalStore` (ver "Fix sidebar mobile")

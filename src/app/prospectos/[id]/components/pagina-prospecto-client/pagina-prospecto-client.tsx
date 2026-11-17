@@ -77,7 +77,6 @@ export default function PaginaProspectoClient({
 			>
 				<CardOportunidadesComerciales
 					idProspecto={prospecto.id}
-					idCliente={prospecto.id_cliente}
 					informacionCompleta={prospecto.informacion_completa}
 					nombreCliente={prospecto.nombre_riesgo}
 					lineaNegocioId={prospecto.linea_negocio.id}
