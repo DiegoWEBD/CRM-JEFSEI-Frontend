@@ -26,7 +26,6 @@ type SheetRegistrarPolizaProps = {
 	onOpenChange: (open: boolean) => void
 	idProceso: number
 	idProspecto: number
-	idCliente?: number
 	nombreCliente: string
 	producto: string
 }
@@ -36,7 +35,6 @@ export default function SheetRegistrarPoliza({
 	onOpenChange,
 	idProceso,
 	idProspecto,
-	idCliente,
 	nombreCliente,
 	producto,
 }: SheetRegistrarPolizaProps) {
@@ -47,7 +45,6 @@ export default function SheetRegistrarPoliza({
 	const { formik, cargando } = useFormularioRegistrarPoliza({
 		idProceso,
 		idProspecto,
-		idCliente,
 		onClose: () => {
 			formik.resetForm()
 			onOpenChange(false)

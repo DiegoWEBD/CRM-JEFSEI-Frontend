@@ -30,14 +30,15 @@ function montarHook(props: { onClose?: () => void } = {}) {
 			useFormularioRegistrarPoliza({
 				idProceso: 321,
 				idProspecto: 55,
-				idCliente: 9,
 				...props,
 			}),
 		{ wrapper },
 	)
 }
 
-function errores(result: { current: { formik: { errors: unknown } } }): Record<string, string> {
+function errores(result: {
+	current: { formik: { errors: unknown } }
+}): Record<string, string> {
 	return result.current.formik.errors as Record<string, string>
 }
 
@@ -60,7 +61,10 @@ async function enviar(valores: Record<string, unknown>, onClose?: () => void) {
 let red: RedSimulada
 
 beforeEach(() => {
-	red = simularRed(() => ({ status: 200, data: { numero_poliza: 'POL-2026-001' } }), [axios])
+	red = simularRed(
+		() => ({ status: 200, data: { numero_poliza: 'POL-2026-001' } }),
+		[axios],
+	)
 })
 
 describe('registro de póliza — validación del formulario', () => {
@@ -96,10 +100,14 @@ describe('registro de póliza — validación del formulario', () => {
 
 	it('acota la comisión de la corredora al rango 0-100 por ciento', async () => {
 		const alta = await enviar({ ...POLIZA_VALIDA, comision_corredora_pct: 150 })
-		await waitFor(() => expect(errores(alta).comision_corredora_pct).toBeDefined())
+		await waitFor(() =>
+			expect(errores(alta).comision_corredora_pct).toBeDefined(),
+		)
 
 		const baja = await enviar({ ...POLIZA_VALIDA, comision_corredora_pct: -5 })
-		await waitFor(() => expect(errores(baja).comision_corredora_pct).toBeDefined())
+		await waitFor(() =>
+			expect(errores(baja).comision_corredora_pct).toBeDefined(),
+		)
 		expect(red.llamadas).toHaveLength(0)
 	})
 
@@ -116,7 +124,10 @@ describe('registro de póliza — payload enviado', () => {
 		await enviar(POLIZA_VALIDA)
 
 		await waitFor(() => expect(red.llamadas).toHaveLength(1))
-		const payload = JSON.parse(String(red.llamadas[0]!.data)) as Record<string, unknown>
+		const payload = JSON.parse(String(red.llamadas[0]!.data)) as Record<
+			string,
+			unknown
+		>
 		// 15 % se envía como 0,15: si se enviara 15 la comisión sería 15 veces mayor.
 		expect(payload.comision_corredora_pct).toBe(0.15)
 	})
@@ -125,7 +136,10 @@ describe('registro de póliza — payload enviado', () => {
 		await enviar(POLIZA_VALIDA)
 
 		await waitFor(() => expect(red.llamadas).toHaveLength(1))
-		const payload = JSON.parse(String(red.llamadas[0]!.data)) as Record<string, unknown>
+		const payload = JSON.parse(String(red.llamadas[0]!.data)) as Record<
+			string,
+			unknown
+		>
 		expect(payload.numero_poliza).toBe('POL-2026-001')
 	})
 
@@ -150,7 +164,10 @@ describe('registro de póliza — payload enviado', () => {
 		await enviar({ ...POLIZA_VALIDA, comision_corredora_pct: 0 })
 
 		await waitFor(() => expect(red.llamadas).toHaveLength(1))
-		const payload = JSON.parse(String(red.llamadas[0]!.data)) as Record<string, unknown>
+		const payload = JSON.parse(String(red.llamadas[0]!.data)) as Record<
+			string,
+			unknown
+		>
 		expect(payload.comision_corredora_pct).toBe(0)
 	})
 

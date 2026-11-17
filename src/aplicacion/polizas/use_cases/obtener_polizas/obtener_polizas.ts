@@ -20,14 +20,20 @@ export const obtenerPolizas = async (
 
 	const params = new URLSearchParams()
 
-	if (filtros.id_cliente != null) params.set('id_cliente', String(filtros.id_cliente))
-	if (filtros.id_company != null) params.set('id_company', String(filtros.id_company))
-	if (filtros.id_producto != null) params.set('id_producto', String(filtros.id_producto))
-	if (filtros.id_linea_negocio != null) params.set('id_linea_negocio', String(filtros.id_linea_negocio))
-	if (filtros.texto_busqueda) params.set('texto_busqueda', filtros.texto_busqueda)
+	if (filtros.id_cliente != null)
+		params.set('id_cliente', String(filtros.id_cliente))
+	if (filtros.id_company != null)
+		params.set('id_company', String(filtros.id_company))
+	if (filtros.id_producto != null)
+		params.set('id_producto', String(filtros.id_producto))
+	if (filtros.id_linea_negocio != null)
+		params.set('id_linea_negocio', String(filtros.id_linea_negocio))
+	if (filtros.texto_busqueda)
+		params.set('texto_busqueda', filtros.texto_busqueda)
 	if (filtros.estado) params.set('estado', filtros.estado)
 	if (filtros.pagina) params.set('pagina', String(filtros.pagina))
-	if (filtros.tamano_pagina) params.set('tamano_pagina', String(filtros.tamano_pagina))
+	if (filtros.tamano_pagina)
+		params.set('tamano_pagina', String(filtros.tamano_pagina))
 
 	const qs = params.toString()
 	const url = `/polizas${qs ? `?${qs}` : ''}`

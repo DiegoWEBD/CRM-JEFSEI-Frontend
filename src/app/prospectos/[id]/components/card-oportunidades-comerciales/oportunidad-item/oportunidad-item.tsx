@@ -38,7 +38,6 @@ import { formatearFecha } from '@/utils/formatear-fecha'
 type OportunidadItemProps = {
 	proceso: ProcesoComercial
 	idProspecto: number
-	idCliente?: number
 	informacionCompleta: boolean
 	nombreCliente: string
 	lineaNegocioNombre: string
@@ -50,7 +49,6 @@ type OportunidadItemProps = {
 export default function OportunidadItem({
 	proceso,
 	idProspecto,
-	idCliente,
 	informacionCompleta,
 	nombreCliente,
 	lineaNegocioNombre,
@@ -365,7 +363,6 @@ export default function OportunidadItem({
 				onOpenChange={setOpenRegistrarPoliza}
 				idProceso={proceso.id}
 				idProspecto={idProspecto}
-				idCliente={idCliente}
 				nombreCliente={nombreCliente}
 				producto={proceso.producto}
 			/>

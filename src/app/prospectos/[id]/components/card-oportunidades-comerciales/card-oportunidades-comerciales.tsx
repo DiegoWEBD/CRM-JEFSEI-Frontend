@@ -22,7 +22,6 @@ type FiltroAbiertos = 'abiertos' | 'cerrados' | 'todos'
 
 type CardOportunidadesComercialesProps = {
 	idProspecto: number
-	idCliente?: number
 	informacionCompleta: boolean
 	nombreCliente: string
 	lineaNegocioId: number
@@ -34,7 +33,6 @@ type CardOportunidadesComercialesProps = {
 
 export default function CardOportunidadesComerciales({
 	idProspecto,
-	idCliente,
 	informacionCompleta,
 	nombreCliente,
 	lineaNegocioId,
@@ -113,7 +111,6 @@ export default function CardOportunidadesComerciales({
 									key={proceso.id}
 									proceso={proceso}
 									idProspecto={idProspecto}
-									idCliente={idCliente}
 									informacionCompleta={informacionCompleta}
 									nombreCliente={nombreCliente}
 									lineaNegocioNombre={lineaNegocioNombre}
