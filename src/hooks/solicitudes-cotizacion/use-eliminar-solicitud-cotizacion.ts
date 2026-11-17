@@ -11,7 +11,7 @@ export const useEliminarSolicitudCotizacion = (
 	return useMutation({
 		mutationFn: (idSolicitud: number) =>
 			eliminarSolicitudCotizacion(idSolicitud),
-		onSuccess: (data) => {
+		onSuccess: data => {
 			toast.success(data?.message ?? 'Solicitud de cotización eliminada')
 			// Prefijo: refresca las listas por prospecto y el panel paginado.
 			queryClient.invalidateQueries({

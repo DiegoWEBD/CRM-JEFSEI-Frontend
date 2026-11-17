@@ -70,6 +70,13 @@ export default function OportunidadItem({
 	)
 	const descartarMutation = useDescartarProcesoComercial(idProspecto)
 
+	// Tras eliminar una solicitud el refetch devuelve menos elementos y el
+	// índice seleccionado puede quedar fuera del arreglo (p. ej. al eliminar
+	// la última). Se acota para que la vista nunca quede vacía por error.
+	const indexSeleccionado = solicitudes?.length
+		? Math.min(selectedIndex, solicitudes.length - 1)
+		: 0
+
 	const esDualRol = ejecutivoComercialRut === ejecutivoEvaluacionRut
 	const probabilidadEjecutivo = proceso.probabilidad_cierre_ejecutivo
 	const probabilidadEfectiva =
@@ -254,7 +261,7 @@ export default function OportunidadItem({
 												onClick={() => setSelectedIndex(i)}
 												className={cn(
 													'rounded px-2.5 py-1 text-xs font-medium transition-colors',
-													i === selectedIndex
+													i === indexSeleccionado
 														? 'bg-primary text-primary-foreground'
 														: 'bg-muted text-muted-foreground hover:bg-muted/80',
 												)}
@@ -269,10 +276,10 @@ export default function OportunidadItem({
 									</div>
 								) : null}
 
-								{solicitudes[selectedIndex] ? (
+								{solicitudes[indexSeleccionado] ? (
 									<SolicitudCotizacionItem
-										key={solicitudes[selectedIndex].id}
-										solicitud={solicitudes[selectedIndex]}
+										key={solicitudes[indexSeleccionado].id}
+										solicitud={solicitudes[indexSeleccionado]}
 										informacionCompleta={informacionCompleta}
 										idProspecto={idProspecto}
 										idProceso={proceso.id}
