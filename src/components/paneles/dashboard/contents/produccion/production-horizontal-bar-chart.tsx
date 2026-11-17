@@ -1,33 +1,24 @@
 'use client'
 
 import { useMemo } from 'react'
-import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/chart'
 import { colorSegmento } from '@/lib/paleta-dashboard'
 import { chartAxisTickUf, formatUF } from '@/lib/uf'
 import { cn } from '@/lib/utils'
+import {
+  MetricaContenidoError,
+  MetricaGraficoSkeleton,
+} from '../../shared/metrica-card-skeleton'
 
 function truncarLabel(label: string, max = 16) {
   return label.length > max ? `${label.slice(0, max - 1)}…` : label
-}
-
-function TooltipBarra({
-  active,
-  payload,
-}: {
-  active?: boolean
-  payload?: { payload: { name: string; label: string; prima_neta_total: number } }[]
-}) {
-  if (!active || !payload?.[0]?.payload) return null
-  const p = payload[0].payload
-  return (
-    <div className='rounded-lg border border-border bg-popover px-3 py-2 text-xs shadow-md'>
-      <p className='font-semibold text-foreground'>{p.label}</p>
-      <p className='mt-0.5 tabular-nums text-muted-foreground'>
-        Prima neta: {formatUF(p.prima_neta_total)}
-      </p>
-    </div>
-  )
 }
 
 export function ProductionHorizontalBarChart({
@@ -37,6 +28,8 @@ export function ProductionHorizontalBarChart({
   className,
   axisWidth = 88,
   variant = 'prima',
+  loading = false,
+  error = false,
 }: {
   title: string
   description?: string
@@ -44,7 +37,17 @@ export function ProductionHorizontalBarChart({
   className?: string
   axisWidth?: number
   variant?: 'prima' | 'count'
+  /** Muestra el skeleton del gráfico, con el título visible */
+  loading?: boolean
+  /** Muestra el mensaje de error, con el título visible */
+  error?: boolean
 }) {
+  const chartConfig = {
+    valorGrafico: {
+      label: variant === 'prima' ? 'Prima neta' : 'Cantidad',
+    },
+  } satisfies ChartConfig
+
   const chartData = useMemo(
     () =>
       (Array.isArray(items) ? items : []).map((item) => ({
@@ -55,16 +58,6 @@ export function ProductionHorizontalBarChart({
       })),
     [items],
   )
-
-  if (chartData.length === 0) {
-    return (
-      <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
-        <CardContent className='py-12 text-center text-xs text-muted-foreground'>
-          No hay datos disponibles para este período
-        </CardContent>
-      </Card>
-    )
-  }
 
   const altura = Math.max(180, chartData.length * 32)
 
@@ -77,8 +70,20 @@ export function ProductionHorizontalBarChart({
         ) : null}
       </CardHeader>
       <CardContent className='pb-2.5 pt-0'>
-        <div className='w-full' style={{ height: altura }}>
-          <ResponsiveContainer width='100%' height={altura}>
+        {loading ? (
+          <MetricaGraficoSkeleton alto={220} />
+        ) : error ? (
+          <MetricaContenidoError />
+        ) : chartData.length === 0 ? (
+          <p className='py-12 text-center text-xs text-muted-foreground'>
+            No hay datos disponibles para este período
+          </p>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className='aspect-auto w-full'
+            style={{ height: altura }}
+          >
             <BarChart
               data={chartData}
               layout='vertical'
@@ -106,22 +111,31 @@ export function ProductionHorizontalBarChart({
                 width={axisWidth}
                 fontSize={10}
               />
-              <Tooltip
-                content={<TooltipBarra />}
-                cursor={{ fill: 'hsl(var(--primary) / 0.08)' }}
+              <ChartTooltip
+                cursor={{ fill: 'color-mix(in oklab, var(--primary) 8%, transparent)' }}
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(_label, payload) =>
+                      (payload?.[0]?.payload?.label as string | undefined) ?? ''
+                    }
+                    formatter={(value) =>
+                      variant === 'prima' ? formatUF(Number(value)) : Number(value).toLocaleString('es-CL')
+                    }
+                  />
+                }
               />
               <Bar dataKey='valorGrafico' radius={[0, 4, 4, 0]} maxBarSize={16}>
                 {chartData.map((entry, index) => (
                   <Cell
                     key={entry.label}
-                    fill={variant === 'prima' ? colorSegmento(index) : index === 0 ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground) / 0.28)'}
+                    fill={variant === 'prima' ? colorSegmento(index) : index === 0 ? 'var(--primary)' : 'color-mix(in oklab, var(--muted-foreground) 28%, transparent)'}
                     fillOpacity={variant === 'prima' ? 0.88 : undefined}
                   />
                 ))}
               </Bar>
             </BarChart>
-          </ResponsiveContainer>
-        </div>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   )

@@ -200,6 +200,7 @@ export default function PanelProcesosComercialesClient({
 						pagina={response?.pagina ?? 1}
 						totalPaginas={response?.total_paginas ?? 0}
 						onPaginaChange={setPagina}
+						textoResaltado={textoBusqueda}
 					/>
 				</div>
 			</section>

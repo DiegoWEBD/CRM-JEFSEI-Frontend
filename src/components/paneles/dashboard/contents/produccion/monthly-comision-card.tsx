@@ -1,25 +1,39 @@
-import { Card, CardContent } from '@/components/card'
+import {
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
+} from '@tanstack/react-query'
+import { consultarComisionMensual } from '@/aplicacion/metricas/consultas-dashboard'
+import { claveComisionMensual } from '@/hooks/metricas/query-keys-metricas'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
+import MonthlyComisionCardClient from './monthly-comision-card-client'
 
-type MonthlyComisionCardProps = {
-	totalComision: number
-	mesLabel: string
-}
+/**
+ * Comisión mensual: prefetch SSR de la métrica `comision-mensual`.
+ *
+ * La queryKey debe calzar exactamente con la de `useComisionMensual` para
+ * que la hidratación sea efectiva y no se dispare un segundo fetch. Al
+ * cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
+ */
+export default async function MonthlyComisionCard({
+	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
+}: {
+	prefetch?: boolean
+	filtros?: FiltrosDashboard
+}) {
+	if (!prefetch) return <MonthlyComisionCardClient />
 
-export default function MonthlyComisionCard({
-	totalComision,
-	mesLabel,
-}: MonthlyComisionCardProps) {
+	const queryClient = new QueryClient()
+
+	await queryClient.query({
+		queryKey: claveComisionMensual(filtros),
+		queryFn: () => consultarComisionMensual(filtros.mes, filtros.year),
+	})
+
 	return (
-		<Card className='border-border bg-card shadow-none'>
-			<CardContent className='p-3.5'>
-				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-					Comisión mensual
-				</p>
-				<p className='mt-1 text-2xl font-semibold tabular-nums tracking-tight text-foreground sm:text-[1.75rem]'>
-					{totalComision.toLocaleString('es-CL')} UF
-				</p>
-				<p className='mt-0.5 text-xs text-muted-foreground'>{mesLabel}</p>
-			</CardContent>
-		</Card>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<MonthlyComisionCardClient />
+		</HydrationBoundary>
 	)
 }

@@ -1,77 +1,42 @@
-'use client'
+import {
+	QueryClient,
+	dehydrate,
+	HydrationBoundary,
+} from '@tanstack/react-query'
+import { consultarActividadesPorTipo } from '@/aplicacion/metricas/consultas-dashboard'
+import { claveActividadesPorTipo } from '@/hooks/metricas/query-keys-metricas'
+import { filtrosInicialesDashboard, type FiltrosDashboard } from '@/lib/filtros-dashboard'
+import CommercialActivitiesBarChartClient from './commercial-activities-bar-chart-client'
 
-import { useMemo } from 'react'
-import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis, ResponsiveContainer } from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
-import { cn } from '@/lib/utils'
-import { colorSegmento } from '@/lib/paleta-dashboard'
-
-export default function CommercialActivitiesBarChart({
-  data,
-  className,
+/**
+ * Gestiones por tipo (gráfico): prefetch SSR de la métrica
+ * `actividades-por-tipo`.
+ *
+ * La queryKey debe calzar exactamente con la de `useActividadesPorTipo`
+ * para que la hidratación sea efectiva y no se dispare un segundo fetch.
+ * Al cambiar mes/año la versión cliente hace refetch (la queryKey cambia).
+ */
+export default async function CommercialActivitiesBarChart({
+	className,
+	prefetch = true,
+	filtros = filtrosInicialesDashboard(),
 }: {
-  data: { label: string; value: number }[]
-  className?: string
+	className?: string
+	prefetch?: boolean
+	filtros?: FiltrosDashboard
 }) {
-  const chartData = useMemo(
-    () =>
-      data.map((d) => ({
-        name: d.label,
-        cantidad: d.value,
-        label: d.label,
-        value: d.value,
-      })),
-    [data],
-  )
+	if (!prefetch) return <CommercialActivitiesBarChartClient className={className} />
 
-  if (chartData.length === 0 || chartData.every((d) => d.cantidad === 0)) {
-    return (
-      <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
-        <CardContent className='py-12 text-center text-xs text-muted-foreground'>
-          Sin gestiones en el per&iacute;odo seleccionado.
-        </CardContent>
-      </Card>
-    )
-  }
+	const queryClient = new QueryClient()
 
-  return (
-    <Card className={cn('border-border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md', className)}>
-      <CardHeader className='space-y-0 pb-1.5 pt-2.5'>
-        <CardTitle className='text-xs font-semibold text-foreground'>Gestiones por tipo</CardTitle>
-      </CardHeader>
-      <CardContent className='pb-2.5 pt-0'>
-        <div className='h-[200px] w-full sm:h-[210px]'>
-          <ResponsiveContainer width='100%' height={210}>
-            <BarChart
-              data={chartData}
-              margin={{ top: 6, right: 6, left: 0, bottom: 0 }}
-            >
-              <CartesianGrid vertical={false} strokeDasharray='3 3' className='stroke-border' />
-              <XAxis
-                dataKey='name'
-                tickLine={false}
-                axisLine={false}
-                tickMargin={6}
-                fontSize={10}
-                interval={0}
-                angle={-18}
-                textAnchor='end'
-                height={48}
-              />
-              <YAxis tickLine={false} axisLine={false} width={28} fontSize={10} allowDecimals={false} />
-              <Bar dataKey='cantidad' radius={[4, 4, 0, 0]} maxBarSize={32}>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={entry.name}
-                    fill={colorSegmento(index)}
-                    fillOpacity={0.88}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </CardContent>
-    </Card>
-  )
+	await queryClient.query({
+		queryKey: claveActividadesPorTipo(filtros),
+		queryFn: () => consultarActividadesPorTipo(filtros.mes, filtros.year),
+	})
+
+	return (
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<CommercialActivitiesBarChartClient className={className} />
+		</HydrationBoundary>
+	)
 }
