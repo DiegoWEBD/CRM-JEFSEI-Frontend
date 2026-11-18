@@ -1,7 +1,23 @@
 import LoginForm from './components/login-form'
 import { ShieldCheck } from 'lucide-react'
+import { redirect } from 'next/navigation'
+import { getSession } from '@/lib/auth'
+import { destinoSeguro } from '@/lib/rutas'
 
-const LoginPage = () => {
+type LoginPageProps = {
+	searchParams: Promise<{ next?: string | string[] }>
+}
+
+const LoginPage = async ({ searchParams }: LoginPageProps) => {
+	// Defensa en profundidad: el proxy ya redirige a /login cuando hay sesión
+	// activa, pero si se llega hasta aquí con sesión válida no se muestra el
+	// formulario: se vuelve al destino pedido (?next=) o al home.
+	const session = await getSession()
+	if (session) {
+		const { next } = await searchParams
+		redirect(destinoSeguro(Array.isArray(next) ? next[0] : next) ?? '/')
+	}
+
 	return (
 		<div className='grid h-full w-full overflow-hidden lg:grid-cols-2'>
 			{/* Panel de marca (desktop) */}

@@ -12,6 +12,7 @@ import { Toaster } from '@/components/sonner'
 import { AuthProvider } from '@/contexts/auth-context'
 import type { TokenPayload } from '@/dtos/token-payload'
 import CanalNotificaciones from '@/components/providers/canal-notificaciones'
+import RedirigirSesionExpirada from '@/components/providers/redirigir-sesion-expirada'
 import axios from 'axios'
 import { toast } from 'sonner'
 
@@ -80,6 +81,7 @@ export default function Providers({
 				>
 					{children}
 					<CanalNotificaciones />
+					<RedirigirSesionExpirada />
 				</AuthProvider>
 			</ThemeProvider>
 			<Toaster />

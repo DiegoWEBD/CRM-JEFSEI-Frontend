@@ -1,6 +1,7 @@
 'use client'
 
 import { clientAxios } from '@/infraestructura/axios/client-axios'
+import { destinoSeguro } from '@/lib/rutas'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -25,7 +26,9 @@ export const useAuth = () => {
       })
 
       queryClient.clear()
-      router.replace('/')
+      // Vuelve a la ruta que se intentaba visitar (?next=) o al home.
+      const next = new URLSearchParams(window.location.search).get('next')
+      router.replace(destinoSeguro(next) ?? '/')
       router.refresh()
     } catch {
       setError('Credenciales inválidas')
