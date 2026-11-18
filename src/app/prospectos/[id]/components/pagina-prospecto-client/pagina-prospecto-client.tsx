@@ -2,16 +2,16 @@
 
 import AuthGuard from '@/components/layouts/guards/auth-guard'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
 import PanelLayout from '@/components/paneles/panel-layout/panel-layout'
 import { ProspectoCondominio } from '@/dominio/prospecto-condominio/prospecto-condominio'
 import { ProspectoEmpresa } from '@/dominio/prospecto-empresa/prospecto-empresa'
 import { Prospecto } from '@/dominio/prospecto/prospecto'
+import { useObtenerProspecto } from '@/hooks/prospectos/use-obtener-prospecto'
 import {
 	CODIGO_LINEA_CONDOMINIOS,
 	CODIGO_LINEAS_COMERCIALES,
-	codigoLineaNegocio,
 } from '@/lib/linea-negocio'
-import { useObtenerProspecto } from '@/hooks/prospectos/use-obtener-prospecto'
 import CardArchivos from '../card-archivos/card-archivos'
 import CardContactos from '../card-contactos/card-contactos'
 import CardInformacionEmpresa from '../card-informacion-empresa/card-informacion-empresa'
@@ -24,7 +24,6 @@ import ObservacionesComercialesSection from '../observaciones-comerciales-sectio
 import ProspectoHeroHeader from '../prospecto-hero-header/prospecto-hero-header'
 import RecordatoriosClienteSection from '../recordatorios-cliente-section/recordatorios-cliente-section'
 import SeguimientoComercialSection from '../seguimiento-comercial-section/seguimiento-comercial-section'
-import PanelBody from '@/components/paneles/panel-layout/panel-body/panel-body'
 
 type PaginaProspectoClientProps = {
 	prospectoInicial: Prospecto
@@ -35,7 +34,7 @@ export default function PaginaProspectoClient({
 }: PaginaProspectoClientProps) {
 	const { data: prospecto } = useObtenerProspecto(prospectoInicial)
 
-	const codigoLinea = codigoLineaNegocio(prospecto.linea_negocio)
+	const codigoLinea = prospecto.linea_negocio.codigo
 	const esCondominio = codigoLinea === CODIGO_LINEA_CONDOMINIOS
 	const esEmpresa = codigoLinea === CODIGO_LINEAS_COMERCIALES
 
