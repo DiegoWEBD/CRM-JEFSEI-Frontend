@@ -23,7 +23,6 @@ import { CambiarLineaNegocioProspectoRequest } from '@/aplicacion/prospectos/use
 import { useLineasNegocio } from '@/hooks/lineas-negocio/use-lineas-negocio'
 import { useObtenerProcesosComerciales } from '@/hooks/procesos-comerciales/use-obtener-procesos-comerciales'
 import { useCambiarLineaNegocio } from '@/hooks/prospectos/use-cambiar-linea-negocio'
-import { codigoLineaNegocio } from '@/lib/linea-negocio'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -113,10 +112,7 @@ export default function DialogCambiarLineaNegocio({
 							</SelectTrigger>
 							<SelectContent>
 								{lineasDisponibles.map(linea => (
-									<SelectItem
-										key={linea.id}
-										value={codigoLineaNegocio(linea)}
-									>
+									<SelectItem key={linea.id} value={linea.codigo}>
 										{linea.nombre}
 									</SelectItem>
 								))}
