@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/button'
+import { SkeletonFilasTabla } from '@/components/skeleton'
 import Poliza from '@/dominio/poliza/poliza'
 import { cn } from '@/lib/utils'
 import { ChevronDown, ChevronRight } from 'lucide-react'
@@ -69,11 +70,18 @@ export default function ContenedorPolizas({
     setGruposExpandidos(new Set())
   }
 
-  if (isLoading && !polizas) {
+  if (isLoading) {
     return (
-      <p className='rounded-md border border-dashed border-border/70 bg-muted/10 px-2.5 py-2 text-xs text-muted-foreground'>
-        Cargando pólizas…
-      </p>
+      <div className='overflow-x-auto'>
+        <ul className='space-y-2.5'>
+          <SkeletonFilasTabla
+            cantidad={10}
+            contexto='lista'
+            celdas={6}
+            className={filaPolizaGridClass}
+          />
+        </ul>
+      </div>
     )
   }
 
