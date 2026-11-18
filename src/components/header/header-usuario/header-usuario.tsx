@@ -2,7 +2,14 @@
 
 import InicialesUsuario from '@/app/personal/components/iniciales-usuario'
 import { Button } from '@/components/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/dropdown-menu'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/dropdown-menu'
 import { useAuth } from '@/hooks/auth/use-auth'
 import { ChevronDown, Loader2, LogOut, Settings, User } from 'lucide-react'
 
@@ -17,13 +24,18 @@ const HeaderUsuario = ({ nombre, nombreRoles }: Props) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant='ghost' className='gap-2 px-1.5 py-1 sm:px-2' aria-label='Menú de usuario'>
-					<div className='grid size-8 place-items-center rounded-full bg-primary/10 ring-1 ring-border'>
-						<InicialesUsuario nombre={nombre} className='text-sm font-medium text-primary' />
-					</div>
+				<Button
+					variant='ghost'
+					className='gap-2 px-1.5 py-1 sm:px-2'
+					aria-label='Menú de usuario'
+				>
+					<InicialesUsuario nombre={nombre} />
+
 					<span className='hidden min-w-0 flex-col items-start leading-tight md:flex'>
-						<span className='max-w-[12rem] truncate text-sm font-medium text-foreground'>{nombre}</span>
-						<span className='max-w-[12rem] truncate text-sm text-muted-foreground'>
+						<span className='max-w-48 truncate text-sm font-medium text-foreground'>
+							{nombre}
+						</span>
+						<span className='max-w-48 truncate text-sm text-muted-foreground'>
 							{nombreRoles.join(', ')}
 						</span>
 					</span>
@@ -52,7 +64,11 @@ const HeaderUsuario = ({ nombre, nombreRoles }: Props) => {
 					disabled={cargando}
 					className='gap-2 text-destructive hover:cursor-pointer hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive'
 				>
-					{cargando ? <Loader2 className='size-4 animate-spin' /> : <LogOut className='size-4' />}
+					{cargando ? (
+						<Loader2 className='size-4 animate-spin' />
+					) : (
+						<LogOut className='size-4' />
+					)}
 					Cerrar sesión
 				</DropdownMenuItem>
 			</DropdownMenuContent>

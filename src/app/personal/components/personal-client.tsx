@@ -21,6 +21,7 @@ import SelectValue from '@/components/forms/select/select-value/select-value'
 import { Input } from '@/components/input'
 import { Label } from '@/components/label'
 import PermissionGuard from '@/components/layouts/guards/permission-guard'
+import Paginacion from '@/components/paginacion/paginacion'
 import { Skeleton } from '@/components/skeleton'
 import {
 	Table,
@@ -32,14 +33,14 @@ import {
 } from '@/components/table'
 import Usuario from '@/dominio/usuario/usuario'
 import { useUserSession } from '@/hooks/auth/use-user-session'
-import { useDebounce } from '@/hooks/use-debounce'
 import { useObtenerRoles, type RolJson } from '@/hooks/roles/use-obtener-roles'
 import { useSucursales } from '@/hooks/sucursales/use-sucursales'
+import { useDebounce } from '@/hooks/use-debounce'
 import { useActualizarUsuario } from '@/hooks/usuarios/use-actualizar-usuario'
 import { useEliminarUsuario } from '@/hooks/usuarios/use-eliminar-usuario'
 import { useRegistrarUsuario } from '@/hooks/usuarios/use-registrar-usuario'
-import Paginacion from '@/components/paginacion/paginacion'
 import { useUsuarios } from '@/hooks/usuarios/use-usuarios'
+import { esquemaPassword } from '@/lib/validacion-password'
 import { classInputRut } from '@/utils/class-input-rut'
 import { formatRut } from '@/utils/format-rut'
 import {
@@ -59,20 +60,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import * as Yup from 'yup'
-
-function InicialesUsuario({ nombre }: { nombre: string }) {
-	const iniciales = nombre
-		.split(' ')
-		.map(p => p.charAt(0).toUpperCase())
-		.slice(0, 2)
-		.join('')
-
-	return (
-		<div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-highlight-light text-xs font-semibold text-primary-highlight'>
-			{iniciales}
-		</div>
-	)
-}
+import InicialesUsuario from './iniciales-usuario'
 
 function CardUsuario({
 	usuario,
@@ -479,9 +467,7 @@ function DialogRegistrarUsuario({
 		idSucursal: Yup.number()
 			.typeError('Debe seleccionar una sucursal')
 			.required('Debe seleccionar una sucursal'),
-		password: Yup.string()
-			.required('La contraseña es obligatoria')
-			.min(6, 'Mínimo 6 caracteres'),
+		password: esquemaPassword(true),
 		roles: Yup.array().min(1, 'Debe seleccionar al menos un rol'),
 	})
 
@@ -664,6 +650,7 @@ function DialogRegistrarUsuario({
 										)}
 									</button>
 								</div>
+
 								{formik.touched.password && formik.errors.password && (
 									<p className='text-xs text-destructive'>
 										{formik.errors.password}
@@ -800,11 +787,7 @@ function DialogEditarUsuario({
 			.typeError('Debe seleccionar una sucursal')
 			.required('Debe seleccionar una sucursal'),
 		roles: Yup.array().min(1, 'Debe seleccionar al menos un rol'),
-		password: Yup.string().test(
-			'min',
-			'Mínimo 6 caracteres',
-			v => !v || v.length >= 6,
-		),
+		password: esquemaPassword(false),
 		porcentajeComision: Yup.string().test(
 			'max',
 			'El porcentaje no puede superar 100',
@@ -976,6 +959,9 @@ function DialogEditarUsuario({
 											)}
 										</button>
 									</div>
+									<p className='text-xs text-muted-foreground'>
+										Déjala en blanco para mantener la contraseña actual.
+									</p>
 									{formik.touched.password && formik.errors.password && (
 										<p className='text-xs text-destructive'>
 											{formik.errors.password}
