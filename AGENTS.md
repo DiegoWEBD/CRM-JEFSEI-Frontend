@@ -6,6 +6,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current Summary
 
+**Redirects por sesión (login ↔ app): DONE**
+
+- **Requisito**: `/login` con sesión activa redirige al home (o a `?next=`); sin sesión, cualquier ruta redirige a `/login`.
+- **`src/proxy.ts`** (fuente única): token vigente → `/login` redirige al destino (`?next=` validado o `/`) y rutas protegidas pasan; sin sesión → redirect a `/login?next=<ruta+query>` limpiando cookies huérfanas; refresh exitoso en `/login` redirige adjuntando los `Set-Cookie` nuevos. El BFF (`/api/**`) queda fuera del matcher: sigue respondiendo 401/403 JSON. **Ojo**: el matcher de Next prohíbe grupos capturantes (`(png|svg)` rompe el arranque con "Capturing groups are not allowed"); usar solo alternados `.*\.png$|.*\.svg$` (se agregó `svg` al exclude).
+- **`src/lib/rutas.ts`**: `destinoSeguro` (anti open-redirect: solo rutas internas, sin `//`, `/\`, ni rutas públicas), `urlLoginConDestino`, `esRutaPublica` (`['/login']`).
+- **`login/page.tsx`**: server component async; con sesión → `redirect(destinoSeguro(next) ?? '/')` (defensa en profundidad sobre el proxy).
+- **`use-auth.ts`**: `login` navega a `destinoSeguro(next de window.location.search) ?? '/'` en vez de siempre `/`.
+- **`redirigir-sesion-expirada.tsx`** (montado en `providers.tsx`): escucha `session-expired` y redirige a `/login?next=` (sin redirect si ya estamos en `/login`).
+- **Tests nuevos**: `src/lib/__tests__/rutas.test.ts`, `src/hooks/auth/__tests__/use-auth.test.tsx`, `src/components/providers/__tests__/redirigir-sesion-expirada.test.tsx` y `src/__tests__/proxy.test.ts` reescrito al contrato nuevo (476 en verde).
+- **Nota**: `next/experimental/testing/server` (`unstable_doesMiddlewareMatch`) **no se puede importar en un test que también importa `next/server`**: rompe el runtime con "Invariant: AsyncLocalStorage accessed in runtime where it is not available" (probado con scratch tests). El matcher se prueba evaluando el patrón como regex; la validación real la hace `next dev`/`next build` al arrancar.
+
 **Sidebar migrado a shadcn/ui (`SidebarProvider` + `Sidebar`): DONE**
 
 - **Primitivas**: `src/components/sidebar/` ahora contiene el sidebar de shadcn (Tailwind v4): `sidebar.tsx` (`SidebarProvider`, `useSidebar`, `Sidebar`, `SidebarInset` + constantes), `sidebar-trigger.tsx`, `sidebar-rail.tsx`, `sidebar-header/-content/-footer/-separator/-input.tsx`, `sidebar-group.tsx`, `sidebar-menu.tsx` (con `sidebarMenuButtonVariants`) y barrel `index.ts`. Compone los primitivos existentes (`sheet`, `tooltip`, `separator`, `button`, `input`, `skeleton`, `use-mobile`); sin dependencias nuevas.
