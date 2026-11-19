@@ -12,6 +12,7 @@ import {
 	ScrollText,
 	ShieldCheck,
 	SlidersHorizontal,
+	User,
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
@@ -38,6 +39,7 @@ export const RUTAS_PRINCIPALES: RouteMeta[] = [
 		icono: FileCheck,
 	},
 	{ href: '/personal', titulo: 'Personal', icono: Group },
+	{ href: '/perfil', titulo: 'Mi perfil', icono: User },
 	{ href: '/productos', titulo: 'Productos', icono: Package },
 	{
 		href: '/auditoria',

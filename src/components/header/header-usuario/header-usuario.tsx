@@ -12,6 +12,7 @@ import {
 } from '@/components/dropdown-menu'
 import { useAuth } from '@/hooks/auth/use-auth'
 import { ChevronDown, Loader2, LogOut, Settings, User } from 'lucide-react'
+import Link from 'next/link'
 
 type Props = {
 	nombre: string
@@ -50,9 +51,11 @@ const HeaderUsuario = ({ nombre, nombreRoles }: Props) => {
 					</span>
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem className='gap-2'>
-					<User className='size-4' />
-					Perfil
+				<DropdownMenuItem asChild>
+					<Link href='/perfil' className='gap-2'>
+						<User className='size-4' />
+						Perfil
+					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem className='gap-2'>
 					<Settings className='size-4' />
