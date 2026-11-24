@@ -6,6 +6,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Current Summary
 
+**Perfil (`/perfil`) — nombre editable inline + contraseña en diálogo: DONE**
+
+- **Nombre en "Mis datos"**: ahora es solo lectura con botón **"Editar"** (ícono `Pencil`) junto al valor. Al editar se muestra el `Input` (validación Yup 2–120) con "Cancelar" y "Guardar cambios". El botón **queda visible pero deshabilitado mientras el nombre sea igual al original** (`nombre.trim() !== usuario.nombre`); se habilita solo al cambiarlo. "Cancelar" hace `resetForm()` y sale de edición; guardar con éxito sale de edición (el hook `useActualizarPerfil` ya invalida `['usuario', rut]` y emite `session-refreshed`). `DatoSoloLectura` acepta prop opcional `accion`.
+- **Contraseña**: eliminada la tarjeta con el formulario. Ahora un botón "Cambiar contraseña" al pie de "Mis datos" abre **`src/components/dialog-cambiar-password/dialog-cambiar-password.tsx`** (patrón `open`/`onOpenChange` de `dialog-crear-recordatorio`; `handleOpenChange` resetea formik al cerrar — sin setState en efectos). Diálogo con los 3 inputs (toggle ojo), `esquemaPassword(true)`, footer Cancelar / "Cambiar contraseña".
+- **Tests**: `src/app/perfil/__tests__/perfil-client.test.tsx` reescrito (14 casos: edición del nombre con estados del botón Guardar, cancelar sin guardar, y el diálogo con validaciones, cierre tras guardar y reset al reabrir). Suite completa 521 en verde; `typecheck`, `lint` y `build` OK.
+
 **Redirects por sesión (login ↔ app): DONE**
 
 - **Requisito**: `/login` con sesión activa redirige al home (o a `?next=`); sin sesión, cualquier ruta redirige a `/login`.

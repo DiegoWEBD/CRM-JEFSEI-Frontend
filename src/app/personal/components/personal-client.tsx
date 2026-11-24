@@ -775,8 +775,8 @@ function DialogEditarUsuario({
 }) {
 	const { data: sucursales } = useSucursales()
 	const mutation = useActualizarUsuario()
-	const { tieneRol } = useUserSession()
-	const puedeEditar = tieneRol('GERENTE_GENERAL')
+	const { tienePermiso } = useUserSession()
+	const puedeEditar = tienePermiso('ADMINISTRAR_USUARIOS')
 	const [showPassword, setShowPassword] = useState(false)
 
 	const validationSchema = Yup.object({

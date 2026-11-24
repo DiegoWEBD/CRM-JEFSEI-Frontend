@@ -37,6 +37,25 @@ export async function PUT(
 	}
 }
 
+export async function PATCH(
+	request: Request,
+	{ params }: { params: Promise<{ rut: string }> },
+) {
+	try {
+		const { rut } = await params
+		const body = await request.json()
+		const cookieStore = await cookies()
+
+		const response = await axiosClient.patch(`/usuarios/${rut}`, body, {
+			headers: { Cookie: cookieStore.toString() },
+		})
+
+		return NextResponse.json(response.data)
+	} catch (error) {
+		return normalizarErrorServidor(error, 'Error actualizando perfil')
+	}
+}
+
 export async function DELETE(
 	_request: Request,
 	{ params }: { params: Promise<{ rut: string }> },
