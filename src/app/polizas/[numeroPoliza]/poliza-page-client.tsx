@@ -264,13 +264,13 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 											) : null}
 										</PermissionGuard>
 
-										<PermissionGuard
-											allowedPermissions={[
-												'CANCELAR_POLIZA',
-												'REACTIVAR_POLIZA',
-											]}
-										>
-											{poliza.estado === 'CANCELADA' ? (
+										{poliza.estado === 'CANCELADA' ? (
+											<PermissionGuard
+												allowedPermissions={[
+													'REACTIVAR_POLIZA_TODOS',
+													'REACTIVAR_POLIZA_PROPIOS',
+												]}
+											>
 												<>
 													<Button
 														variant='outline'
@@ -298,7 +298,14 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 														}}
 													/>
 												</>
-											) : (
+											</PermissionGuard>
+										) : (
+											<PermissionGuard
+												allowedPermissions={[
+													'CANCELAR_POLIZA_TODOS',
+													'CANCELAR_POLIZA_PROPIOS',
+												]}
+											>
 												<>
 													<Button
 														variant='outline'
@@ -326,8 +333,8 @@ export function PolizaPageClient({ numeroPoliza }: PolizaPageClientProps) {
 														}}
 													/>
 												</>
-											)}
-										</PermissionGuard>
+											</PermissionGuard>
+										)}
 									</div>
 								</div>
 							</CardContent>
