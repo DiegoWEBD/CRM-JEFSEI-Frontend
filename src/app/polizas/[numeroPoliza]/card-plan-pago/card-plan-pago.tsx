@@ -4,6 +4,7 @@ import DialogCrearPlanPago from '@/app/polizas/[numeroPoliza]/dialog-crear-plan-
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { CuotasPlanPagoTable } from '@/components/cuotas-plan-pago-table/cuotas-plan-pago-table'
+import PermissionGuard from '@/components/layouts/guards/permission-guard'
 import { Skeleton } from '@/components/skeleton'
 import { useMarcarPagoCuota } from '@/hooks/cuotas/use-marcar-pago-cuota'
 import { useObtenerPlanPago } from '@/hooks/polizas/use-obtener-plan-pago'
@@ -39,14 +40,21 @@ export default function CardPlanPago({ numeroPoliza }: CardPlanPagoProps) {
 							<p className='text-sm text-muted-foreground'>
 								No hay plan de pago registrado
 							</p>
-							<Button
-								variant='outline'
-								size='sm'
-								onClick={() => setOpenDialog(true)}
+							<PermissionGuard
+								allowedPermissions={[
+									'CREAR_PLAN_PAGO_GLOBAL',
+									'CREAR_PLAN_PAGO_PROPIOS',
+								]}
 							>
-								<Plus className='mr-1.5 h-3.5 w-3.5' />
-								Crear plan de pago
-							</Button>
+								<Button
+									variant='outline'
+									size='sm'
+									onClick={() => setOpenDialog(true)}
+								>
+									<Plus className='mr-1.5 h-3.5 w-3.5' />
+									Crear plan de pago
+								</Button>
+							</PermissionGuard>
 						</div>
 					)}
 				</CardContent>
